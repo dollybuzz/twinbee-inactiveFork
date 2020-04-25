@@ -1,6 +1,34 @@
+//TODO; have errors send us notifications rather than "throw"
+
 const {query} = require("./repoMaster.js");
 class MakerRepository{
     constructor(){};
+
+    createMaker(firstName, lastName, email){
+        let sql = 'INSERT INTO maker(first_name, last_name, email) VALUES (?, ?, ?)';
+        let sqlParams = [];
+        query(sql, sqlParams, function (err, result) {
+            if (err) throw err;
+        })
+    }
+
+    updateMaker(id, firstName, lastName, email){
+        let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ? WHERE id = ?';
+        let sqlParams = [firstName, lastName, email, id];
+        query(sql, sqlParams, function (err, result) {
+            if (err) throw err;
+        })
+    }
+
+    deleteMaker(id){
+    let sql = "DELETE FROM maker WHERE id = ?";
+    let sqlParams = [id];
+    query(sql, sqlParams, function (err, result) {
+        if (err) throw err;
+        })
+    }
+
+
     async getOnlineMakers(){
         let sql = 'SELECT * ' +
             'FROM maker ' +
@@ -9,14 +37,27 @@ class MakerRepository{
             'WHERE end_time - start_time < 0 ' +
             'GROUP BY maker.id';
         let sqlParams = [];
-        let results = await query(sql, sqlParams);
+        let results = await query(sql, sqlParams, function (err, result) {
+            if (err) throw err;
+        });
         return results;
+    }
+
+    async getMakerById(id){
+        let sql = 'SELECT * FROM maker WHERE id = ?';
+        let sqlParam = [id];
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;
+        });
+        return result;
     }
 
     async getAllMakers(){
         let sql = 'SELECT * FROM maker';
         let sqlParam = [];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;
+        });
         return result;
     }
 
@@ -26,7 +67,9 @@ class MakerRepository{
             'WHERE last_name = ? ' +
             'GROUP BY maker.id';
         let sqlParam = [lastName];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;
+        });
         return result;
     }
 
@@ -38,7 +81,8 @@ class MakerRepository{
             'WHERE name = ? ' +
             'GROUP BY maker.id';
         let sqlParam = [client];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;);
         return result;
     }
     async getMakersByClientName(client){
@@ -49,7 +93,8 @@ class MakerRepository{
             'WHERE name = ? ' +
             'GROUP BY maker.id';
         let sqlParam = [client];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;);
         return result;
     }
     async getMakersByClientId(clientId){
@@ -60,7 +105,8 @@ class MakerRepository{
             'WHERE client_id = ? ' +
             'GROUP BY maker.id';
         let sqlParam = [client];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;);
         return result;
     }
     async getMakersByHourlyRate(rate){
@@ -70,7 +116,8 @@ class MakerRepository{
             'WHERE hourly_rate = ? ' +
             'GROUP BY maker.id';
         let sqlParam = [client];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;);
         return result;
     }
 
@@ -82,7 +129,8 @@ class MakerRepository{
             'GROUP BY maker.id ' +
             'ORDER BY num_shifts DESC';
         let sqlParam = [];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;);
         return result;
 
     }
