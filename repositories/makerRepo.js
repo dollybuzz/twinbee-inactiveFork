@@ -82,7 +82,7 @@ class MakerRepository{
             'GROUP BY maker.id';
         let sqlParam = [client];
         let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;);
+            if (err) throw err;});
         return result;
     }
     async getMakersByClientName(client){
@@ -94,10 +94,10 @@ class MakerRepository{
             'GROUP BY maker.id';
         let sqlParam = [client];
         let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;);
+            if (err) throw err;});
         return result;
     }
-    async getMakersByClientId(clientId){
+    async getMakersByClientId(clientId) {
         let sql = 'SELECT * ' +
             'FROM maker ' +
             'JOIN time_sheet ON maker.id = time_sheet.maker_id ' +
@@ -106,9 +106,20 @@ class MakerRepository{
             'GROUP BY maker.id';
         let sqlParam = [client];
         let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;);
+            if (err) throw err;
+        });
         return result;
     }
+
+    async getMakerIdByEmail(email){
+        let sql = 'SELECT id FROM maker WHERE email = ?';
+        let sqlParams = [email];
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;});
+        return result;
+    }
+
+
     async getMakersByHourlyRate(rate){
         let sql = 'SELECT * ' +
             'FROM maker ' +
@@ -117,7 +128,7 @@ class MakerRepository{
             'GROUP BY maker.id';
         let sqlParam = [client];
         let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;);
+            if (err) throw err;});
         return result;
     }
 
@@ -130,7 +141,7 @@ class MakerRepository{
             'ORDER BY num_shifts DESC';
         let sqlParam = [];
         let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;);
+            if (err) throw err;});
         return result;
 
     }

@@ -1,13 +1,75 @@
 const {query} = require('./repoMaster');
 class ClientRepository{
     constructor(){};
+    
+    createClient(name, location, remainingHours, email){
+        let sql = 'INSERT INTO client(name, location, remaining_hours, email) ' +
+            'VALUES (?, ?, ?, ?)';
+        let sqlParams = [name, location, remainingHours, email];
+        query(sql, sqlParams, function (err, result) {
+            if (err) throw err;
+        })
+    }
+
+    updateClient(id, name, location, remainingHours, email){
+        let sql = 'UPDATE client ' +
+            'SET name = ?, location = ?, remaining_hours = ?, email = ? ' +
+            'WHERE id = ?';
+        let sqlParams = [name, location, remainingHours, email, id];
+        query(sql, sqlParams, function (err, result) {
+            if (err) throw err;
+        })
+    }
+
+    deleteClient(id){
+        let sql = 'DELETE FROM client WHERE id = ?';
+        let sqlParams = [id];
+        query(sql, sqlParams, function (err, result) {
+            if (err) throw err;
+        })
+    }
+
+    decrementHoursClient(id, hoursToSubtract){
+        let sql = 'UPDATE client ' +
+            'SET remaining_hours = remaining_hours - ? ' +
+            'WHERE client.id = ?';
+        let sqlParams = [hoursToSubtract, id];
+        query(sql, sqlParams, function (err, result) {
+            if (err) throw err;
+        })
+    }
+
     async getAllClients(){
-        let sql = 'select * from client';
+        let sql = 'SELECT * FROM client';
         let sqlParam = [];
-        let result = await query(sql, sqlParam);
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;
+        });
         return result;
     }
 
+    async getClientsByMaker(makerId){
+        let sql = 'SELECT * ' +
+            'FROM client ' +
+            'JOIN time_sheet ON client.id = time_sheet.client_id ' +
+            'WHERE maker_id = ? ' +
+            'GROUB BY client_id ' +
+            'ORDER BY end_time DESC';
+        let sqlParams = [makerId];
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;
+        });
+        return result;
+    }
+
+    async getClientIdByName(name){
+        let sql = 'SELECT id FROM client WHERE name = ?';
+        let sqlParams = [name];
+        let result = await query(sql, sqlParam, function (err, result) {
+            if (err) throw err;
+        });
+        return result;
+    }
 }
 
 module.exports = new ClientRepository();
