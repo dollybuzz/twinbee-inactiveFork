@@ -125,7 +125,7 @@ class MakerRepository {
 
     async getMakerIdByEmail(email) {
         let sql = 'SELECT id FROM maker WHERE email = ?';
-        let sqlParams = [email];
+        let sqlParam = [email];
         let result = await query(sql, sqlParam).catch(e => {
             console.log(e);
             result = [];
