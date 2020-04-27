@@ -1,6 +1,6 @@
 const sinon = require('sinon');
 const {expect} = require('chai');
-const makerRepo = require('../repositories/clientRepo.js')
+const makerRepo = require('../repositories/clientRepo.js');
 
 
 describe('Client Repository Test', function () {

@@ -3,11 +3,16 @@ Authors: Dalia Faria, Greg Brown
 
  */
 const express = require("express");
+const controller = require('./controllers/controller.js');
 const app = express();
 const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
+const makerRepo = require('./repositories/makerRepo.js');
 
+(async function() {
 
+    console.log(await makerRepo.getAllMakers());
+})()
 
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");

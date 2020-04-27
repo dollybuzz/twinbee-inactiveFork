@@ -42,9 +42,9 @@ class ClientRepository{
     async getAllClients(){
         let sql = 'SELECT * FROM client';
         let sqlParam = [];
-        let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;
-        });
+        let result = await query(sql, sqlParam).catch(e =>{
+            console.log(e);
+            result = [];});
         return result;
     }
 
@@ -56,18 +56,18 @@ class ClientRepository{
             'GROUB BY client_id ' +
             'ORDER BY end_time DESC';
         let sqlParams = [makerId];
-        let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;
-        });
+        let result = await query(sql, sqlParam).catch(e =>{
+            console.log(e);
+            result = [];});
         return result;
     }
 
     async getClientIdByName(name){
         let sql = 'SELECT id FROM client WHERE name = ?';
         let sqlParams = [name];
-        let result = await query(sql, sqlParam, function (err, result) {
-            if (err) throw err;
-        });
+        let result = await query(sql, sqlParam).catch(e =>{
+            console.log(e);
+            result = [];});
         return result;
     }
 }
