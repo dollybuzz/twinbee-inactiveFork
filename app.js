@@ -7,12 +7,11 @@ const controller = require('./controllers/controller.js');
 const app = express();
 const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
-const makerRepo = require('./repositories/makerRepo.js');
+const timeSheetRepo = require('./repositories/timeSheetRepo.js');
 
 (async function() {
-
-    console.log(await makerRepo.getAllMakers());
-})()
+console.log(await timeSheetRepo.getAllSheets());
+})();
 
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
