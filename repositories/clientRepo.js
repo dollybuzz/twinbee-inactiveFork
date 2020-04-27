@@ -70,6 +70,14 @@ class ClientRepository{
             result = [];});
         return result;
     }
+    async getClientNameById(id){
+        let sql = 'SELECT name FROM client WHERE id = ?';
+        let sqlParams = [name];
+        let result = await query(sql, sqlParam).catch(e =>{
+            console.log(id);
+            result = [];});
+        return result;
+    }
 }
 
 module.exports = new ClientRepository();
