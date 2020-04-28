@@ -8,9 +8,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
 const timeSheetRepo = require('./repositories/timeSheetRepo.js');
+const clientRepo = require('./repositories/clientRepo.js');
 
 (async function() {
-console.log(await timeSheetRepo.getAllSheets());
+console.log(await clientRepo.getClientNameById(1));
 })();
 
 app.set('view engine', 'ejs');
