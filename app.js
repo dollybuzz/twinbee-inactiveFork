@@ -16,7 +16,6 @@ const clientRepo = require('./repositories/clientRepo.js');
 (async function() {
     // throw anything you want to "just run" in here. We'll remove this for the production build
     //e.g., the below
-console.log(await clientRepo.getClientNameById(1));
 })();
 
 app.set('view engine', 'ejs');
@@ -33,5 +32,6 @@ app.get("/administrator", adminPageController.renderLanding);
 app.get("/client", clientPageController.renderLanding);
 app.get("/maker", makerPageController.renderLanding);
 app.post("/api/login", adminPageController.temporaryNavigateFunction);
+app.post("/api/getAllClients", adminPageController.getAllClients);
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
