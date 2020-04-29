@@ -1,5 +1,3 @@
-
-
 module.exports ={
     renderLanding: (req, res)=>{
         let headerImageActual = {
