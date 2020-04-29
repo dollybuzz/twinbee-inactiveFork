@@ -31,4 +31,19 @@
 
 </head>
 <body>
+<header>
+    <img src = "<%=headerImg["src"]%>" alt="<%=headerImg["alt"]%>">
+</header>
+<nav class="blueBanner">
+    <%if (typeof navItemsTop !== "undefined"){%>
+        <% for (var i = 0; i < navItemsTop.length; ++i){%>
+            <%if (i != 0){%>
+                |
+            <%}%>
 
+            <a href="<%navItemsTop[i]["link"]%>"><%navItemsTop[i]["text"]%></a>
+        <%}%>
+    <%}else{%>
+    <h5>Welcome!</h5>
+    <%}%>
+</nav>

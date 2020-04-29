@@ -2,7 +2,15 @@
 <hr>
 
 
-<footer>
+<footer class="blueBanner">
+    <%if (typeof navItemsBottom !== "undefined"){%>
+        <% for (var i = 0; i < navItemsBottom.length; ++i){%>
+            <%if (i != 0){%>
+                |
+            <%}%>
+        <a href="<%=navItemsBottom[i].link%>"><%=navItemsBottom[i].text%></a>
+        <%}%>
+    <%}%>
     <h6>&copy;2020 TwinBee Team</h6>
     <h6>This is a work in progress. No express functionality or fitness guaranteed. No warranty express or implied.</h6>
 </footer>
