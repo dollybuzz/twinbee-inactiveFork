@@ -1,4 +1,5 @@
 
+
 module.exports ={
     renderLanding: (req, res)=>{
         let headerImageActual = {
@@ -18,4 +19,18 @@ module.exports ={
 
         res.render("admin", {headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
+
+    temporaryNavigateFunction: (req, res)=>{
+        if (req.body.userType == "admin"){
+            module.exports.renderLanding(req, res);
+        }
+        else if (req.body.userType == "maker"){
+            var controller = require('./makerPageController');
+            controller.renderLanding(req, res);
+        }
+        else if (req.body.userType == "client"){
+            var controller = require('./clientPageController');
+            controller.renderLanding(req, res);
+        }
+    }
 }

@@ -32,5 +32,6 @@ app.get("/admin", adminPageController.renderLanding);
 app.get("/administrator", adminPageController.renderLanding);
 app.get("/client", clientPageController.renderLanding);
 app.get("/maker", makerPageController.renderLanding);
+app.post("/api/login", adminPageController.temporaryNavigateFunction);
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
