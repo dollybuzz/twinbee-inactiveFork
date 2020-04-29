@@ -1,4 +1,5 @@
 
+const clientService = require('../services/ClientService.js');
 
 module.exports ={
     renderLanding: (req, res)=>{
@@ -32,5 +33,9 @@ module.exports ={
             var controller = require('./clientPageController');
             controller.renderLanding(req, res);
         }
+    },
+    getAllClients: async (req, res)=>{
+        res.send(await clientService.getAllClients());
     }
+
 }
