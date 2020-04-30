@@ -9,6 +9,13 @@ let navMapper = {
               let clientId = $(this).children()[0].innerHTML;
               alert ("You selected client " + clientId)
           })
+          $(".clientRow").mouseenter(function () {
+              $(this).css('transition', 'background-color 0.5s ease');
+              $(this).css('background-color', 'gray');
+          }).mouseleave(function () {
+              $(this).css('background-color', '#f5f5f5');
+
+          })
       }, 300)
     },
     manageMakers: function () {
@@ -18,6 +25,13 @@ let navMapper = {
                 let makerId = $(this).children()[0].innerHTML;
                 alert ("You selected maker " + makerId)
             })
+            $(".makerRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', 'gray');
+            }).mouseleave(function () {
+                $(this).css('background-color', '#f5f5f5');
+
+            })
         }, 300)
     },
     reviewTimesheets: function () {
@@ -26,6 +40,13 @@ let navMapper = {
             $(".sheetRow").click(function () {
                 let makerId = $(this).children()[0].innerHTML;
                 alert ("You selected sheet " + makerId)
+            })
+            $(".sheetRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', 'gray');
+            }).mouseleave(function () {
+                $(this).css('background-color', '#f5f5f5');
+
             })
         }, 300)
     }
