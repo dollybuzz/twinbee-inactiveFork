@@ -49,62 +49,51 @@ const maker2 = new Maker(2, 'first2', 'last2', 'email2', null, null);
 const maker3 = new Maker(3, 'first3', 'last3', 'email3', null, null);
 
 describe('Maker Service Test', function () {
-    let getAllMakersStub;
-    it('Should grab all makers',  async () => {
-        getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
-                .callsFake(()=>{return [
+
+    beforeEach(function () {
+        let getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
+            .callsFake(() => {
+                return [
                     {
                         id: 1,
                         first_name: "first1",
                         last_name: "last1",
                         email: 'email1'
-                    },{
+                    }, {
                         id: 2,
                         first_name: "first2",
                         last_name: "last2",
                         email: 'email2'
-                    },{
+                    }, {
                         id: 3,
                         first_name: "first3",
                         last_name: "last3",
                         email: 'email3'
                     }
-                ];});
+                ];
+            });
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+    it('Should grab all makers',  async () => {
+
 
         let results =  await makerService.getAllMakers();
 
         expect(results).to.deep.equal([maker1, maker2, maker3]);
 
-        getAllMakersStub.restore();
-
     })
 
     it('Should grab only the maker specified by id', async function () {
 
-        getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
-            .callsFake(()=>{return [
-                {
-                    id: 1,
-                    first_name: "first1",
-                    last_name: "last1",
-                    email: 'email1'
-                },{
-                    id: 2,
-                    first_name: "first2",
-                    last_name: "last2",
-                    email: 'email2'
-                },{
-                    id: 3,
-                    first_name: "first3",
-                    last_name: "last3",
-                    email: 'email3'
-                }
-            ];});
         let actual = await makerService.getMakerById(1);
 
         expect(actual).to.deep.equal(maker1)
 
-        getAllMakersStub.restore();
     })
 
     it('Should grab only the sheets for the specified maker (by id)', async function () {

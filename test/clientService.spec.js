@@ -43,108 +43,57 @@ const client2 = new Client(2, 'name2', 'loc2', 'rem2', 'em2', null, null);
 const client3 = new Client(3, 'name3', 'loc3', 'rem3', 'em3', null, null);
 
 describe('Client Service Test', function () {
-    let getAllClientsStub;
+
+
+    beforeEach(function () {
+        let getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
+            .callsFake(()=>{return [
+                {
+                    id: 1,
+                    name: "name1",
+                    location: "loc1",
+                    remaining_hours: 'rem1',
+                    email: 'em1'
+
+                },{
+                    id: 2,
+                    name: "name2",
+                    location: "loc2",
+                    remaining_hours: 'rem2',
+                    email: 'em2'
+                },{
+                    id: 3,
+                    name: "name3",
+                    location: "loc3",
+                    remaining_hours: 'rem3',
+                    email: 'em3'
+                }
+            ];});
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+
     it('Should grab all clients',  async () => {
-
-
-        getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
-                .callsFake(()=>{return [
-                    {
-                        id: 1,
-                        name: "name1",
-                        location: "loc1",
-                        remaining_hours: 'rem1',
-                        email: 'em1'
-
-                    },{
-                        id: 2,
-                        name: "name2",
-                        location: "loc2",
-                        remaining_hours: 'rem2',
-                        email: 'em2'
-                    },{
-                        id: 3,
-                        name: "name3",
-                        location: "loc3",
-                        remaining_hours: 'rem3',
-                        email: 'em3'
-                    }
-                ];});
-
         let results =  await clientService.getAllClients();
 
         expect(results).to.deep.equal([client1, client2, client3]);
 
-        getAllClientsStub.restore();
-
     })
 
     it('Should grab only the client specified by id', async function () {
-
-        getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
-            .callsFake(() => {
-                return [
-                    {
-                        id: 1,
-                        name: "name1",
-                        location: "loc1",
-                        remaining_hours: 'rem1',
-                        email: 'em1'
-
-                    }, {
-                        id: 2,
-                        name: "name2",
-                        location: "loc2",
-                        remaining_hours: 'rem2',
-                        email: 'em2'
-                    }, {
-                        id: 3,
-                        name: "name3",
-                        location: "loc3",
-                        remaining_hours: 'rem3',
-                        email: 'em3'
-                    }
-                ];
-            });
         let actual = await clientService.getClientById(1);
 
         expect(actual).to.deep.equal(client1)
-
-        getAllClientsStub.restore();
     })
 
     it('Should grab only the sheets for the specified client (by id)', async function () {
-
-        getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
-            .callsFake(() => {
-                return [
-                    {
-                        id: 1,
-                        name: "name1",
-                        location: "loc1",
-                        remaining_hours: 'rem1',
-                        email: 'em1'
-
-                    }, {
-                        id: 2,
-                        name: "name2",
-                        location: "loc2",
-                        remaining_hours: 'rem2',
-                        email: 'em2'
-                    }, {
-                        id: 3,
-                        name: "name3",
-                        location: "loc3",
-                        remaining_hours: 'rem3',
-                        email: 'em3'
-                    }
-                ];
-            });
         let actual = await clientService.getClientById(1);
 
         expect(actual).to.deep.equal(client1)
-
-        getAllClientsStub.restore();
     })
 
 })
