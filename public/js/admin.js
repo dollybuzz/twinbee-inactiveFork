@@ -53,7 +53,7 @@ let navMapper = {
 }
 
 function showClients(){
-    $("#adminMainContent").html(
+    $("#userMainContent").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"clientTable\" class=\"table\">\n" +
         "    </table>\n" +
