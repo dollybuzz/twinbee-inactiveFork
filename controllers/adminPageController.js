@@ -9,13 +9,13 @@ module.exports ={
             alt: "Freedom Makers Logo"
         };
         let headerLinks = [
+            {link: "", text: "Main", id:"main"},
             {link: "", text: "Manage Clients", id:"manageClients"},
             {link: "", text: "Manage Makers", id: "manageMakers"},
             {link: "", text: "Review Timesheets", id:"reviewTimesheets"}
         ]
         let footerLinks = [
-            {link: "", text: "Manage Clients", id:"manageClients"},
-            {link: "", text: "Manage Makers", id: "manageMakers"},
+            {link: "/admin", text: "Main", id:"main"},
             {link: "", text: "Report a problem", id: "reportProblem"},
         ]
 

@@ -1,6 +1,6 @@
 let navMapper = {
     main: function () {
-
+        location.reload();
     },
     manageClients: function () {
       showClients();
