@@ -51,8 +51,6 @@ const maker3 = new Maker(3, 'first3', 'last3', 'email3', null, null);
 describe('Maker Service Test', function () {
     let getAllMakersStub;
     it('Should grab all makers',  async () => {
-
-
         getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
                 .callsFake(()=>{return [
                     {

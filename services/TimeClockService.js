@@ -1,7 +1,7 @@
 const makerRepo = require('../repositories/makerRepo.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
-const timeSheetRepo = require('../repositories/timeSheetRepo.js');
+const timeSheetService = require('../services/TimeSheetService.js');
 
 class TimeClockService {
     constructor(){};
@@ -20,42 +20,14 @@ class TimeClockService {
         return onlineUsers;
     }
 
-    async getAllTimesheets(){
-        console.log("Time Clock Service's getAllTimesheets still needs to be finalized, be careful!");
+    async clockIn(){
 
-        return await timeSheetRepo.getAllSheets();
     }
+    async clockOut(){
 
-    /**
-     * Retrieves time all time sheets for a given maker.
-     * @param id    - id of the desired maker
-     * @returns {Promise<[]>} containing time_sheet objects
-     */
-    async getSheetsByMaker(id){
-        let sheets = [];
-
-        return sheets;
     }
+    async getRunningTime(){
 
-
-    /**
-     * Determines whether or not a maker is logged in
-     * @param id
-     * @returns {Promise<>} containing boolean login status
-     */
-    async userIsOnline(id){
-        throw new Error('not yet implemented')
-    }
-
-
-    /**
-     * Retrieves a combination of user, client, and time sheet data for
-     * a given logged in user
-     * @param id    - id of the desired maker
-     * @returns {Promise<>} containing object with the given data
-     */
-    async getDataForOnlineMaker(id){
-        throw new Error('not yet implemented')
     }
 }
 
