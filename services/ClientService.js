@@ -28,7 +28,13 @@ class ClientService {
     }
 
     async getClientById(id){
-
+        let clients = await  this.getAllClients();
+        for (var i = 0; i < clients.length; ++i){
+            if (clients[i].id == id)
+                return new Client(clients[i].id, clients[i].name, clients[i].location,
+                    clients[i].remainingHours, clients[i].email, null, null);
+        }
+        return 'not found';
     }
 }
 
