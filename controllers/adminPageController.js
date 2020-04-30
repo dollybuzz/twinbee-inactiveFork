@@ -1,5 +1,5 @@
 const clientService = require('../services/ClientService.js');
-const makerService = require('../services/makerService.js');
+const makerService = require('../services/MakerService.js');
 const timeClockService = require('../services/TimeClockService.js');
 
 module.exports ={
