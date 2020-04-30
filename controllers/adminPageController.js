@@ -34,5 +34,8 @@ module.exports ={
     },
     getAllClients: async (req, res)=>{
         res.send(await clientService.getAllClients());
+    },
+    getAllMakers: async (req, res)=>{
+        res.send(await makerService.getAllMakers());
     }
 }

@@ -12,8 +12,13 @@ let navMapper = {
       }, 300)
     },
     manageMakers: function () {
-        alert("makers")
-
+        showMakers();
+        setTimeout( function () {
+            $(".makerRow").click(function () {
+                let makerId = $(this).children()[0].innerHTML;
+                alert ("You selected maker " + makerId)
+            })
+        }, 300)
     },
     reviewTimesheets: function () {
         alert("timesheets")
@@ -76,25 +81,23 @@ function showMakers(){
         },
         dataType: "json",
         success: function (res, status) {
-            $("#clientTable").append('\n' +
+            $("#makerTable").append('\n' +
                 '        <thead class="thead-dark">\n' +
                 '            <th scope="col">#</th>\n' +
-                '            <th scope="col">Name</th>\n' +
-                '            <th scope="col">Location</th>\n' +
-                '            <th scope="col">Remaining Hours</th>\n' +
+                '            <th scope="col">First Name</th>\n' +
+                '            <th scope="col">Last Name</th>\n' +
                 '            <th scope="col">Email</th>\n' +
                 '        </thead><tbody>')
             res.forEach(item => {
-                $("#clientTable").append('\n' +
-                    '<tr class="clientRow">' +
+                $("#makerTable").append('\n' +
+                    '<tr class="makerRow">' +
                     '   <th scope="row">' + item.id +'</th>' +
-                    '   <td>' + item.name + '</td>'+
-                    '   <td>' + item.location + '</td>'+
-                    '   <td>' + item.remainingHours + '</td>'+
+                    '   <td>' + item.firstName + '</td>'+
+                    '   <td>' + item.lastName + '</td>'+
                     '   <td>' + item.email + '</td>'
                 );
             })
-            $("#clientTable").append('\n</tbody>')
+            $("#makerTable").append('\n</tbody>')
         },
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
