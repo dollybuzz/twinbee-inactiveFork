@@ -58,8 +58,8 @@ class TimeSheetService {
     }
 
 
-    async getStartTime();
-    async getEndTime();
+    async getStartTime(){}
+    async getEndTime(){}
 
 
 
