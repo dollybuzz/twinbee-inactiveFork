@@ -12,11 +12,12 @@ body {
 
 }
 
-#landingMain, #adminMainContent {
+#landingMain, #userMainContent {
     background-color: white;
     padding-top: 20px;
     padding-bottom: 20px;
 }
+
 
 #landingLogo {
     text-align: center;
