@@ -8,7 +8,6 @@ const timeClockService = require('../services/TimeClockService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 
-
 const timeSheetExtra1 = {id:1, first_name:'first', last_name: 'last', email: 'email',
     id: 1, maker_id: 1, client_id: 1, hourly_rate: 1.00, start_time: '2020-04-24 22:22:22',
     end_time: '2020-04-24 23:23:23', occupation:'worker', id: 1, location:'usa',

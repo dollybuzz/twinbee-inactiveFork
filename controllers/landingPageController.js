@@ -8,7 +8,7 @@ module.exports ={
         let footerLinks = [
             {link: "", text: "Our Mission"},
             {link: "", text: "Become a Maker"},
-        {link: "", text: "FAQ"},
+            {link: "", text: "FAQ"},
             {link: "", text: "Problems? Contact us."},
         ]
 
