@@ -56,6 +56,17 @@ describe('Time Clock Service Test', function () {
         })
     })
 
+    it('Should grab the early dev version of all timesheets', async function () {
+        //only asserting that timeClockService.getAllTimesheets just passes through the timeSheetRepo's function
+        let stub = sinon.stub(timeSheetRepo, 'getAllSheets').callsFake(()=>{return '257'});
+        let actual = await timeClockService.getAllTimesheets();
+        expect(actual).to.equal('257');
+    })
+
+    it('Should grab all timesheets', function () {
+        throw new Error("Not yet implemented")
+    })
+
     it('Should grab timesheets for a given maker', async function () {
 
         throw new Error("not implemented")

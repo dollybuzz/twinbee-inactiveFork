@@ -1,6 +1,7 @@
 const makerRepo = require('../repositories/makerRepo.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
+const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 
 class TimeClockService {
     constructor(){};
@@ -19,6 +20,11 @@ class TimeClockService {
         return onlineUsers;
     }
 
+    async getAllTimesheets(){
+        console.log("Time Clock Service's getAllTimesheets still needs to be finalized, be careful!");
+
+        return await timeSheetRepo.getAllSheets();
+    }
 
     /**
      * Retrieves time all time sheets for a given maker.
