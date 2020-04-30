@@ -1,4 +1,5 @@
 const clientService = require('../services/ClientService.js');
+const makerService = require('../services/makerService.js');
 
 module.exports ={
     renderLanding: (req, res)=>{
@@ -7,14 +8,14 @@ module.exports ={
             alt: "Freedom Makers Logo"
         };
         let headerLinks = [
-            {link: "", text: "Manage Clients"},
-            {link: "", text: "Manage Makers"},
-            {link: "", text: "Review Timesheets"}
+            {link: "", text: "Manage Clients", id:"manageClients"},
+            {link: "", text: "Manage Makers", id: "manageMakers"},
+            {link: "", text: "Review Timesheets", id:"reviewTimesheets"}
         ]
         let footerLinks = [
-            {link: "", text: "Manage Clients"},
-            {link: "", text: "Manage Makers"},
-            {link: "", text: "Report a problem"},
+            {link: "", text: "Manage Clients", id:"manageClients"},
+            {link: "", text: "Manage Makers", id: "manageMakers"},
+            {link: "", text: "Report a problem", id: "reportProblem"},
         ]
 
         res.render("admin", {headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
@@ -22,15 +23,13 @@ module.exports ={
 
     temporaryNavigateFunction: (req, res)=>{
         if (req.body.userType == "admin"){
-            module.exports.renderLanding(req, res);
+            res.redirect('/admin')
         }
         else if (req.body.userType == "maker"){
-            var controller = require('./makerPageController');
-            controller.renderLanding(req, res);
+            res.redirect('/maker')
         }
         else if (req.body.userType == "client"){
-            var controller = require('./clientPageController');
-            controller.renderLanding(req, res);
+            res.redirect('/client')
         }
     },
     getAllClients: async (req, res)=>{

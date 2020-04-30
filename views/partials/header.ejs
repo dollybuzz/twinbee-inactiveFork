@@ -21,9 +21,7 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="css/shared.css" />
-    <link rel="stylesheet" media="(min-device-width: 1200px)" href="css/styles.css" />
-    <link rel="stylesheet" media="(max-device-width: 1199px)" href="css/mobile.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css"/>
     <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
     <script src="js/functions.js"></script>
@@ -40,8 +38,7 @@
             <%if (i != 0){%>
                 |
             <%}%>
-
-            <a href="<%=navItemsTop[i]["link"]%>"><%=navItemsTop[i]["text"]%></a>
+            <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
         <%}%>
     <%}else{%>
     <h5>Welcome!</h5>
