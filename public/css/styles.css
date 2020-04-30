@@ -8,6 +8,14 @@ body {
     text-align: center;
     margin: auto;
     color: #314258;
+    background-color: #314258;
+
+}
+
+#landingMain {
+    background-color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 #landingLogo {
@@ -21,7 +29,7 @@ nav {
     text-align: center;
     color: white;
     background-color: #314258;
-    padding: 20px;
+    padding: 10px;
 }
 
 nav:hover {
@@ -43,10 +51,8 @@ body a:hover {
 }
 
 footer {
-    flex-grow: 1;
     background-color: #314258;
     margin: auto;
-    padding: 20px;
     color: white;
     text-decoration: none;
 }
@@ -75,4 +81,10 @@ footer a {
 
 #userEmail, #userPassword, #userType {
     background: #f5f5f5;
+}
+
+.form-row {
+    padding: 10px;
+    margin: auto;
+    justify-content: center;
 }
