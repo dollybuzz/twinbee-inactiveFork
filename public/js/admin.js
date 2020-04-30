@@ -94,7 +94,7 @@ function showClients(){
 }
 
 function showMakers(){
-    $("#adminMainContent").html(
+    $("#userMainContent").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"makerTable\" class=\"table\">\n" +
         "    </table>\n" +
@@ -132,7 +132,7 @@ function showMakers(){
     })
 }
 function showSheets(){
-    $("#adminMainContent").html(
+    $("#userMainContent").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"sheetsTable\" class=\"table\">\n" +
         "    </table>\n" +
