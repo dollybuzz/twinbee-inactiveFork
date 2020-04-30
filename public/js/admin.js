@@ -21,8 +21,13 @@ let navMapper = {
         }, 300)
     },
     reviewTimesheets: function () {
-        alert("timesheets")
-
+        showSheets();
+        setTimeout( function () {
+            $(".sheetRow").click(function () {
+                let makerId = $(this).children()[0].innerHTML;
+                alert ("You selected sheet " + makerId)
+            })
+        }, 300)
     }
 }
 
@@ -98,6 +103,50 @@ function showMakers(){
                 );
             })
             $("#makerTable").append('\n</tbody>')
+        },
+        error: function (res, status) {
+            $("#floor").html("Something went wrong!");
+            //log, send error report
+        }
+    })
+}
+function showSheets(){
+    $("#adminMainContent").html(
+        "<div id=\"floor\">\n" +
+        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div>")
+    $.ajax({
+        url: "/api/getAllTimesheets",
+        method: "post",
+        data: {
+            token: "TODOImplementRealToken"
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#sheetsTable").append('\n' +
+                '        <thead class="thead-dark">\n' +
+                '            <th scope="col">#</th>\n' +
+                '            <th scope="col">Maker ID</th>\n' +
+                '            <th scope="col">Client ID</th>\n' +
+                '            <th scope="col">Hourly Rate</th>\n' +
+                '            <th scope="col">Clock In</th>\n' +
+                '            <th scope="col">Clock Out</th>\n' +
+                '            <th scope="col">Occupation</th>\n' +
+                '        </thead><tbody>')
+            res.forEach(item => {
+                $("#sheetsTable").append('\n' +
+                    '<tr class="sheetRow">' +
+                    '   <th scope="row">' + item.id +'</th>' +
+                    '   <td>' + item.maker_id + '</td>'+
+                    '   <td>' + item.client_id + '</td>'+
+                    '   <td>' + item.hourly_rate + '</td>'+
+                    '   <td>' + item.start_time + '</td>'+
+                    '   <td>' + item.end_time + '</td>'+
+                    '   <td>' + item.occupation + '</td>'
+                );
+            })
+            $("#sheetsTable").append('\n</tbody>')
         },
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
