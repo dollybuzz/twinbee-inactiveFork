@@ -12,10 +12,11 @@ const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
 const timeSheetRepo = require('./repositories/timeSheetRepo.js');
 const clientRepo = require('./repositories/clientRepo.js');
+require('moment')().format('YYYY-MM-DD HH:mm:ss');
+const moment = require('moment');
 
 (async function() {
-    // throw anything you want to "just run" in here. We'll remove this for the production build
-    //e.g., the below
+    console.log();
 })();
 
 app.set('view engine', 'ejs');

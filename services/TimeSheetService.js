@@ -37,12 +37,16 @@ class TimeSheetService {
         return sheets;
     }
 
+    async initializeTimesheet(maker, client){
+
+    }
+
     /**
      * Determines whether or not a maker is logged in
      * @param id
      * @returns {Promise<>} containing boolean login status
      */
-    async userIsOnline(id){
+    async makerIsOnline(maker){
         throw new Error('not yet implemented')
         //async hasEndTime();
     }
@@ -58,8 +62,8 @@ class TimeSheetService {
     }
 
 
-    async getStartTime(){}
-    async getEndTime(){}
+    async getStartTime(id){}
+    async getEndTime(id){}
 
 
 

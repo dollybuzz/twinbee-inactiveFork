@@ -96,4 +96,12 @@ describe('Client Service Test', function () {
         expect(actual).to.deep.equal(client1)
     })
 
+    it("Shoud return the correct chargebee object for a client given the client's id", function () {
+        throw new Error("not implemented")
+    })
+
+    it("Should return a list of the client's makers given the client's id", function () {
+        throw new Error("not implemented")
+    })
+
 })

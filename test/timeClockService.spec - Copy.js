@@ -38,4 +38,22 @@ const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 1, hourly_rate: 20.00, s
 
 describe('Time Sheet Service Test', function () {
 
+
+
+    it('Should grab the early dev version of all timesheets', async function () {
+        //only asserting that timeClockService.getAllTimesheets just passes through the timeSheetRepo's function
+
+        let actual = await timeSheetService.getAllTimesheets();
+        expect(actual).to.equal('257');
+    })
+
+    it('Should grab the correct start time from a timeSheet given a timeSheet id', function () {
+        throw new Error("not implemented");
+    })
+    it('Should grab the correct end time from a timeSheet given a timeSheet id', function () {
+        throw new Error("not implemented");
+    })
+
+
+
 })

@@ -16,6 +16,7 @@ class ClientService {
     }
 
 
+
     /**
      * Retrieves time all time sheets for a given client.
      * @param id    - id of the desired client
@@ -27,12 +28,19 @@ class ClientService {
         return sheets;
     }
 
+    async getMakersForClient(id){
+        return [];
+    }
+    async getChargebeeObjFor(id){
+        return null;
+    }
+
     async getClientById(id){
         let clients = await  this.getAllClients();
         for (var i = 0; i < clients.length; ++i){
             if (clients[i].id == id)
                 return new Client(clients[i].id, clients[i].name, clients[i].location,
-                    clients[i].remainingHours, clients[i].email, null, null);
+                    clients[i].remainingHours, clients[i].email, this.getChargebeeObjFor(id), this.getMakersForClient(id));
         }
         return 'not found';
     }

@@ -15,6 +15,9 @@ class MakerService {
         return makers;
     }
 
+    async createMaker(id, firstName, lastName, email, chargebeeObj, clients){
+        return new Maker(id, firstName, lastName, email, chargebeeObj, clients);
+    }
 
     /**
      * Retrieves time all time sheets for a given maker.
@@ -27,12 +30,20 @@ class MakerService {
         return sheets;
     }
 
+    async getClientListForMakerId(id){
+        return [];
+    }
+
+    async getChargebeeObjectForId(id){
+        return null;
+    }
+
     async getMakerById(id){
         let makers = await  this.getAllMakers();
         for (var i = 0; i < makers.length; ++i){
             if (makers[i].id == id)
                 return new Maker(makers[i].id, makers[i].firstName, makers[i].lastName,
-                    makers[i].email, null, null);
+                    makers[i].email, this.getChargebeeObjectForId(id), this.getClientListForMakerId(id));
         }
         return 'not found';
     }

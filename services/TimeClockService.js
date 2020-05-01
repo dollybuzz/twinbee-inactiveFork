@@ -20,14 +20,34 @@ class TimeClockService {
         return onlineUsers;
     }
 
-    async clockIn(){
+    async getCurrentMoment(){
+        return moment(Date.now());
+    }
+
+    async clockIn(maker){
 
     }
-    async clockOut(){
+    async clockOut(maker){
 
     }
-    async getRunningTime(){
+    async getRunningTime(maker){
+        let allSheetsForMaker = await timeSheetService.getSheetsByMaker(maker.id);
+        let targetSheet = null;
+        let rightNow =await this.getCurrentMoment();
+        for (var i = 0; i < allSheetsForMaker.length; ++i) {
+            if (allSheetsForMaker[i]['end_time'] === '0000-00-00 00:00:00') {
+                targetSheet = allSheetsForMaker[i];
+                break;
+            }
+        }
 
+        if (!targetSheet){
+            targetSheet = {end_time: rightNow}
+        }
+
+        let exactSeconds = moment.duration(rightNow-moment(targetSheet.start_time)).asSeconds();
+        let estimatedSeconds = exactSeconds.toFixed(0);
+        return estimatedSeconds;
     }
 }
 

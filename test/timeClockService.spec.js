@@ -4,7 +4,9 @@ const {expect} = require('chai');
 const makerRepo = require('../repositories/makerRepo.js');
 const clientRepo = require('../repositories/clientRepo.js');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
+const timeSheetService = require('../services/TimeSheetService.js');
 const timeClockService = require('../services/TimeClockService.js');
+const makerService = require('../services/MakerService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 
@@ -36,12 +38,17 @@ const timeSheetBasic2 = {id: 2, maker_id: 1, client_id: 1, hourly_rate: 20.00, s
 const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
                         end_time: '2019-04-22 23:23:23', occupation: 'worker'}
 
+const maker1 = makerService.createMaker(1, 'first1', 'last1', 'email1', null, null);
+const maker2 = makerService.createMaker(2, 'first2', 'last2', 'email2', null, null);
+const maker3 = makerService.createMaker(3, 'first3', 'last3', 'email3', null, null);
 
 
 describe('Time Clock Service Test', function () {
 
 
     beforeEach(function () {
+
+
         let getOnlineStub = sinon.stub(makerRepo, 'getOnlineMakers')
             .callsFake(() => {
                 return [timeSheetExtra2];
@@ -55,9 +62,15 @@ describe('Time Clock Service Test', function () {
                 return [{id: 1, first_name: 'first', last_name: 'last'},
                     {id: 2, first_name: 'first2', last_name: 'last2'}]
             });
+
+        //maker 1
+        let sheetByMakerStub2 = sinon.stub(timeSheetService, 'getSheetsByMaker')
+            .callsFake(() => {
+                return [timeSheetBasic1, timeSheetBasic2];
+            });
         let sheetByMakerStub = sinon.stub(timeSheetRepo, 'getSheetsByMaker')
             .callsFake(() => {
-                return [timeSheetBasic1]
+                return [timeSheetBasic1, timeSheetBasic2];
             });
         let makerByIdStub = sinon.stub(makerRepo, 'getMakerById')
             .callsFake(() => {
@@ -85,20 +98,15 @@ describe('Time Clock Service Test', function () {
 
 
 
-    it('Should grab the early dev version of all timesheets', async function () {
-        //only asserting that timeClockService.getAllTimesheets just passes through the timeSheetRepo's function
-
-        let actual = await timeClockService.getAllTimesheets();
-        expect(actual).to.equal('257');
-    })
-
-
-
     it('Should grab all timesheets', function () {
         throw new Error("Not yet implemented")
     })
 
-
+    it ("Should get the maker's current logged in time in seconds", async function () {
+        let actual = await timeClockService.getRunningTime(maker1);
+        console.log ('actual is ' + actual)
+        assert(actual > 536493)
+    })
 
     it('Should grab timesheets for a given maker', async function () {
 

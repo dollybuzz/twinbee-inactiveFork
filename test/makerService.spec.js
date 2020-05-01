@@ -100,4 +100,13 @@ describe('Maker Service Test', function () {
     throw new Error("not implemented")
     })
 
+
+    it("Should grab the correct chargebee object given a maker's id", async function f() {
+        throw new Error("not implemented")
+    })
+
+    it("Should grab a list of associated clients given a maker's id", async function f() {
+        throw new Error("not implemented")
+    })
+
 })
