@@ -1,20 +1,30 @@
+const timeSheetRepo = require('../repositories/timeSheetRepo.js');
+const timeSheetService = require('../services/timeSheetService.js');
 
-module.exports ={
-    renderLanding: (req, res)=>{
-        let headerImageActual = {
-            src: "/img/freedom-makers-logo.png",
-            alt: "Freedom Makers Logo"
-        };
-        let headerLinks = [
-            {link: "", text: "Past Hours"},
-            {link: "", text: "My Clients"},
-        ]
-        let footerLinks = [
-            {link: "", text: "Past Hours"},
-            {link: "", text: "My Clients"},
-            {link: "", text: "Report a problem"},
-        ]
+module.exports = {
+    getTimeSheetByClientId: async (req, res) => {
+        console.log(req);
+        let id = req.query.id;
+        let clientTimeSheet = await timeSheetRepo.getSheetsByClient(id);
 
-        res.render("maker", {headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        if(clientTimeSheet.id == id) {
+            let timeSheet = await timeSheetService.createTimeSheet(clientTimeSheet.id, clientTimeSheet.firstName,
+                clientTimeSheet.lastName, clientTimeSheet.email, clientTimeSheet.hourlyRate,
+                clientTimeSheet.client, clientTimeSheet.timeIn, clientTimeSheet.timeOut);
+            res.send(clientTimeSheet);
+        }
     },
+
+    getTimeSheetByMakerId: async (req, res) => {
+        console.log(req);
+        let id = req.query.id;
+        let makerTimeSheet = await timeSheetRepo.getSheetsByMaker(id);
+
+        if(makerTimeSheet.id == id) {
+            let makerTimeSheet = await timeSheetService.createTimeSheet(makerTimeSheet.id, makerTimeSheet.firstName,
+                makerTimeSheet.lastName,makerTimeSheet.email, makerTimeSheet.hourlyRate,
+                makerTimeSheet.client, makerTimeSheet.timeIn, makerTimeSheet.timeOut);
+            res.send(makerTimeSheet);
+        }
+    }
 }

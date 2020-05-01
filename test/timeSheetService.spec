@@ -4,7 +4,7 @@ const {expect} = require('chai');
 const makerRepo = require('../repositories/makerRepo.js');
 const clientRepo = require('../repositories/clientRepo.js');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
-const timeClockService = require('../services/TimeClockService.js');
+const timeClockService = require('../services/timeClockService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 

@@ -1,20 +1,18 @@
+const makerRepo = require('../repositories/makerRepo.js');
+const makerService = require('../services/makerService.js');
 
 module.exports ={
-    renderLanding: (req, res)=>{
-        let headerImageActual = {
-            src: "/img/freedom-makers-logo.png",
-            alt: "Freedom Makers Logo"
-        };
-        let headerLinks = [
-            {link: "", text: "Past Hours"},
-            {link: "", text: "My Clients"},
-        ]
-        let footerLinks = [
-            {link: "", text: "Past Hours"},
-            {link: "", text: "My Clients"},
-            {link: "", text: "Report a problem"},
-        ]
+    getMakerById: async (req, res)=>{
+        console.log(req)
+        let id = req.query.id;
+        let maker = await makerRepo.getMakerById(id);
 
-        res.render("maker", {headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
-    },
+        if(maker.id == id)
+        {
+            let maker = await makerService.createMaker(maker.id, maker.firstName, maker.lastName, maker.email,
+                maker.chargebeeObj, maker.clients);
+            res.send(maker);
+        }
+
+    }
 }

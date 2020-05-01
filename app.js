@@ -8,11 +8,12 @@ const adminPageController = require('./controllers/adminPageController.js');
 const clientPageController = require('./controllers/clientPageController.js');
 const makerPageController = require('./controllers/makerPageController.js');
 const clientRestController = require('./controllers/clientRestController.js');
+const makerRestController = require('./controllers/makerRestController.js');
+const timeSheetRestController = require('./controllers/timeSheetRestController.js');
 const app = express();
 const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
-const timeSheetRepo = require('./repositories/timeSheetRepo.js');
-const clientRepo = require('./repositories/clientRepo.js');
+
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const request = require('request');
@@ -34,11 +35,11 @@ app.get("/maker", makerPageController.renderLanding);
 app.post("/api/login", adminPageController.temporaryNavigateFunction);
 app.post("/api/getAllClients", adminPageController.getAllClients);
 app.post("/api/getAllMakers", adminPageController.getAllMakers);
-app.post("/api/getAllTimesheets", adminPageController.getAllTimesheets);
+app.post("/api/getAllTimeSheets", adminPageController.getAllTimeSheets);
 app.get("/api/getClient", clientRestController.getClientById);
-
-
-
+app.get("/api/getMaker", makerRestController.getMakerById);
+app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByClientId);
+app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
 
 (async function() {
     request("http://" + process.env.IP +":" + process.env.PORT+"/api/getClient?id=1", function (err, response, body) {

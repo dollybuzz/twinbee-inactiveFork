@@ -2,9 +2,15 @@ const makerRepo = require('../repositories/makerRepo.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
+const TimeSheet = require('../domain/entity/timeSheet.js');
 
 class TimeSheetService {
     constructor(){};
+
+    async createTimeSheet(id, firstName, lastName, email, hourlyRate, client, timeIn, timeOut) {
+        return new TimeSheet(id, firstName, lastName, email, hourlyRate, client, timeIn, timeOut);
+    }
+
     async getOnlineMakers(){
         let onlineUsers = [];
         let repoResult = await makerRepo.getOnlineMakers();
@@ -20,7 +26,7 @@ class TimeSheetService {
         return onlineUsers;
     }
 
-    async getAllTimesheets(){
+    async getAllTimeSheets(){
         console.log("Time Clock Service's getAllTimesheets still needs to be finalized, be careful!");
 
         return await timeSheetRepo.getAllSheets();

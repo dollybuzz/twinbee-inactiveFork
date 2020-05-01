@@ -1,6 +1,6 @@
 const clientService = require('../services/ClientService.js');
 const makerService = require('../services/MakerService.js');
-const timeClockService = require('../services/TimeClockService.js');
+const timeSheetService = require('../services/timeSheetService.js');
 
 module.exports ={
     renderLanding: (req, res)=>{
@@ -39,7 +39,7 @@ module.exports ={
     getAllMakers: async (req, res)=> {
         res.send(await makerService.getAllMakers());
     },
-    getAllTimesheets: async(req, res)=>{
-        res.send(await timeClockService.getAllTimesheets());
+    getAllTimeSheets: async(req, res)=>{
+        res.send(await timeSheetService.getAllTimeSheets());
     }
 }

@@ -1,11 +1,10 @@
 const clientRepo = require('../repositories/clientRepo.js');
 const clientService = require('../services/ClientService.js');
 
-
 module.exports = {
     getClientById: async (req, res) => {
-        console.log(req)
-        let id = req.query.id
+        console.log(req);
+        let id = req.query.id;
         let clients = await clientRepo.getAllClients();
 
         for (var i = 0; i < clients.length; ++i) {

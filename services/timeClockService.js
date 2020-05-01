@@ -1,7 +1,7 @@
 const makerRepo = require('../repositories/makerRepo.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
-const timeSheetService = require('../services/TimeSheetService.js');
+const timeSheetService = require('./timeSheetService.js');
 
 class TimeClockService {
     constructor(){};
