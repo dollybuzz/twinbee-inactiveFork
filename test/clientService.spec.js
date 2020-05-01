@@ -8,6 +8,8 @@ const clientService = require('../services/clientService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const Client = require('../domain/entity/client.js');
+const nock = require('nock')
+const request = require('request')
 
 
 const timeSheetExtra1 = {id:1, first_name:'first', last_name: 'last', email: 'email',
@@ -73,20 +75,20 @@ describe('Client Service Test', function () {
         let getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
             .callsFake(()=>{return [
                 {
-                    id: 1,
+                    id: '1',
                     name: "name1",
                     location: "loc1",
                     remaining_hours: 'rem1',
                     email: 'em1'
 
                 },{
-                    id: 2,
+                    id: '2',
                     name: "name2",
                     location: "loc2",
                     remaining_hours: 'rem2',
                     email: 'em2'
                 },{
-                    id: 3,
+                    id: '3',
                     name: "name3",
                     location: "loc3",
                     remaining_hours: 'rem3',
@@ -105,6 +107,36 @@ describe('Client Service Test', function () {
     });
 
 
+
+
+    it ('Should grab a client via rest', function () {
+        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getClient?id=1')
+            .reply(200, {
+
+                    id: '1',
+                    name: 'clientName',
+                    remainingHours: '20',
+                    email: 'clientEmail',
+                    chargebeeObj: null,
+                    makers: null
+                })
+
+
+        request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`, function (err, response, body) {
+            if (err){console.log(err)}
+            let actual = JSON.parse(body);
+
+            expect(actual).to.deep.equal({
+                id: '1',
+                name: 'clientName',
+                remainingHours: '20',
+                email: 'clientEmail',
+                chargebeeObj: null,
+                makers: null
+            })
+        });
+    })
 
     it('Should grab all clients',  async () => {
         let results =  await clientService.getAllClients();

@@ -42,7 +42,7 @@ app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByCli
 app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
 
 (async function() {
-    request("http://" + process.env.IP +":" + process.env.PORT+"/api/getClient?id=1", function (err, response, body) {
+    request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`, function (err, response, body) {
         if (err){console.log(err)}
         let realBody = JSON.parse(body);
     });
