@@ -31,6 +31,16 @@ class MakerService {
     }
 
     async getClientListForMakerId(id){
+
+        let clients = [];
+
+        /*
+         */
+
+
+
+
+
         return [];
     }
 
@@ -47,6 +57,8 @@ class MakerService {
         }
         return 'not found';
     }
+
+
 }
 
 module.exports = new MakerService();

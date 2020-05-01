@@ -46,6 +46,30 @@ describe('Client Service Test', function () {
 
 
     beforeEach(function () {
+        let getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
+            .callsFake(()=>{
+                return [
+                    {
+                        id: 1,
+                        first_name: 'first1',
+                        last_name: 'last1',
+                        email: 'email1'
+                    },
+                    {
+                        id: 2,
+                        first_name: 'first2',
+                        last_name: 'last2',
+                        email: 'email2'
+                    },
+                    {
+                        id: 3,
+                        first_name: 'first3',
+                        last_name: 'last3',
+                        email: 'email3'
+                    },
+                ]
+            })
+        
         let getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
             .callsFake(()=>{return [
                 {
@@ -69,6 +93,11 @@ describe('Client Service Test', function () {
                     email: 'em3'
                 }
             ];});
+
+        let getAllSheetsStub = sinon.stub(timeSheetRepo, 'getAllSheets')
+            .callsFake(()=>{
+                return [timeSheetBasic1, timeSheetBasic2, timeSheetBasic3];
+            })
     });
 
     afterEach(function () {
@@ -96,11 +125,14 @@ describe('Client Service Test', function () {
         expect(actual).to.deep.equal(client1)
     })
 
-    it("Shoud return the correct chargebee object for a client given the client's id", function () {
+    it("Should return the correct chargebee object for a client given the client's id", function () {
         throw new Error("not implemented")
     })
 
     it("Should return a list of the client's makers given the client's id", function () {
+        
+        let actual = clientService.getMakersForClient(1)
+        expect(actual).to.equal()
         throw new Error("not implemented")
     })
 

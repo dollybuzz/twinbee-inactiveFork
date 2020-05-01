@@ -1,4 +1,5 @@
 const clientRepo = require('../repositories/clientRepo.js');
+const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const Client = require('../domain/entity/client.js');
 //id, name, location, remainingHours, email, chargebeeObj, makers)
 class ClientService {
@@ -15,6 +16,9 @@ class ClientService {
         return clients;
     }
 
+    async createClient(id, name, location, remainingHours, email, chargebeeObj, makers){
+        return new Client(id, name, location, remainingHours, email, chargebeeObj, makers)
+    }
 
 
     /**

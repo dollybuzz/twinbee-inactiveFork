@@ -22,6 +22,8 @@ class TimeSheetRepository {
         })
     }
 
+
+
     deleteSheet(id) {
         let sql = "UPDATE time_sheet SET start_time = '00:00:00', end_time = '00:00:00', " +
             "occupation = 'removedByAdmin' WHERE id = ?";

@@ -28,6 +28,7 @@
     "mysql": "^2.18.1",
     "nodemailer": "^6.4.6",
     "nodemon": "^2.0.3",
+    "request": "^2.88.2",
     "sinon": "^9.0.2"
   }
 }

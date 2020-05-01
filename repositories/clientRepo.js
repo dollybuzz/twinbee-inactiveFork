@@ -1,4 +1,5 @@
 const {query} = require('./repoMaster');
+const request = require('request');
 class ClientRepository{
     constructor(){};
     
@@ -20,6 +21,9 @@ class ClientRepository{
             if (err) throw err;
         })
     }
+
+
+
 
     deleteClient(id){
         let sql = 'DELETE FROM client WHERE id = ?';
