@@ -135,6 +135,12 @@ describe('Client Service Test', function () {
         });
     })
 
+    it("Should get all makers for a given client (and only makers who work with the client) by client id", function () {
+
+
+        let actual = clientService.getMakersForClient(1)
+    })
+
 
 
 

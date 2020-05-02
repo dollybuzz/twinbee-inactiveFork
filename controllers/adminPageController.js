@@ -32,14 +32,5 @@ module.exports ={
         else if (req.body.userType == "client"){
             res.redirect('/client')
         }
-    },
-    getAllClients: async (req, res)=>{
-        res.send(await clientService.getAllClients());
-    },
-    getAllMakers: async (req, res)=> {
-        res.send(await makerService.getAllMakers());
-    },
-    getAllTimeSheets: async(req, res)=>{
-        res.send(await timeSheetService.getAllTimeSheets());
     }
 }
