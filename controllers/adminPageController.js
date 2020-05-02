@@ -8,7 +8,7 @@ module.exports ={
             {link: "", text: "Main", id:"main"},
             {link: "", text: "Manage Clients", id:"manageClients"},
             {link: "", text: "Manage Makers", id: "manageMakers"},
-            {link: "", text: "Review Timesheets", id:"reviewTimesheets"}
+            {link: "", text: "Review TimeSheets", id:"reviewTimeSheets"}
         ]
         let footerLinks = [
             {link: "/admin", text: "Main", id:"main"},

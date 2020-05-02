@@ -34,7 +34,7 @@ let navMapper = {
             })
         }, 300)
     },
-    reviewTimesheets: function () {
+    reviewTimeSheets: function () {
         showSheets();
         setTimeout( function () {
             $(".sheetRow").click(function () {
@@ -138,7 +138,7 @@ function showSheets(){
         "    </table>\n" +
         "</div>")
     $.ajax({
-        url: "/api/getAllTimesheets",
+        url: "/api/getAllTimeSheets",
         method: "post",
         data: {
             token: "TODOImplementRealToken"
@@ -177,10 +177,27 @@ function showSheets(){
 }
 
 $(document).ready(function () {
+<<<<<<< HEAD
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
     })
 
 
+=======
+
+    $(".navItem").click(function (e) {
+        navMapper[e.target.id]();
+    });
+
+    $(".navItem").hover(function () {
+        $(this).css("color", '#d9ad57');
+        $(this).css("font-style", 'italic');
+    });
+
+    $(".navItem").on("mouseleave", function() {
+        $(this).css("color", 'white');
+        $(this).css("font-style", 'normal');
+    });
+>>>>>>> 1094d95293dcffb0a12a294b7fa962747d701ca5
 
 })

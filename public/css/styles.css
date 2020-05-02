@@ -33,12 +33,6 @@ nav {
     padding: 10px;
 }
 
-nav:hover {
-    text-decoration: none;
-    color: #d9ad57;
-    font-style: italic;
-}
-
 body a {
     text-align: center;
     color: #314258;
