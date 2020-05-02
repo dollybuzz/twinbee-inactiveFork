@@ -177,13 +177,10 @@ function showSheets(){
 }
 
 $(document).ready(function () {
-<<<<<<< HEAD
+
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
     })
-
-
-=======
 
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
@@ -198,6 +195,5 @@ $(document).ready(function () {
         $(this).css("color", 'white');
         $(this).css("font-style", 'normal');
     });
->>>>>>> 1094d95293dcffb0a12a294b7fa962747d701ca5
 
 })
