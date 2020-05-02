@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = class Client{
 
     constructor(id, name, location, remainingHours, email, chargebeeObj, makers){
@@ -9,5 +10,7 @@ module.exports = class Client{
         this.remainingHours = remainingHours;
         this.email = email;
         this.makers = makers;
+
+
     }
 }

@@ -74,6 +74,14 @@ class ClientRepository{
             result = [];});
         return result;
     }
+    async getClientIdByEmail(email){
+        let sql = 'SELECT id FROM client WHERE email = ?';
+        let sqlParam = [email];
+        let result = await query(sql, sqlParam).catch(e =>{
+            console.log(e);
+            result = [];});
+        return result;
+    }
     async getClientNameById(id){
         let sql = 'SELECT name FROM client WHERE id = ?';
         let sqlParam = [id];

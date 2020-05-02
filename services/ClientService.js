@@ -23,6 +23,7 @@ class ClientService {
     }
 
     async createClient(id, name, location, remainingHours, email, chargebeeObj, makers){
+        clientRepo
         return new Client(id, name, location, remainingHours, email, chargebeeObj, makers)
     }
 

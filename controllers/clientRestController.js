@@ -1,9 +1,10 @@
 const clientRepo = require('../repositories/clientRepo.js');
 const clientService = require('../services/ClientService.js');
 
+
+//TODO Add validation befre action
 module.exports = {
     getClientById: async (req, res) => {
-        console.log(req);
         let id = req.query.id;
         let clients = await clientRepo.getAllClients();
 
@@ -14,6 +15,12 @@ module.exports = {
             }
         }
         res.send(client);
+    },
+
+    createClient: (req, res) =>{
+
+        clientService.createClient()
+
     },
 
     getAllClients: async (req, res) => {
