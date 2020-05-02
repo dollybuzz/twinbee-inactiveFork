@@ -21,9 +21,9 @@ const maker2 = {id: '2', firstName: 'firstName2', lastName: 'lastName2', email: 
 const maker3 = {id: '3', firstName: 'firstName3', lastName: 'lastName3', email: 'email3', clients: null, chargebeeObj: null};
 
 
-const client1 = new Client('1', 'name1', 'loc1', 'rem1', 'em1', null, null);
-const client2 = new Client('2', 'name2', 'loc2', 'rem2', 'em2', null, null);
-const client3 = new Client('3', 'name3', 'loc3', 'rem3', 'em3', null, null);
+const client1 = new Client('1', 'name1', 'loc1', 'rem1', 'client1@twinbee.com', null, null);
+const client2 = new Client('2', 'name2', 'loc2', 'rem2', 'client2@twinbee.com', null, null);
+const client3 = new Client('3', 'name3', 'loc3', 'rem3', 'client3@twinbee.com', null, null);
 
 describe('Client Service Test', function () {
 
@@ -37,20 +37,20 @@ describe('Client Service Test', function () {
                     name: "name1",
                     location: "loc1",
                     remaining_hours: 'rem1',
-                    email: 'em1'
+                    email: 'client1@twinbee.com'
 
                 },{
                     id: '2',
                     name: "name2",
                     location: "loc2",
                     remaining_hours: 'rem2',
-                    email: 'em2'
+                    email: 'client2@twinbee.com'
                 },{
                     id: '3',
                     name: "name3",
                     location: "loc3",
                     remaining_hours: 'rem3',
-                    email: 'em3'
+                    email: 'client3@twinbee.com'
                 }
             ];});
 
@@ -62,7 +62,7 @@ describe('Client Service Test', function () {
                     name: 'name1',
                     location: 'loc1',
                     remaining_hours: 'rem1',
-                    email: 'em1'
+                    email: 'client1@twinbee.com'
                 };
         })
     });
@@ -79,7 +79,7 @@ describe('Client Service Test', function () {
                     id: '1',
                     name: 'clientName',
                     remainingHours: '20',
-                    email: 'clientEmail',
+                    email: 'client3@twinbee.com',
                     chargebeeObj: null,
                     makers: null
                 });
@@ -93,7 +93,7 @@ describe('Client Service Test', function () {
                 id: '1',
                 name: 'clientName',
                 remainingHours: '20',
-                email: 'clientEmail',
+                email: 'client3@twinbee.com',
                 chargebeeObj: null,
                 makers: null
             });
@@ -145,7 +145,11 @@ describe('Client Service Test', function () {
         expect(actual).to.deep.equal(client1);
     })
 
-    it("Should return the correct chargebee object for a client given the client's id", function () {
-        throw new Error("not implemented")
+    it("Should return the correct chargebee object for a client given the client object", async function () {
+        let client = client1;
+        clientService.getChargebeeObjForClient(client, function (cbObj) {
+            client.chargebeeObj = cbObj;
+            expect(client.email).to.equal(client.chargebeeObj.email);
+        });
     })
 })

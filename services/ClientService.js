@@ -2,7 +2,7 @@ const clientRepo = require('../repositories/clientRepo.js');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const Client = require('../domain/entity/client.js');
 const request = require('request');
-
+const chargebee = require('chargebee');
 
 //id, name, location, remainingHours, email, chargebeeObj, makers)
 
@@ -84,8 +84,25 @@ class ClientService {
         })
     };
 
-    async getChargebeeObjFor(id){
-        return null;
+    getChargebeeObjForClient(client, fn){
+        setTimeout(function () {
+        }, 900)
+        chargebee.configure({site : "freedom-makers-test",
+            api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"})
+        chargebee.customer.list({
+        }).request(function(error,result) {
+            if(error){
+                //handle error
+                console.log(error);
+            }else{
+                for(var i = 0; i < result.list.length;i++){
+                    var entry=result.list[i]
+                    if (entry["email"] == client.email){
+                        fn(entry)
+                    }
+                }
+            }
+        });
     }
 }
 
