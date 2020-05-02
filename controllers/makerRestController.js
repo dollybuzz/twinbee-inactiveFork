@@ -19,6 +19,5 @@ module.exports ={
                 maker.chargebeeObj, maker.clients);
             res.send(maker);
         }
-
     }
 }
