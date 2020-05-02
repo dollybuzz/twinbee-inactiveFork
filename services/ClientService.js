@@ -9,6 +9,8 @@ const request = require('request');
 
 class ClientService {
     constructor(){};
+
+
     //TODO: handle chargebee, maker integration
     async getAllClients(){
         let clients = [];
@@ -30,7 +32,8 @@ class ClientService {
         for (var i = 0; i < clients.length; ++i){
             if (clients[i].id == id)
                 return new Client(clients[i].id, clients[i].name, clients[i].location,
-                    clients[i].remainingHours, clients[i].email, this.getChargebeeObjFor(id), this.getMakersForClient(id));
+                    clients[i].remainingHours, clients[i].email, await this.getChargebeeObjFor(id),
+                    await this.getMakersForClient(id));
         }
         return 'not found';
     }
@@ -41,7 +44,7 @@ class ClientService {
      */
     async getSheetsByClient(id, fn){
         let clientSheets = [];
-        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllSheets`, function (err, response, body) {
+        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`, function (err, response, body) {
             if (err){console.log(err)}
             let sheets = JSON.parse(body);
             for (var i = 0; i < sheets.length; ++i){
@@ -54,7 +57,7 @@ class ClientService {
     }
 
     async getMakersForClient(id, fn){
-        return [];
+        return null;
     }
     async getChargebeeObjFor(id){
         return null;

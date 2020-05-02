@@ -61,30 +61,6 @@ describe('Client Service Test', function () {
 
     beforeEach(function () {
 
-        let getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
-            .callsFake(()=>{
-                return [
-                    {
-                        id: 1,
-                        first_name: 'first1',
-                        last_name: 'last1',
-                        email: 'email1'
-                    },
-                    {
-                        id: 2,
-                        first_name: 'first2',
-                        last_name: 'last2',
-                        email: 'email2'
-                    },
-                    {
-                        id: 3,
-                        first_name: 'first3',
-                        last_name: 'last3',
-                        email: 'email3'
-                    },
-                ]
-            })
-        
         let getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
             .callsFake(()=>{return [
                 {
@@ -150,7 +126,7 @@ describe('Client Service Test', function () {
 
     it("Should get all sheets for a given client by client id", async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllSheets')
+            .get('/api/getAllTimesheets')
             .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
 
         clientService.getSheetsByClient(1, function (sheets) {
@@ -161,7 +137,7 @@ describe('Client Service Test', function () {
 
     it("Should get makers assigned to a given client by client id", async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllSheets')
+            .get('/api/getAllTimesheets')
             .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
 
         clientService.getMakersForClient(1, function (makers) {
