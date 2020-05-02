@@ -2,6 +2,12 @@ const makerRepo = require('../repositories/makerRepo.js');
 const makerService = require('../services/makerService.js');
 
 module.exports ={
+    getAllMakers: async (req, res) => {
+        console.log(req);
+        let makers = await makerRepo.getAllMakers();
+        res.send(makers);
+    },
+
     getMakerById: async (req, res)=>{
         console.log(req)
         let id = req.query.id;

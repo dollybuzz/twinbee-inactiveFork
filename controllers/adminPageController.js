@@ -1,7 +1,3 @@
-const clientService = require('../services/ClientService.js');
-const makerService = require('../services/MakerService.js');
-const timeSheetService = require('../services/timeSheetService.js');
-
 module.exports ={
     renderLanding: (req, res)=>{
         let headerImageActual = {

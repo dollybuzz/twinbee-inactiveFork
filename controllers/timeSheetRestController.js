@@ -2,6 +2,12 @@ const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const timeSheetService = require('../services/timeSheetService.js');
 
 module.exports = {
+    getAllTimeSheets: async (req,res) => {
+        console.log(req);
+        let timeSheets = await timeSheetRepo.getAllSheets();
+        res.send(timeSheets);
+    },
+
     getTimeSheetByClientId: async (req, res) => {
         console.log(req);
         let id = req.query.id;

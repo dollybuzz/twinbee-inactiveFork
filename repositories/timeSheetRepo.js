@@ -70,5 +70,4 @@ class TimeSheetRepository {
     }
 }
 
-
 module.exports = new TimeSheetRepository();
