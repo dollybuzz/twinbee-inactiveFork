@@ -43,25 +43,11 @@ app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByCli
 app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
 
 (async function() {
-    chargebee.configure({site : "freedom-makers-test",
-        api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"});
-
-    chargebee.customer.list({
-    }).request(function(error,result) {
-        if(error){
-            //handle error
-            console.log(error);
-        }else{
-            for(var i = 0; i < result.list.length;i++){
-                var entry=result.list[i]
-                console.log(entry);
-                var customer = entry.customer;
-                var card = entry.card;
-            }
-        }
+    request(`http://${process.env.IP}:${process.env.PORT}/api/getAllClients`,
+        function (err, response, body) {
+        if (err){console.log(err)}
+        let realBody = JSON.parse(body);
     });
-
-
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
