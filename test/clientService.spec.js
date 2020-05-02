@@ -145,15 +145,4 @@ describe('Client Service Test', function () {
     it("Should return the correct chargebee object for a client given the client's id", function () {
         throw new Error("not implemented")
     })
-
-    it("Should return a list of the client's makers given the client's id", function () {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('getAllMakers')
-            .reply(200, [maker1, maker2, maker3]);
-
-
-        let actual = clientService.getMakersForClient(1);
-        expect(actual).to.deep.equal([maker1, maker2]);
-    })
-
 })

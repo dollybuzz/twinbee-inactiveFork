@@ -10,7 +10,5 @@ module.exports = class Client{
         this.remainingHours = remainingHours;
         this.email = email;
         this.makers = makers;
-
-
     }
 }
