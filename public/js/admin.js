@@ -60,7 +60,7 @@ function showClients(){
         "</div>")
     $.ajax({
         url: "/api/getAllClients",
-        method: "post",
+        method: "get",
         data: {
             token: "TODOImplementRealToken"
         },
@@ -101,7 +101,7 @@ function showMakers(){
         "</div>")
     $.ajax({
         url: "/api/getAllMakers",
-        method: "post",
+        method: "get",
         data: {
             token: "TODOImplementRealToken"
         },
@@ -139,7 +139,7 @@ function showSheets(){
         "</div>")
     $.ajax({
         url: "/api/getAllTimeSheets",
-        method: "post",
+        method: "get",
         data: {
             token: "TODOImplementRealToken"
         },
@@ -181,10 +181,6 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
     })
-
-    $(".navItem").click(function (e) {
-        navMapper[e.target.id]();
-    });
 
     $(".navItem").hover(function () {
         $(this).css("color", '#d9ad57');
