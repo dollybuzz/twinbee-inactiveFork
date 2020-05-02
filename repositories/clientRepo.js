@@ -1,9 +1,10 @@
 const {query} = require('./repoMaster');
 const request = require('request');
-class ClientRepository{
-    constructor(){};
-    
-    createClient(name, location, remainingHours, email){
+class ClientRepository {
+    constructor() {
+    };
+
+    createClient(name, location, remainingHours, email) {
         let sql = 'INSERT INTO client(name, location, remaining_hours, email) ' +
             'VALUES (?, ?, ?, ?)';
         let sqlParams = [name, location, remainingHours, email];
@@ -12,7 +13,7 @@ class ClientRepository{
         })
     }
 
-    updateClient(id, name, location, remainingHours, email){
+    updateClient(id, name, location, remainingHours, email) {
         let sql = 'UPDATE client ' +
             'SET name = ?, location = ?, remaining_hours = ?, email = ? ' +
             'WHERE id = ?';
@@ -23,9 +24,7 @@ class ClientRepository{
     }
 
 
-
-
-    deleteClient(id){
+    deleteClient(id) {
         let sql = 'DELETE FROM client WHERE id = ?';
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
@@ -33,7 +32,7 @@ class ClientRepository{
         })
     }
 
-    decrementHoursClient(id, hoursToSubtract){
+    decrementHoursClient(id, hoursToSubtract) {
         let sql = 'UPDATE client ' +
             'SET remaining_hours = remaining_hours - ? ' +
             'WHERE client.id = ?';
@@ -43,16 +42,17 @@ class ClientRepository{
         })
     }
 
-    async getAllClients(){
+    async getAllClients() {
         let sql = 'SELECT * FROM client';
         let sqlParam = [];
-        let result = await query(sql, sqlParam).catch(e =>{
+        let result = await query(sql, sqlParam).catch(e => {
             console.log(e);
-            result = [];});
+            result = [];
+        });
         return result;
     }
 
-    async getClientsByMaker(makerId){
+    async getClientsByMaker(makerId) {
         let sql = 'SELECT * ' +
             'FROM client ' +
             'JOIN time_sheet ON client.id = time_sheet.client_id ' +
@@ -60,35 +60,53 @@ class ClientRepository{
             'GROUB BY client_id ' +
             'ORDER BY end_time DESC';
         let sqlParams = [makerId];
-        let result = await query(sql, sqlParam).catch(e =>{
+        let result = await query(sql, sqlParam).catch(e => {
             console.log(e);
-            result = [];});
+            result = [];
+        });
         return result;
     }
 
-    async getClientIdByName(name){
+    async getClientIdByName(name) {
         let sql = 'SELECT id FROM client WHERE name = ?';
         let sqlParam = [name];
-        let result = await query(sql, sqlParam).catch(e =>{
+        let result = await query(sql, sqlParam).catch(e => {
             console.log(e);
-            result = [];});
+            result = [];
+        });
         return result;
     }
-    async getClientIdByEmail(email){
+
+    async getClientIdByEmail(email) {
         let sql = 'SELECT id FROM client WHERE email = ?';
         let sqlParam = [email];
-        let result = await query(sql, sqlParam).catch(e =>{
+        let result = await query(sql, sqlParam).catch(e => {
             console.log(e);
-            result = [];});
+            result = [];
+        });
         return result;
     }
-    async getClientNameById(id){
+
+    async getClientNameById(id) {
         let sql = 'SELECT name FROM client WHERE id = ?';
         let sqlParam = [id];
-        let result = await query(sql, sqlParam).catch(e =>{
+        let result = await query(sql, sqlParam).catch(e => {
             console.log(id);
-            result = [];});
+            result = [];
+        });
         return result;
+    }
+
+    async getClientById(id) {
+
+        let sql = 'SELECT * FROM client WHERE id = ?';
+        let sqlParam = [id];
+        let result = await query(sql, sqlParam).catch(e => {
+            console.log(id);
+            result = [];
+        });
+        return result;
+
     }
 }
 

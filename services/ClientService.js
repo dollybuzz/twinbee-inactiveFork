@@ -22,21 +22,19 @@ class ClientService {
         return clients;
     }
 
-    async createClient(id, name, location, remainingHours, email, chargebeeObj, makers){
-
+    async createNewClient(name, location, remainingHours, email, chargebeeObj, makers){
+        clientRepo.createClient(name, location, remainingHours, email);
+        let id = clientRepo.getClientIdByEmail(email);
         return new Client(id, name, location, remainingHours, email, chargebeeObj, makers)
     }
 
 
+    //TODO integrate chargebee and makers
     async getClientById(id){
-        let clients = await  this.getAllClients();
-        for (var i = 0; i < clients.length; ++i){
-            if (clients[i].id == id)
-                return new Client(clients[i].id, clients[i].name, clients[i].location,
-                    clients[i].remainingHours, clients[i].email, await this.getChargebeeObjFor(id),
-                    await this.getMakersForClient(id));
-        }
-        return 'not found';
+        let clientData = clientRepo.getClientById(id);
+        let client = new Client(clientData.id, clientData.name, clientData.location,
+            clientData.remaining_hours, clientData.email, null, null);
+        return client;
     }
     /**
      * Retrieves time all time sheets for a given client.

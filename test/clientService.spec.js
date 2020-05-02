@@ -1,51 +1,20 @@
 const sinon = require('sinon');
 const assert = require('assert');
 const {expect} = require('chai');
-const makerRepo = require('../repositories/makerRepo.js');
 const clientRepo = require('../repositories/clientRepo.js');
-const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const clientService = require('../services/clientService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const Client = require('../domain/entity/client.js');
-const nock = require('nock')
-const request = require('request')
-
-
-const timeSheetExtra1 = {id:1, first_name:'first', last_name: 'last', email: 'email',
-    id: 1, maker_id: 1, client_id: 1, hourly_rate: 1.00, start_time: '2020-04-24 22:22:22',
-    end_time: '2020-04-24 23:23:23', occupation:'worker', id: 1, location:'usa',
-    remaining_hours: 20.00, email: 'clientEmail'};
-const timeSheetExtra2 = {id:2, first_name:'first', last_name: 'last', email: 'email',
-        id: 1, maker_id: 1, client_id: 2, hourly_rate: 1.00, start_time: '2020-04-24 22:22:22',
-    end_time: '0000-00-00 00:00:00', occupation:'worker', id: 1, location:'usa',
-    remaining_hours: 20.00, email: 'clientEmail'};
-const timeSheetExtra3 = {id:3, first_name:'first', last_name: 'last', email: 'email',
-    id: 1, maker_id: 1, client_id: 3, hourly_rate: 1.00, start_time: '2020-04-24 22:22:22',
-    end_time: '2020-04-24 23:23:23', occupation:'worker', id: 1, location:'usa',
-    remaining_hours: 20.00, email: 'clientEmail'};
-const timeSheetExtra4 = {id:4, first_name:'first', last_name: 'last', email: 'email',
-    id: 1, maker_id: 1, client_id: 1, hourly_rate: 1.00, start_time: '2019-04-24 22:22:22',
-    end_time: '2019-04-24 23:23:23', occupation:'worker', id: 1, location:'usa',
-    remaining_hours: 20.00, email: 'clientEmail'};
-const timeSheetExtra5 = {id:5, first_name:'first', last_name: 'last', email: 'email',
-    id: 1, maker_id: 1, client_id: 1, hourly_rate: 1.00, start_time: '2019-04-24 22:22:22',
-    end_time: '2019-04-24 23:23:23', occupation:'worker', id: 1, location:'usa',
-    remaining_hours: 20.00, email: 'clientEmail'};
-
-const timeSheetBasic1 = {id: '1', maker_id: 1, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-24 22:22:22',
-                        end_time: '0000-00-00 00:00:00', occupation: 'worker'}
-const timeSheetBasic2 = {id: '2', maker_id: 1, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-23 22:22:22',
-                        end_time: '2019-04-23 23:23:23', occupation: 'worker'}
-const timeSheetBasic3 = {id: '3', maker_id: 2, client_id: 2, hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
-                        end_time: '2019-04-22 23:23:23', occupation: 'worker'}
+const nock = require('nock');
+const request = require('request');
 
 const timeSheetObject1 = {id: '1',makerId: '1', email: 'email1', hourlyRate: 'hourlyRate1',
-    clientId: '1', timeIn: '2019-04-23 22:22:22', timeOut: '0000-00-00 00:00:00'}
+    clientId: '1', timeIn: '2019-04-23 22:22:22', timeOut: '0000-00-00 00:00:00'};
 const timeSheetObject2 = {id: '2',makerId: '2', email: 'email2', hourlyRate: 'hourlyRate2',
-    clientId: '1', timeIn: '2019-04-23 22:22:22', timeOut: '2019-04-22 23:23:23'}
+    clientId: '1', timeIn: '2019-04-23 22:22:22', timeOut: '2019-04-22 23:23:23'};
 const timeSheetObject3 = {id: '3',makerId: '3', email: 'email3', hourlyRate: 'hourlyRate3',
-    clientId: '2', timeIn: '2019-04-23 22:22:22', timeOut: '2019-04-22 23:23:23'}
+    clientId: '2', timeIn: '2019-04-23 22:22:22', timeOut: '2019-04-22 23:23:23'};
 
 const maker1 = {id: '1', firstName: 'firstName1', lastName: 'lastName1', email: 'email1', clients: null, chargebeeObj: null};
 const maker2 = {id: '2', firstName: 'firstName2', lastName: 'lastName2', email: 'email2', clients: null, chargebeeObj: null};
@@ -85,10 +54,17 @@ describe('Client Service Test', function () {
                 }
             ];});
 
-        let getAllSheetsStub = sinon.stub(timeSheetRepo, 'getAllSheets')
+        let getByIdStub = sinon.stub(clientRepo, 'getClientById')
             .callsFake(()=>{
-                return [timeSheetBasic1, timeSheetBasic2, timeSheetBasic3];
-            })
+                return {
+
+                    id: '1',
+                    name: 'name1',
+                    location: 'loc1',
+                    remaining_hours: 'rem1',
+                    email: 'em1'
+                };
+        })
     });
 
     afterEach(function () {
@@ -106,7 +82,7 @@ describe('Client Service Test', function () {
                     email: 'clientEmail',
                     chargebeeObj: null,
                     makers: null
-                })
+                });
 
 
         request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`, function (err, response, body) {
@@ -120,7 +96,7 @@ describe('Client Service Test', function () {
                 email: 'clientEmail',
                 chargebeeObj: null,
                 makers: null
-            })
+            });
         });
     })
 
@@ -157,13 +133,13 @@ describe('Client Service Test', function () {
     it('Should grab only the client specified by id', async function () {
         let actual = await clientService.getClientById(1);
 
-        expect(actual).to.deep.equal(client1)
+        expect(actual).to.deep.equal(client1);
     })
 
     it('Should grab only the sheets for the specified client (by id)', async function () {
         let actual = await clientService.getClientById(1);
 
-        expect(actual).to.deep.equal(client1)
+        expect(actual).to.deep.equal(client1);
     })
 
     it("Should return the correct chargebee object for a client given the client's id", function () {
@@ -171,10 +147,13 @@ describe('Client Service Test', function () {
     })
 
     it("Should return a list of the client's makers given the client's id", function () {
-        
-        let actual = clientService.getMakersForClient(1)
-        expect(actual).to.equal()
-        throw new Error("not implemented")
+        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('getAllMakers')
+            .reply(200, [maker1, maker2, maker3]);
+
+
+        let actual = clientService.getMakersForClient(1);
+        expect(actual).to.deep.equal([maker1, maker2]);
     })
 
 })
