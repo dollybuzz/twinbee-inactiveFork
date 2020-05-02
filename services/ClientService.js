@@ -8,11 +8,12 @@ const request = require('request');
 
 
 class ClientService {
-    constructor(){};
+    constructor() {
+    };
 
 
     //TODO: handle chargebee, maker integration
-    async getAllClients(){
+    async getAllClients() {
         let clients = [];
         let repoResult = await clientRepo.getAllClients();
         repoResult.forEach(item => {
@@ -22,7 +23,7 @@ class ClientService {
         return clients;
     }
 
-    async createNewClient(name, location, remainingHours, email, chargebeeObj, makers){
+    async createNewClient(name, location, remainingHours, email, chargebeeObj, makers) {
         clientRepo.createClient(name, location, remainingHours, email);
         let id = clientRepo.getClientIdByEmail(email);
         return new Client(id, name, location, remainingHours, email, chargebeeObj, makers)
@@ -30,24 +31,27 @@ class ClientService {
 
 
     //TODO integrate chargebee and makers
-    async getClientById(id){
+    async getClientById(id) {
         let clientData = clientRepo.getClientById(id);
         let client = new Client(clientData.id, clientData.name, clientData.location,
             clientData.remaining_hours, clientData.email, null, null);
         return client;
     }
+
     /**
      * Retrieves time all time sheets for a given client.
      * @param id    - id of the desired client
      * @returns {Promise<[]>} containing time_sheet objects
      */
-    async getSheetsByClient(id, fn){
+    async getSheetsByClient(id, fn) {
         let clientSheets = [];
         request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`, function (err, response, body) {
-            if (err){console.log(err)}
+            if (err) {
+                console.log(err)
+            }
             let sheets = JSON.parse(body);
-            for (var i = 0; i < sheets.length; ++i){
-                if (sheets[i].clientId == id){
+            for (var i = 0; i < sheets.length; ++i) {
+                if (sheets[i].clientId == id) {
                     clientSheets.push(sheets[i]);
                 }
             }
@@ -55,13 +59,34 @@ class ClientService {
         });
     }
 
-    async getMakersForClient(id, fn){
-        return null;
-    }
+    async getMakersForClient(id, fn) {
+        let clientMakers = [];
+        let me = this;
+        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`, function (err, response, body) {
+            if (err) {
+                console.log(err)
+            }
+            let makers = JSON.parse(body);
+            let makersMap = {};
+            let foundIds = {};
+            for (var i = 0; i < makers.length; ++i) {
+                makersMap[makers[i].id] = makers[i];
+            }
+            me.getSheetsByClient(id, function (sheets) {
+                for (var i = 0; i < sheets.length; ++i) {
+                    if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
+                        foundIds[sheets[i].makerId] = true;
+                        clientMakers.push(makersMap[sheets[i].makerId]);
+                    }
+                }
+                fn(clientMakers);
+            })
+        })
+    };
+
     async getChargebeeObjFor(id){
         return null;
     }
-
 }
 
 module.exports = new ClientService();

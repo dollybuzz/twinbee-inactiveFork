@@ -115,6 +115,9 @@ describe('Client Service Test', function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getAllTimesheets')
             .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
+        let scope2 = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllMakers')
+            .reply(200, [maker1, maker2, maker3]);
 
         clientService.getMakersForClient(1, function (makers) {
             expect(makers).to.deep.equal([maker1, maker2]);
