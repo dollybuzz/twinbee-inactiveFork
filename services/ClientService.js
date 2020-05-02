@@ -15,7 +15,6 @@ class ClientService {
         let repoResult = await clientRepo.getAllClients();
         repoResult.forEach(item => {
             let newObj = new Client(item.id, item.name, item.location, item.remaining_hours, item.email, null, null);
-
             clients.push(newObj);
         })
         return clients;
@@ -26,36 +25,6 @@ class ClientService {
     }
 
 
-    /**
-     * Retrieves time all time sheets for a given client.
-     * @param id    - id of the desired client
-     * @returns {Promise<[]>} containing time_sheet objects
-     */
-    async getSheetsByClient(id){
-        let sheets = [];
-
-        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllSheets`, function (err, response, body) {
-            if (err){console.log(err)}
-            let sheets = JSON.parse(body);
-
-
-        });
-
-        // get all sheets
-        // filter sheets by id
-        //
-
-
-        return sheets;
-    }
-
-    async getMakersForClient(id){
-        return [];
-    }
-    async getChargebeeObjFor(id){
-        return null;
-    }
-
     async getClientById(id){
         let clients = await  this.getAllClients();
         for (var i = 0; i < clients.length; ++i){
@@ -65,6 +34,33 @@ class ClientService {
         }
         return 'not found';
     }
+    /**
+     * Retrieves time all time sheets for a given client.
+     * @param id    - id of the desired client
+     * @returns {Promise<[]>} containing time_sheet objects
+     */
+    async getSheetsByClient(id, fn){
+        let clientSheets = [];
+        let name = clientRepo.getClientNameById(id);
+        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllSheets`, function (err, response, body) {
+            if (err){console.log(err)}
+            let sheets = JSON.parse(body);
+            for (var i = 0; i < sheets.length; ++i){
+                if (sheets[i].name == name){
+                    clientSheets.push(sheets[i]);
+                }
+            }
+            fn(sheets);
+        });
+    }
+
+    async getMakersForClient(id){
+        return [];
+    }
+    async getChargebeeObjFor(id){
+        return null;
+    }
+
 }
 
 module.exports = new ClientService();

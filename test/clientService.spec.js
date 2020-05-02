@@ -37,12 +37,12 @@ const timeSheetBasic1 = {id: 1, maker_id: 1, client_id: 1, hourly_rate: 20.00, s
                         end_time: '0000-00-00 00:00:00', occupation: 'worker'}
 const timeSheetBasic2 = {id: 2, maker_id: 1, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-23 22:22:22',
                         end_time: '2019-04-23 23:23:23', occupation: 'worker'}
-const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
+const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 2, hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
                         end_time: '2019-04-22 23:23:23', occupation: 'worker'}
 
-const client1 = new Client(1, 'name1', 'loc1', 'rem1', 'em1', null, null);
-const client2 = new Client(2, 'name2', 'loc2', 'rem2', 'em2', null, null);
-const client3 = new Client(3, 'name3', 'loc3', 'rem3', 'em3', null, null);
+const client1 = new Client('1', 'name1', 'loc1', 'rem1', 'em1', null, null);
+const client2 = new Client('2', 'name2', 'loc2', 'rem2', 'em2', null, null);
+const client3 = new Client('3', 'name3', 'loc3', 'rem3', 'em3', null, null);
 
 describe('Client Service Test', function () {
 
@@ -135,38 +135,14 @@ describe('Client Service Test', function () {
         });
     })
 
-    it("Should get all sheets for a given client by client id", function () {
-
+    it("Should get all sheets for a given client by client id", async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getAllSheets')
-            .reply(200, {[
-                id: '1',
-                name: 'clientName',
-                remainingHours: '20',
-                email: 'clientEmail',
-                chargebeeObj: null,
-                makers: null
-                ]
-            })
+            .reply(200, [timeSheetBasic1, timeSheetBasic2, timeSheetBasic3]);
 
-        let actual = clientService.getSheetsByClient(1)
-
-
-
-
-        request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`, function (err, response, body) {
-            if (err){console.log(err)}
-            let actual = JSON.parse(body);
-
-            expect(actual).to.deep.equal({
-                id: '1',
-                name: 'clientName',
-                remainingHours: '20',
-                email: 'clientEmail',
-                chargebeeObj: null,
-                makers: null
-            })
-        });
+        clientService.getSheetsByClient(1, function (sheets) {
+            expect(sheets).to.deep.equal([timeSheetBasic1, timeSheetBasic2]);
+        })
     })
 
 

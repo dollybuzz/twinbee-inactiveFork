@@ -11,9 +11,9 @@ module.exports = {
             if (clients[i].id == id) {
                 let client = await clientService.createClient(clients[i].id, clients[i].name, clients[i].remaining_hours,
                     clients[i].email, null, null);
-                res.send(client);
             }
         }
+        res.send(client);
     },
 
     getAllClients: async (req, res) => {
