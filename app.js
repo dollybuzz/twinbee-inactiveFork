@@ -42,10 +42,7 @@ app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByCli
 app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
 
 (async function() {
-    request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`, function (err, response, body) {
-        if (err){console.log(err)}
-        let realBody = JSON.parse(body);
-    });
+
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

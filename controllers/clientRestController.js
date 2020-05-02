@@ -14,5 +14,9 @@ module.exports = {
                 res.send(client);
             }
         }
+    },
+
+    getAllClients: async (req, res) => {
+        res.send(await clientService.getAllClients());
     }
 }

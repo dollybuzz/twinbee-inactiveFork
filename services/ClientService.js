@@ -1,7 +1,12 @@
 const clientRepo = require('../repositories/clientRepo.js');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const Client = require('../domain/entity/client.js');
+const request = require('request');
+
+
 //id, name, location, remainingHours, email, chargebeeObj, makers)
+
+
 class ClientService {
     constructor(){};
     //TODO: handle chargebee, maker integration
@@ -28,6 +33,18 @@ class ClientService {
      */
     async getSheetsByClient(id){
         let sheets = [];
+
+        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllSheets`, function (err, response, body) {
+            if (err){console.log(err)}
+            let sheets = JSON.parse(body);
+
+
+        });
+
+        // get all sheets
+        // filter sheets by id
+        //
+
 
         return sheets;
     }

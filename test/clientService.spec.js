@@ -135,10 +135,38 @@ describe('Client Service Test', function () {
         });
     })
 
-    it("Should get all makers for a given client (and only makers who work with the client) by client id", function () {
+    it("Should get all sheets for a given client by client id", function () {
+
+        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllSheets')
+            .reply(200, {[
+                id: '1',
+                name: 'clientName',
+                remainingHours: '20',
+                email: 'clientEmail',
+                chargebeeObj: null,
+                makers: null
+                ]
+            })
+
+        let actual = clientService.getSheetsByClient(1)
 
 
-        let actual = clientService.getMakersForClient(1)
+
+
+        request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`, function (err, response, body) {
+            if (err){console.log(err)}
+            let actual = JSON.parse(body);
+
+            expect(actual).to.deep.equal({
+                id: '1',
+                name: 'clientName',
+                remainingHours: '20',
+                email: 'clientEmail',
+                chargebeeObj: null,
+                makers: null
+            })
+        });
     })
 
 
