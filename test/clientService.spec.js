@@ -33,12 +33,24 @@ const timeSheetExtra5 = {id:5, first_name:'first', last_name: 'last', email: 'em
     end_time: '2019-04-24 23:23:23', occupation:'worker', id: 1, location:'usa',
     remaining_hours: 20.00, email: 'clientEmail'};
 
-const timeSheetBasic1 = {id: 1, maker_id: 1, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-24 22:22:22',
+const timeSheetBasic1 = {id: '1', maker_id: 1, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-24 22:22:22',
                         end_time: '0000-00-00 00:00:00', occupation: 'worker'}
-const timeSheetBasic2 = {id: 2, maker_id: 1, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-23 22:22:22',
+const timeSheetBasic2 = {id: '2', maker_id: 1, client_id: 1, hourly_rate: 20.00, start_time: '2019-04-23 22:22:22',
                         end_time: '2019-04-23 23:23:23', occupation: 'worker'}
-const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 2, hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
+const timeSheetBasic3 = {id: '3', maker_id: 2, client_id: 2, hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
                         end_time: '2019-04-22 23:23:23', occupation: 'worker'}
+
+const timeSheetObject1 = {id: '1',makerId: '1', email: 'email1', hourlyRate: 'hourlyRate1',
+    clientId: '1', timeIn: '2019-04-23 22:22:22', timeOut: '0000-00-00 00:00:00'}
+const timeSheetObject2 = {id: '2',makerId: '2', email: 'email2', hourlyRate: 'hourlyRate2',
+    clientId: '1', timeIn: '2019-04-23 22:22:22', timeOut: '2019-04-22 23:23:23'}
+const timeSheetObject3 = {id: '3',makerId: '3', email: 'email3', hourlyRate: 'hourlyRate3',
+    clientId: '2', timeIn: '2019-04-23 22:22:22', timeOut: '2019-04-22 23:23:23'}
+
+const maker1 = {id: '1', firstName: 'firstName1', lastName: 'lastName1', email: 'email1', clients: null, chargebeeObj: null};
+const maker2 = {id: '2', firstName: 'firstName2', lastName: 'lastName2', email: 'email2', clients: null, chargebeeObj: null};
+const maker3 = {id: '3', firstName: 'firstName3', lastName: 'lastName3', email: 'email3', clients: null, chargebeeObj: null};
+
 
 const client1 = new Client('1', 'name1', 'loc1', 'rem1', 'em1', null, null);
 const client2 = new Client('2', 'name2', 'loc2', 'rem2', 'em2', null, null);
@@ -48,6 +60,7 @@ describe('Client Service Test', function () {
 
 
     beforeEach(function () {
+
         let getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
             .callsFake(()=>{
                 return [
@@ -138,13 +151,23 @@ describe('Client Service Test', function () {
     it("Should get all sheets for a given client by client id", async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getAllSheets')
-            .reply(200, [timeSheetBasic1, timeSheetBasic2, timeSheetBasic3]);
+            .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
 
         clientService.getSheetsByClient(1, function (sheets) {
-            expect(sheets).to.deep.equal([timeSheetBasic1, timeSheetBasic2]);
+            expect(sheets).to.deep.equal([timeSheetObject1, timeSheetObject2]);
         })
     })
 
+
+    it("Should get makers assigned to a given client by client id", async function () {
+        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllSheets')
+            .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
+
+        clientService.getMakersForClient(1, function (makers) {
+            expect(makers).to.deep.equal([maker1, maker2]);
+        })
+    })
 
 
 

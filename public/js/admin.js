@@ -177,7 +177,10 @@ function showSheets(){
 }
 
 $(document).ready(function () {
-$(".navItem").click(function (e) {
-    navMapper[e.target.id]();
-})
+    $(".navItem").click(function (e) {
+        navMapper[e.target.id]();
+    })
+
+
+
 })

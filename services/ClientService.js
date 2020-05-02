@@ -41,20 +41,19 @@ class ClientService {
      */
     async getSheetsByClient(id, fn){
         let clientSheets = [];
-        let name = clientRepo.getClientNameById(id);
         request(`http://${process.env.IP}:${process.env.PORT}/api/getAllSheets`, function (err, response, body) {
             if (err){console.log(err)}
             let sheets = JSON.parse(body);
             for (var i = 0; i < sheets.length; ++i){
-                if (sheets[i].name == name){
+                if (sheets[i].clientId == id){
                     clientSheets.push(sheets[i]);
                 }
             }
-            fn(sheets);
+            fn(clientSheets);
         });
     }
 
-    async getMakersForClient(id){
+    async getMakersForClient(id, fn){
         return [];
     }
     async getChargebeeObjFor(id){

@@ -7,8 +7,8 @@ const TimeSheet = require('../domain/entity/timeSheet.js');
 class TimeSheetService {
     constructor(){};
 
-    async createTimeSheet(id, firstName, lastName, email, hourlyRate, client, timeIn, timeOut) {
-        return new TimeSheet(id, firstName, lastName, email, hourlyRate, client, timeIn, timeOut);
+    async createTimeSheet(id, makerId, email, hourlyRate, clientId, timeIn, timeOut) {
+        return new TimeSheet(id, makerId, email, hourlyRate, clientId, timeIn, timeOut);
     }
 
     async getOnlineMakers(){
