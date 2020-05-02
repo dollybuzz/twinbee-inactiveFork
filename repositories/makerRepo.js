@@ -78,50 +78,6 @@ class MakerRepository {
         return result;
     }
 
-    async getMakersByClientName(client) {
-        let sql = 'SELECT * ' +
-            'FROM maker ' +
-            'JOIN time_sheet ON maker.id = time_sheet.maker_id ' +
-            'JOIN client ON client.id = time_sheet.client_id ' +
-            'WHERE name = ? ' +
-            'GROUP BY maker.id';
-        let sqlParam = [client];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
-        return result;
-    }
-
-    async getMakersByClientName(client) {
-        let sql = 'SELECT * ' +
-            'FROM maker ' +
-            'JOIN time_sheet ON maker.id = time_sheet.maker_id ' +
-            'JOIN client ON client.id = time_sheet.client_id ' +
-            'WHERE name = ? ' +
-            'GROUP BY maker.id';
-        let sqlParam = [client];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
-        return result;
-    }
-
-    async getMakersByClientId(clientId) {
-        let sql = 'SELECT * ' +
-            'FROM maker ' +
-            'JOIN time_sheet ON maker.id = time_sheet.maker_id ' +
-            'JOIN client ON client.id = time_sheet.client_id ' +
-            'WHERE client_id = ? ' +
-            'GROUP BY maker.id';
-        let sqlParam = [client];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
-        return result;
-    }
 
     async getMakerIdByEmail(email) {
         let sql = 'SELECT id FROM maker WHERE email = ?';

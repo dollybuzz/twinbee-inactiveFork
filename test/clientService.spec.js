@@ -107,13 +107,10 @@ describe('Client Service Test', function () {
     });
 
 
-
-
     it ('Should grab a client via rest', function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getClient?id=1')
             .reply(200, {
-
                     id: '1',
                     name: 'clientName',
                     remainingHours: '20',
@@ -137,6 +134,9 @@ describe('Client Service Test', function () {
             })
         });
     })
+
+
+
 
     it('Should grab all clients',  async () => {
         let results =  await clientService.getAllClients();
