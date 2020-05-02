@@ -7,7 +7,8 @@ require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const Client = require('../domain/entity/client.js');
 const nock = require('nock');
-const request = require('request');
+const util = require('util');
+const request = util.promisify(require('request'));
 
 const timeSheetObject1 = {id: '1',makerId: '1', email: 'email1', hourlyRate: 'hourlyRate1',
     clientId: '1', timeIn: '2019-04-23 22:22:22', timeOut: '0000-00-00 00:00:00'};
@@ -72,24 +73,10 @@ describe('Client Service Test', function () {
     });
 
 
-    it ('Should grab a client via rest', function () {
+    it ('Should grab a client via rest', async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getClient?id=1')
             .reply(200, {
-                    id: '1',
-                    name: 'clientName',
-                    remainingHours: '20',
-                    email: 'client3@twinbee.com',
-                    chargebeeObj: null,
-                    makers: null
-                });
-
-
-        request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`, function (err, response, body) {
-            if (err){console.log(err)}
-            let actual = JSON.parse(body);
-
-            expect(actual).to.deep.equal({
                 id: '1',
                 name: 'clientName',
                 remainingHours: '20',
@@ -97,7 +84,24 @@ describe('Client Service Test', function () {
                 chargebeeObj: null,
                 makers: null
             });
+
+
+        let response = await request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`)
+            .catch(err => {
+                console.log(err)
+            })
+        let body = response.body;
+        let actual = JSON.parse(body);
+
+        expect(actual).to.deep.equal({
+            id: '1',
+            name: 'clientName',
+            remainingHours: '20',
+            email: 'client3@twinbee.com',
+            chargebeeObj: null,
+            makers: null
         });
+
     })
 
     it("Should get all sheets for a given client by client id", async function () {
@@ -105,9 +109,8 @@ describe('Client Service Test', function () {
             .get('/api/getAllTimesheets')
             .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
 
-        clientService.getSheetsByClient(1, function (sheets) {
-            expect(sheets).to.deep.equal([timeSheetObject1, timeSheetObject2]);
-        })
+        let sheets = await clientService.getSheetsByClient(1);
+        expect(sheets).to.deep.equal([timeSheetObject1, timeSheetObject2]);
     })
 
 
@@ -119,9 +122,9 @@ describe('Client Service Test', function () {
             .get('/api/getAllMakers')
             .reply(200, [maker1, maker2, maker3]);
 
-        clientService.getMakersForClient(1, function (makers) {
-            expect(makers).to.deep.equal([maker1, maker2]);
-        })
+        let makers = await clientService.getMakersForClient(1);
+        expect(makers).to.deep.equal([maker1, maker2]);
+
     })
 
 
@@ -145,11 +148,14 @@ describe('Client Service Test', function () {
         expect(actual).to.deep.equal(client1);
     })
 
-    it("Should return the correct chargebee object for a client given the client object", async function () {
+    it("INTEGRATION: Chargebee. Should return the correct chargebee object for a client given the client object",
+        async function () {
+
         let client = client1;
-        clientService.getChargebeeObjForClient(client, function (cbObj) {
-            client.chargebeeObj = cbObj;
-            expect(client.email).to.equal(client.chargebeeObj.email);
-        });
+        client.chargebeeObj = await clientService.getChargebeeObjForClient(client)
+        expect(client.email).to.equal(client.chargebeeObj.email);
+
+
     })
+
 })

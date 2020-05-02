@@ -1,7 +1,8 @@
 const clientRepo = require('../repositories/clientRepo.js');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const Client = require('../domain/entity/client.js');
-const request = require('request');
+const util = require('util');
+const request = util.promisify(require('request'));
 const chargebee = require('chargebee');
 
 //id, name, location, remainingHours, email, chargebeeObj, makers)
@@ -43,66 +44,76 @@ class ClientService {
      * @param id    - id of the desired client
      * @returns {Promise<[]>} containing time_sheet objects
      */
-    async getSheetsByClient(id, fn) {
+    async getSheetsByClient(id) {
         let clientSheets = [];
-        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`, function (err, response, body) {
-            if (err) {
+
+
+        let response = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
+            .catch(err => {
                 console.log(err)
+            });
+        let body = response.body;
+
+        let sheets = JSON.parse(body);
+        for (var i = 0; i < sheets.length; ++i) {
+            if (sheets[i].clientId == id) {
+                clientSheets.push(sheets[i]);
             }
-            let sheets = JSON.parse(body);
-            for (var i = 0; i < sheets.length; ++i) {
-                if (sheets[i].clientId == id) {
-                    clientSheets.push(sheets[i]);
-                }
-            }
-            fn(clientSheets);
-        });
+        }
+
+        return clientSheets;
+
     }
 
     async getMakersForClient(id, fn) {
         let clientMakers = [];
         let me = this;
-        request(`http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`, function (err, response, body) {
-            if (err) {
+        let response = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`)
+            .catch((err) => {
                 console.log(err)
+            });
+        let body = response.body;
+        let makers = JSON.parse(body);
+        let makersMap = {};
+        let foundIds = {};
+        for (var i = 0; i < makers.length; ++i) {
+            makersMap[makers[i].id] = makers[i];
+        }
+
+
+        let sheets = await this.getSheetsByClient(id);
+
+        for (var i = 0; i < sheets.length; ++i) {
+            if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
+                foundIds[sheets[i].makerId] = true;
+                clientMakers.push(makersMap[sheets[i].makerId]);
             }
-            let makers = JSON.parse(body);
-            let makersMap = {};
-            let foundIds = {};
-            for (var i = 0; i < makers.length; ++i) {
-                makersMap[makers[i].id] = makers[i];
-            }
-            me.getSheetsByClient(id, function (sheets) {
-                for (var i = 0; i < sheets.length; ++i) {
-                    if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
-                        foundIds[sheets[i].makerId] = true;
-                        clientMakers.push(makersMap[sheets[i].makerId]);
-                    }
-                }
-                fn(clientMakers);
-            })
-        })
+        }
+        return clientMakers;
+
     };
 
-    getChargebeeObjForClient(client, fn){
-        setTimeout(function () {
-        }, 900)
+    getChargebeeObjForClient(client){
         chargebee.configure({site : "freedom-makers-test",
             api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"})
-        chargebee.customer.list({
-        }).request(function(error,result) {
-            if(error){
-                //handle error
-                console.log(error);
-            }else{
-                for(var i = 0; i < result.list.length;i++){
-                    var entry=result.list[i]
-                    if (entry["email"] == client.email){
-                        fn(entry)
+
+        return new Promise((resolve, reject)=> {
+            chargebee.customer.list({
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    reject(error);
+                }else{
+                    for(var i = 0; i < result.list.length;i++){
+                        var entry=result.list[i].customer
+                        if (entry["email"] == client.email){
+                            resolve(entry);
+                        }
                     }
+                    reject(new Error('No client match in chargebee'));
                 }
-            }
-        });
+            });
+        })
     }
 }
 
