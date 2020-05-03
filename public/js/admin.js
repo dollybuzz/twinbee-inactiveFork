@@ -60,7 +60,7 @@ function showClients(){
         "</div>")
     $.ajax({
         url: "/api/getAllClients",
-        method: "post",
+        method: "get",
         data: {
             token: "TODOImplementRealToken"
         },
@@ -101,7 +101,7 @@ function showMakers(){
         "</div>")
     $.ajax({
         url: "/api/getAllMakers",
-        method: "post",
+        method: "get",
         data: {
             token: "TODOImplementRealToken"
         },
@@ -139,7 +139,7 @@ function showSheets(){
         "</div>")
     $.ajax({
         url: "/api/getAllTimeSheets",
-        method: "post",
+        method: "get",
         data: {
             token: "TODOImplementRealToken"
         },
@@ -177,17 +177,10 @@ function showSheets(){
 }
 
 $(document).ready(function () {
-<<<<<<< HEAD
+
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
     })
-
-
-=======
-
-    $(".navItem").click(function (e) {
-        navMapper[e.target.id]();
-    });
 
     $(".navItem").hover(function () {
         $(this).css("color", '#d9ad57');
@@ -198,6 +191,5 @@ $(document).ready(function () {
         $(this).css("color", 'white');
         $(this).css("font-style", 'normal');
     });
->>>>>>> 1094d95293dcffb0a12a294b7fa962747d701ca5
 
 })
