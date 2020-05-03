@@ -14,12 +14,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css"/>
 
 </head>
+
 <body>
 <header>
     <div id="landingLogo">
-        <img src = "<%=headerImg["src"]%>" alt="<%=headerImg["alt"]%>">
+        <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+        <div id="adminTitle">
+            <%=pageTitle["text"]%>
+        </div>
     </div>
 </header>
+
 <nav>
     <%if (typeof navItemsTop !== "undefined"){%>
         <% for (var i = 0; i < navItemsTop.length; ++i){%>

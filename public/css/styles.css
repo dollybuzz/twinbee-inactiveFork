@@ -14,15 +14,13 @@ body {
 
 #landingMain, #userMainContent {
     background-color: white;
-    padding-top: 20px;
-    padding-bottom: 20px;
 }
 
 
 #landingLogo {
     text-align: center;
     background-color: #e8ecef;
-    padding: 50px;
+    padding: 20px;
 }
 
 nav {
@@ -99,4 +97,13 @@ footer a {
 
 .thead {
     background-color: #a4b6ba;
+}
+
+#adminTitle {
+    font-size: 2em;
+    padding-top: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 }

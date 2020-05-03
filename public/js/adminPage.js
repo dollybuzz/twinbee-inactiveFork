@@ -248,6 +248,12 @@ $(document).ready(function () {
         $(this).css("font-style", 'normal');
     });
 
+    //shifts the landing logo
+    $("#actualImage").css("float", "left");
+    $("#landingLogo").css("height", "15rem");
+
+    //Main page tables
     setTimeout(showOnlineMakers());
+
 
 })

@@ -1,5 +1,8 @@
 module.exports ={
     renderLanding: (req, res)=>{
+        let headerTitle = {
+            text: "Administrator and Billing Portal"
+        };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
@@ -14,6 +17,6 @@ module.exports ={
             {link: "", text: "Report a problem", id: "reportProblem"}
         ]
 
-        res.render("admin", {headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("admin", {pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     }
 }
