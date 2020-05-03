@@ -14,8 +14,6 @@ module.exports = {
         //TODO integrate chargebee and makers
         let chargebeeObj = null;
         let makers = null;
-
-        console.log(req)
         clientService.createNewClient(req.body.name, req.body.location, req.body.remainingHours,
             req.body.email, chargebeeObj)
         res.end();
