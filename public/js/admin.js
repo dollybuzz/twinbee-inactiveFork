@@ -12,7 +12,7 @@ let navMapper = {
           })
           $(".clientRow").mouseenter(function () {
               $(this).css('transition', 'background-color 0.5s ease');
-              $(this).css('background-color', '#a4b6ba');
+              $(this).css('background-color', '#e8ecef');
           }).mouseleave(function () {
               $(this).css('background-color', 'white');
 
@@ -29,7 +29,7 @@ let navMapper = {
             })
             $(".makerRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#a4b6ba');
+                $(this).css('background-color', '#e8ecef');
             }).mouseleave(function () {
                 $(this).css('background-color', 'white');
 
@@ -46,7 +46,7 @@ let navMapper = {
             })
             $(".sheetRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#a4b6ba');
+                $(this).css('background-color', '#e8ecef');
             }).mouseleave(function () {
                 $(this).css('background-color', 'white');
 
@@ -70,7 +70,7 @@ function showClients(){
         dataType: "json",
         success: function (res, status) {
             $("#clientTable").append('\n' +
-                '        <thead class="thead-light">\n' +
+                '        <thead class="thead">\n' +
                 '            <th scope="col">#</th>\n' +
                 '            <th scope="col">Name</th>\n' +
                 '            <th scope="col">Location</th>\n' +
@@ -111,7 +111,7 @@ function showMakers(){
         dataType: "json",
         success: function (res, status) {
             $("#makerTable").append('\n' +
-                '        <thead class="thead-light">\n' +
+                '        <thead class="thead">\n' +
                 '            <th scope="col">#</th>\n' +
                 '            <th scope="col">First Name</th>\n' +
                 '            <th scope="col">Last Name</th>\n' +
@@ -149,7 +149,7 @@ function showSheets(){
         dataType: "json",
         success: function (res, status) {
             $("#sheetsTable").append('\n' +
-                '        <thead class="thead-light">\n' +
+                '        <thead class="thead">\n' +
                 '            <th scope="col">#</th>\n' +
                 '            <th scope="col">Maker ID</th>\n' +
                 '            <th scope="col">Client ID</th>\n' +
@@ -194,7 +194,7 @@ function showOnlineMakers() {
         dataType: "json",
         success: function (res, status) {
             $("#onlineTable").append('\n' +
-                '        <thead class="thead-light">\n' +
+                '        <thead class="thead">\n' +
                 '            <th scope="col">Maker ID</th>\n' +
                 '            <th scope="col">First Name</th>\n' +
                 '            <th scope="col">Last Name</th>\n' +
@@ -224,7 +224,7 @@ function showOnlineMakers() {
             })
             $(".onlineRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#a4b6ba');
+                $(this).css('background-color', '#e8ecef');
             }).mouseleave(function () {
                 $(this).css('background-color', 'white');
 

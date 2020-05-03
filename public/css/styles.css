@@ -96,3 +96,7 @@ footer a {
     margin-left: auto;
     margin-right: auto;
 }
+
+.thead {
+    background-color: #a4b6ba;
+}
