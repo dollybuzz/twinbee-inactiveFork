@@ -12,9 +12,9 @@ let navMapper = {
           })
           $(".clientRow").mouseenter(function () {
               $(this).css('transition', 'background-color 0.5s ease');
-              $(this).css('background-color', 'gray');
+              $(this).css('background-color', '#a4b6ba');
           }).mouseleave(function () {
-              $(this).css('background-color', '#f5f5f5');
+              $(this).css('background-color', 'white');
 
           })
       }, 300)
@@ -29,9 +29,9 @@ let navMapper = {
             })
             $(".makerRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', 'gray');
+                $(this).css('background-color', '#a4b6ba');
             }).mouseleave(function () {
-                $(this).css('background-color', '#f5f5f5');
+                $(this).css('background-color', 'white');
 
             })
         }, 300)
@@ -46,9 +46,9 @@ let navMapper = {
             })
             $(".sheetRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', 'gray');
+                $(this).css('background-color', '#a4b6ba');
             }).mouseleave(function () {
-                $(this).css('background-color', '#f5f5f5');
+                $(this).css('background-color', 'white');
 
             })
         }, 300)
@@ -70,7 +70,7 @@ function showClients(){
         dataType: "json",
         success: function (res, status) {
             $("#clientTable").append('\n' +
-                '        <thead class="thead-dark">\n' +
+                '        <thead class="thead-light">\n' +
                 '            <th scope="col">#</th>\n' +
                 '            <th scope="col">Name</th>\n' +
                 '            <th scope="col">Location</th>\n' +
@@ -111,7 +111,7 @@ function showMakers(){
         dataType: "json",
         success: function (res, status) {
             $("#makerTable").append('\n' +
-                '        <thead class="thead-dark">\n' +
+                '        <thead class="thead-light">\n' +
                 '            <th scope="col">#</th>\n' +
                 '            <th scope="col">First Name</th>\n' +
                 '            <th scope="col">Last Name</th>\n' +
@@ -149,7 +149,7 @@ function showSheets(){
         dataType: "json",
         success: function (res, status) {
             $("#sheetsTable").append('\n' +
-                '        <thead class="thead-dark">\n' +
+                '        <thead class="thead-light">\n' +
                 '            <th scope="col">#</th>\n' +
                 '            <th scope="col">Maker ID</th>\n' +
                 '            <th scope="col">Client ID</th>\n' +
@@ -194,7 +194,7 @@ function showOnlineMakers() {
         dataType: "json",
         success: function (res, status) {
             $("#onlineTable").append('\n' +
-                '        <thead class="thead-dark">\n' +
+                '        <thead class="thead-light">\n' +
                 '            <th scope="col">Maker ID</th>\n' +
                 '            <th scope="col">First Name</th>\n' +
                 '            <th scope="col">Last Name</th>\n' +
@@ -215,7 +215,21 @@ function showOnlineMakers() {
             $("#floor").html("Something went wrong!");
             //log, send error report
         }
-    })
+    }),
+
+        setTimeout( function () {
+            $(".onlineRow").click(function () {
+                let clientId = $(this).children()[0].innerHTML;
+                alert ("You selected client " + clientId)
+            })
+            $(".onlineRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#a4b6ba');
+            }).mouseleave(function () {
+                $(this).css('background-color', 'white');
+
+            })
+        }, 300)
 }
 
 $(document).ready(function () {
@@ -225,7 +239,7 @@ $(document).ready(function () {
     })
 
     $(".navItem").hover(function () {
-        $(this).css("color", '#d9ad57');
+        $(this).css("color", '#dbb459');
         $(this).css("font-style", 'italic');
     });
 
@@ -234,6 +248,6 @@ $(document).ready(function () {
         $(this).css("font-style", 'normal');
     });
 
-    showOnlineMakers();
+    setTimeout(showOnlineMakers());
 
 })
