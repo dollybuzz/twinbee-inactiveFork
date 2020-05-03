@@ -37,18 +37,14 @@ app.get("/api/getAllClients", clientRestController.getAllClients);
 app.get("/api/getAllMakers", makerRestController.getAllMakers);
 app.get("/api/getAllTimeSheets", timeSheetRestController.getAllTimeSheets);
 app.get("/api/getClient", clientRestController.getClientById);
-app.get("/api/createClient", clientRestController.createClient);
+app.post("/api/createClient", clientRestController.createClient);
 app.get("/api/getMaker", makerRestController.getMakerById);
 app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByClientId);
 app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
 app.get("/api/getOnlineMakers", makerRestController.getOnlineMakers);
 
 (async function() {
-    request(`http://${process.env.IP}:${process.env.PORT}/api/getAllClients`,
-        function (err, response, body) {
-        if (err){console.log(err)}
-        let realBody = JSON.parse(body);
-    });
+
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
