@@ -191,7 +191,7 @@ class ClientService {
                             resolve(entry);
                         }
                     }
-                    reject(/*TODO: Enable this when ready new Error('No client match in chargebee' */));
+                    reject(/*TODO: Enable this when ready new Error('No client match in chargebee' */);
                 }
             });
         })
