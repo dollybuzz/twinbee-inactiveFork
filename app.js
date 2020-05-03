@@ -38,6 +38,7 @@ app.get("/api/getAllMakers", makerRestController.getAllMakers);
 app.get("/api/getAllTimeSheets", timeSheetRestController.getAllTimeSheets);
 app.get("/api/getClient", clientRestController.getClientById);
 app.post("/api/createClient", clientRestController.createClient);
+app.post("/api/deleteClient", clientRestController.deleteClient);
 app.get("/api/getMaker", makerRestController.getMakerById);
 app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByClientId);
 app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
