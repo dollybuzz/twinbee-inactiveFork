@@ -5,6 +5,7 @@ const timeSheetService = require('./timeSheetService.js');
 
 class TimeClockService {
     constructor(){};
+
     async getOnlineMakers(){
         let onlineUsers = [];
         let repoResult = await makerRepo.getOnlineMakers();
@@ -27,9 +28,11 @@ class TimeClockService {
     async clockIn(maker){
 
     }
+
     async clockOut(maker){
 
     }
+
     async getRunningTime(maker){
         let allSheetsForMaker = await timeSheetService.getSheetsByMaker(maker.id);
         let targetSheet = null;

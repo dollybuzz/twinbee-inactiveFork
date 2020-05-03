@@ -106,6 +106,14 @@ class ClientService {
     }
 
     /**
+     * Removes a client from the database. TODO: remove from chargebee
+     * @param id    - Id of client to be removed
+     */
+    deleteClientById(id){
+        clientRepo.deleteClient(id);
+    }
+
+    /**
      * Retrieves all makers associated with a given client given the client's id.
      * "Associated with" is identified as having a timesheet (open or not) linked to
      * the client.
