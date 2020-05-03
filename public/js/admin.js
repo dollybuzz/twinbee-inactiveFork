@@ -2,6 +2,7 @@ let navMapper = {
     main: function () {
         location.reload();
     },
+
     manageClients: function () {
       showClients();
       setTimeout( function () {
@@ -18,6 +19,7 @@ let navMapper = {
           })
       }, 300)
     },
+
     manageMakers: function () {
         showMakers();
         setTimeout( function () {
@@ -34,6 +36,7 @@ let navMapper = {
             })
         }, 300)
     },
+
     reviewTimeSheets: function () {
         showSheets();
         setTimeout( function () {
@@ -177,7 +180,7 @@ function showSheets(){
 }
 
 $(document).ready(function () {
-
+    //Event Listeners
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
     })
@@ -191,5 +194,7 @@ $(document).ready(function () {
         $(this).css("color", 'white');
         $(this).css("font-style", 'normal');
     });
+
+
 
 })

@@ -19,6 +19,17 @@ class MakerService {
         return new Maker(id, firstName, lastName, email, chargebeeObj, clients);
     }
 
+    async getOnlineMakers() {
+        let onliners = [];
+        let retrieved = await makerRepo.getOnlineMakers();
+        retrieved.forEach(item => {
+            let online = new Maker(item.id, item.first_name, item.last_name, item.email, nulll, null);
+
+            onliners.push(online);
+        })
+        return onliners;
+    }
+
     /**
      * Retrieves time all time sheets for a given maker.
      * @param id    - id of the desired maker

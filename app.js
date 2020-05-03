@@ -41,6 +41,7 @@ app.get("/api/createClient", clientRestController.createClient);
 app.get("/api/getMaker", makerRestController.getMakerById);
 app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByClientId);
 app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
+app.get("/api/getOnlineMakers", makerRestController.getOnlineMakers);
 
 (async function() {
     request(`http://${process.env.IP}:${process.env.PORT}/api/getAllClients`,

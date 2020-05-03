@@ -31,7 +31,7 @@ class MakerRepository {
 
 
     async getOnlineMakers() {
-        let sql = 'SELECT * ' +
+        let sql = 'SELECT maker_id, first_name, last_name, maker.email ' +
             'FROM maker ' +
             'JOIN time_sheet ON maker.id = time_sheet.maker_id ' +
             'JOIN client ON time_sheet.client_id = client.id ' +
