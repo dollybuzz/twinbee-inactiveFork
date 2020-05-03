@@ -1,5 +1,8 @@
 module.exports ={
     renderLanding: (req, res)=>{
+        let thisID = {
+            text: "adminTitle"
+        };
         let headerTitle = {
             text: "Administrator and Billing Portal"
         };
@@ -17,6 +20,6 @@ module.exports ={
             {link: "", text: "Report a problem", id: "reportProblem"}
         ]
 
-        res.render("admin", {pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("admin", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     }
 }

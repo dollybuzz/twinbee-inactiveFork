@@ -1,6 +1,12 @@
 
 module.exports ={
     renderLanding: (req, res)=>{
+        let thisID = {
+            text: "landingTitle"
+        };
+        let headerTitle = {
+            text: ""
+        };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
@@ -12,7 +18,7 @@ module.exports ={
             {link: "", text: "Problems? Contact us."},
         ]
 
-        res.render("landing", {headerImg:headerImageActual, navItemsBottom: footerLinks});
+        res.render("landing", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsBottom: footerLinks});
     },
 
     temporaryNavigateFunction: (req, res)=>{
