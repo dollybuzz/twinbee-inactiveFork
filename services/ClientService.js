@@ -71,7 +71,7 @@ class ClientService {
      */
     async getClientById(id) {
         let clientData = clientRepo.getClientById(id);
-        let cbObj = await this.getChargebeeObjForClientByEmail(clientData.email).catch(err => {
+        let cbObj = this.getChargebeeObjForClientByEmail(clientData.email).catch(err => {
             console.log(err)
         });
         let makers = await this.getMakersForClient(id).catch(err => {

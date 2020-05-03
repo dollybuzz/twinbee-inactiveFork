@@ -179,6 +179,45 @@ function showSheets(){
     })
 }
 
+function showOnlineMakers() {
+    $("#online").html(
+        "<div id=\"floor\">\n" +
+        "    <table id=\"onlineTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div>")
+    $.ajax({
+        url: "/api/getOnlineMakers",
+        method: "get",
+        data: {
+            token: "TODOImplementRealToken"
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#onlineTable").append('\n' +
+                '        <thead class="thead-dark">\n' +
+                '            <th scope="col">Maker ID</th>\n' +
+                '            <th scope="col">First Name</th>\n' +
+                '            <th scope="col">Last Name</th>\n' +
+                '            <th scope="col">Email</th>\n' +
+                '        </thead><tbody>')
+            res.forEach(item => {
+                $("#onlineTable").append('\n' +
+                    '<tr class="onlineRow">' +
+                    '   <td>' + item.id + '</td>' +
+                    '   <td>' + item.firstName + '</td>'+
+                    '   <td>' + item.lastName + '</td>'+
+                    '   <td>' + item.email + '</td>'
+                );
+            })
+            $("#onlineTable").append('\n</tbody>')
+        },
+        error: function (res, status) {
+            $("#floor").html("Something went wrong!");
+            //log, send error report
+        }
+    })
+}
+
 $(document).ready(function () {
     //Event Listeners
     $(".navItem").click(function (e) {
@@ -195,6 +234,6 @@ $(document).ready(function () {
         $(this).css("font-style", 'normal');
     });
 
-
+    showOnlineMakers();
 
 })
