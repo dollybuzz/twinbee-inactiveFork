@@ -37,11 +37,10 @@ class ClientService {
         let clients = [];
         let repoResult = await clientRepo.getAllClients();
         for (var i = 0; i < repoResult.length; ++i){
-            let cbObj = await this.getChargebeeObjForClientByEmail(repoResult[i].email);
-            let makers = await this.getMakersForClient(repoResult[i].id);
+            let cbObj = await this.getChargebeeObjForClientByEmail(repoResult[i].email).catch(err=>{console.log(err)});
             let newObj = new Client(repoResult[i].id, repoResult[i].name, repoResult[i].location,
                 repoResult[i].remaining_hours, repoResult[i].email,
-                cbObj, makers);
+                cbObj);
             clients.push(newObj);
         }
         return clients;
@@ -59,10 +58,10 @@ class ClientService {
      * @param makers        - Array of maker objects associated with the client
      * @returns {Promise<void>} that should resolve to a client object
      */
-    async createNewClient(name, location, remainingHours, email, chargebeeObj, makers) {
+    async createNewClient(name, location, remainingHours, email, chargebeeObj) {
         clientRepo.createClient(name, location, remainingHours, email);
         let id = clientRepo.getClientIdByEmail(email);
-        return new Client(id, name, location, remainingHours, email, chargebeeObj, makers)
+        return new Client(id, name, location, remainingHours, email, chargebeeObj)
     }
 
     /**
@@ -72,8 +71,12 @@ class ClientService {
      */
     async getClientById(id) {
         let clientData = clientRepo.getClientById(id);
-        let cbObj = await this.getChargebeeObjForClientByEmail(clientData.email);
-        let makers = await this.getMakersForClient(id);
+        let cbObj = await this.getChargebeeObjForClientByEmail(clientData.email).catch(err => {
+            console.log(err)
+        });
+        let makers = await this.getMakersForClient(id).catch(err => {
+            console.log(err)
+        });
         let client = new Client(clientData.id, clientData.name, clientData.location,
             clientData.remaining_hours, clientData.email, cbObj, makers);
         return client;
@@ -125,7 +128,9 @@ class ClientService {
             makersMap[makers[i].id] = makers[i];
         }
 
-        let sheets = await this.getSheetsByClient(id);
+        let sheets = await this.getSheetsByClient(id).catch(err => {
+            console.log(err)
+        });
 
         for (var i = 0; i < sheets.length; ++i) {
             if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
@@ -191,7 +196,7 @@ class ClientService {
                             resolve(entry);
                         }
                     }
-                    reject(/*TODO: Enable this when ready new Error('No client match in chargebee' */);
+                    reject(/*TODO: Enable this when ready new Error('No client match in chargebee' */"clientService enable when ready");
                 }
             });
         })

@@ -16,7 +16,7 @@ module.exports = {
         let makers = null;
 
         clientService.createClient(req.body.name, req.body.location, req.body.remainingHours,
-            req.body.email, chargebeeObj, makers)
+            req.body.email, chargebeeObj)
 
     },
 
