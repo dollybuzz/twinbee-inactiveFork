@@ -1,8 +1,7 @@
-const clientRepo = require('../repositories/clientRepo.js');
 const clientService = require('../services/ClientService.js');
 
 
-//TODO Add validation befre action
+//TODO Add validation before action
 module.exports = {
     getClientById: async (req, res) => {
         let id = req.query.id;
@@ -17,7 +16,7 @@ module.exports = {
         let makers = null;
 
         clientService.createClient(req.body.name, req.body.location, req.body.remainingHours,
-            req.body.email, chargebeeObj, makers)
+            req.body.email, chargebeeObj)
 
     },
 

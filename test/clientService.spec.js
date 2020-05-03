@@ -21,15 +21,24 @@ const maker1 = {id: '1', firstName: 'firstName1', lastName: 'lastName1', email: 
 const maker2 = {id: '2', firstName: 'firstName2', lastName: 'lastName2', email: 'email2', clients: null, chargebeeObj: null};
 const maker3 = {id: '3', firstName: 'firstName3', lastName: 'lastName3', email: 'email3', clients: null, chargebeeObj: null};
 
+const client1 = new Client('1', 'name1', 'loc1', 'rem1', 'client1@twinbee.com', null, [maker1,  maker2]);
+const client2 = new Client('2', 'name2', 'loc2', 'rem2', 'client2@twinbee.com', null, [maker3]);
+const client3 = new Client('3', 'name3', 'loc3', 'rem3', 'client3@twinbee.com', null, []);
 
-const client1 = new Client('1', 'name1', 'loc1', 'rem1', 'client1@twinbee.com', null, null);
-const client2 = new Client('2', 'name2', 'loc2', 'rem2', 'client2@twinbee.com', null, null);
-const client3 = new Client('3', 'name3', 'loc3', 'rem3', 'client3@twinbee.com', null, null);
+
 
 describe('Client Service Test', function () {
 
-
     beforeEach(function () {
+        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllClients')
+            .reply(200, [client1, client2, client3]);
+        let scope2 = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllMakers')
+            .reply(200, [maker1, maker2, maker3]);
+        let scope3 = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllTimesheets')
+            .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
 
         let getAllClientsStub = sinon.stub(clientRepo, 'getAllClients')
             .callsFake(()=>{return [
@@ -73,6 +82,19 @@ describe('Client Service Test', function () {
     });
 
 
+    it("INTEGRATION: Chargebee. Should return the correct chargebee object for a client given the client object",
+        async function () {
+
+            client1.chargebeeObj = await clientService.getChargebeeObjForClient(client1)
+            client2.chargebeeObj = await clientService.getChargebeeObjForClient(client2)
+            client3.chargebeeObj = await clientService.getChargebeeObjForClient(client3)
+            expect(client1.email).to.equal(client1.chargebeeObj.email);
+            expect(client2.email).to.equal(client2.chargebeeObj.email);
+            expect(client3.email).to.equal(client3.chargebeeObj.email);
+
+
+        })
+
     it ('Should grab a client via rest', async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getClient?id=1')
@@ -84,7 +106,6 @@ describe('Client Service Test', function () {
                 chargebeeObj: null,
                 makers: null
             });
-
 
         let response = await request(`http://${process.env.IP}:${process.env.PORT}/api/getClient?id=1`)
             .catch(err => {
@@ -101,7 +122,6 @@ describe('Client Service Test', function () {
             chargebeeObj: null,
             makers: null
         });
-
     })
 
     it("Should get all sheets for a given client by client id", async function () {
@@ -113,25 +133,14 @@ describe('Client Service Test', function () {
         expect(sheets).to.deep.equal([timeSheetObject1, timeSheetObject2]);
     })
 
-
     it("Should get makers assigned to a given client by client id", async function () {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllTimesheets')
-            .reply(200, [timeSheetObject1, timeSheetObject2, timeSheetObject3]);
-        let scope2 = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllMakers')
-            .reply(200, [maker1, maker2, maker3]);
-
         let makers = await clientService.getMakersForClient(1);
         expect(makers).to.deep.equal([maker1, maker2]);
 
     })
 
-
-
     it('Should grab all clients',  async () => {
         let results =  await clientService.getAllClients();
-
         expect(results).to.deep.equal([client1, client2, client3]);
 
     })
@@ -140,22 +149,6 @@ describe('Client Service Test', function () {
         let actual = await clientService.getClientById(1);
 
         expect(actual).to.deep.equal(client1);
+        expect(Object.keys(actual.chargebeeObj)).to.deep.equal(Object.keys(client1.chargebeeObj))
     })
-
-    it('Should grab only the sheets for the specified client (by id)', async function () {
-        let actual = await clientService.getClientById(1);
-
-        expect(actual).to.deep.equal(client1);
-    })
-
-    it("INTEGRATION: Chargebee. Should return the correct chargebee object for a client given the client object",
-        async function () {
-
-        let client = client1;
-        client.chargebeeObj = await clientService.getChargebeeObjForClient(client)
-        expect(client.email).to.equal(client.chargebeeObj.email);
-
-
-    })
-
 })
