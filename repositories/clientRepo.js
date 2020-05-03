@@ -23,7 +23,6 @@ class ClientRepository {
         })
     }
 
-
     deleteClient(id) {
         let sql = 'DELETE FROM client WHERE id = ?';
         let sqlParams = [id];
