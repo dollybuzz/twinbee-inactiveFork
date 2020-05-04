@@ -2,7 +2,9 @@ const clientRepo = require('../repositories/clientRepo.js');
 const Client = require('../domain/entity/client.js');
 const util = require('util');
 const request = util.promisify(require('request'));
-const chargebee = require('chargebee');
+var chargebee = require("chargebee");
+chargebee.configure({site : "freedom-makers-test",
+    api_key : process.env.CHARGEBEE_TEST_API})
 
 /**
  * Service that works with client objects.  Client objects in form:
@@ -25,8 +27,10 @@ class ClientService {
     constructor() {
     };
 
+
+
     /**
-     * TODO optimize chargebee calls
+     * v2 - chargebee integration
      *
      * Retrieves all clients as Client objects in a list.
      *
@@ -34,71 +38,71 @@ class ClientService {
      * @returns {Promise<[all client objects]>}
      */
     async getAllClients() {
-        let clients = [];
-        let repoResult = await clientRepo.getAllClients();
-        for (var i = 0; i < repoResult.length; ++i){
-            let cbObj = await this.getChargebeeObjForClientByEmail(repoResult[i].email).catch(err=>{console.log(err)});
-            let newObj = new Client(repoResult[i].id, repoResult[i].name, repoResult[i].location,
-                repoResult[i].remaining_hours, repoResult[i].email,
-                cbObj);
-            clients.push(newObj);
-        }
-        return clients;
+        return await clientRepo.getAllClients();
     }
 
     /**
+     * V2, chargebee integration
      * Creates a newly acquired client and logs them to the database. An object
      * reference to the client is returned.
-     *
-     * @param name          - Client name
-     * @param location      - Client location
-     * @param remainingHours- Remaining hours in client's wallet
-     * @param email         - Client's email address
-     * @param chargebeeObj  - Chargebee "Customer" object for the client
-     * @param makers        - Array of maker objects associated with the client
-     * @returns {Promise<void>} that should resolve to a client object
+     * @param firstName     - customer first name
+     * @param lastName      - customer last name
+     * @param customerEmail - customer email
+     * @param addressStreet - customer streed address
+     * @param customerCity  - customer city
+     * @param customerStateFull - customer state typed out
+     * @param customerZip   - customer zip code
+     * @returns {Promise<chargebee customer object>}
      */
-    async createNewClient(name, location, remainingHours, email, chargebeeObj) {
-        clientRepo.createClient(name, location, remainingHours, email);
-        let id = clientRepo.getClientIdByEmail(email);
-        return new Client(id, name, location, remainingHours, email, chargebeeObj)
+    createNewClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
+        return new Promise((resolve, reject) => {
+            clientRepo.createClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber);
+            chargebee.customer.list({
+                "email[is]": customerEmail
+            }).request(function (error, result) {
+                if (error) {
+                    //email us?
+                    console.log(error);
+                    reject(error);
+                } else {
+                    var entry = result.list[0]
+                  //  console.log(entry);
+                    var customer = entry.customer;
+                    resolve(customer);
+                }
+            });
+        })
     }
 
     /**
+     * v2 - chargebee integration
      * Retrives a client by their database id.
-     * @param id    - client's database id
-     * @returns {Promise<void>} that should resolve to a client object
+     * @param id    - client's chargebee id
+     * @returns {Promise<chargebee customer object>}
      */
     async getClientById(id) {
-        let clientData = clientRepo.getClientById(id);
-        let cbObj = this.getChargebeeObjForClientByEmail(clientData.email).catch(err => {
-            console.log(err)
-        });
-        let makers = await this.getMakersForClient(id).catch(err => {
-            console.log(err)
-        });
-        let client = new Client(clientData.id, clientData.name, clientData.location,
-            clientData.remaining_hours, clientData.email, cbObj, makers);
-        return client;
+        let clientData = await clientRepo.getClientById(id);
+        return clientData;
     }
 
+
     /**
+     * v2 - chargebee integration
      * Retrieves time all time sheets for a given client.
      * @param id    - id of the desired client
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByClient(id) {
         let clientSheets = [];
-
         let response = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
             .catch(err => {
                 console.log(err)
             });
         let body = response.body;
-
         let sheets = JSON.parse(body);
+
         for (var i = 0; i < sheets.length; ++i) {
-            if (sheets[i].clientId == id) {
+            if (sheets[i].client_id == id) {
                 clientSheets.push(sheets[i]);
             }
         }
@@ -106,14 +110,16 @@ class ClientService {
     }
 
     /**
+     * v2 - chargebee integration
      * Removes a client from the database. TODO: remove from chargebee
      * @param id    - Id of client to be removed
      */
-    deleteClientById(id){
-        clientRepo.deleteClient(id);
+    deleteClientById(chargebeeId){
+        clientRepo.deleteClient(chargebeeId);
     }
 
     /**
+     * v2 - chargebee integration
      * Retrieves all makers associated with a given client given the client's id.
      * "Associated with" is identified as having a timesheet (open or not) linked to
      * the client.
@@ -141,73 +147,25 @@ class ClientService {
         });
 
         for (var i = 0; i < sheets.length; ++i) {
-            if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
-                foundIds[sheets[i].makerId] = true;
-                clientMakers.push(makersMap[sheets[i].makerId]);
+            if (!foundIds[sheets[i].maker_id] && makersMap[sheets[i].maker_id]) {
+                foundIds[sheets[i].maker_id] = true;
+                clientMakers.push(makersMap[sheets[i].maker_id]);
             }
         }
         return clientMakers;
     };
 
-    /**
-     * Retrieves the chargebee "Customer" object for the given client. Note that
-     * the client is requested in whole; not by id.
-     *
-     * @param client    - a Client object for which to find a matching chargbee "Customer" object.
-     * @returns {Promise<>} that should resolve to a chargebee "Customer" object. Throws a notifying
-     *                      error if none is found.
-     */
-    getChargebeeObjForClient(client){
-        chargebee.configure({site : "freedom-makers-test",
-            api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"})
-
-        return new Promise((resolve, reject)=> {
-            chargebee.customer.list({
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
-                    reject(error);
-                }else{
-                    for(var i = 0; i < result.list.length;i++){
-                        var entry=result.list[i].customer
-                        if (entry["email"] == client.email){
-                            resolve(entry);
-                        }
-                    }
-                    reject(/* TODO: enable when ready. new Error('No client match in chargebee')*/);
-                }
-            });
-        })
-    }
 
     /**
+     * v2 - chargebee integration
      * Retrieves the chargebee "Customer" object for a client given their email.
      *
      * @param email - Client's email address
      * @returns {Promise<>} that should resolve to a chargebee "Customer" object. Throws a notifying
      *                      error if none is found.
      */
-    getChargebeeObjForClientByEmail(email){
-        chargebee.configure({site : "freedom-makers-test",
-            api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"})
-
-        return new Promise((resolve, reject)=> {
-            chargebee.customer.list({
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
-                    reject(error);
-                }else{
-                    for(var i = 0; i < result.list.length;i++){
-                        var entry=result.list[i].customer
-                        if (entry["email"] == email){
-                            resolve(entry);
-                        }
-                    }
-                    reject(/*TODO: Enable this when ready new Error('No client match in chargebee' */"clientService enable when ready");
-                }
-            });
-        })
+    async getClientByEmail(email){
+       return await clientRepo.getClientByEmail(email);
     }
 }
 
