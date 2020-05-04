@@ -265,6 +265,9 @@ $(document).ready(function () {
     $("#actualImage").css("float", "left");
     $("#landingLogo").css("height", "15rem");
 
+    //shifts the time and date
+    $("#time").css("top", "190px");
+
 
 
 })
