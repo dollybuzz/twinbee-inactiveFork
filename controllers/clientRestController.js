@@ -10,12 +10,8 @@ module.exports = {
     },
 
     createClient: (req, res) => {
-
-        //TODO integrate chargebee and makers
-        let chargebeeObj = null;
-        let makers = null;
-        clientService.createNewClient(req.body.name, req.body.location, req.body.remainingHours,
-            req.body.email, chargebeeObj)
+        clientService.createNewClient(req.body.firstName, req.body.lastName, req.body.email, req.body.address,
+            req.body.city, req.body.state, req.body.zip)
         res.end();
     },
 

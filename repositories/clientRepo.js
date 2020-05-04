@@ -1,36 +1,109 @@
 const {query} = require('./repoMaster');
 const request = require('request');
+var chargebee = require("chargebee");
+chargebee.configure({site : "freedom-makers-test",
+    api_key : process.env.CHARGEBEE_TEST_API})
+
 class ClientRepository {
     constructor() {
     };
 
-    createClient(name, location, remainingHours, email) {
-        let sql = 'INSERT INTO client(name, location, remaining_hours, email) ' +
-            'VALUES (?, ?, ?, ?)';
-        let sqlParams = [name, location, remainingHours, email];
+    createClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
+        chargebee.customer.create({
+            first_name : firstName,
+            last_name : lastName,
+            email : customerEmail,
+            billing_address : {
+                first_name : firstName,
+                last_name : lastName,
+                line1 : addressStreet,
+                city : customerCity,
+                state : customerStateFull,
+                zip : customerZip,
+                country : "US",
+                phone: phoneNumber
+            }
+        }).request(function(error,result) {
+            if(error){
+                //TODO handle error... email us?
+                //console.log(error);
+            }else{
+                //console.log(result);
+                var customer = result.customer;
+                var card = result.card;
+
+                let sql = 'INSERT INTO client(chargebee_id, email) ' +
+                    'VALUES (?, ?)';
+                let sqlParams = [customer.id, customerEmail];
+                query(sql, sqlParams, function (err, result) {
+                    if (err) throw err;
+                })
+            }
+        });
+    }
+
+    updateClient(clientId, firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
+        chargebee.customer.update(clientId,{
+            first_name : firstName,
+            last_name : lastName,
+            phone : phoneNumber
+        }).request(function(error,result) {
+            if(error){
+                //TODO handle error
+                //console.log(`Failed to update ${firstName} ${lastName}`)
+                //console.log(error);
+            }else{
+                var customer = result.customer;
+                //console.log(`Updated ${customer.first_name} ${customer.last_name}`)
+                //console.log(result);
+            }
+        });
+
+        chargebee.customer.update_billing_info("16CHLFRxyBHonCsd",{
+            billing_address : {
+                first_name : firstName,
+                last_name : lastName,
+                line1 : addressStreet,
+                city : customerCity,
+                state : customerStateFull,
+                zip : customerZip,
+                country : "US"
+            }
+        }).request(function(error,result) {
+            if(error){
+                //TODO handle error
+                //console.log(`Failed to update ${firstName} ${lastName} billing info`)
+                //console.log(error);
+            }else{
+                var customer = result.customer;
+                //console.log(`Updated ${customer.first_name} ${customer.last_name} billing info`)
+                //console.log(result);
+            }
+        });
+    }
+
+    deleteClient(chargebeeId) {
+        let sql = 'DELETE FROM client WHERE chargebee_id = ?';
+        let sqlParams = [chargebeeId];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         })
-    }
 
-    updateClient(id, name, location, remainingHours, email) {
-        let sql = 'UPDATE client ' +
-            'SET name = ?, location = ?, remaining_hours = ?, email = ? ' +
-            'WHERE id = ?';
-        let sqlParams = [name, location, remainingHours, email, id];
-        query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
-        })
+        chargebee.customer.update(clientId,{
+            deleted : true
+        }).request(function(error,result) {
+            if(error){
+                //TODO handle error
+                //console.log(`Failed to update ${firstName} ${lastName}`)
+                //console.log(error);
+            }else{
+                var customer = result.customer;
+                //console.log(`Updated ${customer.first_name} ${customer.last_name}`)
+                //console.log(result);
+            }
+        });
     }
-
-    deleteClient(id) {
-        let sql = 'DELETE FROM client WHERE id = ?';
-        let sqlParams = [id];
-        query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
-        })
-    }
-
+/*
     decrementHoursClient(id, hoursToSubtract) {
         let sql = 'UPDATE client ' +
             'SET remaining_hours = remaining_hours - ? ' +
@@ -40,72 +113,58 @@ class ClientRepository {
             if (err) throw err;
         })
     }
-
-    async getAllClients() {
-        let sql = 'SELECT * FROM client';
-        let sqlParam = [];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
+*/
+    getAllClients() {
+        return new Promise((resolve, reject)=>{
+            chargebee.customer.list({
+            }).request(function(error,result) {
+                if(error){
+                    //handle error, email us?
+                    //console.log(error);
+                    reject(error);
+                }else{
+                    resolve(result.list);
+                }
+            })
         });
-        return result;
     }
 
-    async getClientsByMaker(makerId) {
-        let sql = 'SELECT * ' +
-            'FROM client ' +
-            'JOIN time_sheet ON client.id = time_sheet.client_id ' +
-            'WHERE maker_id = ? ' +
-            'GROUB BY client_id ' +
-            'ORDER BY end_time DESC';
-        let sqlParams = [makerId];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
-        return result;
+
+    getClientByEmail(email) {
+        return new Promise((resolve, reject)=> {
+            chargebee.customer.list({
+                "email[is]": email
+            }).request(function (error, result) {
+                if (error) {
+                    //email us?
+                    //console.log(error);
+                    reject(error);
+                } else {
+                    var entry = result.list[0]
+                    //console.log(entry);
+                    var customer = entry.customer;
+                    resolve(customer);
+                }
+            });
+        })
     }
 
-    async getClientIdByName(name) {
-        let sql = 'SELECT id FROM client WHERE name = ?';
-        let sqlParam = [name];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
-        return result;
-    }
-
-    async getClientIdByEmail(email) {
-        let sql = 'SELECT id FROM client WHERE email = ?';
-        let sqlParam = [email];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
-        return result;
-    }
-
-    async getClientNameById(id) {
-        let sql = 'SELECT name FROM client WHERE id = ?';
-        let sqlParam = [id];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(id);
-            result = [];
-        });
-        return result;
-    }
-
-    async getClientById(id) {
-
-        let sql = 'SELECT * FROM client WHERE id = ?';
-        let sqlParam = [id];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(id);
-            result = [];
-        });
-        return result;
-
+    getClientById(id) {
+        return new Promise((resolve, reject)=>{
+            chargebee.customer.retrieve(id).request(function(error,result) {
+                if(error){
+                    //email us?
+                    //console.log(`Could not find customer with id ${id}`);
+                    //console.log(error);
+                    reject(error);
+                }else{
+                    //console.log(`Customer found with id ${id}`)
+                    //console.log(result);
+                    var customer = result.customer;
+                    resolve(customer);
+                }
+            });
+        })
     }
 }
 
