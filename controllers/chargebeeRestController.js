@@ -2,6 +2,11 @@ const chargebeeService = require('../services/chargebeeService.js');
 
 module.exports = {
 
+    getAllPlans: async function(req, res){
+        let plans = await chargebeeService.getAllPlans();
+        res.send(plans);
+    },
+
     createPlan: function(req, res){
         chargebeeService.createPlan(req.body.planName, req.body.invoiceName,
             req.body.pricePerHour, req.body.planDescription);
@@ -20,6 +25,12 @@ module.exports = {
     deletePlan: function(req, res){
         chargebeeService.deletePlan(req.body.planId);
         res.end();
+    },
+
+
+    getAllSubscriptions: async function(req, res){
+        let subscriptions = await chargebeeService.getAllSubscriptions();
+        res.send(subscriptions);
     },
 
     createSubscription: function(req, res){

@@ -8,6 +8,22 @@ class ChargebeeService {
     constructor() {
     };
 
+
+    getAllPlans(){
+        return new Promise((resolve, reject) => {
+            chargebee.plan.list({
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                }else{
+                    resolve(result.list);
+                }
+            });
+        })
+    }
+
     createPlan(planName, invoiceName, pricePerHour, planDescription) {
 
         let planId = planName.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
@@ -72,7 +88,6 @@ class ChargebeeService {
     }
 
     deletePlan(planId) {
-
         chargebee.plan.delete(planId).request(function (error, result) {
             if (error) {
                 //handle error
@@ -82,6 +97,22 @@ class ChargebeeService {
                 var plan = result.plan;
             }
         });
+    }
+
+
+    getAllSubscriptions(){
+        return new Promise((resolve, reject) => {
+            chargebee.subscription.list({
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                }else{
+                    resolve(result.list);
+                }
+            });
+        })
     }
 
     createSubscription(planId, customerId, planQuantity) {
@@ -102,7 +133,6 @@ class ChargebeeService {
                 var unbilled_charges = result.unbilled_charges;
             }
         });
-
     }
 
     retrieveSubscription() {
