@@ -24,7 +24,6 @@ class MakerService {
         let retrieved = await makerRepo.getOnlineMakers();
         retrieved.forEach(item => {
             let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email, null, null);
-
             onliners.push(online);
         })
         return onliners;

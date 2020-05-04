@@ -34,7 +34,7 @@ class MakerRepository {
         let sql = 'SELECT maker_id, first_name, last_name, maker.email ' +
             'FROM maker ' +
             'JOIN time_sheet ON maker.id = time_sheet.maker_id ' +
-            'JOIN client ON time_sheet.client_id = client.id ' +
+            'JOIN client ON time_sheet.client_id = client.chargebee_id ' +
             'WHERE end_time - start_time < 0 ' +
             'GROUP BY maker.id';
         let sqlParams = [];
