@@ -55,7 +55,7 @@ let navMapper = {
     }
 }
 
-function showClients(){
+function showClients() {
     $("#userMainContent").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"clientTable\" class=\"table\">\n" +
@@ -71,23 +71,37 @@ function showClients(){
         success: function (res, status) {
             $("#clientTable").append('\n' +
                 '        <thead class="thead">\n' +
-                '            <th scope="col">#</th>\n' +
+                '            <th scope="col">ID</th>\n' +
                 '            <th scope="col">Name</th>\n' +
                 '            <th scope="col">Location</th>\n' +
                 '            <th scope="col">Remaining Hours</th>\n' +
                 '            <th scope="col">Email</th>\n' +
                 '        </thead><tbody>')
             res.forEach(item => {
-                $("#clientTable").append('\n' +
-                    '<tr class="clientRow">' +
-                    '   <th scope="row">' + item.id +'</th>' +
-                    '   <td>' + item.name + '</td>'+
-                    '   <td>' + item.location + '</td>'+
-                    '   <td>' + item.remainingHours + '</td>'+
-                    '   <td>' + item.email + '</td>'
-                );
+                if (item.customer.billing_address) {
+                    $("#clientTable").append('\n' +
+                        '<tr class="clientRow">' +
+                        '   <th scope="row">' + item.customer.id + '</th>' +
+                        '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
+                        '   <td>' + `${item.customer.billing_address.city}, ${item.customer.billing_address.state}` + '</td>' +
+                        '   <td>' + "not implemented" + '</td>' +
+                        '   <td>' + item.customer.email + '</td></tr>'
+                    );
+                }
             })
             $("#clientTable").append('\n</tbody>')
+            //Body Text
+            //Event Listeners
+            $(".clientRow").click(function () {
+                let clientId = $(this).children()[0].innerHTML;
+                alert("You selected client " + clientId)
+            })
+            $(".clientRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#e8ecef');
+            }).mouseleave(function () {
+                $(this).css('background-color', 'white');
+            })
         },
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
