@@ -135,16 +135,61 @@ class ChargebeeService {
         });
     }
 
-    retrieveSubscription() {
-
+    retrieveSubscription(subscriptionId) {
+        return new Promise((resolve, reject) => {
+            console.log(subscriptionId)
+            chargebee.subscription.retrieve(subscriptionId).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                }else{
+                 //   console.log(result);
+                    var subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        })
     }
 
-    updateSubscription() {
-
+    updateSubscription(suscriptionId, planId, planQuantity, pricePerHour) {
+        return new Promise((resolve, reject) => {
+            chargebee.subscription.update(suscriptionId,{
+                plan_id : planId,
+                end_of_term : true,
+                plan_quantity: planQuantity,
+                plan_unit_price: pricePerHour
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                }else{
+                 //   console.log(result);
+                    var subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        })
     }
 
-    deleteSubscription() {
-
+    cancelSubscription(subscriptionId) {
+        chargebee.subscription.cancel(subscriptionId,{
+            end_of_term : true
+        }).request(function(error,result) {
+            if(error){
+                //handle error
+                console.log(error);
+            }else{
+             //   console.log(result);
+                var subscription = result.subscription;
+                var customer = result.customer;
+                var card = result.card;
+                var invoice = result.invoice;
+                var unbilled_charges = result.unbilled_charges;
+                var credit_notes = result.credit_notes;
+            }
+        });
     }
 
 

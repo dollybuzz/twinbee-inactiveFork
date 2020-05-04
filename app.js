@@ -52,7 +52,7 @@ app.get("/api/retrievePlan", chargebeeRestController.retrievePlan);
 app.get("/api/getAllSubscriptions", chargebeeRestController.getAllSubscriptions);
 app.post("/api/createSubscription", chargebeeRestController.createSubscription);
 app.post("/api/updateSubscription", chargebeeRestController.updateSubscription);
-app.post("/api/deleteSubscription", chargebeeRestController.deleteSubscription);
+app.post("/api/cancelSubscription", chargebeeRestController.cancelSubscription);
 app.get("/api/retrieveSubscription", chargebeeRestController.retrieveSubscription);
 
 (async function() {

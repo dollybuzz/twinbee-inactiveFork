@@ -3,7 +3,7 @@ const chargebeeService = require('../services/chargebeeService.js');
 module.exports = {
 
     getAllPlans: async function(req, res){
-        let plans = await chargebeeService.getAllPlans();
+        let plans = await chargebeeService.getAllPlans().catch(e=>console.log(e));;
         res.send(plans);
     },
 
@@ -29,7 +29,7 @@ module.exports = {
 
 
     getAllSubscriptions: async function(req, res){
-        let subscriptions = await chargebeeService.getAllSubscriptions();
+        let subscriptions = await chargebeeService.getAllSubscriptions().catch(e=>console.log(e));
         res.send(subscriptions);
     },
 
@@ -38,13 +38,20 @@ module.exports = {
         res.end();
     },
 
-    retrieveSubscription: function(req, res){
-
+    retrieveSubscription: async function(req, res){
+        console.log(req)
+        let subscription = await chargebeeService.retrieveSubscription(req.query.subscriptionId)
+            .catch(e=>console.log(e));
+        res.send(subscription);
     },
-    updateSubscription: function(req, res){
-
+    updateSubscription: async function(req, res){
+        console.log(req)
+        let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
+            req.body.planQuantity, req.body.pricePerHour);
+        res.send(subscription);
     },
-    deleteSubscription: function(req, res){
-
+    cancelSubscription: function(req, res){
+        chargebeeService.cancelSubscription(req.body.subscriptionId);
+        res.end();
     }
 }
