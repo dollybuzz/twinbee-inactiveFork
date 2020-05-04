@@ -5,53 +5,14 @@ let navMapper = {
 
     manageClients: function () {
       showClients();
-      setTimeout( function () {
-          $(".clientRow").click(function () {
-              let clientId = $(this).children()[0].innerHTML;
-              alert ("You selected client " + clientId)
-          })
-          $(".clientRow").mouseenter(function () {
-              $(this).css('transition', 'background-color 0.5s ease');
-              $(this).css('background-color', '#e8ecef');
-          }).mouseleave(function () {
-              $(this).css('background-color', 'white');
-
-          })
-      }, 300)
     },
 
     manageMakers: function () {
         showMakers();
-        setTimeout( function () {
-            $(".makerRow").click(function () {
-                let makerId = $(this).children()[0].innerHTML;
-                alert ("You selected maker " + makerId)
-            })
-            $(".makerRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-
-            })
-        }, 300)
     },
 
     reviewTimeSheets: function () {
         showSheets();
-        setTimeout( function () {
-            $(".sheetRow").click(function () {
-                let makerId = $(this).children()[0].innerHTML;
-                alert ("You selected sheet " + makerId)
-            })
-            $(".sheetRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-
-            })
-        }, 300)
     }
 }
 
@@ -84,10 +45,25 @@ function showClients(){
                     '   <td>' + item.name + '</td>'+
                     '   <td>' + item.location + '</td>'+
                     '   <td>' + item.remainingHours + '</td>'+
-                    '   <td>' + item.email + '</td>'
+                    '   <td>' + item.email + '</td></tr>'
                 );
             })
             $("#clientTable").append('\n</tbody>')
+
+            //Body Text
+
+            //Event Listeners
+            $(".clientRow").click(function () {
+                let clientId = $(this).children()[0].innerHTML;
+                alert ("You selected client " + clientId)
+            })
+            $(".clientRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#e8ecef');
+            }).mouseleave(function () {
+                $(this).css('background-color', 'white');
+
+            })
         },
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
@@ -123,10 +99,25 @@ function showMakers(){
                     '   <th scope="row">' + item.id +'</th>' +
                     '   <td>' + item.firstName + '</td>'+
                     '   <td>' + item.lastName + '</td>'+
-                    '   <td>' + item.email + '</td>'
+                    '   <td>' + item.email + '</td></tr>'
                 );
             })
             $("#makerTable").append('\n</tbody>')
+
+            //Body text
+
+            //Event Listeners
+            $(".makerRow").click(function () {
+                let makerId = $(this).children()[0].innerHTML;
+                alert ("You selected maker " + makerId)
+            })
+            $(".makerRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#e8ecef');
+            }).mouseleave(function () {
+                $(this).css('background-color', 'white');
+
+            })
         },
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
@@ -134,6 +125,7 @@ function showMakers(){
         }
     })
 }
+
 function showSheets(){
     $("#userMainContent").html(
         "<div id=\"floor\">\n" +
@@ -167,10 +159,24 @@ function showSheets(){
                     '   <td>' + item.hourly_rate + '</td>'+
                     '   <td>' + item.start_time + '</td>'+
                     '   <td>' + item.end_time + '</td>'+
-                    '   <td>' + item.occupation + '</td>'
+                    '   <td>' + item.occupation + '</td></tr>'
                 );
             })
             $("#sheetsTable").append('\n</tbody>')
+
+            //Body text
+
+            //Event Listeners
+            $(".sheetRow").click(function () {
+                let makerId = $(this).children()[0].innerHTML;
+                alert ("You selected sheet " + makerId)
+            })
+            $(".sheetRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#e8ecef');
+            }).mouseleave(function () {
+                    $(this).css('background-color', 'white');
+            })
         },
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
@@ -206,34 +212,42 @@ function showOnlineMakers() {
                     '   <td>' + item.id + '</td>' +
                     '   <td>' + item.firstName + '</td>'+
                     '   <td>' + item.lastName + '</td>'+
-                    '   <td>' + item.email + '</td>'
+                    '   <td>' + item.email + '</td></tr>'
                 );
             })
             $("#onlineTable").append('\n</tbody>')
-        },
-        error: function (res, status) {
-            $("#floor").html("Something went wrong!");
-            //log, send error report
-        }
-    }),
 
-        setTimeout( function () {
+            //Body text
+            $("#text1").append('<h6>This is a table of current online makers.</h6>');
+            $("#text2").append('<h6>This is a running table of daily/weekly/monthly hours?</h6>');
+
+            //Event Listeners
             $(".onlineRow").click(function () {
                 let clientId = $(this).children()[0].innerHTML;
-                alert ("You selected client " + clientId)
+                alert("You selected client " + clientId)
             })
             $(".onlineRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
                 $(this).css('background-color', '#e8ecef');
             }).mouseleave(function () {
                 $(this).css('background-color', 'white');
-
             })
-        }, 300)
+        },
+        error: function (res, status) {
+            $("#floor").html("Something went wrong!");
+            //log, send error report
+        }
+    })
 }
 
 $(document).ready(function () {
-    //Event Listeners
+
+    //Main page tables (functionality not included in navItem)
+    //Requires on load document ready instead of event listener method
+    //otherwise it will not load unless clicking on 'Main'
+    showOnlineMakers();
+
+    //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
     })
@@ -252,7 +266,6 @@ $(document).ready(function () {
     $("#actualImage").css("float", "left");
     $("#landingLogo").css("height", "15rem");
 
-    //Main page tables
-    setTimeout(showOnlineMakers());
+
 
 })
