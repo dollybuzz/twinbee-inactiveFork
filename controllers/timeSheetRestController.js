@@ -3,13 +3,13 @@ const timeSheetService = require('../services/timeSheetService.js');
 
 module.exports = {
     getAllTimeSheets: async (req,res) => {
-        console.log(req);
+        //console.log(req);
         let timeSheets = await timeSheetRepo.getAllSheets();
         res.send(timeSheets);
     },
 
     getTimeSheetByClientId: async (req, res) => {
-        console.log(req);
+       // console.log(req);
         let id = req.query.id;
         let clientTimeSheet = await timeSheetRepo.getSheetsByClient(id);
 
@@ -22,7 +22,7 @@ module.exports = {
     },
 
     getTimeSheetByMakerId: async (req, res) => {
-        console.log(req);
+      //  console.log(req);
         let id = req.query.id;
         let makerTimeSheet = await timeSheetRepo.getSheetsByMaker(id);
 

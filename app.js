@@ -10,6 +10,7 @@ const makerPageController = require('./controllers/makerPageController.js');
 const clientRestController = require('./controllers/clientRestController.js');
 const makerRestController = require('./controllers/makerRestController.js');
 const timeSheetRestController = require('./controllers/timeSheetRestController.js');
+const chargebeeRestController = require('./controllers/chargebeeRestController.js');
 const app = express();
 const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
@@ -43,9 +44,16 @@ app.get("/api/getMaker", makerRestController.getMakerById);
 app.get("/api/getTimeSheetByClientId", timeSheetRestController.getTimeSheetByClientId);
 app.get("/api/getTimeSheetByMakerId", timeSheetRestController.getTimeSheetByMakerId);
 app.get("/api/getOnlineMakers", makerRestController.getOnlineMakers);
+app.post("/api/createPlan", chargebeeRestController.createPlan);
+app.post("/api/updatePlan", chargebeeRestController.updatePlan);
+app.post("/api/deletePlan", chargebeeRestController.deletePlan);
+app.get("/api/retrievePlan", chargebeeRestController.retrievePlan);
+app.post("/api/createSubscription", chargebeeRestController.createSubscription);
+app.post("/api/updateSubscription", chargebeeRestController.updateSubscription);
+app.post("/api/deleteSubscription", chargebeeRestController.deleteSubscription);
+app.get("/api/retrieveSubscription", chargebeeRestController.retrieveSubscription);
 
 (async function() {
-
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

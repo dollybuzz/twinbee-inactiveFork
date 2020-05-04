@@ -7,13 +7,13 @@ module.exports ={
     },
 
     getAllMakers: async (req, res) => {
-        console.log(req);
+    //    console.log(req);
         let makers = await makerService.getAllMakers();
         res.send(makers);
     },
 
     getMakerById: async (req, res)=>{
-        console.log(req)
+    //    console.log(req)
         let id = req.query.id;
         let maker = await makerService.getMakerById(id);
 
