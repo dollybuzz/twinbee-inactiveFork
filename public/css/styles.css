@@ -107,3 +107,9 @@ footer a {
     left: 0;
     right: 0;
 }
+
+#floor {
+    width: 100vh;
+    max-height: 200px;
+    overflow-y: scroll;
+}

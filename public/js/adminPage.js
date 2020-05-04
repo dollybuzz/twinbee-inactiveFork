@@ -182,7 +182,7 @@ function showSheets(){
 function showOnlineMakers() {
     $("#online").html(
         "<div id=\"floor\">\n" +
-        "    <table id=\"onlineTable\" class=\"table\">\n" +
+        "    <table id=\"onlineTable\" class=\"table\" cellspacing=\"0\">\n" +
         "    </table>\n" +
         "</div>")
     $.ajax({
@@ -254,6 +254,5 @@ $(document).ready(function () {
 
     //Main page tables
     setTimeout(showOnlineMakers());
-
 
 })
