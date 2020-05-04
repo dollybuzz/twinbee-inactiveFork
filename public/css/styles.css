@@ -113,3 +113,9 @@ footer a {
     max-height: 200px;
     overflow-y: scroll;
 }
+
+#time {
+    position: absolute;
+    top: 120px;
+    right: 20px;
+}
