@@ -1,6 +1,8 @@
 const makerRepo = require('../repositories/makerRepo.js');
+const util = require('util');
+const request = util.promisify(require('request'));
 const Maker = require('../domain/entity/maker.js');
-//id, name, location, remainingHours, email, chargebeeObj, makers)
+
 class MakerService {
     constructor(){};
     //TODO: handle chargebee, maker integration
@@ -35,17 +37,21 @@ class MakerService {
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByMaker(id){
-        let sheets = [];
-
-        return sheets;
+        let result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
+            .catch(err=>{console.log(err)});
+        let sheets = JSON.parse(result.body);
+        let makerSheets = [];
+        for (var i = 0; i < sheets.length; ++i){
+            if (sheets[i].makerId == id){
+                makerSheets.push(sheets[i]);
+            }
+        }
+        return makerSheets;
     }
 
     async getClientListForMakerId(id){
 
-        let clients = [];
-
-        /*
-         */
+        let clients;
 
 
 

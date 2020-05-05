@@ -71,7 +71,7 @@ describe('Maker Service Test', function () {
 
     it('Should grab only the sheets for the specified maker (by id)', async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllSheets')
+            .get('/api/getAllTimesheets')
             .reply(200,
                 [
                         {
