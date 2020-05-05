@@ -5,9 +5,15 @@ chargebee.configure({site : "freedom-makers-test",
 
 //TODO: Add validation
 /**
- * Service that handles chargebee interaction (plans, subscriptions)
+ * Service that handles chargebee interaction (plans, subscriptions).
+ *
  */
 class ChargebeeService {
+
+    /**
+     * Note: no setup for the service is necessary. The ClientService object
+     * is to be used as a singleton.
+     */
     constructor() {
     };
 

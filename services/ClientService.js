@@ -6,17 +6,10 @@ var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
     api_key : process.env.CHARGEBEE_TEST_API})
 
+//TODO: Add validation
 /**
- * Service that works with client objects.  Client objects in form:
- * {
- *      id: database id,
- *      name: client name,
- *      location: client location,
- *      chargebeeObj: Chargebee "Customer" object,
- *      remainingHours: hours as float/double,
- *      email: client's email address,
- *      makers: list of all makers associated with this client
- * }
+ * Service that works with chargebee's customer objects
+ *
  */
 class ClientService {
 
@@ -30,19 +23,18 @@ class ClientService {
 
 
     /**
-     * v2 - chargebee integration
      *
-     * Retrieves all clients as Client objects in a list.
+     * Retrieves all clients as Client objects in a list of entries. Note than intermediate
+     * object must be accessed to obtain meaningful data.  E.g, to obtaina phone number
+     * from the list, use resultList[0].customer.phone
      *
-     * Calls: ClientService.getMakersForClient, ClientService.getChargebeeObjForClientByEmail, Client()
-     * @returns {Promise<[all client objects]>}
+     * @returns {Promise<[entry]>}
      */
     async getAllClients() {
         return await clientRepo.getAllClients();
     }
 
     /**
-     * V2, chargebee integration
      * Creates a newly acquired client and logs them to the database. An object
      * reference to the client is returned.
      * @param firstName     - customer first name
@@ -50,32 +42,17 @@ class ClientService {
      * @param customerEmail - customer email
      * @param addressStreet - customer streed address
      * @param customerCity  - customer city
-     * @param customerStateFull - customer state typed out
+     * @param customerStateFull - customer state typed fully
      * @param customerZip   - customer zip code
      * @returns {Promise<chargebee customer object>}
      */
-    createNewClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
-        return new Promise((resolve, reject) => {
-            clientRepo.createClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber);
-            chargebee.customer.list({
-                "email[is]": customerEmail
-            }).request(function (error, result) {
-                if (error) {
-                    //email us?
-                    console.log(error);
-                    reject(error);
-                } else {
-                    var entry = result.list[0]
-                  //  console.log(entry);
-                    var customer = entry.customer;
-                    resolve(customer);
-                }
-            });
-        })
+    async createNewClient(firstName, lastName, customerEmail, addressStreet,
+                          customerCity, customerStateFull, customerZip, phoneNumber) {
+        return await clientRepo.createClient(firstName, lastName, customerEmail, addressStreet,
+            customerCity, customerStateFull, customerZip, phoneNumber);
     }
 
     /**
-     * v2 - chargebee integration
      * Retrives a client by their database id.
      * @param id    - client's chargebee id
      * @returns {Promise<chargebee customer object>}
@@ -87,7 +64,6 @@ class ClientService {
 
 
     /**
-     * v2 - chargebee integration
      * Retrieves time all time sheets for a given client.
      * @param id    - id of the desired client
      * @returns {Promise<[]>} containing time_sheet objects
@@ -110,7 +86,6 @@ class ClientService {
     }
 
     /**
-     * v2 - chargebee integration
      * Removes a client from the database. TODO: remove from chargebee
      * @param id    - Id of client to be removed
      */
@@ -119,7 +94,6 @@ class ClientService {
     }
 
     /**
-     * v2 - chargebee integration
      * Retrieves all makers associated with a given client given the client's id.
      * "Associated with" is identified as having a timesheet (open or not) linked to
      * the client.
@@ -157,7 +131,6 @@ class ClientService {
 
 
     /**
-     * v2 - chargebee integration
      * Retrieves the chargebee "Customer" object for a client given their email.
      *
      * @param email - Client's email address

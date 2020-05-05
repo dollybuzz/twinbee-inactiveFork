@@ -9,10 +9,10 @@ module.exports = {
         res.send(client);
     },
 
-    createClient: (req, res) => {
-        clientService.createNewClient(req.body.firstName, req.body.lastName, req.body.email, req.body.address,
+    createClient: async (req, res) => {
+        let client = await clientService.createNewClient(req.body.firstName, req.body.lastName, req.body.email, req.body.address,
             req.body.city, req.body.state, req.body.zip)
-        res.end();
+        res.send(client);
     },
 
     deleteClient: (req, res) => {

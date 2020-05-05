@@ -9,37 +9,45 @@ class ClientRepository {
     };
 
     createClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
-        chargebee.customer.create({
-            first_name : firstName,
-            last_name : lastName,
-            email : customerEmail,
-            billing_address : {
+        return new Promise((resolve, reject) => {
+            chargebee.customer.create({
                 first_name : firstName,
                 last_name : lastName,
-                line1 : addressStreet,
-                city : customerCity,
-                state : customerStateFull,
-                zip : customerZip,
-                country : "US",
-                phone: phoneNumber
-            }
-        }).request(function(error,result) {
-            if(error){
-                //TODO handle error... email us?
-                //console.log(error);
-            }else{
-                //console.log(result);
-                var customer = result.customer;
-                var card = result.card;
+                email : customerEmail,
+                billing_address : {
+                    first_name : firstName,
+                    last_name : lastName,
+                    line1 : addressStreet,
+                    city : customerCity,
+                    state : customerStateFull,
+                    zip : customerZip,
+                    country : "US",
+                    phone: phoneNumber
+                }
+            }).request(function(error,result) {
+                if(error){
+                    //TODO handle error... email us?
+                    //console.log(error);
+                    reject(error);
+                }else{
+                    //console.log(result);
+                    var customer = result.customer;
+                    var card = result.card;
 
-                let sql = 'INSERT INTO client(chargebee_id, email) ' +
-                    'VALUES (?, ?)';
-                let sqlParams = [customer.id, customerEmail];
-                query(sql, sqlParams, function (err, result) {
-                    if (err) throw err;
-                })
-            }
-        });
+                    let sql = 'INSERT INTO client(chargebee_id, email) ' +
+                        'VALUES (?, ?)';
+                    let sqlParams = [customer.id, customerEmail];
+                    query(sql, sqlParams, function (err, result) {
+                        if (err) {
+                            throw err;
+                            reject(err);
+                        }
+                    })
+
+                    resolve(customer);
+                }
+            });
+        })
     }
 
     updateClient(clientId, firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
