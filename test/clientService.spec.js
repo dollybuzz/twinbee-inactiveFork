@@ -24,7 +24,7 @@ const maker3 = {id: '3', firstName: 'firstName3', lastName: 'lastName3', email: 
 
 describe('Client Service Test', function () {
     beforeEach(function () {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+      /*  let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getAllClients')
             .reply(200, [client1, client2, client3]);
         let scope2 = nock(`http://${process.env.IP}:${process.env.PORT}`)
@@ -69,6 +69,7 @@ describe('Client Service Test', function () {
                     email: 'client1@twinbee.com'
                 };
         })
+       */
     });
 
     afterEach(function () {

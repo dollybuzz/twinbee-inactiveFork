@@ -54,10 +54,6 @@ class MakerService {
         return [];
     }
 
-    async getChargebeeObjectForId(id){
-        return null;
-    }
-
     async getMakerById(id){
         let makers = await  this.getAllMakers();
         for (var i = 0; i < makers.length; ++i){
