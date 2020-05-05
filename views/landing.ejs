@@ -2,34 +2,22 @@
 <script src="/js/landingPage.js"></script>
 <div id="landingMain">
     <form action="/api/login" method="post">
-        <div class="form-row">
-            <div class="col-25">
+        <div id="form-row-email">
                 <label for="userEmail">Email</label>
-            </div>
-            <div class="class-75">
                 <input id="userEmail" name="userEmail" type="email" class="form-control" placeholder="myemail@email.com">
-            </div>
         </div>
-        <div class="form-row">
-            <div class="col-25">
+        <div id="form-row-pass">
                 <label for="userPassword">Password</label>
-            </div>
-            <div class="col-75">
                 <input id="userPassword" name="userPassword" type="password" class="form-control" placeholder="password">
-            </div>
         </div>
-        <div class="form-row">
-            <div class="col-25">
+        <div id="form-row-type">
                 <label for="type">Dev Use Only</label>
-            </div>
-            <div class="col-75">
                 <input id="userType" name="userType" type="text" class="form-control" placeholder="'admin', 'maker', or 'client'">
-            </div>
         </div>
         <button id="loginButton" type="submit" class="btn btn-default">Log In</button>
     </form>
-    <a href="">Forgot username or password?</a>
     <br>
+    <a href="">Forgot username or password?</a>
     <br>
 </div>
 <%- include('partials/footer.ejs') -%>
