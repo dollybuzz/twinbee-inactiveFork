@@ -19,14 +19,14 @@
 <body>
 <header>
     <div id="landingLogo">
-        <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+        <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>"></div>
         <div id=<%=siteTitle["text"]%>>
+            <span id="welcome"><%=welcome["text"]%></span>
             <%=pageTitle["text"]%>
         </div>
-    </div>
     <div id="time"></div>
-</header>
 
+</header>
 <nav>
     <%if (typeof navItemsTop !== "undefined"){%>
         <% for (var i = 0; i < navItemsTop.length; ++i){%>
@@ -36,6 +36,6 @@
             <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
         <%}%>
     <%}else{%>
-    <h5>Welcome!</h5>
     <%}%>
 </nav>
+

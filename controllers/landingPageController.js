@@ -18,7 +18,11 @@ module.exports ={
             {link: "", text: "Problems? Contact us."},
         ]
 
-        res.render("landing", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsBottom: footerLinks});
+        let user = {
+            text: "Welcome!"
+        }
+
+        res.render("landing", {welcome:user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsBottom: footerLinks});
     },
 
     temporaryNavigateFunction: (req, res)=>{

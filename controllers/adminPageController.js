@@ -19,7 +19,10 @@ module.exports ={
         let footerLinks = [
             {link: "", text: "Report a problem", id: "reportProblem"}
         ];
+        let user = {
+            text: "Welcome, Admin!"
+        };
 
-        res.render("admin", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("admin", {welcome: user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     }
 }

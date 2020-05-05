@@ -263,11 +263,14 @@ $(document).ready(function () {
 
     //shifts the landing logo
     $("#actualImage").css("float", "left");
-    $("#landingLogo").css("height", "15rem");
+    $("#landingLogo").css("height", "210px");
 
     //shifts the time and date
-    $("#time").css("top", "190px");
+    $("#time").css("top", "150px");
 
-
+    //shifts the welcome textS
+    $("#welcome").css("position", "absolute");
+    $("#welcome").css("top", "15px");
+    $("#welcome").css("right", "20px");
 
 })

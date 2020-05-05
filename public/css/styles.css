@@ -20,7 +20,7 @@ body {
 #landingLogo {
     text-align: center;
     background-color: #e8ecef;
-    padding: 10px;
+    padding: 20px;
 }
 
 nav {
@@ -100,12 +100,18 @@ footer a {
 }
 
 #adminTitle {
-    font-size: 1.8em;
-    padding-top: 160px;
+    font-size: 1.5em;
+    padding-top: 120px;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
+}
+
+#landingTitle {
+    padding: 10px;
+    font-size: 1.5em;
+    background-color: #32444e;
 }
 
 #floor {
