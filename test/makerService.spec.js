@@ -6,8 +6,7 @@ const makerService = require('../services/makerService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const Maker = require('../domain/entity/maker.js');
-
-
+const nock = require('nock');
 
 const timeSheetBasic1 = {id: "1", maker_id: "1", client_id: "1", hourly_rate: "20.00",
     start_time: '2019-04-24 22:22:22', end_time: '0000-00-00 00:00:00', occupation: ''}
@@ -16,10 +15,11 @@ const timeSheetBasic2 = {id: "2", maker_id: "1", client_id: "1", hourly_rate: "2
 const timeSheetBasic3 = {id: "3", maker_id: "2", client_id: "1", hourly_rate: "20.00",
     start_time: '2019-04-22 22:22:22', end_time: '2019-04-22 23:23:23', occupation: ''}
 
+const maker1 = new Maker(1, 'first1', 'last1', 'email1');
+const maker2 = new Maker(2, 'first2', 'last2', 'email2');
+const maker3 = new Maker(3, 'first3', 'last3', 'email3');
 
-const maker1 = new Maker(1, 'first1', 'last1', 'email1', null, null);
-const maker2 = new Maker(2, 'first2', 'last2', 'email2', null, null);
-const maker3 = new Maker(3, 'first3', 'last3', 'email3', null, null);
+
 
 describe('Maker Service Test', function () {
 
@@ -45,7 +45,6 @@ describe('Maker Service Test', function () {
                     }
                 ];
             });
-        let getAllSheetsStub = sinon.stub(time)
     });
 
     afterEach(function () {
@@ -75,33 +74,33 @@ describe('Maker Service Test', function () {
             .get('/api/getAllSheets')
             .reply(200,
                 [
-                    {
-                        id: '1',
-                        makerId: '1',
-                        clientId: "1",
-                        hourlyRate: '20.00',
-                        timeIn: '2019-04-24 22:22:22',
-                        timeOut: '0000-00-00 00:00:00',
-                        occupation: ''
-                    },
-                    {
-                        id: '2',
-                        makerId: '1',
-                        clientId: "1",
-                        hourlyRate: '20.00',
-                        timeIn: '2019-04-23 22:22:22',
-                        timeOut: '2019-04-23 23:23:23',
-                        occupation: ''
-                    },
-                    {
-                        id: '3',
-                        makerId: '2',
-                        clientId: "1",
-                        hourlyRate: '20.00',
-                        timeIn: '2019-04-22 22:22:22',
-                        timeOut: '2019-04-22 23:23:23',
-                        occupation: ''
-                    },
+                        {
+                            id: '1',
+                            makerId: '1',
+                            clientId: "1",
+                            hourlyRate: '20.00',
+                            timeIn: '2019-04-24 22:22:22',
+                            timeOut: '0000-00-00 00:00:00',
+                            occupation: ''
+                        },
+                        {
+                            id: '2',
+                            makerId: '1',
+                            clientId: "1",
+                            hourlyRate: '20.00',
+                            timeIn: '2019-04-23 22:22:22',
+                            timeOut: '2019-04-23 23:23:23',
+                            occupation: ''
+                        },
+                        {
+                            id: '3',
+                            makerId: '2',
+                            clientId: "1",
+                            hourlyRate: '20.00',
+                            timeIn: '2019-04-22 22:22:22',
+                            timeOut: '2019-04-22 23:23:23',
+                            occupation: ''
+                        },
                 ]
             );
 
@@ -131,12 +130,9 @@ describe('Maker Service Test', function () {
         );
     })
 
-    it("Should grab the correct chargebee object given a maker's id", async function f() {
+
+
+    it("INTEGRATION: Should grab a list of associated clients given a maker's id", async function f() {
         throw new Error("not implemented")
     })
-
-    it("Should grab a list of associated clients given a maker's id", async function f() {
-        throw new Error("not implemented")
-    })
-
 })
