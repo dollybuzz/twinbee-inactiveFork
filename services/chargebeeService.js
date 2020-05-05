@@ -126,7 +126,7 @@ class ChargebeeService {
     }
 
     /**
-     * When implemented, will delete a plan entirely
+     * Deletes a plan by chargebee plan id
      * @param planId
      */
     deletePlan(planId) {
@@ -174,23 +174,27 @@ class ChargebeeService {
      * @param planQuantity- number of hours per month
      */
     createSubscription(planId, customerId, planQuantity) {
-        chargebee.subscription.create_for_customer(customerId, {
-            plan_id: planId,
-            plan_quantity: planQuantity,
-            auto_collection: "off"
-        }).request(function (error, result) {
-            if (error) {
-                //handle error
-                console.log(error);
-            } else {
-                //console.log(result);
-                var subscription = result.subscription;
-                var customer = result.customer;
-                var card = result.card;
-                var invoice = result.invoice;
-                var unbilled_charges = result.unbilled_charges;
-            }
-        });
+        return new Promise((resolve, reject) => {
+            chargebee.subscription.create_for_customer(customerId, {
+                plan_id: planId,
+                plan_quantity: planQuantity,
+                auto_collection: "off"
+            }).request(function (error, result) {
+                if (error) {
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                } else {
+                    //console.log(result);
+                    var subscription = result.subscription;
+                    var customer = result.customer;
+                    var card = result.card;
+                    var invoice = result.invoice;
+                    var unbilled_charges = result.unbilled_charges;
+                    resolve(subscription);
+                }
+            });
+        })
     }
 
     /**
