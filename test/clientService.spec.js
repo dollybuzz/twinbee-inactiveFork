@@ -5,7 +5,6 @@ const clientRepo = require('../repositories/clientRepo.js');
 const clientService = require('../services/clientService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
-const Client = require('../domain/entity/client.js');
 const nock = require('nock');
 const util = require('util');
 const request = util.promisify(require('request'));
@@ -21,16 +20,9 @@ const maker1 = {id: '1', firstName: 'firstName1', lastName: 'lastName1', email: 
 const maker2 = {id: '2', firstName: 'firstName2', lastName: 'lastName2', email: 'email2', clients: null, chargebeeObj: null};
 const maker3 = {id: '3', firstName: 'firstName3', lastName: 'lastName3', email: 'email3', clients: null, chargebeeObj: null};
 
-const client1 = new Client('1', 'name1', 'loc1', 'rem1', 'client1@twinbee.com', null, [maker1,  maker2]);
-const client2 = new Client('2', 'name2', 'loc2', 'rem2', 'client2@twinbee.com', null, [maker3]);
-const client3 = new Client('3', 'name3', 'loc3', 'rem3', 'client3@twinbee.com', null, []);
-
 
 
 describe('Client Service Test', function () {
-
-
-
     beforeEach(function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getAllClients')

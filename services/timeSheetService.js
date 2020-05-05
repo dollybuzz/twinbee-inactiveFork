@@ -7,22 +7,13 @@ const TimeSheet = require('../domain/entity/timeSheet.js');
 class TimeSheetService {
     constructor(){};
 
-    async createTimeSheet(id, makerId, email, hourlyRate, clientId, timeIn, timeOut) {
-        return new TimeSheet(id, makerId, email, hourlyRate, clientId, timeIn, timeOut);
+    async createTimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation) {
+        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation);
     }
 
     async getOnlineMakers(){
         let onlineUsers = [];
-        let repoResult = await makerRepo.getOnlineMakers();
-        repoResult.forEach(item => {
-            let newObj = {};
-            newObj.id = item.id;
-            newObj.first_name = item.first_name;
-            newObj.last_name = item.last_name;
-            newObj.email = item.email;
-            newObj.time_online = moment.duration(moment(Date.now())-moment(item.start_time)).asMinutes();
-            onlineUsers.push(newObj);
-        })
+       //getAllMakers, if in timesheet, dosomething
         return onlineUsers;
     }
 

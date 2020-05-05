@@ -1,5 +1,4 @@
 const clientRepo = require('../repositories/clientRepo.js');
-const Client = require('../domain/entity/client.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 var chargebee = require("chargebee");
