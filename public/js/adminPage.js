@@ -273,4 +273,11 @@ $(document).ready(function () {
     $("#welcome").css("top", "15px");
     $("#welcome").css("right", "20px");
 
+    //Adding logout Button
+    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
+    $("#logoutButton").click(function () {
+        window.location.href = "/";
+
+    })
+
 })

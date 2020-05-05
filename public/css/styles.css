@@ -62,15 +62,25 @@ footer a {
     padding: 10px;
 }
 
-#loginButton {
+#loginButton, #logoutButton {
     color: white;
     background-color: #32444e;
 }
 
+#logoutButton {
+    position: absolute;
+    top:50px;
+    right: 20px;
+}
+
 #loginButton:hover {
-    color: white;
     background-color: #dbb459;
 }
+
+#logoutButton:hover {
+    background-color: #dbb459;
+}
+
 
 #userEmail, #userPassword, #userType {
     background: #e8ecef;
