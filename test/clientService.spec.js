@@ -29,6 +29,8 @@ const client3 = new Client('3', 'name3', 'loc3', 'rem3', 'client3@twinbee.com', 
 
 describe('Client Service Test', function () {
 
+
+
     beforeEach(function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .get('/api/getAllClients')
@@ -81,7 +83,11 @@ describe('Client Service Test', function () {
         sinon.restore();
     });
 
-
+    it("Needs a rewrite in the form of integration tests now that chargebee has taken over client functionality",
+        function () {
+            throw new Error("No work has been done towards this yet.")
+        })
+/*
     it("INTEGRATION: Chargebee. Should return the correct chargebee object for a client given the client object",
         async function () {
 
@@ -151,4 +157,6 @@ describe('Client Service Test', function () {
         expect(actual).to.deep.equal(client1);
         expect(Object.keys(actual.chargebeeObj)).to.deep.equal(Object.keys(client1.chargebeeObj))
     })
+
+ */
 })

@@ -53,7 +53,7 @@ class ClientService {
     }
 
     /**
-     * Retrives a client by their database id.
+     * Retrieves a client by their database id.
      * @param id    - client's chargebee id
      * @returns {Promise<chargebee customer object>}
      */
