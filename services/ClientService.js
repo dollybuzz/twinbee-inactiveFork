@@ -1,5 +1,4 @@
 const clientRepo = require('../repositories/clientRepo.js');
-const Client = require('../domain/entity/client.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 var chargebee = require("chargebee");
@@ -53,7 +52,7 @@ class ClientService {
     }
 
     /**
-     * Retrives a client by their database id.
+     * Retrieves a client by their database id.
      * @param id    - client's chargebee id
      * @returns {Promise<chargebee customer object>}
      */
