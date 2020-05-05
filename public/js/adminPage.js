@@ -42,7 +42,7 @@ function showClients() {
                 if (item.customer.billing_address) {
                     $("#clientTable").append('\n' +
                         '<tr class="clientRow">' +
-                        '   <th scope="row">' + item.customer.id + '</th>' +
+                        '   <td scope="row">' + item.customer.id + '</td>' +
                         '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
                         '   <td>' + `${item.customer.billing_address.city}, ${item.customer.billing_address.state}` + '</td>' +
                         '   <td>' + "not implemented" + '</td>' +
@@ -95,7 +95,7 @@ function showMakers(){
             res.forEach(item => {
                 $("#makerTable").append('\n' +
                     '<tr class="makerRow">' +
-                    '   <th scope="row">' + item.id +'</th>' +
+                    '   <td scope="row">' + item.id +'</td>' +
                     '   <td>' + item.firstName + '</td>'+
                     '   <td>' + item.lastName + '</td>'+
                     '   <td>' + item.email + '</td></tr>'
@@ -152,7 +152,7 @@ function showSheets(){
             res.forEach(item => {
                 $("#sheetsTable").append('\n' +
                     '<tr class="sheetRow">' +
-                    '   <th scope="row">' + item.id +'</th>' +
+                    '   <td scope="row">' + item.id +'</td>' +
                     '   <td>' + item.maker_id + '</td>'+
                     '   <td>' + item.client_id + '</td>'+
                     '   <td>' + item.hourly_rate + '</td>'+
@@ -277,6 +277,27 @@ $(document).ready(function () {
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(function () {
         window.location.href = "/";
+
+
+        var $thead = $('thead');
+        var stickyThead = $thead.offset().top;
+        var theadWidth = $thead.width();
+
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > stickyThead) {
+                $thead.css({
+                    position: 'fixed',
+                    top: '0px',
+                    width: theadWidth
+                });
+            } else {
+                $thead.css({
+                    position: 'static',
+                    top: '0px'
+                });
+            }
+        })
+
 
     })
 
