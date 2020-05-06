@@ -46,11 +46,23 @@ describe('Maker Service Test', function () {
                     }
                 ];
             });
+        let createMakeStub = sinon.stub(makerRepo, 'createMaker')
+            .callsFake(()=>{
+                console.log("Don't actually call the repo's createMaker!")
+            })
+        let makerIdByEmailStub = sinon.stub(makerRepo, 'getMakerIdByEmail')
+            .callsFake(()=>{return 5});
     });
 
     afterEach(function () {
         sinon.restore();
     });
+
+
+    it('Should return a newly created valid maker object', async function () {
+        let maker = await makerService.createMaker('first', 'last', 'email');
+        expect(maker).to.deep.equal(new Maker(5, 'first', 'last', 'email'));
+    })
 
 
     it('Should grab all makers',  async () => {
@@ -314,7 +326,6 @@ describe('Maker Service Test', function () {
         let actual = await makerService.getClientListForMakerId(1);
 
         expect(actual).to.deep.equal([
-
             {
                 "id": "169yOXRy3SPY9s7n",
                 "first_name": "firstname4",

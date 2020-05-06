@@ -5,7 +5,12 @@ const Maker = require('../domain/entity/maker.js');
 
 class MakerService {
     constructor(){};
-    //TODO: handle chargebee, maker integration
+
+    /**
+     * Retrives a list of all makers.
+     *
+     * @returns {Promise<[Maker]>}
+     */
     async getAllMakers(){
         let makers = [];
         let repoResult = await makerRepo.getAllMakers();
@@ -17,7 +22,17 @@ class MakerService {
         return makers;
     }
 
-    async createMaker(id, firstName, lastName, email){
+    /**
+     *
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @returns {Promise<void>}
+     */
+    async createMaker(firstName, lastName, email){
+        await makerRepo.createMaker(firstName, lastName, email);
+        let id = await makerRepo.getMakerIdByEmail(email);
         return new Maker(id, firstName, lastName, email);
     }
 
@@ -86,8 +101,6 @@ class MakerService {
         }
         return 'not found';
     }
-
-
 }
 
 module.exports = new MakerService();
