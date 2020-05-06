@@ -8,11 +8,11 @@ const moment = require('moment');
 const Maker = require('../domain/entity/maker.js');
 const nock = require('nock');
 
-const timeSheetBasic1 = {id: "1", maker_id: "1", client_id: "1", hourly_rate: "20.00",
+const timeSheetBasic1 = {id: "1", maker_id: "1", client_id: "169yOXRy3SPY9s7n", hourly_rate: "20.00",
     start_time: '2019-04-24 22:22:22', end_time: '0000-00-00 00:00:00', occupation: ''}
-const timeSheetBasic2 = {id: "2", maker_id: "1", client_id: "1", hourly_rate: "20.00",
+const timeSheetBasic2 = {id: "2", maker_id: "1", client_id: "169yOXRy3SPY9s7n", hourly_rate: "20.00",
     start_time: '2019-04-23 22:22:22', end_time: '2019-04-23 23:23:23', occupation: ''}
-const timeSheetBasic3 = {id: "3", maker_id: "2", client_id: "1", hourly_rate: "20.00",
+const timeSheetBasic3 = {id: "3", maker_id: "2", client_id: "169yOXRy3SPY9s7n", hourly_rate: "20.00",
     start_time: '2019-04-22 22:22:22', end_time: '2019-04-22 23:23:23', occupation: ''}
 
 const maker1 = new Maker(1, 'first1', 'last1', 'email1');
@@ -24,6 +24,7 @@ const maker3 = new Maker(3, 'first3', 'last3', 'email3');
 describe('Maker Service Test', function () {
 
     beforeEach(function () {
+        let getClientsStub = sinon.stub
         let getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
             .callsFake(() => {
                 return [
@@ -77,7 +78,7 @@ describe('Maker Service Test', function () {
                         {
                             id: '1',
                             makerId: '1',
-                            clientId: "1",
+                            clientId: "169yOXRy3SPY9s7n",
                             hourlyRate: '20.00',
                             timeIn: '2019-04-24 22:22:22',
                             timeOut: '0000-00-00 00:00:00',
@@ -86,7 +87,7 @@ describe('Maker Service Test', function () {
                         {
                             id: '2',
                             makerId: '1',
-                            clientId: "1",
+                            clientId: "169yOXRy3SPY9s7n",
                             hourlyRate: '20.00',
                             timeIn: '2019-04-23 22:22:22',
                             timeOut: '2019-04-23 23:23:23',
@@ -95,7 +96,7 @@ describe('Maker Service Test', function () {
                         {
                             id: '3',
                             makerId: '2',
-                            clientId: "1",
+                            clientId: "169yOXRy3SPY9s7n",
                             hourlyRate: '20.00',
                             timeIn: '2019-04-22 22:22:22',
                             timeOut: '2019-04-22 23:23:23',
@@ -111,7 +112,7 @@ describe('Maker Service Test', function () {
                 {
                     id: '1',
                     makerId: '1',
-                    clientId: "1",
+                    clientId: "169yOXRy3SPY9s7n",
                     hourlyRate: '20.00',
                     timeIn: '2019-04-24 22:22:22',
                     timeOut: '0000-00-00 00:00:00',
@@ -120,7 +121,7 @@ describe('Maker Service Test', function () {
                 {
                     id: '2',
                     makerId: '1',
-                    clientId: "1",
+                    clientId: "169yOXRy3SPY9s7n",
                     hourlyRate: '20.00',
                     timeIn: '2019-04-23 22:22:22',
                     timeOut: '2019-04-23 23:23:23',
@@ -133,6 +134,220 @@ describe('Maker Service Test', function () {
 
 
     it("INTEGRATION: Should grab a list of associated clients given a maker's id", async function f() {
-        throw new Error("not implemented")
+        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`).get('/api/getAllClients').reply(200,
+
+            [
+                {
+                    "customer": {
+                        "id": "169yOXRy3SPY9s7n",
+                        "first_name": "firstname4",
+                        "last_name": "lastname4",
+                        "email": "client4@twinbee.com",
+                        "auto_collection": "on",
+                        "net_term_days": 0,
+                        "allow_direct_debit": false,
+                        "created_at": 1588625431,
+                        "taxability": "taxable",
+                        "updated_at": 1588625431,
+                        "pii_cleared": "active",
+                        "resource_version": 1588625431110,
+                        "deleted": false,
+                        "object": "customer",
+                        "billing_address": {
+                            "first_name": "firstname4",
+                            "last_name": "lastname4",
+                            "line1": "1 test st",
+                            "city": "testCity",
+                            "state": "testState",
+                            "country": "US",
+                            "zip": "11111",
+                            "validation_status": "not_validated",
+                            "object": "billing_address"
+                        },
+                        "card_status": "no_card",
+                        "promotional_credits": 0,
+                        "refundable_credits": 0,
+                        "excess_payments": 0,
+                        "unbilled_charges": 0,
+                        "preferred_currency_code": "USD"
+                    }
+                },
+                {
+                    "customer": {
+                        "id": "16CHLFRxyBngJCvR",
+                        "first_name": "firstname4",
+                        "last_name": "lastname4",
+                        "email": "client4@twinbee.com",
+                        "auto_collection": "on",
+                        "net_term_days": 0,
+                        "allow_direct_debit": false,
+                        "created_at": 1588547590,
+                        "taxability": "taxable",
+                        "updated_at": 1588547590,
+                        "pii_cleared": "active",
+                        "resource_version": 1588547590622,
+                        "deleted": false,
+                        "object": "customer",
+                        "billing_address": {
+                            "first_name": "firstname4",
+                            "last_name": "lastname4",
+                            "line1": "1 test st",
+                            "city": "testCity",
+                            "state": "testState",
+                            "country": "US",
+                            "zip": "11111",
+                            "validation_status": "not_validated",
+                            "object": "billing_address"
+                        },
+                        "card_status": "no_card",
+                        "promotional_credits": 0,
+                        "refundable_credits": 0,
+                        "excess_payments": 0,
+                        "unbilled_charges": 0,
+                        "preferred_currency_code": "USD"
+                    }
+                },
+                {
+                    "customer": {
+                        "id": "16CHLFRxyBSyGCtM",
+                        "first_name": "firstname4",
+                        "last_name": "lastname4",
+                        "email": "client4@twinbee.com",
+                        "auto_collection": "on",
+                        "net_term_days": 0,
+                        "allow_direct_debit": false,
+                        "created_at": 1588547511,
+                        "taxability": "taxable",
+                        "updated_at": 1588547511,
+                        "pii_cleared": "active",
+                        "resource_version": 1588547511011,
+                        "deleted": false,
+                        "object": "customer",
+                        "billing_address": {
+                            "first_name": "firstname4",
+                            "last_name": "lastname4",
+                            "line1": "1 test st",
+                            "city": "testCity",
+                            "state": "testState",
+                            "country": "US",
+                            "zip": "11111",
+                            "validation_status": "not_validated",
+                            "object": "billing_address"
+                        },
+                        "card_status": "no_card",
+                        "promotional_credits": 0,
+                        "refundable_credits": 0,
+                        "excess_payments": 0,
+                        "unbilled_charges": 0,
+                        "preferred_currency_code": "USD"
+                    }
+                },
+                {
+                    "customer": {
+                        "id": "16CHLFRxyBHonCsd",
+                        "first_name": "firstname4",
+                        "last_name": "lastname4",
+                        "email": "client4@twinbee.com",
+                        "auto_collection": "on",
+                        "net_term_days": 0,
+                        "allow_direct_debit": false,
+                        "created_at": 1588547468,
+                        "taxability": "taxable",
+                        "updated_at": 1588547468,
+                        "pii_cleared": "active",
+                        "resource_version": 1588547468144,
+                        "deleted": false,
+                        "object": "customer",
+                        "billing_address": {
+                            "first_name": "firstname4",
+                            "last_name": "lastname4",
+                            "line1": "1 test st",
+                            "city": "testCity",
+                            "state": "testState",
+                            "country": "US",
+                            "zip": "11111",
+                            "validation_status": "not_validated",
+                            "object": "billing_address"
+                        },
+                        "card_status": "no_card",
+                        "promotional_credits": 0,
+                        "refundable_credits": 0,
+                        "excess_payments": 0,
+                        "unbilled_charges": 0,
+                        "preferred_currency_code": "USD"
+                    }
+                }]);
+        let scope2 = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllTimesheets')
+            .reply(200,
+                [
+                    {
+                        id: '1',
+                        makerId: '1',
+                        clientId: "169yOXRy3SPY9s7n",
+                        hourlyRate: '20.00',
+                        timeIn: '2019-04-24 22:22:22',
+                        timeOut: '0000-00-00 00:00:00',
+                        occupation: ''
+                    },
+                    {
+                        id: '2',
+                        makerId: '1',
+                        clientId: "169yOXRy3SPY9s7n",
+                        hourlyRate: '20.00',
+                        timeIn: '2019-04-23 22:22:22',
+                        timeOut: '2019-04-23 23:23:23',
+                        occupation: ''
+                    },
+                    {
+                        id: '3',
+                        makerId: '2',
+                        clientId: "169yOXRy3SPY9s7n",
+                        hourlyRate: '20.00',
+                        timeIn: '2019-04-22 22:22:22',
+                        timeOut: '2019-04-22 23:23:23',
+                        occupation: ''
+                    }
+                ]
+            );
+
+        let actual = await makerService.getClientListForMakerId(1);
+
+        expect(actual).to.deep.equal([
+
+            {
+                "id": "169yOXRy3SPY9s7n",
+                "first_name": "firstname4",
+                "last_name": "lastname4",
+                "email": "client4@twinbee.com",
+                "auto_collection": "on",
+                "net_term_days": 0,
+                "allow_direct_debit": false,
+                "created_at": 1588625431,
+                "taxability": "taxable",
+                "updated_at": 1588625431,
+                "pii_cleared": "active",
+                "resource_version": 1588625431110,
+                "deleted": false,
+                "object": "customer",
+                "billing_address": {
+                    "first_name": "firstname4",
+                    "last_name": "lastname4",
+                    "line1": "1 test st",
+                    "city": "testCity",
+                    "state": "testState",
+                    "country": "US",
+                    "zip": "11111",
+                    "validation_status": "not_validated",
+                    "object": "billing_address"
+                },
+                "card_status": "no_card",
+                "promotional_credits": 0,
+                "refundable_credits": 0,
+                "excess_payments": 0,
+                "unbilled_charges": 0,
+                "preferred_currency_code": "USD"
+            }
+        ]);
     })
 })

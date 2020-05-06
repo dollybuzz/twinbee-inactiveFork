@@ -50,14 +50,31 @@ class MakerService {
     }
 
     async getClientListForMakerId(id){
+        let result = await request(`http://${process.env.IP}:${process.env.port}/api/getAllClients`)
+            .catch(err=>{console.log(err)});
+        let clients = JSON.parse(result.body);
+        result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
+            .catch(err=>{console.log(err)});
+        let sheets = JSON.parse(result.body);
+        let clientMap = {};
+        let alreadyOnList = {};
+        let makersClients = [];
 
-        let clients;
+        for (var i = 0; i < clients.length; ++i){
+            clientMap[clients[i].customer.id] = {
+                isPresent : true,
+                object : clients[i].customer
+            }
+        }
 
-
-
-
-
-        return [];
+        for (var i = 0; i < sheets.length; ++i){
+            let clientOnSheet = sheets[i].clientId;
+            if (clientMap[clientOnSheet].isPresent && !alreadyOnList[clientOnSheet]){
+                makersClients.push(clientMap[clientOnSheet].object);
+                alreadyOnList[clientOnSheet] = true;
+            }
+        }
+        return makersClients;
     }
 
     async getMakerById(id){
