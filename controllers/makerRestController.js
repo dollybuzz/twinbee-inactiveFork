@@ -117,7 +117,17 @@ module.exports ={
             .catch(err=>{console.log(err)});
         res.end();
     },
-    deleteMaker: async (req, res) =>{
 
+    /**
+     * deletes a maker from the database. Note that sheets are not deleted. Should
+     * only be used to delete erroneous data. Looks for values in the body in the form:
+     * {
+     *     "id": id of maker to be deleted.
+     * }
+     * 
+     */
+    deleteMaker: async (req, res) =>{
+        makerService.deleteMaker(req.body.id);
+        res.end();
     }
 }
