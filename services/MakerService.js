@@ -31,7 +31,7 @@ class MakerService {
      * @param email     - email of new maker
      * @returns {Promise<maker>}
      */
-    async createMaker(firstName, lastName, email){
+    async createNewMaker(firstName, lastName, email){
         await makerRepo.createMaker(firstName, lastName, email);
         let id = await makerRepo.getMakerIdByEmail(email);
         return new Maker(id, firstName, lastName, email);
@@ -134,11 +134,12 @@ class MakerService {
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
     async getMakerById(id){
-        let makers = await  this.getAllMakers();
-        for (var i = 0; i < makers.length; ++i){
-            if (makers[i].id == id)
-                return new Maker(makers[i].id, makers[i].firstName, makers[i].lastName,
-                    makers[i].email);
+        let result = await  makerRepo.getMakerById(id);
+        console.log(result)
+
+        if (result[0]) {
+            let maker = result[0];
+            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email);
         }
         return 'not found';
     }

@@ -46,12 +46,25 @@ describe('Maker Service Test', function () {
                     }
                 ];
             });
-        let createMakeStub = sinon.stub(makerRepo, 'createMaker')
+
+        let createMakerStub = sinon.stub(makerRepo, 'createMaker')
             .callsFake(()=>{
                 console.log("Don't actually call the repo's createMaker!")
             })
         let makerIdByEmailStub = sinon.stub(makerRepo, 'getMakerIdByEmail')
             .callsFake(()=>{return 5});
+        let getMakerByIdStub = sinon.stub(makerRepo, 'getMakerById')
+            .callsFake((x)=>{
+                if (x == 1)
+                return[{
+                    id: 1,
+                    first_name: "first1",
+                    last_name: "last1",
+                    email: 'email1'
+                }]
+                else
+                    return [];
+            })
     });
 
     afterEach(function () {
@@ -60,7 +73,7 @@ describe('Maker Service Test', function () {
 
 
     it('Should return a newly created valid maker object', async function () {
-        let maker = await makerService.createMaker('first', 'last', 'email');
+        let maker = await makerService.createNewMaker('first', 'last', 'email');
         expect(maker).to.deep.equal(new Maker(5, 'first', 'last', 'email'));
     })
 
@@ -85,6 +98,7 @@ describe('Maker Service Test', function () {
 
         let actual = await makerService.getMakerById(-1);
 
+        console.log(actual)
         expect(actual).to.deep.equal('not found')
 
     })

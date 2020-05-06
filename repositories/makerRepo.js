@@ -13,7 +13,7 @@ class MakerRepository {
         })
     }
 
-    updateMaker(id, firstName, lastName, email) {
+    async updateMaker(id, firstName, lastName, email) {
         let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ? WHERE id = ?';
         let sqlParams = [firstName, lastName, email, id];
         query(sql, sqlParams, function (err, result) {
