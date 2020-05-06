@@ -34,7 +34,7 @@ class MakerService {
     async createNewMaker(firstName, lastName, email){
         await makerRepo.createMaker(firstName, lastName, email);
         let id = await makerRepo.getMakerIdByEmail(email);
-        return new Maker(id, firstName, lastName, email);
+        return new Maker(id[0].id, firstName, lastName, email);
     }
 
     /**

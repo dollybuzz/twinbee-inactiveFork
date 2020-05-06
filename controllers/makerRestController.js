@@ -92,7 +92,7 @@ module.exports ={
     createMaker: async (req, res) =>{
         let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName, req.body.email)
             .catch(err=>{console.log(err)});
-        return newMaker;
+        res.send(newMaker);
     },
 
     /**
@@ -110,10 +110,12 @@ module.exports ={
      *     "lastName": maker's new last name,
      *     "email": maker's new email
      * }
-     * @returns {Promise<void>}
+     * @returns {Promise<maker>}
      */
     updateMaker: async (req, res) =>{
-
+        let maker = await makerService.updateMaker(req.body.id, req.body.firstName, req.body.lastName, req.body.email)
+            .catch(err=>{console.log(err)});
+        res.end();
     },
     deleteMaker: async (req, res) =>{
 
