@@ -69,7 +69,7 @@ module.exports ={
         let id = req.query.id;
         let result = await makerService.getMakerById(id).catch(err=>{console.log(err)});
 
-        res.send(result[0]);
+        res.send(result);
     },
 
     /**
