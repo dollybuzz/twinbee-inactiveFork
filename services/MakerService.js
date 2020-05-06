@@ -68,6 +68,14 @@ class MakerService {
     }
 
     /**
+     * Deletes a maker by their id
+     * @param id    - maker to be deleted
+     */
+    deleteMaker(id){
+        makerRepo.deleteMaker(id);
+    }
+
+    /**
      * Retrieves all time sheets for a given maker.
      * @param id    - id of the desired maker
      * @returns {Promise<[]>} containing timeSheet objects
