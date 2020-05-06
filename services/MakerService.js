@@ -23,12 +23,13 @@ class MakerService {
     }
 
     /**
+     * Creates a maker and saves to the database. The completed
+     * Maker object is returned to the caller.
      *
-     * @param id
-     * @param firstName
-     * @param lastName
-     * @param email
-     * @returns {Promise<void>}
+     * @param firstName - first name of new maker
+     * @param lastName  - last name of new maker
+     * @param email     - email of new maker
+     * @returns {Promise<maker>}
      */
     async createMaker(firstName, lastName, email){
         await makerRepo.createMaker(firstName, lastName, email);
@@ -36,6 +37,12 @@ class MakerService {
         return new Maker(id, firstName, lastName, email);
     }
 
+    /**
+     * Retrieves a list of all makers who have clocked in,
+     * but not yet clocked out.
+     *
+     * @returns {Promise<[maker]>}
+     */
     async getOnlineMakers() {
         let onliners = [];
         let retrieved = await makerRepo.getOnlineMakers();
@@ -47,9 +54,23 @@ class MakerService {
     }
 
     /**
+     * Updates a single maker with new data.
+     *
+     * @param id    - database id of the maker to be updated
+     * @param firstName - new first name of the maker
+     * @param lastName  - new last name of the maker
+     * @param email     - new email of the maker
+     * @returns {Promise<maker>} or {Promise<"not found">}
+     */
+    async updateMaker(id, firstName, lastName, email){
+        await makerRepo.updateMaker(id, firstName, lastName, email);
+        return this.getMakerById(id);
+    }
+
+    /**
      * Retrieves all time sheets for a given maker.
      * @param id    - id of the desired maker
-     * @returns {Promise<[]>} containing time_sheet objects
+     * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByMaker(id){
         let result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
@@ -64,6 +85,12 @@ class MakerService {
         return makerSheets;
     }
 
+    /**
+     * Retrieves all clients a given maker has worked for.
+     *
+     * @param id - id of the maker to perform the search for
+     * @returns {Promise<[Customer]>}
+     */
     async getClientListForMakerId(id){
         let result = await request(`http://${process.env.IP}:${process.env.port}/api/getAllClients`)
             .catch(err=>{console.log(err)});
@@ -92,6 +119,12 @@ class MakerService {
         return makersClients;
     }
 
+    /**
+     * Retrieves a single maker by their database id
+     *
+     * @param id    - id of the desired maker
+     * @returns {Promise<maker>} or {Promise<"not found">}
+     */
     async getMakerById(id){
         let makers = await  this.getAllMakers();
         for (var i = 0; i < makers.length; ++i){

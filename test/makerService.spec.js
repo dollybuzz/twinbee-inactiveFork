@@ -81,6 +81,13 @@ describe('Maker Service Test', function () {
         expect(actual).to.deep.equal(maker1)
 
     })
+    it('Should not find any maker with the supplied id', async function () {
+
+        let actual = await makerService.getMakerById(-1);
+
+        expect(actual).to.deep.equal('not found')
+
+    })
 
     it('Should grab only the sheets for the specified maker (by id)', async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
