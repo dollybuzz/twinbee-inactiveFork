@@ -5,9 +5,9 @@ class MakerRepository {
     constructor() {
     };
 
-    createMaker(firstName, lastName, email) {
+    async createMaker(firstName, lastName, email) {
         let sql = 'INSERT INTO maker(first_name, last_name, email) VALUES (?, ?, ?)';
-        let sqlParams = [];
+        let sqlParams = [firstName, lastName, email];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         })
