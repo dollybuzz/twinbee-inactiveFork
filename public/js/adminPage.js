@@ -17,7 +17,7 @@ let navMapper = {
 }
 
 function showClients() {
-    $("#userMainContent").html(
+    $(".row").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"clientTable\" class=\"table\">\n" +
         "    </table>\n" +
@@ -51,12 +51,30 @@ function showClients() {
                 }
             })
             $("#clientTable").append('\n</tbody>')
-            //Body Text
+
+            //Body Block content
+            $(".row").append('\n<div id="optionsClient"></div>')
+            $("#optionsClient").hide();
+            $("#optionsClient").html("Test!");
+            $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+            $("#optionsClient").append("<button id='ExpandButton' type='button' class='btn btn-default'>Expand</button>");
+
             //Event Listeners
             $(".clientRow").click(function () {
                 let clientId = $(this).children()[0].innerHTML;
-                alert("You selected client " + clientId)
+                $("#floor").css("width", "50vw"); //resize table
+                $(".row").css("float", "left"); //shift table
+               // alert("You selected client " + clientId);
+
+                //Show Block content
+                setTimeout(function() {
+                    $("#optionsClient").show();
+                    $("#optionsClient").css("opacity", "1");
+                }, 2000);
+
             })
+
+            //Row effect
             $(".clientRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
                 $(this).css('background-color', '#e8ecef');
@@ -72,7 +90,7 @@ function showClients() {
 }
 
 function showMakers(){
-    $("#userMainContent").html(
+    $(".row").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"makerTable\" class=\"table\">\n" +
         "    </table>\n" +
@@ -103,13 +121,16 @@ function showMakers(){
             })
             $("#makerTable").append('\n</tbody>')
 
-            //Body text
+            //Body Block content
 
             //Event Listeners
             $(".makerRow").click(function () {
                 let makerId = $(this).children()[0].innerHTML;
-                alert ("You selected maker " + makerId)
+                $("#floor").css("width", "50vw");
+                $(".row").css("float", "left");
+                //alert ("You selected maker " + makerId);
             })
+            //Row effect
             $(".makerRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
                 $(this).css('background-color', '#e8ecef');
@@ -126,7 +147,7 @@ function showMakers(){
 }
 
 function showSheets(){
-    $("#userMainContent").html(
+    $(".row").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"sheetsTable\" class=\"table\">\n" +
         "    </table>\n" +
@@ -163,13 +184,16 @@ function showSheets(){
             })
             $("#sheetsTable").append('\n</tbody>')
 
-            //Body text
+            //Body Block content
 
             //Event Listeners
             $(".sheetRow").click(function () {
                 let makerId = $(this).children()[0].innerHTML;
-                alert ("You selected sheet " + makerId)
+                $("#floor").css("width", "50vw");
+                $(".row").css("float", "left");
+                //alert ("You selected sheet " + makerId);
             })
+            //Row effect
             $(".sheetRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
                 $(this).css('background-color', '#e8ecef');
@@ -216,15 +240,16 @@ function showOnlineMakers() {
             })
             $("#onlineTable").append('\n</tbody>')
 
-            //Body text
+            //Body Block content
             $("#text1").append('<h6>This is a table of current online makers.</h6>');
             $("#text2").append('<h6>This is a running table of daily/weekly/monthly hours?</h6>');
 
             //Event Listeners
             $(".onlineRow").click(function () {
                 let clientId = $(this).children()[0].innerHTML;
-                alert("You selected client " + clientId)
+                //alert("You selected client " + clientId);
             })
+            //Row effect
             $(".onlineRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
                 $(this).css('background-color', '#e8ecef');
@@ -277,28 +302,7 @@ $(document).ready(function () {
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(function () {
         window.location.href = "/";
-
-
-        var $thead = $('thead');
-        var stickyThead = $thead.offset().top;
-        var theadWidth = $thead.width();
-
-        $(window).scroll(function () {
-            if ($(window).scrollTop() > stickyThead) {
-                $thead.css({
-                    position: 'fixed',
-                    top: '0px',
-                    width: theadWidth
-                });
-            } else {
-                $thead.css({
-                    position: 'static',
-                    top: '0px'
-                });
-            }
-        })
-
-
     })
+
 
 })
