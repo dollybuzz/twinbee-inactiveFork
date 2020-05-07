@@ -64,14 +64,20 @@ function showClients() {
                 let clientId = $(this).children()[0].innerHTML;
                 $("#floor").css("width", "50vw"); //resize table
                 $(".row").css("float", "left"); //shift table
-               // alert("You selected client " + clientId);
+                // alert("You selected client " + clientId);
+            })
 
-                //Show Block content
-                setTimeout(function() {
-                    $("#optionsClient").show();
-                    $("#optionsClient").css("opacity", "1");
-                }, 2000);
+             //Expand Table Button
+             $("#ExpandButton").click(function () {
+                 $("#floor").css("width", "150vh");
+                 $("#optionsClient").hide();
+                 $("#optionsClient").css("opacity", "0");
+             })
 
+            //Show Block content
+            $(".clientRow").click(function () {
+                $("#optionsClient").show();
+                $("#optionsClient").css("opacity", "1");
             })
 
             //Row effect
