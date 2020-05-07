@@ -52,6 +52,12 @@ describe('Time Sheet Service Test', function () {
         sinon.assert.calledOnce(timeSheetRepo.deleteSheet);
     })
 
+    it('Should grab only the sheets for online users', async function () {
+        let actual = await timeSheetService.getOnlineMakers();
+        expect(actual).to.deep.equal([timeSheetRefined1]);
+        
+    })
+    
     it('Should grab all sheets for a given maker', async function () {
         let actual = await timeSheetService.getSheetsByMaker(1);
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined2]);

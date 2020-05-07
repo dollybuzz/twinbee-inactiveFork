@@ -28,7 +28,14 @@ class TimeSheetService {
 
     async getOnlineMakers(){
         let onlineUsers = [];
-       //getAllMakers, if in timesheet, dosomething
+        let sheets = timeSheetRepo.getAllSheets();
+        sheets.forEach(async row=>{
+            if (row.end_time === '0000-00-00 00:00:00')
+            {
+                let refinedSheet = await createSheetFromRow(row);
+                onlineUsers.push(refinedSheet);
+            }
+        })
         return onlineUsers;
     }
 
@@ -36,7 +43,7 @@ class TimeSheetService {
         let refinedSheets = [];
         let sheets = timeSheetRepo.getAllSheets();
         sheets.forEach(async row=>{
-            let refinedSheet = await this.createSheetFromRow(row);
+            let refinedSheet = await createSheetFromRow(row);
             refinedSheets.push(refinedSheet);
         })
         return refinedSheets;
@@ -51,7 +58,7 @@ class TimeSheetService {
         let sheets = await timeSheetRepo.getSheetsByMaker(id);
         let makerSheets = [];
         sheets.forEach(async row=>{
-            let refinedSheet = await this.createSheetFromRow(row);
+            let refinedSheet = await createSheetFromRow(row);
             makerSheets.push(refinedSheet);
         })
         return makerSheets;
@@ -65,34 +72,30 @@ class TimeSheetService {
         let sheets = await timeSheetRepo.getSheetsByClient(id);
         let clientSheets = [];
         sheets.forEach(async row=>{
-            let refinedSheet = await this.createSheetFromRow(row);
+            let refinedSheet = await createSheetFromRow(row);
             clientSheets.push(refinedSheet);
         })
         return clientSheets;
     }
 
-
+    /**
+     *
+     * @param maker
+     * @param client
+     * @returns {Promise<void>}
+     */
     async initializeTimesheet(maker, client){
 
     }
 
-    /**
-     * Determines whether or not a maker is logged in
-     * @param id
-     * @returns {Promise<>} containing boolean login status
-     */
-    async makerIsOnline(maker){
-        throw new Error('not yet implemented')
-        //async hasEndTime();
-    }
-
-
-    async createSheetFromRow(row){
-        return new TimeSheet(row.id, row.maker_id, row.hourly_rate,
-            row.client_id, row.start_time, row.end_time, row.occupation);
-    }
-
 
 }
+
+//helper function
+createSheetFromRow = async row => {
+    return new TimeSheet(row.id, row.maker_id, row.hourly_rate,
+        row.client_id, row.start_time, row.end_time, row.occupation);
+}
+
 
 module.exports = new TimeSheetService();
