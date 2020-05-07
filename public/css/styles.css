@@ -190,5 +190,5 @@ th {
     display: grid;
     place-items: center;
     opacity: 0;
-    transition: opacity 1s ease;
+    transition: opacity 2s ease-in-out;
 }
