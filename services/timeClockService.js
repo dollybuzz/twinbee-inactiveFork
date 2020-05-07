@@ -35,7 +35,7 @@ class TimeClockService {
     async clockOut(makerId){
         let result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getTimeSheetsByMakerId?id=${makerId}`);
         let sheetsForMaker = JSON.parse(result.body);
-        let onlineSheets = [];=
+        let onlineSheets = [];
 
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i){
