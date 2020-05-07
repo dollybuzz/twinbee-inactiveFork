@@ -5,7 +5,7 @@ Under Construction (Queue 90's memes)
 
 Supported endpoints: 
 
-/api/getAllClients
+/api/getAllClients\n
 /api/getAllMakers
 /api/getClient
 /api/createClient
