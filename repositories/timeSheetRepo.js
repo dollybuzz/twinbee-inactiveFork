@@ -5,13 +5,17 @@ class TimeSheetRepository {
     constructor() {
     };
 
-    createSheet(makerId, clientId, rate, startTime, endTime, occupation) {
+    async createSheet(makerId, clientId, rate, startTime, endTime, occupation) {
         let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, occupation)' +
             ' VALUES (?, ?, ?, ?, ?, ?)';
         let sqlParams = [makerId, clientId, rate, startTime, endTime, occupation];
-        query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
-        })
+
+
+        let result = await query(sql, sqlParams).catch(e => {
+            console.log(e);
+            result = [];
+        });
+        return result.insertId;
     }
 
     updateSheet(id, rate, startTime, endTime) {

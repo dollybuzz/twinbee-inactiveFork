@@ -7,8 +7,23 @@ const TimeSheet = require('../domain/entity/timeSheet.js');
 class TimeSheetService {
     constructor(){};
 
-    async createTimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation) {
+    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, occupation) {
+        let id = await timeSheetRepo.createSheet(makerId, clientId,
+            hourlyRate, timeIn, timeOut, occupation);
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation);
+    }
+
+    async getTimesheetById(id){
+        let result = timeSheetRepo.getSheetsByMaker(id);
+
+    }
+
+    updateTimesheet(id, makerId, hourlyRate, timeIn, timeOut){
+        timeSheetRepo.updateSheet(id, makerId, hourlyRate, timeIn, timeOut);
+    }
+
+    deleteTimeSheet(id){
+        timeSheetRepo.deleteSheet(id);
     }
 
     async getOnlineMakers(){
@@ -18,9 +33,6 @@ class TimeSheetService {
     }
 
     async getAllTimeSheets(){
-        console.log("Time Clock Service's getAllTimesheets still needs to be finalized, be careful!");
-
-        return await timeSheetRepo.getAllSheets();
     }
 
     /**
@@ -33,6 +45,17 @@ class TimeSheetService {
 
         return sheets;
     }
+    /**
+     * Retrieves time all time sheets for a given client.
+     * @param id    - id of the desired client
+     * @returns {Promise<[]>} containing timeSheet objects
+     */
+    async getSheetsByClient(id){
+        let sheets = [];
+
+        return sheets;
+    }
+
 
     async initializeTimesheet(maker, client){
 

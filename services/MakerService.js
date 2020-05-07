@@ -135,7 +135,6 @@ class MakerService {
      */
     async getMakerById(id){
         let result = await  makerRepo.getMakerById(id);
-        console.log(result)
 
         if (result[0]) {
             let maker = result[0];

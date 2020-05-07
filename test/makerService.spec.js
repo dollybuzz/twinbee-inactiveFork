@@ -49,10 +49,12 @@ describe('Maker Service Test', function () {
 
         let createMakerStub = sinon.stub(makerRepo, 'createMaker')
             .callsFake(()=>{
-                console.log("Don't actually call the repo's createMaker!")
+                console.log("Don't actually call the repo's createMaker!");
             })
         let makerIdByEmailStub = sinon.stub(makerRepo, 'getMakerIdByEmail')
-            .callsFake(()=>{return 5});
+            .callsFake(()=>{
+                return [{id:5}]
+            });
         let getMakerByIdStub = sinon.stub(makerRepo, 'getMakerById')
             .callsFake((x)=>{
                 if (x == 1)

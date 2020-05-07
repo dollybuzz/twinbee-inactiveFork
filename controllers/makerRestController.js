@@ -1,6 +1,7 @@
 const makerService = require('../services/makerService.js');
 
 module.exports ={
+
     /**
      * Retrieves a list of online makers. Returns data in the form:
      * [
@@ -124,7 +125,7 @@ module.exports ={
      * {
      *     "id": id of maker to be deleted.
      * }
-     * 
+     *
      */
     deleteMaker: async (req, res) =>{
         makerService.deleteMaker(req.body.id);
