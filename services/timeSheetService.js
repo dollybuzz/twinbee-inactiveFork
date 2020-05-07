@@ -7,25 +7,61 @@ const TimeSheet = require('../domain/entity/timeSheet.js');
 class TimeSheetService {
     constructor(){};
 
+    /**
+     * Instantiates and returns a timesheet object.
+     *
+     * @param makerId   - maker's database id
+     * @param hourlyRate- maker's hourly rate
+     * @param clientId  - client's chargebee id
+     * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
+     * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
+     * @param occupation- maker's occupation for pay period
+     * @returns {Promise<TimeSheet>}
+     */
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, occupation) {
         let id = await timeSheetRepo.createSheet(makerId, clientId,
             hourlyRate, timeIn, timeOut, occupation);
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation);
     }
 
+    /**
+     * Gets a given timesheet by its database id
+     *
+     * @param id    - timesheet's database id
+     * @returns {Promise<TimeSheet>}
+     */
     async getTimesheetById(id){
         let result = timeSheetRepo.getSheetsByMaker(id);
 
     }
 
+    /**
+     * Updates the timesheet specified by id with new values
+     *
+     * @param id    - timesheet's database id
+     * @param makerId   - id of the maker who owns the timesheet
+     * @param hourlyRate- hourly pay rate of maker
+     * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
+     * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
+     */
     updateTimesheet(id, makerId, hourlyRate, timeIn, timeOut){
         timeSheetRepo.updateSheet(id, makerId, hourlyRate, timeIn, timeOut);
     }
 
+    /**
+     * Marks a sheet for deletion
+     *
+     * @param id    - id of the sheet to be deleted
+     */
     deleteTimeSheet(id){
         timeSheetRepo.deleteSheet(id);
     }
 
+    /**
+     * Retrieves timesheets for online makers
+     *
+     * @returns {Promise<[timesheet]>}
+     */
     async getOnlineMakers(){
         let onlineUsers = [];
         let sheets = timeSheetRepo.getAllSheets();
@@ -39,6 +75,11 @@ class TimeSheetService {
         return onlineUsers;
     }
 
+    /**
+     * Retrieves all time sheets
+     *
+     * @returns {Promise<[timesheet]>}
+     */
     async getAllTimeSheets(){
         let refinedSheets = [];
         let sheets = timeSheetRepo.getAllSheets();
@@ -63,6 +104,7 @@ class TimeSheetService {
         })
         return makerSheets;
     }
+
     /**
      * Retrieves time all time sheets for a given client.
      * @param id    - id of the desired client
@@ -77,18 +119,6 @@ class TimeSheetService {
         })
         return clientSheets;
     }
-
-    /**
-     *
-     * @param maker
-     * @param client
-     * @returns {Promise<void>}
-     */
-    async initializeTimesheet(maker, client){
-
-    }
-
-
 }
 
 //helper function
