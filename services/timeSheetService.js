@@ -103,11 +103,9 @@ class TimeSheetService {
         let sheets = await timeSheetRepo.getSheetsByClient(id);
         let clientSheets = [];
         sheets.forEach(async row=>{
-            console.log("ROW" + row)
             let refinedSheet = await createSheetFromRow(row);
             clientSheets.push(refinedSheet);
         })
-        console.log(clientSheets)
         return clientSheets;
     }
 }
