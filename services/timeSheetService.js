@@ -23,18 +23,6 @@ class TimeSheetService {
             hourlyRate, timeIn, timeOut, occupation);
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation);
     }
-
-    /**
-     * Gets a given timesheet by its database id
-     *
-     * @param id    - timesheet's database id
-     * @returns {Promise<TimeSheet>}
-     */
-    async getTimesheetById(id){
-        let result = timeSheetRepo.getSheetsByMaker(id);
-
-    }
-
     /**
      * Updates the timesheet specified by id with new values
      *
