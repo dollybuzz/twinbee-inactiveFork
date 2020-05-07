@@ -1,5 +1,4 @@
 const makerRepo = require('../repositories/makerRepo.js');
-require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
@@ -8,7 +7,7 @@ class TimeClockService {
     constructor(){};
 
     async getCurrentMoment(){
-        return await moment(Date.now()).format('YYYY-MM-DD HH:MM:SS');
+        return await moment.utc().format('YYYY-MM-DD HH:mm:ss');
     }
 
     async clockIn(makerId, hourlyRate, clientId, occupation){
@@ -25,7 +24,7 @@ class TimeClockService {
             }
         })
     }
-    
+
     /**
      * "Clocks out" a maker by id
      * NOTE: This assumes only one sheet should be 'online' at a time.
@@ -37,6 +36,7 @@ class TimeClockService {
         let result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getTimeSheetsByMakerId?id=${makerId}`);
         let sheetsForMaker = JSON.parse(result.body);
         let onlineSheets = [];
+        console.log(sheetsForMaker)
 
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i){

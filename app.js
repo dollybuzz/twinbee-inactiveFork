@@ -10,6 +10,7 @@ const makerPageController = require('./controllers/makerPageController.js');
 const clientRestController = require('./controllers/clientRestController.js');
 const makerRestController = require('./controllers/makerRestController.js');
 const timeSheetRestController = require('./controllers/timeSheetRestController.js');
+const timeClockRestController = require('./controllers/timeClockRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
 const app = express();
 const bodyParser = require('body-parser');
@@ -20,6 +21,7 @@ const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
 const ts = require('./services/timeClockService.js');
+const timeClockService = require('./services/timeClockService.js')
 
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
@@ -61,6 +63,9 @@ app.post("/api/createSubscription", chargebeeRestController.createSubscription);
 app.post("/api/updateSubscription", chargebeeRestController.updateSubscription);
 app.post("/api/cancelSubscription", chargebeeRestController.cancelSubscription);
 app.get("/api/retrieveSubscription", chargebeeRestController.retrieveSubscription);
+app.post("/api/clockIn", timeClockRestController.clockIn);
+app.post("/api/clockOut", timeClockRestController.clockOut);
+
 
 (async function() {
 })();

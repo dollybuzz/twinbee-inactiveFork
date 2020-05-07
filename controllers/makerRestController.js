@@ -1,4 +1,4 @@
-const makerService = require('../services/makerService.js');
+const makerService = require('../services/MakerService.js');
 
 module.exports ={
 
