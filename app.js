@@ -48,6 +48,8 @@ app.get("/api/getTimeSheetsByClientId", timeSheetRestController.getTimeSheetsByC
 app.get("/api/getTimeSheetsByMakerId", timeSheetRestController.getTimeSheetsByMakerId);
 app.get("/api/getAllTimeSheets", timeSheetRestController.getAllTimeSheets);
 app.post("/api/updateTimeSheet", timeSheetRestController.updateTimeSheetsById);
+app.post("/api/deleteTimeSheet", timeSheetRestController.deleteTimeSheet);
+app.post("/api/createTimeSheet", timeSheetRestController.createTimeSheet);
 app.get("/api/getOnlineMakers", makerRestController.getOnlineMakers);
 app.get("/api/getAllPlans", chargebeeRestController.getAllPlans);
 app.post("/api/createPlan", chargebeeRestController.createPlan);

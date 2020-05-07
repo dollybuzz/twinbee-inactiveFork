@@ -86,5 +86,37 @@ module.exports = {
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
             req.body.timeIn, req.body.timeOut);
         res.end();
+    },
+
+    /**
+     * Marks a timesheet for deletion. Looks for values in the body in the form:
+     * {
+     *     "id": id of timesheet to be marked for deletion
+     * }
+     */
+    deleteTimeSheet: (req, res) => {
+        timeSheetService.deleteTimeSheet(req.body.id);
+        res.end();
+    },
+
+    /**
+     * Creates a new timesheet based on the given data.  Looks for values in the body
+     * in the form:
+     * {
+     *      "makerId": id of owning maker,
+     *      "hourlyRate": pay rate of owning maker,
+     *      "clientId": id of client maker is assigned to for pay period,
+     *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *      "occupation": occupation of maker for time period
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    createTimeSheet: async (req, res) => {
+        let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
+            req.body.timeIn, req.body.timeOut, req.body.occupation);
+        res.send(createdSheet);
     }
 }
