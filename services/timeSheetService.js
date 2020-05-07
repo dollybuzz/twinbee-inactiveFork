@@ -33,6 +33,13 @@ class TimeSheetService {
     }
 
     async getAllTimeSheets(){
+        let refinedSheets = [];
+        let sheets = timeSheetRepo.getAllSheets();
+        sheets.forEach(async row=>{
+            let refinedSheet = await this.createSheetFromRow(row);
+            refinedSheets.push(refinedSheet);
+        })
+        return refinedSheets;
     }
 
     /**
@@ -41,9 +48,13 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByMaker(id){
-        let sheets = [];
-
-        return sheets;
+        let sheets = await timeSheetRepo.getSheetsByMaker(id);
+        let makerSheets = [];
+        sheets.forEach(async row=>{
+            let refinedSheet = await this.createSheetFromRow(row);
+            makerSheets.push(refinedSheet);
+        })
+        return makerSheets;
     }
     /**
      * Retrieves time all time sheets for a given client.
@@ -51,9 +62,13 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByClient(id){
-        let sheets = [];
-
-        return sheets;
+        let sheets = await timeSheetRepo.getSheetsByClient(id);
+        let clientSheets = [];
+        sheets.forEach(async row=>{
+            let refinedSheet = await this.createSheetFromRow(row);
+            clientSheets.push(refinedSheet);
+        })
+        return clientSheets;
     }
 
 
@@ -71,21 +86,11 @@ class TimeSheetService {
         //async hasEndTime();
     }
 
-    /**
-     * Retrieves a combination of user, client, and time sheet data for
-     * a given logged in user
-     * @param id    - id of the desired maker
-     * @returns {Promise<>} containing object with the given data
-     */
-    async getDataForOnlineMaker(id){
-        throw new Error('not yet implemented')
+
+    async createSheetFromRow(row){
+        return new TimeSheet(row.id, row.maker_id, row.hourly_rate,
+            row.client_id, row.start_time, row.end_time, row.occupation);
     }
-
-
-    async getStartTime(id){}
-    async getEndTime(id){}
-
-
 
 
 }
