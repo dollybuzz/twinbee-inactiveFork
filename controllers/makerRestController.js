@@ -91,6 +91,7 @@ module.exports ={
      * @returns {Promise<maker>}
      */
     createMaker: async (req, res) =>{
+        console.log(req)
         let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName, req.body.email)
             .catch(err=>{console.log(err)});
         res.send(newMaker);

@@ -17,8 +17,9 @@ const chargebee = require('chargebee');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
-const request = require('request');
-
+const util = require('util')
+const request = util.promisify(require('request'));
+const ts = require('./services/timeClockService.js');
 
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
@@ -29,14 +30,13 @@ app.use(bodyParser.json());
 app.get("/", landingPageController.renderLanding);
 app.get("/home", landingPageController.renderLanding);
 app.get("/landing", landingPageController.renderLanding);
+app.post("/api/login", landingPageController.temporaryNavigateFunction);
 app.get("/admin", adminPageController.renderLanding);
 app.get("/administrator", adminPageController.renderLanding);
 app.get("/client", clientPageController.renderLanding);
 app.get("/maker", makerPageController.renderLanding);
-app.post("/api/login", landingPageController.temporaryNavigateFunction);
 app.get("/api/getAllClients", clientRestController.getAllClients);
 app.get("/api/getAllMakers", makerRestController.getAllMakers);
-app.get("/api/getAllTimeSheets", timeSheetRestController.getAllTimeSheets);
 app.get("/api/getClient", clientRestController.getClientById);
 app.post("/api/createClient", clientRestController.createClient);
 app.post("/api/deleteClient", clientRestController.deleteClient);

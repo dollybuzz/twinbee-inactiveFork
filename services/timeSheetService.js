@@ -23,6 +23,7 @@ class TimeSheetService {
             hourlyRate, timeIn, timeOut, occupation);
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation);
     }
+
     /**
      * Updates the timesheet specified by id with new values
      *
