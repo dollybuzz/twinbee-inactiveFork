@@ -44,8 +44,8 @@ class TimeSheetService {
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
      */
-    updateTimesheet(id, makerId, hourlyRate, timeIn, timeOut){
-        timeSheetRepo.updateSheet(id, makerId, hourlyRate, timeIn, timeOut);
+    updateTimesheet(id, hourlyRate, timeIn, timeOut){
+        timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut);
     }
 
     /**
@@ -62,16 +62,16 @@ class TimeSheetService {
      *
      * @returns {Promise<[timesheet]>}
      */
-    async getOnlineMakers(){
+    async getOnlineMakerSheets(){
         let onlineUsers = [];
-        let sheets = timeSheetRepo.getAllSheets();
-        sheets.forEach(async row=>{
-            if (row.end_time === '0000-00-00 00:00:00')
+        let sheets = await timeSheetRepo.getAllSheets();
+        for (var i = 0; i < sheets.length; ++i){
+            if (sheets[i].end_time === '0000-00-00 00:00:00')
             {
-                let refinedSheet = await createSheetFromRow(row);
+                let refinedSheet = await createSheetFromRow(sheets[i]);
                 onlineUsers.push(refinedSheet);
             }
-        })
+        }
         return onlineUsers;
     }
 
@@ -82,11 +82,11 @@ class TimeSheetService {
      */
     async getAllTimeSheets(){
         let refinedSheets = [];
-        let sheets = timeSheetRepo.getAllSheets();
-        sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row);
+        let sheets = await timeSheetRepo.getAllSheets();
+        for (var i = 0; i < sheets.length; ++i){
+                let refinedSheet = await createSheetFromRow(sheets[i]);
             refinedSheets.push(refinedSheet);
-        })
+        }
         return refinedSheets;
     }
 
@@ -114,9 +114,11 @@ class TimeSheetService {
         let sheets = await timeSheetRepo.getSheetsByClient(id);
         let clientSheets = [];
         sheets.forEach(async row=>{
+            console.log("ROW" + row)
             let refinedSheet = await createSheetFromRow(row);
             clientSheets.push(refinedSheet);
         })
+        console.log(clientSheets)
         return clientSheets;
     }
 }

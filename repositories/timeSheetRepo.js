@@ -53,7 +53,7 @@ class TimeSheetRepository {
     async getSheetsByClient(id) {
         let sql = 'SELECT * ' +
             'FROM time_sheet ' +
-            'WHERE maker_id = ?';
+            'WHERE client_id = ?';
         let sqlParams = [id];
         let result = await query(sql, sqlParams).catch(e => {
             console.log(e);
