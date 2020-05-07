@@ -9,11 +9,9 @@ class TimeSheetRepository {
         let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, occupation)' +
             ' VALUES (?, ?, ?, ?, ?, ?)';
         let sqlParams = [makerId, clientId, rate, startTime, endTime, occupation];
-
-
         let result = await query(sql, sqlParams).catch(e => {
             console.log(e);
-            result = [];
+            return('error; client or maker might not exist')
         });
         return result.insertId;
     }
@@ -53,7 +51,7 @@ class TimeSheetRepository {
     async getSheetsByClient(id) {
         let sql = 'SELECT * ' +
             'FROM time_sheet ' +
-            'WHERE maker_id = ?';
+            'WHERE client_id = ?';
         let sqlParams = [id];
         let result = await query(sql, sqlParams).catch(e => {
             console.log(e);
