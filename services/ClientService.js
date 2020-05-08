@@ -5,6 +5,22 @@ var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
     api_key : process.env.CHARGEBEE_TEST_API})
 
+
+
+let updateClient = (customerId, keyValuePairs)=>{
+    chargebee.customer.update(customerId, keyValuePairs).request(function(error,result) {
+        if(error){
+            //handle error
+            console.log(error);
+        }else{
+            console.log(result);
+            var customer = result.customer;
+            var card = result.card;
+        }
+    });
+}
+
+
 //TODO: Add validation
 /**
  * Service that works with chargebee's customer objects
@@ -19,7 +35,89 @@ class ClientService {
     constructor() {
     };
 
+    /**
+     * adds the keyValuePairs to the customer's metadata
+     *
+     * @param clientId  - client to update
+     * @param keyValuePairs - key/value pairs to add
+     */
+    async updateClientMetadata(clientId, keyValuePairs){
+        let customer = await this.getClientById(clientId);
+        for (var key in keyValuePairs){
+            customer.meta_data[key] = keyValuePairs[key];
+        }
+        updateClient(clientId, customer)
+    }
 
+    /**
+     * Adds or removes minutes to/from a client's given planBucket.
+     *
+     * @param clientId  - chargebee id of the client to update
+     * @param planBucket- planbucket whose minutes need adjusting
+     * @param minuteChange- positive or negative change in minutes
+     */
+    async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
+        let client = await this.getClientById(clientId);
+        if (!client.meta_data[planBucket]) {
+            console.log(client.meta_data[planBucket])
+            client.meta_data[planBucket] = 0;
+        }
+        let newMinutes = minuteChange + client.meta_data[planBucket];
+        let planMinutes = {};
+        planMinutes[planBucket] = newMinutes;
+        this.updateClientMetadata(clientId, planMinutes);
+    }
+
+    /**
+     * Updates client contact information
+     *
+     * @param clientId  - id of client to be updated
+     * @param newFirstName  - new first name of client
+     * @param newLastName   - new last name of client
+     * @param newEmail  - new email of client
+     * @returns {Promise<void>}
+     */
+    async updateClientContact(clientId, newFirstName, newLastName, newEmail){
+        let customer = await this.getClientById(clientId);
+        customer.first_name = newFirstName;
+        customer.last_name = newLastName;
+        customer.email = newEmail;
+        updateClient(clientId, customer)
+    }
+
+    /**
+     * Updates client billing information
+     *
+     * @param clientId - id of client to be updated
+     * @param newFirstName  - new first name for billing
+     * @param newLastName   - new last name for billing
+     * @param newAddress    - new address for billing
+     * @param newCity       - new city for billing
+     * @param newState      - new state for billing
+     * @param newZip        - new zip for billing
+     */
+    updateClientBilling(clientId, newFirstName, newLastName, newAddress, newCity, newState, newZip){
+        chargebee.customer.update_billing_info(clientId,{
+            billing_address : {
+                first_name : newFirstName,
+                last_name : newLastName,
+                line1 : newAddress,
+                city : newCity,
+                state : newState,
+                zip : newZip,
+                country : "US"
+            }
+        }).request(function(error,result) {
+            if(error){
+                //handle error
+                console.log(error);
+            }else{
+                //     console.log(result);
+                var customer = result.customer;
+                var card = result.card;
+            }
+        });
+    }
 
     /**
      *
@@ -83,6 +181,8 @@ class ClientService {
         }
         return clientSheets;
     }
+
+
 
     /**
      * Removes a client from the database. TODO: remove from chargebee
