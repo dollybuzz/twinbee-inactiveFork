@@ -62,22 +62,26 @@ function showClients() {
             //Event Listeners
             $(".clientRow").click(function () {
                 let clientId = $(this).children()[0].innerHTML;
-                $("#floor").css("width", "50vw"); //resize table
-                $(".row").css("float", "left"); //shift table
+                $("#floor").css("width", "50%");
+                $("#floor").css("margin-left", "0");
+                $("#floor").css("margin-right", "auto");
                 // alert("You selected client " + clientId);
             })
 
              //Expand Table Button
              $("#ExpandButton").click(function () {
-                 $("#floor").css("width", "150vh");
                  $("#optionsClient").hide();
+                 $("#optionsClient").css("width", "0%");
                  $("#optionsClient").css("opacity", "0");
+                 $("#floor").css("width", "auto");
+                 $("#floor").css("margin", "0 auto");
              })
 
             //Show Block content
             $(".clientRow").click(function () {
                 $("#optionsClient").show();
                 $("#optionsClient").css("opacity", "1");
+                $("#optionsClient").css("width", "50%");
             })
 
             //Row effect
@@ -309,6 +313,5 @@ $(document).ready(function () {
     $("#logoutButton").click(function () {
         window.location.href = "/";
     })
-
 
 })

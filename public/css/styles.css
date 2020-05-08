@@ -12,13 +12,14 @@ body {
 
 }
 
-#landingMain, #userMainContent {
+#landingMain {
     background-color: white;
-    padding: 20px;
+    padding: 20px
 }
 
 #userMainContent {
-    padding-bottom: 300px;
+    margin: auto;
+    background-color: white;
 }
 
 
@@ -50,15 +51,17 @@ body a:hover {
 
 footer {
     background-color: #32444e;
-    margin: auto;
+    margin: 0 auto;
     color: white;
     text-decoration: none;
+    text-align: center;
 }
 
 footer a {
     color: white;
     text-decoration: none;
     padding: 20px;
+    text-align: center;
 }
 
 .copyright {
@@ -120,13 +123,14 @@ label {
 }
 
 .row {
-    width: auto;
-    height: auto;
-    margin: auto;
+    margin: 0 auto;
+    height: 400px;
+    padding: 20px;
 }
 
 .block {
     display: inline-block;
+    width: 50%;
     padding: 20px;
 }
 
@@ -147,11 +151,10 @@ label {
 
 #floor {
     display: inline-block;
-    width: 150vh;
-    max-height: 240px;
+    margin: 0 auto;
+    max-height: 200px;
     overflow-y: scroll;
-    margin: auto;
-    transition: width 2s ease;
+    transition: width 2s ease-in-out;
     border-radius: 5px 5px 5px 5px;
 }
 
@@ -170,7 +173,6 @@ label {
     background-color: rgba(90,90,90,.05);
     border-radius: 20px;
     background-clip: content-box;
-
 }
 
 #floor::-webkit-scrollbar-thumb {
@@ -187,8 +189,7 @@ th {
 
 #optionsClient {
     padding-left: 40px;
-    display: grid;
-    place-items: center;
+    width: 50%;
     opacity: 0;
     transition: opacity 2s ease-in-out;
 }

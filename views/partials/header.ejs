@@ -20,23 +20,24 @@
 <header>
     <div id="landingLogo">
         <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>"></div>
-        <div id=<%=siteTitle["text"]%>>
-            <span id="welcome"><%=welcome["text"]%></span>
-            <span id="logout"></span>
-            <%=pageTitle["text"]%>
-        </div>
+    <div id=<%=siteTitle["text"]%>>
+        <span id="welcome"><%=welcome["text"]%></span>
+        <span id="logout"></span>
+        <%=pageTitle["text"]%>
+    </div>
     <div id="time"></div>
 
 </header>
 <nav>
     <%if (typeof navItemsTop !== "undefined"){%>
         <% for (var i = 0; i < navItemsTop.length; ++i){%>
-            <%if (i != 0){%>
-                |
-            <%}%>
-            <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
+        <%if (i != 0){%>
+            |
         <%}%>
-        <%}else{%>
+        <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
+        <%}%>
+    <%}else{%>
     <%}%>
 </nav>
+
 
