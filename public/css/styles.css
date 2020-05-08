@@ -9,7 +9,6 @@ body {
     margin: auto;
     color: #32444e;
     background-color: #32444e;
-
 }
 
 #landingMain {
@@ -21,7 +20,6 @@ body {
     margin: auto;
     background-color: white;
 }
-
 
 #landingLogo {
     text-align: center;
@@ -70,24 +68,38 @@ footer a {
     padding: 10px;
 }
 
-#loginButton, #logoutButton, #SubmitButton {
+#loginButton, #logoutButton, #SubmitButton{
     color: white;
     background-color: #32444e;
 }
 
-#ExpandButton {
-    background-color: #a4b6ba;
-}
-
 #loginButton:hover,
 #logoutButton:hover,
-#SubmitButton:hover{
+#SubmitButton:hover {
     background-color: #dbb459;
 }
 
-#ExpandButton:hover {
+#ExpandButton:hover,
+#AddButton:hover,
+#DeleteButton:hover {
     background-color: #e8ecef;
 }
+
+#ExpandButton,
+#AddButton,
+#DeleteButton {
+    background-color: #a4b6ba;
+}
+
+#buttonsTop {
+    margin-bottom: 0;
+    margin-top: auto;
+    width: 100%;
+}
+#buttonsBottom {
+    width: 100%;
+}
+
 
 #logoutButton {
     position: absolute;
@@ -96,19 +108,16 @@ footer a {
 }
 
 #SubmitButton {
-    position: absolute;
-    top:520px;
-    right: 20px;
+    margin-bottom: auto;
+    margin-top: 0;
     opacity: 0;
 }
 
 #ExpandButton {
-    position: absolute;
-    top: 65%;
-    left: 45%;
+    margin-bottom: auto;
+    margin-top: 0;
     opacity: 0;
 }
-
 
 #userEmail, #userPassword, #userType {
     background: #e8ecef;
@@ -133,7 +142,10 @@ label {
 .row {
     margin: 0 auto;
     height: 400px;
-    padding: 20px;
+    padding-top: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
 }
 
 .block {

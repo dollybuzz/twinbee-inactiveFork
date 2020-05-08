@@ -17,11 +17,13 @@ let navMapper = {
 }
 
 function showClients() {
-    $("#topRow").html(
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
         "    <table id=\"clientTable\" class=\"table\">\n" +
         "    </table>\n" +
-        "</div>")
+        "</div></div>")
     $.ajax({
         url: "/api/getAllClients",
         method: "get",
@@ -53,17 +55,19 @@ function showClients() {
             $("#clientTable").append('\n</tbody>')
 
             //Body Block content
-            //top
+            //top row
             $("#topRow").append('\n<div id="optionsClient"></div>')
             $("#optionsClient").hide();
             $("#optionsClient").html("Test!");
             $("#optionsClient").css("width", "50%");
+            $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
+            $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>-</button>");
 
-            //bottom
+            //bottom row
             $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
-            $("#bottomRow").append('<div id="buttonsClient"></div>');
-            $("#buttonsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-            $("#buttonsClient").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
+            $("#userMainContent").append('<div id="buttonsBottom"></div>');
+            $("#buttonsBottom").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
+            $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 
             //Event Listeners
             $(".clientRow").click(function () {
