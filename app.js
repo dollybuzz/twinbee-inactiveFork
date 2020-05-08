@@ -21,9 +21,7 @@ const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
 const ts = require('./services/timeClockService.js');
-const timeClockService = require('./services/timeClockService.js')
-
-const cbs = require('./services/ClientService.js');
+const timeClockService = require('./services/timeClockService.js');
 
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
