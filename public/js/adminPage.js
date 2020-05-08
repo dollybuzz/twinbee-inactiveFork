@@ -17,7 +17,7 @@ let navMapper = {
 }
 
 function showClients() {
-    $(".row").html(
+    $("#topRow").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"clientTable\" class=\"table\">\n" +
         "    </table>\n" +
@@ -53,12 +53,17 @@ function showClients() {
             $("#clientTable").append('\n</tbody>')
 
             //Body Block content
-            $(".row").append('\n<div id="optionsClient"></div>')
+            //top
+            $("#topRow").append('\n<div id="optionsClient"></div>')
             $("#optionsClient").hide();
             $("#optionsClient").html("Test!");
             $("#optionsClient").css("width", "50%");
-            $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-            $("#optionsClient").append("<button id='ExpandButton' type='button' class='btn btn-default'>Expand</button>");
+
+            //bottom
+            $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
+            $("#bottomRow").append('<div id="buttonsClient"></div>');
+            $("#buttonsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+            $("#buttonsClient").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
 
             //Event Listeners
             $(".clientRow").click(function () {
@@ -78,6 +83,10 @@ function showClients() {
                  $("#floor").css("margin-left", "0");
                  $("#floor").css("margin-right", "auto");
                  $("#floor").css("transition", "width 2s ease-in-out");
+                 $("#SubmitButton").css("opacity", "0");
+                 $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
+                 $("#ExpandButton").css("opacity", "0");
+                 $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
              })
 
             //Show Block content
@@ -89,6 +98,10 @@ function showClients() {
                     $("#optionsClient").show();
                     $("#optionsClient").css("opacity", "1");
                     $("#optionsClient").css("width", "50%");
+                    $("#SubmitButton").css("opacity", "1");
+                    $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
+                    $("#ExpandButton").css("opacity", "1");
+                    $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
 
                 }, 1500)
             })

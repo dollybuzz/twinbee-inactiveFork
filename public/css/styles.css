@@ -70,16 +70,23 @@ footer a {
     padding: 10px;
 }
 
-#loginButton, #logoutButton, #SubmitButton, #ExpandButton {
+#loginButton, #logoutButton, #SubmitButton {
     color: white;
     background-color: #32444e;
 }
 
+#ExpandButton {
+    background-color: #a4b6ba;
+}
+
 #loginButton:hover,
 #logoutButton:hover,
-#SubmitButton:hover,
-#ExpandButton:hover {
+#SubmitButton:hover{
     background-color: #dbb459;
+}
+
+#ExpandButton:hover {
+    background-color: #e8ecef;
 }
 
 #logoutButton {
@@ -92,19 +99,20 @@ footer a {
     position: absolute;
     top:520px;
     right: 20px;
+    opacity: 0;
 }
 
 #ExpandButton {
     position: absolute;
-    top: 520px;
-    left: 20px;
+    top: 65%;
+    left: 45%;
+    opacity: 0;
 }
 
 
 #userEmail, #userPassword, #userType {
     background: #e8ecef;
 }
-
 
 #userEmail, #userPassword, #userType {
     width: 20%;
