@@ -35,6 +35,7 @@ module.exports = {
     createClient: async (req, res) => {
         let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
             req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip)
+            .catch(err=>{console.log(err)});
         res.send(client);
     },
 
@@ -66,6 +67,6 @@ module.exports = {
      * @returns [{customer:{}},...]
      */
     getAllClients: async (req, res) => {
-        res.send(await clientService.getAllClients());
+        res.send(await clientService.getAllClients().catch(err=>{console.log(err)}));
     }
 }

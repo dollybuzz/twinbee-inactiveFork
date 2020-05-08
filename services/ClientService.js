@@ -30,7 +30,7 @@ class ClientService {
      * @returns {Promise<[entry]>}
      */
     async getAllClients() {
-        return await clientRepo.getAllClients();
+        return await clientRepo.getAllClients().catch(err=>{console.log(err)});
     }
 
     /**
@@ -48,7 +48,7 @@ class ClientService {
     async createNewClient(firstName, lastName, customerEmail, addressStreet,
                           customerCity, customerStateFull, customerZip, phoneNumber) {
         return await clientRepo.createClient(firstName, lastName, customerEmail, addressStreet,
-            customerCity, customerStateFull, customerZip, phoneNumber);
+            customerCity, customerStateFull, customerZip, phoneNumber).catch(err=>{console.log(err)});
     }
 
     /**
@@ -57,7 +57,7 @@ class ClientService {
      * @returns {Promise<chargebee customer object>}
      */
     async getClientById(id) {
-        let clientData = await clientRepo.getClientById(id);
+        let clientData = await clientRepo.getClientById(id).catch(err=>{console.log(err)});
         return clientData;
     }
 
@@ -137,7 +137,7 @@ class ClientService {
      *                      error if none is found.
      */
     async getClientByEmail(email){
-       return await clientRepo.getClientByEmail(email);
+       return await clientRepo.getClientByEmail(email).catch(err=>{console.log(err)});
     }
 }
 

@@ -24,10 +24,20 @@ const maker3 = new Maker(3, 'first3', 'last3', 'email3');
 describe('Maker Service Test', function () {
 
     beforeEach(function () {
-        let getClientsStub = sinon.stub
+        let makerIdByEmailStub = sinon.stub(makerRepo, 'getMakerIdByEmail')
+            .resolves([{id:5}]);
+        let getMakerByIdStub = sinon.stub(makerRepo, 'getMakerById')
+            .onFirstCall()
+            .resolves([{
+                id: 1,
+                first_name: "first1",
+                last_name: "last1",
+                email: 'email1'
+            }]);
+        getMakerByIdStub.onSecondCall()
+            .resolves([]);
         let getAllMakersStub = sinon.stub(makerRepo, 'getAllMakers')
-            .callsFake(() => {
-                return [
+            .resolves([
                     {
                         id: 1,
                         first_name: "first1",
@@ -44,29 +54,13 @@ describe('Maker Service Test', function () {
                         last_name: "last3",
                         email: 'email3'
                     }
-                ];
-            });
+                ]);
 
         let createMakerStub = sinon.stub(makerRepo, 'createMaker')
-            .callsFake(()=>{
+            .resolves(()=>{
                 console.log("Don't actually call the repo's createMaker!");
             })
-        let makerIdByEmailStub = sinon.stub(makerRepo, 'getMakerIdByEmail')
-            .callsFake(()=>{
-                return [{id:5}]
-            });
-        let getMakerByIdStub = sinon.stub(makerRepo, 'getMakerById')
-            .callsFake((x)=>{
-                if (x == 1)
-                return[{
-                    id: 1,
-                    first_name: "first1",
-                    last_name: "last1",
-                    email: 'email1'
-                }]
-                else
-                    return [];
-            })
+
     });
 
     afterEach(function () {
@@ -97,7 +91,7 @@ describe('Maker Service Test', function () {
 
     })
     it('Should not find any maker with the supplied id', async function () {
-
+        makerService.getMakerById(1); //discard
         let actual = await makerService.getMakerById(-1);
 
         console.log(actual)

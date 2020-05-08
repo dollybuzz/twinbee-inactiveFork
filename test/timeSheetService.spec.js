@@ -22,25 +22,18 @@ const timeSheetRefined3 = new TimeSheet(3, 2, 20.00, 'a', '2019-04-22 22:22:22',
 describe('Time Sheet Service Test', function () {
     beforeEach(function () {
         let getAllSheetsStub = sinon.stub(timeSheetRepo, 'getAllSheets')
-            .callsFake(()=>{
-                return [timeSheetBasic1, timeSheetBasic2, timeSheetBasic3];
-            });
+            .resolves([timeSheetBasic1, timeSheetBasic2, timeSheetBasic3]);
         let getByMakerStub = sinon.stub(timeSheetRepo, 'getSheetsByMaker')
-            .callsFake(()=>{
-                return [timeSheetBasic1, timeSheetBasic2];
-            });
+            .resolves([timeSheetBasic1, timeSheetBasic2]
+            )
         let getByClientStub = sinon.stub(timeSheetRepo, 'getSheetsByClient')
-            .callsFake(()=>{
-                return [timeSheetBasic1, timeSheetBasic3];
-            });
+            .resolves([timeSheetBasic1, timeSheetBasic3]);
         let createSheetStub = sinon.stub(timeSheetRepo, 'createSheet')
-            .callsFake(()=> {
-                return 1;
-            });
+            .resolves(1);
         let deleteSheetStub = sinon.stub(timeSheetRepo, 'deleteSheet')
-            .callsFake(()=>{
+            .resolves(()=>{
                 console.log("Don't delete me bro!");
-            })
+            });
     })
 
     afterEach(function () {
@@ -53,7 +46,7 @@ describe('Time Sheet Service Test', function () {
     })
 
     it('Should grab only the sheets for online users', async function () {
-        let actual = await timeSheetService.getOnlineMakers();
+        let actual = await timeSheetService.getOnlineMakerSheets();
         expect(actual).to.deep.equal([timeSheetRefined1]);
         
     })

@@ -32,8 +32,8 @@ class MakerService {
      * @returns {Promise<maker>}
      */
     async createNewMaker(firstName, lastName, email){
-        await makerRepo.createMaker(firstName, lastName, email);
-        let id = await makerRepo.getMakerIdByEmail(email);
+        await makerRepo.createMaker(firstName, lastName, email).catch(err=>{console.log(err)});
+        let id = await makerRepo.getMakerIdByEmail(email).catch(err=>{console.log(err)});
         return new Maker(id[0].id, firstName, lastName, email);
     }
 
@@ -45,7 +45,7 @@ class MakerService {
      */
     async getOnlineMakers() {
         let onliners = [];
-        let retrieved = await makerRepo.getOnlineMakers();
+        let retrieved = await makerRepo.getOnlineMakers().catch(err=>{console.log(err)});
         retrieved.forEach(item => {
             let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email);
             onliners.push(online);
@@ -63,7 +63,7 @@ class MakerService {
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
     async updateMaker(id, firstName, lastName, email){
-        await makerRepo.updateMaker(id, firstName, lastName, email);
+        await makerRepo.updateMaker(id, firstName, lastName, email).catch(err=>{console.log(err)});
         return this.getMakerById(id);
     }
 
@@ -134,7 +134,7 @@ class MakerService {
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
     async getMakerById(id){
-        let result = await  makerRepo.getMakerById(id);
+        let result = await  makerRepo.getMakerById(id).catch(err=>{console.log(err)});
 
         if (result[0]) {
             let maker = result[0];

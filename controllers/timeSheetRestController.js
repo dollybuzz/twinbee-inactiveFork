@@ -18,7 +18,7 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getAllTimeSheets: async (req,res) => {
-        let timeSheets = await timeSheetService.getAllTimeSheets();
+        let timeSheets = await timeSheetService.getAllTimeSheets().catch(err=>{console.log(err)});
         res.send(timeSheets);
     },
 
@@ -42,7 +42,7 @@ module.exports = {
      */
     getTimeSheetsByClientId: async (req, res) => {
         let id = req.query.id;
-        let clientTimeSheets = await timeSheetService.getSheetsByClient(id);
+        let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err=>{console.log(err)});
         res.send(clientTimeSheets)
     },
 
@@ -66,7 +66,7 @@ module.exports = {
      */
     getTimeSheetsByMakerId: async (req, res) => {
         let id = req.query.id;
-        let makerTimeSheet = await timeSheetService.getSheetsByMaker(id);
+        let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err=>{console.log(err)});
         res.send(makerTimeSheet);
     },
 
@@ -84,7 +84,7 @@ module.exports = {
      */
     updateTimeSheetsById: async (req, res) =>{
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
-            req.body.timeIn, req.body.timeOut);
+            req.body.timeIn, req.body.timeOut).catch(err=>{console.log(err)});
         res.end();
     },
 
@@ -116,7 +116,7 @@ module.exports = {
      */
     createTimeSheet: async (req, res) => {
         let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
-            req.body.timeIn, req.body.timeOut, req.body.occupation);
+            req.body.timeIn, req.body.timeOut, req.body.occupation).catch(err=>{console.log(err)});
         res.send(createdSheet);
     }
 }

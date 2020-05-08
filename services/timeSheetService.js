@@ -20,7 +20,7 @@ class TimeSheetService {
      */
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, occupation) {
         let id = await timeSheetRepo.createSheet(makerId, clientId,
-            hourlyRate, timeIn, timeOut, occupation);
+            hourlyRate, timeIn, timeOut, occupation).catch(err=>{console.log(err)});
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation);
     }
 
@@ -53,11 +53,11 @@ class TimeSheetService {
      */
     async getOnlineMakerSheets(){
         let onlineUsers = [];
-        let sheets = await timeSheetRepo.getAllSheets();
+        let sheets = await timeSheetRepo.getAllSheets().catch(err=>{console.log(err)});
         for (var i = 0; i < sheets.length; ++i){
             if (sheets[i].end_time === '0000-00-00 00:00:00')
             {
-                let refinedSheet = await createSheetFromRow(sheets[i]);
+                let refinedSheet = await createSheetFromRow(sheets[i]).catch(err=>{console.log(err)});
                 onlineUsers.push(refinedSheet);
             }
         }
@@ -71,9 +71,9 @@ class TimeSheetService {
      */
     async getAllTimeSheets(){
         let refinedSheets = [];
-        let sheets = await timeSheetRepo.getAllSheets();
+        let sheets = await timeSheetRepo.getAllSheets().catch(err=>{console.log(err)});
         for (var i = 0; i < sheets.length; ++i){
-                let refinedSheet = await createSheetFromRow(sheets[i]);
+                let refinedSheet = await createSheetFromRow(sheets[i]).catch(err=>{console.log(err)});
             refinedSheets.push(refinedSheet);
         }
         return refinedSheets;
@@ -85,10 +85,10 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByMaker(id){
-        let sheets = await timeSheetRepo.getSheetsByMaker(id);
+        let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err=>{console.log(err)});
         let makerSheets = [];
-        sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row);
+        await sheets.forEach(async row=>{
+            let refinedSheet = await createSheetFromRow(row).catch(err=>{console.log(err)});
             makerSheets.push(refinedSheet);
         })
         return makerSheets;
@@ -100,10 +100,10 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByClient(id){
-        let sheets = await timeSheetRepo.getSheetsByClient(id);
+        let sheets = await timeSheetRepo.getSheetsByClient(id).catch(err=>{console.log(err)});
         let clientSheets = [];
-        sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row);
+        await sheets.forEach(async row=>{
+            let refinedSheet = await createSheetFromRow(row).catch(err=>{console.log(err)});
             clientSheets.push(refinedSheet);
         })
         return clientSheets;
