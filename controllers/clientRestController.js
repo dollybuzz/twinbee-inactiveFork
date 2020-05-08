@@ -14,8 +14,71 @@ module.exports = {
      */
     getClientById: async (req, res) => {
         let id = req.query.id;
-        let client = clientService.getClientById(id);
+        let client = await clientService.getClientById(id);
         res.send(client);
+    },
+
+    /**
+     * Updates a client's billing info. looks for data in the body in the form:
+     * {
+     *     "id": id of customer to update,
+     *     "firstName": new first name for billing,
+     *     "lastName": new last name for  billing,
+     *     "street": new street number and name for billing,
+     *     "city": new city for billing,
+     *     "state": new state for billing,
+     *     "zip": new zip for billing
+     * }
+     */
+    updateClientBilling: (req, res) => {
+        clientService.updateClientBilling(req.body.id, req.body.firstName, req.body.lastName,
+            req.body.street, req.body.city, req.body.state, req.body.zip);
+        res.end();
+    },
+
+
+    /**
+     * Updates a client's contact info. looks for data in the body in the form:
+     * {
+     *     "id": id of customer to update,
+     *     "firstName": new first name,
+     *     "lastName": new last name,
+     *     "email": new email
+     * }
+     */
+    updateClientContact: (req, res) => {
+        clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName, req.body.email);
+        res.end();
+    },
+
+    /**
+     * Updates a client's metadata within chargebee.
+     * Looks for data in the body in the form:
+     * {
+     *     "id": client's id,
+     *     "metadata":  {
+     *                      "customKey1": "value1",
+     *                      "customKey2": "value2"...
+     *                  }
+     * }
+     */
+    updateClientMetadata: (req, res) =>{
+        clientService.updateClientMetadata(req.body.id, req.body.metadata);
+        res.end();
+    },
+
+    /**
+     * Updates a client's time bucket for one plan with the given number
+     * of minutes (adds or subtracts). Looks for data in the body in the form:
+     * {
+     *     "id": id of the client to update,
+     *     "planName": name of the client's plan to update,
+     *     "minutes": positive or negative integer of minutes to update with
+     * }
+     */
+    updateClientTimeBucket(req, res){
+      clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes));
+      res.end();
     },
 
     /**

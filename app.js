@@ -23,6 +23,8 @@ const request = util.promisify(require('request'));
 const ts = require('./services/timeClockService.js');
 const timeClockService = require('./services/timeClockService.js')
 
+const cbs = require('./services/ClientService.js');
+
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
 app.set('ip',  process.env.IP || "0.0.0.0");
@@ -42,6 +44,10 @@ app.get("/api/getAllMakers", makerRestController.getAllMakers);
 app.get("/api/getClient", clientRestController.getClientById);
 app.post("/api/createClient", clientRestController.createClient);
 app.post("/api/deleteClient", clientRestController.deleteClient);
+app.post("/api/updateClientContact", clientRestController.updateClientContact);
+app.post("/api/updateClientBilling", clientRestController.updateClientBilling);
+app.post("/api/updateClientMetadata", clientRestController.updateClientMetadata);
+app.post("/api/updateClientTimeBucket", clientRestController.updateClientTimeBucket);
 app.get("/api/getMaker", makerRestController.getMakerById);
 app.post("/api/createMaker", makerRestController.createMaker);
 app.post("/api/updateMaker", makerRestController.updateMaker);
