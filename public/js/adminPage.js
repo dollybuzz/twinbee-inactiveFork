@@ -56,6 +56,7 @@ function showClients() {
             $(".row").append('\n<div id="optionsClient"></div>')
             $("#optionsClient").hide();
             $("#optionsClient").html("Test!");
+            $("#optionsClient").css("width", "50%");
             $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
             $("#optionsClient").append("<button id='ExpandButton' type='button' class='btn btn-default'>Expand</button>");
 
@@ -73,15 +74,23 @@ function showClients() {
                  $("#optionsClient").hide();
                  $("#optionsClient").css("width", "0%");
                  $("#optionsClient").css("opacity", "0");
-                 $("#floor").css("width", "auto");
-                 $("#floor").css("margin", "0 auto");
+                 $("#floor").css("width", "100%");
+                 $("#floor").css("margin-left", "0");
+                 $("#floor").css("margin-right", "auto");
+                 $("#floor").css("transition", "width 2s ease-in-out");
              })
 
             //Show Block content
             $(".clientRow").click(function () {
-                $("#optionsClient").show();
-                $("#optionsClient").css("opacity", "1");
-                $("#optionsClient").css("width", "50%");
+                $("#floor").css("transition", "width 2s ease-in-out");
+
+                //show block after table stops moving
+                setTimeout(function () {
+                    $("#optionsClient").show();
+                    $("#optionsClient").css("opacity", "1");
+                    $("#optionsClient").css("width", "50%");
+
+                }, 1500)
             })
 
             //Row effect
