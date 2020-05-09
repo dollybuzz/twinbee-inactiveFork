@@ -32,6 +32,7 @@ function onSignIn(googleUser) {
  */
 function googleUserAction(route, callback = null,) {
     var id_token = GOOGLE_USER.getAuthResponse().id_token;
+    console.log(id_token)
 
     $.ajax({
         type: "post",
