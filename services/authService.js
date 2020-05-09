@@ -1,5 +1,7 @@
 const util = require('util');
 const request = util.promisify(require('request'));
+const authRepo = require('../repositories/authRepo.js');
+const compare = util.promisify(require('bcrypt').compare);
 
 class AuthService {
     constructor() {
@@ -10,6 +12,7 @@ class AuthService {
     }
 
     async accessorIsMaker(creds) {
+        let email = this.getEmailFromToken(creds);
         let response = await request({
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
@@ -24,18 +27,45 @@ class AuthService {
         let makers = JSON.parse(body);
 
         for (var i = 0; i < makers.length; ++i) {
-            if ()
-
-                }
-        //TODO: implement
+            if (maker[i].email === email) {
+                return true
+            }
+        }
+         return false;
     }
 
     async accessorIsClient(creds) {
-        //TODO: implement
+        let email = this.getEmailFromToken(creds);
+        let response = await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllClients`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+
+        let body = response.body;
+        let clients = JSON.parse(body);
+
+        for (var i = 0; i < clients.length; ++i) {
+            if (clients[i].email === email) {
+                return true
+            }
+        }
+        return false;
     }
 
     async accessorIsAdmin(creds) {
-        //TODO: implement
+        let adminList = await authRepo.getAdmins();
+        let email = this.getEmailFromToken(creds);
+        for (var i = 0; i < adminList.length; ++i){
+            if (await compare(email, adminList[i].admin)){
+                return true;
+            }
+        }
+        return false;
     }
 
     async getEmailFromToken(token) {
@@ -46,8 +76,7 @@ class AuthService {
             console.log(err)
         });
         const payload = ticket.getPayload();
-        const email = payload['email'];
-        return email;
+        return payload['email'];
     }
 }
 

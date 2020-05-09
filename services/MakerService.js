@@ -83,7 +83,7 @@ class MakerService {
     async getSheetsByMaker(id){
         let result =  await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`,
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimeSheets`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -91,6 +91,7 @@ class MakerService {
             console.log(err)
         });
 
+        console.log(result)
         let sheets = JSON.parse(result.body);
         let makerSheets = [];
         for (var i = 0; i < sheets.length; ++i){

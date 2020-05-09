@@ -104,7 +104,7 @@ describe('Maker Service Test', function () {
 //send key of auth and value of process.env.EnvironmentVariable.TWINBEE_MASTER_AUTH
     it('Should grab only the sheets for the specified maker (by id)', async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllTimesheets')
+            .post('/api/getAllTimeSheets', {auth:process.env.TWINBEE_MASTER_AUTH})
             .reply(200,
                 [
                         {
@@ -161,7 +161,7 @@ describe('Maker Service Test', function () {
                 }
             ]
         );
-    })
+    });
 
 
 
@@ -382,4 +382,4 @@ describe('Maker Service Test', function () {
             }
         ]);
     })
-})
+});
