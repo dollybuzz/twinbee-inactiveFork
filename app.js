@@ -43,133 +43,133 @@ app.get("/maker", makerPageController.renderLanding);
 //api routes
 app.post("/api/login",  landingPageController.temporaryNavigateFunction);
 app.post("/api/getAllClients",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     clientRestController.getAllClients);
 app.post("/api/getAllMakers",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     makerRestController.getAllMakers);
 app.post("/api/getClient",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     clientRestController.getClientById);
 app.post("/api/createClient",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     clientRestController.createClient);
 app.post("/api/deleteClient",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     clientRestController.deleteClient);
 app.post("/api/updateClientContact",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     authController.authorizeSelfService,
     clientRestController.updateClientContact);
 app.post("/api/updateClientBilling",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     authController.authorizeSelfService,
     clientRestController.updateClientBilling);
 app.post("/api/updateClientMetadata",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     clientRestController.updateClientMetadata);
 app.post("/api/updateClientTimeBucket",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     clientRestController.updateClientTimeBucket);
 app.post("/api/getMaker",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     makerRestController.getMakerById);
 app.post("/api/createMaker",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     makerRestController.createMaker);
 app.post("/api/updateMaker",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     authController.authorizeSelfService,
     makerRestController.updateMaker);
 app.post("/api/deleteMaker",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     makerRestController.deleteMaker);
 app.post("/api/getTimeSheetsByClientId",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     authController.authorizeSelfService,
     timeSheetRestController.getTimeSheetsByClientId);
 app.post("/api/getTimeSheetsByMakerId",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     authController.authorizeSelfService,
     timeSheetRestController.getTimeSheetsByMakerId);
 app.post("/api/getAllTimeSheets",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     timeSheetRestController.getAllTimeSheets);
 app.post("/api/updateTimeSheet",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     timeSheetRestController.updateTimeSheetsById);
 app.post("/api/deleteTimeSheet",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     timeSheetRestController.deleteTimeSheet);
 app.post("/api/createTimeSheet",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     timeSheetRestController.createTimeSheet);
 app.post("/api/getOnlineMakers",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     makerRestController.getOnlineMakers);
 app.post("/api/getAllPlans",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.getAllPlans);
 app.post("/api/createPlan",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.createPlan);
 app.post("/api/updatePlan",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.updatePlan);
 app.post("/api/deletePlan",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.deletePlan);
 app.post("/api/retrievePlan",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.retrievePlan);
 app.post("/api/getAllSubscriptions",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.getAllSubscriptions);
 app.post("/api/createSubscription",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.createSubscription);
 app.post("/api/updateSubscription",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.updateSubscription);
 app.post("/api/cancelSubscription",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.cancelSubscription);
 app.post("/api/retrieveSubscription",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     chargebeeRestController.retrieveSubscription);
 app.post("/api/clockIn",
-    authController.authorizeAdmin,
     authController.authorizeMaster,
+    authController.authorizeAdmin,
     authController.authorizeMaker,
     timeClockRestController.clockIn);
 app.post("/api/clockOut",
@@ -177,7 +177,6 @@ app.post("/api/clockOut",
     authController.authorizeMaster,
     authController.authorizeMaker,
     timeClockRestController.clockOut);
-
 
 (async function() {
 })();

@@ -91,7 +91,6 @@ class MakerService {
             console.log(err)
         });
 
-        console.log(result)
         let sheets = JSON.parse(result.body);
         let makerSheets = [];
         for (var i = 0; i < sheets.length; ++i){

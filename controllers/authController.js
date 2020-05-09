@@ -12,9 +12,10 @@ module.exports = {
 
 
     authorizeClient: async (req, res, next) =>{
+        console.log("Attempting to authorize client...");
       if (req.isOk || await authService.accessorIsClient()){
           req.isOk = true;
-          next(req, res);
+          next();
       }
       else{
           res.send('nope');
@@ -22,9 +23,10 @@ module.exports = {
       }
     },
     authorizeMaker: async(req, res, next) =>{
+        console.log("Attempting to authorize maker...");
         if (req.isOk || await authService.accessorIsMaker(req.body.auth)) {
             req.isOk = true;
-            next(req, res);
+            next();
         }
         else{
             res.send('nope');
@@ -33,9 +35,10 @@ module.exports = {
     },
 
     authorizeAdmin: async(req, res, next) =>{
+        console.log("Attempting to authorize admin...");
         if (req.isOk || authService.accessorIsAdmin(req.body.auth)) {
             req.isOk = true;
-            next(req, res);
+            next();
         }
         else{
             res.send('nope');
@@ -43,9 +46,10 @@ module.exports = {
         }
     },
     authorizeMaster: async(req, res, next) =>{
+        console.log("Attempting to authorize Master...");
         if (req.isOk || authService.accessorIsMaster(req.body.auth)) {
             req.isOk = true;
-            next(req, res);
+            next();
         }
         else{
             res.send('nope');
@@ -53,11 +57,12 @@ module.exports = {
         }
     },
     authorizeSelfService: async(req, res, next)=>{
+        console.log("Attempting to authorize self service...");
 
 
         if (req.isOk /* || updated == updater */) {
             req.isOk = true;
-            next(req, res);
+            next();
         }
         else{
             res.send('nope');
