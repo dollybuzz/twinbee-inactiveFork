@@ -48,7 +48,7 @@ module.exports = {
      */
     authorizeEmail: async function (token, callbackSuccess, callbackFail) {
         let requestURL = "https://oauth2.googleapis.com/tokeninfo?id_token=" + token;
-        let response = await request(requestURL);
+        let response = await request(requestURL).catch(err=>{console.log(err)});
         let parsedData = JSON.parse(response.body);
 
         if (!error && parsedData["aud"] === clientId + ".apps.googleusercontent.com" && parsedData["email"] !== undefined) {
@@ -74,9 +74,9 @@ module.exports = {
             audience: clientId,  // Specify the CLIENT_ID of the app that accesses the backend
             // Or, if multiple clients access the backend:
             //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-        });
+        }).catch(err=>{console.log(err)});
         const payload = ticket.getPayload();
-        const userid = payload['sub'];
+        const email = payload['email'];
         console.log(`PAYLOAD: ${payload}`);
         console.log(`ID: ${userid}`);
         // If request specified a G Suite domain:
