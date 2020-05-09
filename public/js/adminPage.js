@@ -302,12 +302,12 @@ function showOnlineMakers() {
 
 $(document).ready(function () {
 
-    //Main page tables (functionality not included in navItem)
+    $("header").css("height", "222");
+
+    //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
     //otherwise it will not load unless clicking on 'Main'
     showOnlineMakers();
-
-    $("header").css("height", "222");
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
@@ -330,7 +330,6 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
     $("#landingLogo").css("float", "left");
-
 
     //shifts the welcome textS
     $("#welcome").css("position", "absolute");
