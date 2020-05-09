@@ -19,6 +19,10 @@ module.exports ={
      *  }
      * ]
      *
+     * Looks for data in the body as follows:
+     * {
+     *     "auth": authentication credentials; either master or email
+     * }
      * @returns {Promise<[{},...]>}
      */
     getOnlineMakers: async (req, res) => {
@@ -43,6 +47,11 @@ module.exports ={
      *      "email": next maker's email address
      *  }
      * ]
+     * Looks for data on the body as follows
+     * {
+     *     "auth": authentication credentials; either master or email
+     * }
+     *
      * @returns {Promise<[{},...]>}
      */
     getAllMakers: async (req, res) => {
@@ -53,7 +62,8 @@ module.exports ={
     /**
      * Retrieves a maker by their database id. Looks for data in the query in the form:
      * {
-     *     "id": maker's database id
+     *     "id": maker's database id,
+     *     "auth": authentication credentials; either master or email
      * }
      * and returns data in the form:
      * {
@@ -79,7 +89,8 @@ module.exports ={
      * {
      *     "firstName": maker's first name,
      *     "lastName": maker's last name,
-     *     "email": maker's email
+     *     "email": maker's email,
+     *     "auth": authentication credentials; either master or email
      * }
      * and returns values in the form:
      * {
@@ -103,7 +114,8 @@ module.exports ={
      *     "id": maker's database id,
      *     "firstName": maker's new first name,
      *     "lastName": maker's new last name,
-     *     "email": maker's new email
+     *     "email": maker's new email,
+     *     "auth": authentication credentials; either master or email
      * }
      * and returns data in the form:
      * {
@@ -124,7 +136,8 @@ module.exports ={
      * deletes a maker from the database. Note that sheets are not deleted. Should
      * only be used to delete erroneous data. Looks for values in the body in the form:
      * {
-     *     "id": id of maker to be deleted.
+     *     "id": id of maker to be deleted,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      */

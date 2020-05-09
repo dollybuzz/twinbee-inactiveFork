@@ -15,6 +15,11 @@ module.exports = {
      *      "occupation": occupation of maker for time period
      * }
      *
+     * Looks for data in the body as follows:
+     * {
+     *     "auth": authentication credentials; either master or email
+     * }
+     *
      * @returns {Promise<[timeSheet]>}
      */
     getAllTimeSheets: async (req,res) => {
@@ -35,7 +40,8 @@ module.exports = {
      * }
      * Looks for values in the query in form:
      * {
-     *     "id": client's chargebee id
+     *     "id": client's chargebee id,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      * @returns {Promise<[timeSheet]>}
@@ -59,7 +65,8 @@ module.exports = {
      * }
      * Looks for values in the query in form:
      * {
-     *     "id": maker's database id
+     *     "id": maker's database id,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      * @returns {Promise<[timeSheet]>}
@@ -77,7 +84,8 @@ module.exports = {
      *     "id": database id of the timesheet,
      *     "hourlyRate": new hourly rate for this pay period,
      *     "timeIn": new clock-in time,
-     *     "timeOut": new clock-out time
+     *     "timeOut": new clock-out time,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      * @returns {Promise<void>}
@@ -91,7 +99,8 @@ module.exports = {
     /**
      * Marks a timesheet for deletion. Looks for values in the body in the form:
      * {
-     *     "id": id of timesheet to be marked for deletion
+     *     "id": id of timesheet to be marked for deletion,
+     *     "auth": authentication credentials; either master or email
      * }
      */
     deleteTimeSheet: (req, res) => {
@@ -108,7 +117,8 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "occupation": occupation of maker for time period
+     *      "occupation": occupation of maker for time period,
+     *     "auth": authentication credentials; either master or email
      * }
      * @param req
      * @param res

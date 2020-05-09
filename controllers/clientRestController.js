@@ -8,7 +8,8 @@ module.exports = {
      * Retrieves a chargebee customer object by their chargebee customer id. Looks for
      * values in the query in the form:
      * {
-     *     "id": customer id
+     *     "id": customer id,
+     *     "auth": authentication credentials; either master or email
      * }
      * @returns customer{}
      */
@@ -27,7 +28,8 @@ module.exports = {
      *     "street": new street number and name for billing,
      *     "city": new city for billing,
      *     "state": new state for billing,
-     *     "zip": new zip for billing
+     *     "zip": new zip for billing,
+     *     "auth": authentication credentials; either master or email
      * }
      */
     updateClientBilling: (req, res) => {
@@ -43,7 +45,8 @@ module.exports = {
      *     "id": id of customer to update,
      *     "firstName": new first name,
      *     "lastName": new last name,
-     *     "email": new email
+     *     "email": new email,
+     *     "auth": authentication credentials; either master or email
      * }
      */
     updateClientContact: (req, res) => {
@@ -60,6 +63,7 @@ module.exports = {
      *                      "customKey1": "value1",
      *                      "customKey2": "value2"...
      *                  }
+     *     "auth": authentication credentials; either master or email,
      * }
      */
     updateClientMetadata: (req, res) =>{
@@ -73,7 +77,8 @@ module.exports = {
      * {
      *     "id": id of the client to update,
      *     "planName": name of the client's plan to update,
-     *     "minutes": positive or negative integer of minutes to update with
+     *     "minutes": positive or negative integer of minutes to update with,
+     *     "auth": authentication credentials; either master or email
      * }
      */
     updateClientTimeBucket(req, res){
@@ -91,7 +96,8 @@ module.exports = {
      *     "address": customer's street address,
      *     "city": customer's city,
      *     "state": customer's state,
-     *     "zip": customer's zip
+     *     "zip": customer's zip,
+     *     "auth": authentication credentials; either master or email
      * }
      * @returns customer{}
      */
@@ -105,7 +111,8 @@ module.exports = {
     /**
      * Marks a customer as deleted. Looks for values in the body in the form:
      * {
-     *     "id": chargebee customer id for customer to be 'deleted'
+     *     "id": chargebee customer id for customer to be 'deleted',
+     *     "auth": authentication credentials; either master or email
      * }
      */
     deleteClient: (req, res) => {
@@ -126,6 +133,11 @@ module.exports = {
      *          "customer":{}
      *      }
      *  ]
+     *
+     *  Looks for authentication in the body as follows:
+     *  {
+     *     "auth": authentication credentials; either master or email
+     *  }
      *
      * @returns [{customer:{}},...]
      */
