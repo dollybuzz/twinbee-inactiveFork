@@ -22,25 +22,15 @@
 <header>
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <div id="landingLogo">
-        <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>"></div>
+        <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+    </div>
     <div id=<%=siteTitle["text"]%>>
-        <span id="welcome"><%=welcome["text"]%></span>
-        <span id="logout"></span>
+        <%=welcome["text"]%>
         <%=pageTitle["text"]%>
     </div>
+    <div id="logout"></div>
     <div id="time"></div>
-
 </header>
-<nav>
-    <%if (typeof navItemsTop !== "undefined"){%>
-        <% for (var i = 0; i < navItemsTop.length; ++i){%>
-        <%if (i != 0){%>
-            |
-        <%}%>
-        <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
-        <%}%>
-    <%}else{%>
-    <%}%>
-</nav>
+
 
 

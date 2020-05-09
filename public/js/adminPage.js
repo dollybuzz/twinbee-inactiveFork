@@ -307,6 +307,8 @@ $(document).ready(function () {
     //otherwise it will not load unless clicking on 'Main'
     showOnlineMakers();
 
+    $("header").css("height", "222");
+
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
@@ -322,12 +324,13 @@ $(document).ready(function () {
         $(this).css("font-style", 'normal');
     });
 
-    //shifts the landing logo
-    $("#actualImage").css("float", "left");
-    $("#landingLogo").css("height", "210px");
-
     //shifts the time and date
     $("#time").css("top", "150px");
+
+    //shifts the logo
+    $("#landingLogo").css("width", "20%");
+    $("#landingLogo").css("float", "left");
+
 
     //shifts the welcome textS
     $("#welcome").css("position", "absolute");

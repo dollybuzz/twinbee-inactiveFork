@@ -1,37 +1,46 @@
 header {
     text-align: center;
-    margin: auto;
+    width: 100%;
+    height: 270px;
+    background-color: #e8ecef;
 }
 
 body {
-    justify-content: center;
-    text-align: center;
-    margin: auto;
+    width: 100%;
+    height: 100%;
     color: #32444e;
     background-color: #32444e;
 }
 
 #landingMain {
     background-color: white;
-    padding: 20px
+    width: 100%;
+    height: 500px;
+    text-align: center;
+    padding-top: 50px;
 }
 
 #userMainContent {
     margin: auto;
+    width: 100%;
+    height: 500px;
     background-color: white;
+    padding-top: 10px;
 }
 
 #landingLogo {
-    text-align: center;
-    background-color: #e8ecef;
-    padding: 20px;
+    width: 100%;
+    padding: 15px;
 }
 
 nav {
+    display: inline-block;
     margin: auto;
     text-align: center;
     color: white;
     background-color: #32444e;
+    width: 100%;
+    font-size: 1.2em;
     padding: 10px;
 }
 
@@ -48,14 +57,14 @@ body a:hover {
 }
 
 footer {
-    background-color: #32444e;
-    margin: 0 auto;
     color: white;
     text-decoration: none;
     text-align: center;
 }
 
 footer a {
+    width: 100%;
+    height: 100%;
     color: white;
     text-decoration: none;
     padding: 20px;
@@ -99,7 +108,6 @@ footer a {
 #buttonsBottom {
     width: 100%;
 }
-
 
 #logoutButton {
     position: absolute;
@@ -155,18 +163,21 @@ label {
 }
 
 #adminTitle {
+    display: inline-block;
     font-size: 1.5em;
-    padding-top: 120px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    padding-top: 80px;
+    width: 60%;
+    text-align: center;
+    float: left;
 }
 
 #landingTitle {
-    padding: 10px;
+    width: 100%;
     font-size: 1.5em;
     background-color: #32444e;
+    color: white;
+    text-align: center;
+    padding: 10px;
 }
 
 #floor {
