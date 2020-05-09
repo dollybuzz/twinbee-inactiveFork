@@ -12,7 +12,7 @@ const makerRestController = require('./controllers/makerRestController.js');
 const timeSheetRestController = require('./controllers/timeSheetRestController.js');
 const timeClockRestController = require('./controllers/timeClockRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
-const googleAuthController = require('./controllers/googleAuthController.js');
+const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
@@ -30,46 +30,153 @@ app.set('ip',  process.env.IP || "0.0.0.0");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+//page routes (including to-be-removed dev routes)
 app.get("/", landingPageController.renderLanding);
 app.get("/home", landingPageController.renderLanding);
 app.get("/landing", landingPageController.renderLanding);
-app.post("/api/login", landingPageController.temporaryNavigateFunction);
 app.get("/admin", adminPageController.renderLanding);
 app.get("/administrator", adminPageController.renderLanding);
 app.get("/client", clientPageController.renderLanding);
 app.get("/maker", makerPageController.renderLanding);
-app.get("/api/getAllClients", clientRestController.getAllClients);
-app.get("/api/getAllMakers", makerRestController.getAllMakers);
-app.get("/api/getClient", clientRestController.getClientById);
-app.post("/api/createClient", clientRestController.createClient);
-app.post("/api/deleteClient", clientRestController.deleteClient);
-app.post("/api/updateClientContact", clientRestController.updateClientContact);
-app.post("/api/updateClientBilling", clientRestController.updateClientBilling);
-app.post("/api/updateClientMetadata", clientRestController.updateClientMetadata);
-app.post("/api/updateClientTimeBucket", clientRestController.updateClientTimeBucket);
-app.get("/api/getMaker", makerRestController.getMakerById);
-app.post("/api/createMaker", makerRestController.createMaker);
-app.post("/api/updateMaker", makerRestController.updateMaker);
-app.post("/api/deleteMaker", makerRestController.deleteMaker);
-app.get("/api/getTimeSheetsByClientId", timeSheetRestController.getTimeSheetsByClientId);
-app.get("/api/getTimeSheetsByMakerId", timeSheetRestController.getTimeSheetsByMakerId);
-app.get("/api/getAllTimeSheets", timeSheetRestController.getAllTimeSheets);
-app.post("/api/updateTimeSheet", timeSheetRestController.updateTimeSheetsById);
-app.post("/api/deleteTimeSheet", timeSheetRestController.deleteTimeSheet);
-app.post("/api/createTimeSheet", timeSheetRestController.createTimeSheet);
-app.get("/api/getOnlineMakers", makerRestController.getOnlineMakers);
-app.get("/api/getAllPlans", chargebeeRestController.getAllPlans);
-app.post("/api/createPlan", chargebeeRestController.createPlan);
-app.post("/api/updatePlan", chargebeeRestController.updatePlan);
-app.post("/api/deletePlan", chargebeeRestController.deletePlan);
-app.get("/api/retrievePlan", chargebeeRestController.retrievePlan);
-app.get("/api/getAllSubscriptions", chargebeeRestController.getAllSubscriptions);
-app.post("/api/createSubscription", chargebeeRestController.createSubscription);
-app.post("/api/updateSubscription", chargebeeRestController.updateSubscription);
-app.post("/api/cancelSubscription", chargebeeRestController.cancelSubscription);
-app.get("/api/retrieveSubscription", chargebeeRestController.retrieveSubscription);
-app.post("/api/clockIn", timeClockRestController.clockIn);
-app.post("/api/clockOut", timeClockRestController.clockOut);
+
+//api routes
+app.post("/api/login",  landingPageController.temporaryNavigateFunction);
+app.post("/api/getAllClients",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.getAllClients);
+app.post("/api/getAllMakers",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    makerRestController.getAllMakers);
+app.post("/api/getClient",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.getClientById);
+app.post("/api/createClient",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.createClient);
+app.post("/api/deleteClient",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.deleteClient);
+app.post("/api/updateClientContact",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    authController.authorizeSelfService,
+    clientRestController.updateClientContact);
+app.post("/api/updateClientBilling",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    authController.authorizeSelfService,
+    clientRestController.updateClientBilling);
+app.post("/api/updateClientMetadata",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.updateClientMetadata);
+app.post("/api/updateClientTimeBucket",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.updateClientTimeBucket);
+app.post("/api/getMaker",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    makerRestController.getMakerById);
+app.post("/api/createMaker",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    makerRestController.createMaker);
+app.post("/api/updateMaker",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    authController.authorizeSelfService,
+    makerRestController.updateMaker);
+app.post("/api/deleteMaker",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    makerRestController.deleteMaker);
+app.post("/api/getTimeSheetsByClientId",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    authController.authorizeSelfService,
+    timeSheetRestController.getTimeSheetsByClientId);
+app.post("/api/getTimeSheetsByMakerId",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    authController.authorizeSelfService,
+    timeSheetRestController.getTimeSheetsByMakerId);
+app.post("/api/getAllTimeSheets",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeSheetRestController.getAllTimeSheets);
+app.post("/api/updateTimeSheet",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeSheetRestController.updateTimeSheetsById);
+app.post("/api/deleteTimeSheet",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeSheetRestController.deleteTimeSheet);
+app.post("/api/createTimeSheet",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeSheetRestController.createTimeSheet);
+app.post("/api/getOnlineMakers",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    makerRestController.getOnlineMakers);
+app.post("/api/getAllPlans",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.getAllPlans);
+app.post("/api/createPlan",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.createPlan);
+app.post("/api/updatePlan",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.updatePlan);
+app.post("/api/deletePlan",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.deletePlan);
+app.post("/api/retrievePlan",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.retrievePlan);
+app.post("/api/getAllSubscriptions",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.getAllSubscriptions);
+app.post("/api/createSubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.createSubscription);
+app.post("/api/updateSubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.updateSubscription);
+app.post("/api/cancelSubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.cancelSubscription);
+app.post("/api/retrieveSubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.retrieveSubscription);
+app.post("/api/clockIn",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    authController.authorizeMaker,
+    timeClockRestController.clockIn);
+app.post("/api/clockOut",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    authController.authorizeMaker,
+    timeClockRestController.clockOut);
 
 
 (async function() {

@@ -163,7 +163,8 @@ describe('Maker Service Test', function () {
 
 
     it("INTEGRATION: Should grab a list of associated clients given a maker's id", async function f() {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`).get('/api/getAllClients').reply(200,
+        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+            .get('/api/getAllClients').reply(200,
 
             [
                 {

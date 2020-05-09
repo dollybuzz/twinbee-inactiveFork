@@ -81,8 +81,16 @@ class MakerService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByMaker(id){
-        let result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
-            .catch(err=>{console.log(err)});
+        let result =  await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err)
+        });
+
         let sheets = JSON.parse(result.body);
         let makerSheets = [];
         for (var i = 0; i < sheets.length; ++i){
@@ -100,11 +108,25 @@ class MakerService {
      * @returns {Promise<[Customer]>}
      */
     async getClientListForMakerId(id){
-        let result = await request(`http://${process.env.IP}:${process.env.port}/api/getAllClients`)
-            .catch(err=>{console.log(err)});
+        let result = await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.port}/api/getAllClients`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err)
+        });
         let clients = JSON.parse(result.body);
-        result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
-            .catch(err=>{console.log(err)});
+        result = await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err)
+        });
         let sheets = JSON.parse(result.body);
         let clientMap = {};
         let alreadyOnList = {};

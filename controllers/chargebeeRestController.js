@@ -17,6 +17,11 @@ module.exports = {
      *          "plan":{}
      *      }
      *  ]
+     *
+     *  Looks for data in the body in the form:
+     *  {
+     *     "auth": authentication credentials; either master or email
+     *  }
      * @returns [{entry:plan{}},...]
      */
     getAllPlans: async function(req, res){
@@ -30,7 +35,8 @@ module.exports = {
      *     "planName": name of plan,
      *     "invoiceName": name as it should appear on an invoice,
      *     "pricePerHour": integer price per hour in cents,
-     *     "planDescription": general description of plan
+     *     "planDescription": general description of plan,
+     *     "auth": authentication credentials; either master or email
      * }
      */
     createPlan: function(req, res){
@@ -43,7 +49,8 @@ module.exports = {
      * Retrieves a chargebee plan object by chargebee plan id. Looks for values
      * in the query as follows:
      * {
-     *     "planId": chargebee plan id
+     *     "planId": chargebee plan id,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      * @returns plan{}
@@ -61,7 +68,8 @@ module.exports = {
      *      "planId": existing chargebee plan id,
      *      "newName": new desired name for plan,
      *      "planInvoiceName": new desired name as it should appear on an invoice,
-     *      "planPrice": overridden plan price in cents as integer
+     *      "planPrice": overridden plan price in cents as integer,
+     *     "auth": authentication credentials; either master or email
      *
      * }
      */
@@ -74,7 +82,8 @@ module.exports = {
     /**
      * Deletes a plan by chargebee plan id. Looks for values in the body as follows:
      * {
-     *     "planId": chargebee plan id
+     *     "planId": chargebee plan id,
+     *     "auth": authentication credentials; either master or email
      * }
      */
     deletePlan: function(req, res){
@@ -97,6 +106,11 @@ module.exports = {
      *              ...
      *          }
      *      },...
+     * ]
+     * Looks for data in the body as follows
+     * {
+     *     "auth": authentication credentials; either master or email
+     * }
      * @returns [{"customer":{},"subscription":{},"card":{}},...]
      */
     getAllSubscriptions: async function(req, res){
@@ -111,7 +125,8 @@ module.exports = {
      * {
      *     "planId": id of the plan to subscribe to,
      *     "customerId": id of the subscribing customer,
-     *     "planQuantity": initial number of hours to subscribe to
+     *     "planQuantity": initial number of hours to subscribe to,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      * @returns subscription{}
@@ -126,7 +141,8 @@ module.exports = {
      * Retrieves a subscription object by chargebee subscription id. Looks for values in the query
      * as follows:
      * {
-     *     "subscriptionId": id of desired subscription
+     *     "subscriptionId": id of desired subscription,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      * @returns subscription{}
@@ -147,7 +163,8 @@ module.exports = {
      *     "subscriptionId": id of subscription to be modified,
      *     "planId": new plan to use for subscription,
      *     "planQuantity": new number of hours to use,
-     *     "pricePerHour": overridden price per hour for subscription
+     *     "pricePerHour": overridden price per hour for subscription,
+     *     "auth": authentication credentials; either master or email
      * }
      *
      * @returns subscription{}
@@ -163,7 +180,8 @@ module.exports = {
      * cancels a subscription by chargebee subscription id. Looks for values in the
      * body as follows:
      * {
-     *     "subscriptionId": subscription to be cancelled
+     *     "subscriptionId": subscription to be cancelled,
+     *     "auth": authentication credentials; either master or email
      * }
      */
     cancelSubscription: function(req, res){

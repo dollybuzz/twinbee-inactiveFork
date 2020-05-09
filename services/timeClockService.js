@@ -20,7 +20,8 @@ class TimeClockService {
                 'clientId': clientId,
                 timeIn: await this.getCurrentMoment(),
                 timeOut: '0000-00-00 00:00:00',
-                'occupation': occupation
+                'occupation': occupation,
+                'auth':process.env.TWINBEE_MASTER_AUTH
             }
         })
     }
@@ -33,7 +34,14 @@ class TimeClockService {
      * @param makerId   - id of maker to clock out
      */
     async clockOut(makerId){
-        let result = await request(`http://${process.env.IP}:${process.env.PORT}/api/getTimeSheetsByMakerId?id=${makerId}`);
+        let result = await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getTimeSheetsByMakerId?id=${makerId}`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        });
+
         let sheetsForMaker = JSON.parse(result.body);
         let onlineSheets = [];
 
@@ -55,7 +63,8 @@ class TimeClockService {
                     id: currentSheet.id,
                     hourlyRate: currentSheet.hourlyRate,
                     timeIn: currentSheet.timeIn,
-                    timeOut: await this.getCurrentMoment()
+                    timeOut: await this.getCurrentMoment(),
+                    'auth':process.env.TWINBEE_MASTER_AUTH
                 }
             })
         }

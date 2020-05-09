@@ -167,10 +167,20 @@ class ClientService {
      */
     async getSheetsByClient(id) {
         let clientSheets = [];
-        let response = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`)
-            .catch(err => {
-                console.log(err)
-            });
+        let response = await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`,
+            form: {
+                id: currentSheet.id,
+                hourlyRate: currentSheet.hourlyRate,
+                timeIn: currentSheet.timeIn,
+                timeOut: await this.getCurrentMoment(),
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err)
+        });
+
         let body = response.body;
         let sheets = JSON.parse(body);
 
@@ -181,8 +191,6 @@ class ClientService {
         }
         return clientSheets;
     }
-
-
 
     /**
      * Removes a client from the database. TODO: remove from chargebee
@@ -202,10 +210,16 @@ class ClientService {
     async getMakersForClient(id) {
         let clientMakers = [];
         let me = this;
-        let response = await request(`http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`)
-            .catch((err) => {
-                console.log(err)
-            });
+        let response = await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err)
+        });
+
         let body = response.body;
         let makers = JSON.parse(body);
         let makersMap = {};
