@@ -12,6 +12,7 @@ const makerRestController = require('./controllers/makerRestController.js');
 const timeSheetRestController = require('./controllers/timeSheetRestController.js');
 const timeClockRestController = require('./controllers/timeClockRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
+const googleAuthController = require('./controllers/googleAuthController.js');
 const app = express();
 const bodyParser = require('body-parser');
 const chargebee = require('chargebee');
@@ -69,6 +70,7 @@ app.post("/api/cancelSubscription", chargebeeRestController.cancelSubscription);
 app.get("/api/retrieveSubscription", chargebeeRestController.retrieveSubscription);
 app.post("/api/clockIn", timeClockRestController.clockIn);
 app.post("/api/clockOut", timeClockRestController.clockOut);
+app.post("/api/verify", googleAuthController.testVerify);
 
 
 (async function() {
