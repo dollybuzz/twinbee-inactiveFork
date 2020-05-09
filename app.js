@@ -70,7 +70,6 @@ app.post("/api/cancelSubscription", chargebeeRestController.cancelSubscription);
 app.get("/api/retrieveSubscription", chargebeeRestController.retrieveSubscription);
 app.post("/api/clockIn", timeClockRestController.clockIn);
 app.post("/api/clockOut", timeClockRestController.clockOut);
-app.post("/api/verify", googleAuthController.testVerify);
 
 
 (async function() {
