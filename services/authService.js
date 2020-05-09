@@ -14,7 +14,7 @@ class AuthService {
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err)
@@ -23,9 +23,10 @@ class AuthService {
         let body = response.body;
         let makers = JSON.parse(body);
 
-        for (var i = 0; i < makers.length; ++i){
+        for (var i = 0; i < makers.length; ++i) {
+            if ()
 
-        }
+                }
         //TODO: implement
     }
 
@@ -35,6 +36,18 @@ class AuthService {
 
     async accessorIsAdmin(creds) {
         //TODO: implement
+    }
+
+    async getEmailFromToken(token) {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: clientId,
+        }).catch(err => {
+            console.log(err)
+        });
+        const payload = ticket.getPayload();
+        const email = payload['email'];
+        return email;
     }
 }
 
