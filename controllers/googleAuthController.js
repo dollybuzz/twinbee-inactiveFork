@@ -78,7 +78,7 @@ module.exports = {
         const payload = ticket.getPayload();
         const email = payload['email'];
         console.log(`PAYLOAD: ${payload}`);
-        console.log(`ID: ${userid}`);
+        console.log(`ID: ${email}`);
         // If request specified a G Suite domain:
         //const domain = payload['hd'];
     }
