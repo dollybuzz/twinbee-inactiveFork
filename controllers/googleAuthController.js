@@ -64,7 +64,7 @@ module.exports = {
 
     testVerify: (req, res)=>{
         console.log(req.body);
-        module.exports.verify(JSON.parse(req.body.idtoken));
+        module.exports.verify(req.body.idtoken);
     },
 
 
