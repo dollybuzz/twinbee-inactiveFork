@@ -68,19 +68,14 @@ module.exports = {
     },
 
 
-    verify: async function (token) {
+    getEmailFromToken: async function (token) {
         const ticket = await client.verifyIdToken({
             idToken: token,
-            audience: clientId,  // Specify the CLIENT_ID of the app that accesses the backend
-            // Or, if multiple clients access the backend:
-            //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+            audience: clientId,
         }).catch(err=>{console.log(err)});
         const payload = ticket.getPayload();
         const email = payload['email'];
-        console.log(`PAYLOAD: ${payload}`);
-        console.log(`ID: ${email}`);
-        // If request specified a G Suite domain:
-        //const domain = payload['hd'];
+        return email;
     }
 
 };
