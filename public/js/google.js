@@ -37,8 +37,7 @@ function googleUserAction(route, callback = null,) {
     $.ajax({
         type: "post",
         url: route,
-        dataType: 'json',
-        data: {"idtoken": id_token},
+        data: JSON.stringify({"idtoken": id_token}),
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function (res, status) {
             if (callback != null) {
