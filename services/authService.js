@@ -66,7 +66,8 @@ class AuthService {
             console.log(adminList[i]);
             console.log(`email is ${email}`);
             let emailsMatch = await compare(email, adminList[i].admin);
-
+            console.log("EMAILS MATCH")
+            console.log(emailsMatch);
             if (emailsMatch){
                 return true;
             }
