@@ -7,7 +7,7 @@ const authService = require('../services/authService.js');
 const adminPageController = require('./adminPageController.js');
 const makerPageController = require('./makerPageController');
 const clientPageController = require('./clientPageController.js');
-const landingPageController = require('../controllers.js');
+const landingPageController = require('./controllers.js');
 
 
 module.exports = {
