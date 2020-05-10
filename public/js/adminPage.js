@@ -133,9 +133,9 @@ function showMakers(){
         "</div>")
     $.ajax({
         url: "/api/getAllMakers",
-        method: "get",
+        method: "post",
         data: {
-            token: "TODOImplementRealToken"
+            auth: id_token
         },
         dataType: "json",
         success: function (res, status) {
@@ -190,9 +190,9 @@ function showSheets(){
         "</div>")
     $.ajax({
         url: "/api/getAllTimeSheets",
-        method: "get",
+        method: "post",
         data: {
-            token: "TODOImplementRealToken"
+            auth: id_token
         },
         dataType: "json",
         success: function (res, status) {
@@ -252,9 +252,9 @@ function showOnlineMakers() {
         "</div>")
     $.ajax({
         url: "/api/getOnlineMakers",
-        method: "get",
+        method: "post",
         data: {
-            token: "TODOImplementRealToken"
+            auth: id_token
         },
         dataType: "json",
         success: function (res, status) {
