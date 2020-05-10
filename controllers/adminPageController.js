@@ -1,5 +1,5 @@
 module.exports ={
-     renderLanding: async (req, res)=>{
+     renderLanding: (req, res)=>{
         let thisID = {
             text: "adminTitle"
         };
