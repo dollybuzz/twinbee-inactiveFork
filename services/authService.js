@@ -63,7 +63,11 @@ class AuthService {
         let adminList = await authRepo.getAdmins();
         let email = await this.getEmailFromToken(creds);
         for (var i = 0; i < adminList.length; ++i){
-            if (await compare(email, adminList[i].admin)){
+            console.log(adminList[i]);
+            console.log(`email is ${email}`);
+            let emailsMatch = await compare(email, adminList[i].admin);
+
+            if (emailsMatch){
                 return true;
             }
         }
