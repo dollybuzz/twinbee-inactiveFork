@@ -1,3 +1,5 @@
+var GOOGLE_USER = null;
+
 $(document).ready(function () {
 
     //alters nav menu banner
@@ -13,3 +15,13 @@ $(document).ready(function () {
     //Shifts the welcome text
     $("#welcome").css("color", "white");
 })
+
+
+
+var id_token = null;
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    GOOGLE_USER = googleUser;
+    var id_token = GOOGLE_USER.getAuthResponse().id_token;
+    window.location.replace(`/login?token=${id_token}`);
+}

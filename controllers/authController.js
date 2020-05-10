@@ -7,6 +7,7 @@ const authService = require('../services/authService.js');
 const adminPageController = require('./adminPageController.js');
 const makerPageController = require('./makerPageController');
 const clientPageController = require('./clientPageController.js');
+const landingPageController = require('../controllers.js');
 
 
 module.exports = {
@@ -79,11 +80,10 @@ module.exports = {
             makerPageController.renderLanding(req, res);
         }
         else if (authService.accessorIsClient()){
-            makerPageController.renderLanding(req, res);
+            clientPageController.renderLanding(req, res);
         }
         else{
-            res.render('notAuthorized');
-            //TODO: add not authorized page
+            landingPageController.renderLanding(req, res);
         }
     }
 };
