@@ -1,9 +1,6 @@
 
 module.exports ={
     renderLanding: (req, res)=>{
-        let thisID = {
-            text: "landingTitle"
-        };
         let headerTitle = {
             text: ""
         };
@@ -22,6 +19,6 @@ module.exports ={
             text: "Welcome!"
         };
 
-        res.render("landing", {welcome:user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsBottom: footerLinks});
+        res.render("landing", {welcome:user, pageTitle:headerTitle, headerImg:headerImageActual, navItemsBottom: footerLinks});
     },
 };
