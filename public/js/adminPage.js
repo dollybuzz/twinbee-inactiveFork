@@ -107,7 +107,7 @@ function showClients() {
                     $("#ExpandButton").css("opacity", "1");
                     $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
 
-                }, 1500)
+                }, 2000)
             })
 
             //Row effect

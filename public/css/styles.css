@@ -7,7 +7,7 @@ header {
 
 body {
     width: 100%;
-    height: 100%;
+    height: auto;
     color: #32444e;
     background-color: #32444e;
 }
@@ -25,7 +25,6 @@ body {
     width: 100%;
     height: auto;
     background-color: white;
-    padding: 20px;
 }
 
 #landingLogo {
@@ -63,6 +62,7 @@ footer {
     color: white;
     text-decoration: none;
     text-align: center;
+    padding-top: 20px;
 }
 
 footer a {
@@ -102,13 +102,16 @@ footer a {
 }
 
 #buttonsTop {
-    margin-bottom: 0;
-    margin-top: auto;
     width: 100%;
+    height: auto;
 }
+
 #buttonsBottom {
     width: 100%;
+    height: auto;
     padding: 10px;
+    overflow: auto;
+    background-color: blue;
 }
 
 #logoutButton {
@@ -121,12 +124,14 @@ footer a {
     margin-bottom: auto;
     margin-top: 0;
     opacity: 0;
+    float: right;
 }
 
 #ExpandButton {
     margin-bottom: auto;
     margin-top: 0;
     opacity: 0;
+    float: left;
 }
 
 #userEmail, #userPassword {
