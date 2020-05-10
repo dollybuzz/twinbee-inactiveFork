@@ -16,24 +16,12 @@ module.exports ={
             {link: "", text: "Become a Maker"},
             {link: "", text: "FAQ"},
             {link: "", text: "Problems? Contact us."},
-        ]
+        ];
 
         let user = {
             text: "Welcome!"
-        }
+        };
 
         res.render("landing", {welcome:user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsBottom: footerLinks});
     },
-
-    temporaryNavigateFunction: (req, res)=>{
-        if (req.body.userType == "admin"){
-            res.redirect('/admin')
-        }
-        else if (req.body.userType == "maker"){
-            res.redirect('/maker')
-        }
-        else if (req.body.userType == "client"){
-            res.redirect('/client')
-        }
-    }
-}
+};

@@ -19,7 +19,7 @@ const chargebee = require('chargebee');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
-const util = require('util')
+const util = require('util');
 const request = util.promisify(require('request'));
 const ts = require('./services/timeClockService.js');
 const timeClockService = require('./services/timeClockService.js');
@@ -41,7 +41,8 @@ app.get("/client", clientPageController.renderLanding);
 app.get("/maker", makerPageController.renderLanding);
 
 //api routes
-app.post("/api/login",  landingPageController.temporaryNavigateFunction);
+app.post("/api/login",
+    authController.loginNavigation);
 app.post("/api/getAllClients",
     authController.authorizeMaster,
     authController.authorizeAdmin,

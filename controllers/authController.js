@@ -4,6 +4,9 @@ const client = new OAuth2Client(clientId);
 const util = require('util');
 const request = util.promisify(require('request'));
 const authService = require('../services/authService.js');
+const adminPageController = require('./adminPageController.js');
+const makerPageController = require('./makerPageController');
+const clientPageController = require('./clientPageController.js');
 
 
 module.exports = {
@@ -55,6 +58,7 @@ module.exports = {
     authorizeSelfService: async(req, res, next)=>{
         console.log("Attempting to authorize self service...");
 
+        throw new Error("Not yet implemented");
 
         if (req.isOk /* || updated == updater */) {
             req.isOk = true;
@@ -65,8 +69,22 @@ module.exports = {
             //TODO: res.render(accessNotAllowed)
         }
     },
-    authorizeLogin: async (req, res, next) =>{
 
+    loginNavigation: (req, res)=>{
+        let userToken = req.body.token;
+        if (authService.accessorIsAdmin(userToken)){
+            adminPageController.renderLanding(req, res);
+        }
+        else if (authService.accessorIsMaker(userToken)){
+            makerPageController.renderLanding(req, res);
+        }
+        else if (authService.accessorIsClient()){
+            makerPageController.renderLanding(req, res);
+        }
+        else{
+            res.render('notAuthorized');
+            //TODO: add not authorized page
+        }
     }
 };
 

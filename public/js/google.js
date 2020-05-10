@@ -19,7 +19,7 @@ function signOut() {
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     GOOGLE_USER = googleUser;
-    googleUserAction('/api/verify')
+    googleUserAction('/api/login')
 }
 
 

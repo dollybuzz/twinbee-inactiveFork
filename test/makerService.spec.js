@@ -167,7 +167,7 @@ describe('Maker Service Test', function () {
 
     it("INTEGRATION: Should grab a list of associated clients given a maker's id", async function f() {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllClients').reply(200,
+            .post('/api/getAllClients', {auth:process.env.TWINBEE_MASTER_AUTH}).reply(200,
 
             [
                 {
@@ -311,7 +311,7 @@ describe('Maker Service Test', function () {
                     }
                 }]);
         let scope2 = nock(`http://${process.env.IP}:${process.env.PORT}`)
-            .get('/api/getAllTimesheets')
+            .post('/api/getAllTimeSheets', {auth:process.env.TWINBEE_MASTER_AUTH})
             .reply(200,
                 [
                     {
