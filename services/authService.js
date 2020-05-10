@@ -14,7 +14,9 @@ class AuthService {
     }
 
     async accessorIsMaker(creds) {
-        let email = await this.getEmailFromToken(creds);
+        let email = await this.getEmailFromToken(creds).catch(err => {
+            console.log(err)
+        });
         let response = await request({
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
@@ -37,7 +39,9 @@ class AuthService {
     }
 
     async accessorIsClient(creds) {
-        let email = await this.getEmailFromToken(creds);
+        let email = await this.getEmailFromToken(creds).catch(err => {
+            console.log(err)
+        });
         let response = await request({
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllClients`,
@@ -60,10 +64,16 @@ class AuthService {
     }
 
     async accessorIsAdmin(creds) {
-        let adminList = await authRepo.getAdmins();
-        let email = await this.getEmailFromToken(creds);
+        let adminList = await authRepo.getAdmins().catch(err => {
+            console.log(err)
+        });
+        let email = await this.getEmailFromToken(creds).catch(err => {
+            console.log(err)
+        });
         for (var i = 0; i < adminList.length; ++i){
-            let emailsMatch = await compare(email, adminList[i].admin);
+            let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
+                console.log(err)
+            });
             if (emailsMatch){
                 return true;
             }

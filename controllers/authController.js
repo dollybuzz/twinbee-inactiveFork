@@ -59,14 +59,14 @@ module.exports = {
     authorizeSelfService: async(req, res, next)=>{
         console.log("Attempting to authorize self service...");
 
-        throw new Error("Not yet implemented");
+      //  throw new Error("Not yet implemented");
 
         if (req.isOk /* || updated == updater */) {
             req.isOk = true;
             next();
         }
         else{
-            res.send('nope');
+            throw new Error("Not yet implemented");
             //TODO: res.render(accessNotAllowed)
         }
     },
