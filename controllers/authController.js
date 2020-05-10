@@ -71,15 +71,15 @@ module.exports = {
         }
     },
 
-    loginNavigation: (req, res)=>{
+    loginNavigation: async (req, res)=>{
         let userToken = req.query.token;
-        if (authService.accessorIsAdmin(userToken)){
+        if (await authService.accessorIsAdmin(userToken)){
             adminPageController.renderLanding(req, res);
         }
-        else if (authService.accessorIsMaker(userToken)){
+        else if (await authService.accessorIsMaker(userToken)){
             makerPageController.renderLanding(req, res);
         }
-        else if (authService.accessorIsClient()){
+        else if (await authService.accessorIsClient()){
             clientPageController.renderLanding(req, res);
         }
         else{
