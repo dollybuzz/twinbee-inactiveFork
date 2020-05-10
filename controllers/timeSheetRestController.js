@@ -17,7 +17,7 @@ module.exports = {
      *
      * Looks for data in the body as follows:
      * {
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns {Promise<[timeSheet]>}
@@ -41,7 +41,7 @@ module.exports = {
      * Looks for values in the query in form:
      * {
      *     "id": client's chargebee id,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns {Promise<[timeSheet]>}
@@ -66,7 +66,7 @@ module.exports = {
      * Looks for values in the query in form:
      * {
      *     "id": maker's database id,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns {Promise<[timeSheet]>}
@@ -85,7 +85,7 @@ module.exports = {
      *     "hourlyRate": new hourly rate for this pay period,
      *     "timeIn": new clock-in time,
      *     "timeOut": new clock-out time,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns {Promise<void>}
@@ -100,7 +100,7 @@ module.exports = {
      * Marks a timesheet for deletion. Looks for values in the body in the form:
      * {
      *     "id": id of timesheet to be marked for deletion,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     deleteTimeSheet: (req, res) => {
@@ -118,7 +118,7 @@ module.exports = {
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "occupation": occupation of maker for time period,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * @param req
      * @param res

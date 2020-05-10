@@ -21,7 +21,7 @@ module.exports ={
      *
      * Looks for data in the body as follows:
      * {
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * @returns {Promise<[{},...]>}
      */
@@ -49,7 +49,7 @@ module.exports ={
      * ]
      * Looks for data on the body as follows
      * {
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns {Promise<[{},...]>}
@@ -63,7 +63,7 @@ module.exports ={
      * Retrieves a maker by their database id. Looks for data in the query in the form:
      * {
      *     "id": maker's database id,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * and returns data in the form:
      * {
@@ -90,7 +90,7 @@ module.exports ={
      *     "firstName": maker's first name,
      *     "lastName": maker's last name,
      *     "email": maker's email,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * and returns values in the form:
      * {
@@ -115,7 +115,7 @@ module.exports ={
      *     "firstName": maker's new first name,
      *     "lastName": maker's new last name,
      *     "email": maker's new email,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * and returns data in the form:
      * {
@@ -137,7 +137,7 @@ module.exports ={
      * only be used to delete erroneous data. Looks for values in the body in the form:
      * {
      *     "id": id of maker to be deleted,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      */

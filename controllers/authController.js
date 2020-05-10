@@ -6,11 +6,7 @@ const request = util.promisify(require('request'));
 const authService = require('../services/authService.js');
 
 
-
-
 module.exports = {
-
-
     authorizeClient: async (req, res, next) =>{
         console.log("Attempting to authorize client...");
       if (req.isOk || await authService.accessorIsClient()){

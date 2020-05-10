@@ -10,7 +10,7 @@ module.exports = {
      *     "hourlyRate": hourly rate of maker to clock in,
      *     "clientId": id of client the maker is working for,
      *     "occupation": type of work performed for this period,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     clockIn: async (req, res) => {
@@ -25,7 +25,7 @@ module.exports = {
      * values in the body in the form:
      * {
      *     "makerId": id of the maker to clock out,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @param req

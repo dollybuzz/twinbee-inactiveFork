@@ -9,7 +9,7 @@ module.exports = {
      * values in the query in the form:
      * {
      *     "id": customer id,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * @returns customer{}
      */
@@ -29,7 +29,7 @@ module.exports = {
      *     "city": new city for billing,
      *     "state": new state for billing,
      *     "zip": new zip for billing,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     updateClientBilling: (req, res) => {
@@ -46,7 +46,7 @@ module.exports = {
      *     "firstName": new first name,
      *     "lastName": new last name,
      *     "email": new email,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     updateClientContact: (req, res) => {
@@ -63,7 +63,7 @@ module.exports = {
      *                      "customKey1": "value1",
      *                      "customKey2": "value2"...
      *                  }
-     *     "auth": authentication credentials; either master or email,
+     *     "auth": authentication credentials; either master or token,
      * }
      */
     updateClientMetadata: (req, res) =>{
@@ -78,7 +78,7 @@ module.exports = {
      *     "id": id of the client to update,
      *     "planName": name of the client's plan to update,
      *     "minutes": positive or negative integer of minutes to update with,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     updateClientTimeBucket(req, res){
@@ -97,7 +97,7 @@ module.exports = {
      *     "city": customer's city,
      *     "state": customer's state,
      *     "zip": customer's zip,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * @returns customer{}
      */
@@ -112,7 +112,7 @@ module.exports = {
      * Marks a customer as deleted. Looks for values in the body in the form:
      * {
      *     "id": chargebee customer id for customer to be 'deleted',
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     deleteClient: (req, res) => {
@@ -136,7 +136,7 @@ module.exports = {
      *
      *  Looks for authentication in the body as follows:
      *  {
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      *  }
      *
      * @returns [{customer:{}},...]

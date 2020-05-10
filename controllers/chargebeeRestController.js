@@ -20,7 +20,7 @@ module.exports = {
      *
      *  Looks for data in the body in the form:
      *  {
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      *  }
      * @returns [{entry:plan{}},...]
      */
@@ -36,7 +36,7 @@ module.exports = {
      *     "invoiceName": name as it should appear on an invoice,
      *     "pricePerHour": integer price per hour in cents,
      *     "planDescription": general description of plan,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     createPlan: function(req, res){
@@ -50,7 +50,7 @@ module.exports = {
      * in the query as follows:
      * {
      *     "planId": chargebee plan id,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns plan{}
@@ -69,7 +69,7 @@ module.exports = {
      *      "newName": new desired name for plan,
      *      "planInvoiceName": new desired name as it should appear on an invoice,
      *      "planPrice": overridden plan price in cents as integer,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      *
      * }
      */
@@ -83,7 +83,7 @@ module.exports = {
      * Deletes a plan by chargebee plan id. Looks for values in the body as follows:
      * {
      *     "planId": chargebee plan id,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     deletePlan: function(req, res){
@@ -109,7 +109,7 @@ module.exports = {
      * ]
      * Looks for data in the body as follows
      * {
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      * @returns [{"customer":{},"subscription":{},"card":{}},...]
      */
@@ -126,7 +126,7 @@ module.exports = {
      *     "planId": id of the plan to subscribe to,
      *     "customerId": id of the subscribing customer,
      *     "planQuantity": initial number of hours to subscribe to,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns subscription{}
@@ -142,7 +142,7 @@ module.exports = {
      * as follows:
      * {
      *     "subscriptionId": id of desired subscription,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns subscription{}
@@ -164,7 +164,7 @@ module.exports = {
      *     "planId": new plan to use for subscription,
      *     "planQuantity": new number of hours to use,
      *     "pricePerHour": overridden price per hour for subscription,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns subscription{}
@@ -181,7 +181,7 @@ module.exports = {
      * body as follows:
      * {
      *     "subscriptionId": subscription to be cancelled,
-     *     "auth": authentication credentials; either master or email
+     *     "auth": authentication credentials; either master or token
      * }
      */
     cancelSubscription: function(req, res){
