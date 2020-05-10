@@ -20,14 +20,19 @@
 </head>
 <body>
 <header>
-    <div id="landingLogo">
-        <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+    <div id="landingContainer">
+        <div id="intentionallyEmpty"></div>
+        <div id="landingLogo">
+            <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+
+        </div>
+        <div id="landingTime">
+            <div id="time"></div>
+        </div>
     </div>
-    <div id=landingTitle>
-        <%=welcome["text"]%>
-        <%=pageTitle["text"]%>
-    </div>
-    <div id="time"></div>
+        <div id=landingTitle>
+            <%=welcome["text"]%>
+        </div>
 </header>
 <script src="/js/landingPage.js"></script>
 <div id="landingMain">

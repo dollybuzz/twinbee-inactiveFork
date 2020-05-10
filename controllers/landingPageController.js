@@ -1,9 +1,7 @@
 
 module.exports ={
     renderLanding: (req, res)=>{
-        let headerTitle = {
-            text: ""
-        };
+
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
@@ -19,6 +17,6 @@ module.exports ={
             text: "Welcome!"
         };
 
-        res.render("landing", {welcome:user, pageTitle:headerTitle, headerImg:headerImageActual, navItemsBottom: footerLinks});
+        res.render("landing", {welcome:user, headerImg:headerImageActual, navItemsBottom: footerLinks});
     },
 };

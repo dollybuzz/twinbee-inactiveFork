@@ -26,11 +26,13 @@
             <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
         </div>
         <div id=<%=siteTitle["text"]%>>
-            <%=welcome["text"]%>
-            <%=pageTitle["text"]%>
+            <div id="pageTitle"><%=pageTitle["text"]%></div>
         </div>
-        <div id="logout"></div>
-        <div id="time"></div>
+        <div id="userOptions">
+            <div id="welcome"><%=welcome["text"]%></div>
+            <div id="logout"></div>
+            <div id="time"></div>
+        </div>
     </div>
 </header>
 
