@@ -22,14 +22,14 @@ module.exports = {
       }
     },
     authorizeMaker: async(req, res, next) =>{
-        if (req.isOk || await authService.accessorIsMaker(req.body.auth)) {
+        /*if (req.isOk || await authService.accessorIsMaker(req.body.auth)) {
             req.isOk = true;
             next(req, res);
         }
         else{
             res.send('nope');
             //TODO: res.render(accessNotAllowed)
-        }
+        }*/
     },
 
     authorizeAdmin: async(req, res, next) =>{
