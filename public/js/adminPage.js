@@ -28,7 +28,7 @@ function showClients() {
         url: "/api/getAllClients",
         method: "get",
         data: {
-            token: "TODOImplementRealToken"
+            auth: id_token
         },
         dataType: "json",
         success: function (res, status) {

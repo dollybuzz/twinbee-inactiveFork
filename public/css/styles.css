@@ -127,11 +127,11 @@ footer a {
     opacity: 0;
 }
 
-#userEmail, #userPassword, #userType {
+#userEmail, #userPassword {
     background: #e8ecef;
 }
 
-#userEmail, #userPassword, #userType {
+#userEmail, #userPassword {
     width: 20%;
 }
 

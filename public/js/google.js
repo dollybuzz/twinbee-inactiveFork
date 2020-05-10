@@ -16,10 +16,12 @@ function signOut() {
  * @param googleUser a Google-api-specific object passed when a user uses a google
  * sign-in
  */
+
+var id_token = null;
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     GOOGLE_USER = googleUser;
-    googleUserAction('/api/login')
+    id_token = GOOGLE_USER.getAuthResponse().id_token;
 }
 
 
