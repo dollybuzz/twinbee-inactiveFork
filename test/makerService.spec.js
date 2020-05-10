@@ -158,7 +158,7 @@ describe('Maker Service Test', function () {
                 }
             ]
         );
-    })
+    });
 
 
 
@@ -380,4 +380,4 @@ describe('Maker Service Test', function () {
             }
         ]);
     })
-})
+});

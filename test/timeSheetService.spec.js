@@ -25,7 +25,7 @@ describe('Time Sheet Service Test', function () {
             .resolves([timeSheetBasic1, timeSheetBasic2, timeSheetBasic3]);
         let getByMakerStub = sinon.stub(timeSheetRepo, 'getSheetsByMaker')
             .resolves([timeSheetBasic1, timeSheetBasic2]
-            )
+            );
         let getByClientStub = sinon.stub(timeSheetRepo, 'getSheetsByClient')
             .resolves([timeSheetBasic1, timeSheetBasic3]);
         let createSheetStub = sinon.stub(timeSheetRepo, 'createSheet')
@@ -34,42 +34,42 @@ describe('Time Sheet Service Test', function () {
             .resolves(()=>{
                 console.log("Don't delete me bro!");
             });
-    })
+    });
 
     afterEach(function () {
         sinon.restore();
-    })
+    });
 
     it('Should mark a sheet as deleted', async function () {
         await timeSheetService.deleteTimeSheet(25);
         sinon.assert.calledOnce(timeSheetRepo.deleteSheet);
-    })
+    });
 
     it('Should grab only the sheets for online users', async function () {
         let actual = await timeSheetService.getOnlineMakerSheets();
         expect(actual).to.deep.equal([timeSheetRefined1]);
         
-    })
+    });
     
     it('Should grab all sheets for a given maker', async function () {
         let actual = await timeSheetService.getSheetsByMaker(1);
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined2]);
-    })
+    });
 
     it('Should grab all sheets for a given client', async function () {
         let actual = await timeSheetService.getSheetsByClient('a');
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined3]);
-    })
+    });
 
     it('Should grab  all timesheets', async function () {
         let actual = await timeSheetService.getAllTimeSheets();
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined2, timeSheetRefined3]);
-    })
+    });
 
     it('Should create a new valid timesheet', async function () {
         let actual = await timeSheetService.createTimeSheet(1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker');
         expect(actual).to.deep.equal(timeSheetRefined1);
         sinon.assert.calledOnce(timeSheetRepo.createSheet);
-    })
+    });
 
-})
+});

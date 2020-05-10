@@ -144,4 +144,4 @@ module.exports = {
     getAllClients: async (req, res) => {
         res.send(await clientService.getAllClients().catch(err=>{console.log(err)}));
     }
-}
+};
