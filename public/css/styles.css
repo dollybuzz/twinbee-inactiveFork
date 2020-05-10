@@ -1,7 +1,7 @@
 header {
     text-align: center;
     width: 100%;
-    height: 270px;
+    height: auto;
     background-color: #e8ecef;
 }
 
@@ -15,17 +15,17 @@ body {
 #landingMain {
     background-color: white;
     width: 100%;
-    height: 500px;
+    height: auto;
     text-align: center;
-    padding-top: 50px;
+    padding: 20px;
 }
 
 #userMainContent {
     margin: auto;
     width: 100%;
-    height: 500px;
+    height: auto;
     background-color: white;
-    padding-top: 10px;
+    padding: 20px;
 }
 
 #landingLogo {
@@ -40,6 +40,7 @@ nav {
     color: white;
     background-color: #32444e;
     width: 100%;
+    height: auto;
     font-size: 1.2em;
     padding: 10px;
 }
@@ -57,14 +58,14 @@ body a:hover {
 }
 
 footer {
+    width: 100%;
+    height: auto;
     color: white;
     text-decoration: none;
     text-align: center;
 }
 
 footer a {
-    width: 100%;
-    height: 100%;
     color: white;
     text-decoration: none;
     padding: 20px;
@@ -107,6 +108,7 @@ footer a {
 }
 #buttonsBottom {
     width: 100%;
+    padding: 10px;
 }
 
 #logoutButton {
@@ -149,15 +151,13 @@ label {
 
 .row {
     margin: 0 auto;
-    height: 400px;
-    padding-top: 0;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
+    height: auto;
+    width: 100%;
 }
 
 .block {
     display: inline-block;
+    text-align: center;
     width: 50%;
     padding: 20px;
 }
@@ -173,6 +173,7 @@ label {
 
 #landingTitle {
     width: 100%;
+    height: auto;
     font-size: 1.5em;
     background-color: #32444e;
     color: white;
@@ -224,4 +225,6 @@ th {
     margin: 0 auto;
     opacity: 0;
     transition: opacity 2s ease-in-out;
+    padding-left: 10px;
+    text-align: center;
 }
