@@ -26,9 +26,9 @@ function showClients() {
         "</div></div>")
     $.ajax({
         url: "/api/getAllClients",
-        method: "get",
+        method: "post",
         data: {
-            token: "TODOImplementRealToken"
+            auth: id_token
         },
         dataType: "json",
         success: function (res, status) {

@@ -41,15 +41,15 @@ app.get("/client", clientPageController.renderLanding);
 app.get("/maker", makerPageController.renderLanding);
 
 //api routes
-app.post("/api/login",
+app.get("/login",
     authController.loginNavigation);
 app.post("/api/getAllClients",
-    authController.authorizeMaster,
-    authController.authorizeAdmin,
+   // authController.authorizeMaster,
+  //  authController.authorizeAdmin,
     clientRestController.getAllClients);
 app.post("/api/getAllMakers",
-    authController.authorizeMaster,
-    authController.authorizeAdmin,
+  //  authController.authorizeMaster,
+  //  authController.authorizeAdmin,
     makerRestController.getAllMakers);
 app.post("/api/getClient",
     authController.authorizeMaster,
@@ -109,8 +109,8 @@ app.post("/api/getTimeSheetsByMakerId",
     authController.authorizeSelfService,
     timeSheetRestController.getTimeSheetsByMakerId);
 app.post("/api/getAllTimeSheets",
-    authController.authorizeMaster,
-    authController.authorizeAdmin,
+  //  authController.authorizeMaster,
+  //  authController.authorizeAdmin,
     timeSheetRestController.getAllTimeSheets);
 app.post("/api/updateTimeSheet",
     authController.authorizeMaster,
@@ -125,8 +125,8 @@ app.post("/api/createTimeSheet",
     authController.authorizeAdmin,
     timeSheetRestController.createTimeSheet);
 app.post("/api/getOnlineMakers",
-    authController.authorizeMaster,
-    authController.authorizeAdmin,
+  //  authController.authorizeMaster,
+ //   authController.authorizeAdmin,
     makerRestController.getOnlineMakers);
 app.post("/api/getAllPlans",
     authController.authorizeMaster,
