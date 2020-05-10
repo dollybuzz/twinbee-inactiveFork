@@ -22,7 +22,7 @@ function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     GOOGLE_USER = googleUser;
     var id_token = GOOGLE_USER.getAuthResponse().id_token;
-    window.location.replace(`/login?token=${id_token}`;
+    window.location.replace(`/login?token=${id_token}`);
 }
 
 
