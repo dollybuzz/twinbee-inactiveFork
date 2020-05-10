@@ -92,8 +92,7 @@ module.exports = {
      */
     updateTimeSheetsById: async (req, res) =>{
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
-            req.body.timeIn, req.body.timeOut).catch(err=>{console.log(err)});
-        res.end();
+            req.body.timeIn, req.body.timeOut);
     },
 
     /**
