@@ -71,7 +71,7 @@ module.exports = {
     },
 
     loginNavigation: (req, res)=>{
-        let userToken = req.body.token;
+        let userToken = req.query.token;
         if (authService.accessorIsAdmin(userToken)){
             adminPageController.renderLanding(req, res);
         }
