@@ -22,6 +22,8 @@ module.exports = {
       }
     },
     authorizeMaker: async(req, res, next) =>{
+
+        if (req.isOk || await authService.accessorIsMaker(req.body.auth)) {
         console.log("Attempting to authorize maker...");
         if (req.isOk || await authService.accessorIsMaker(req.body.auth)) {
             req.isOk = true;
@@ -44,6 +46,7 @@ module.exports = {
             //TODO: res.render(accessNotAllowed)
         }
     },
+
     authorizeMaster: async(req, res, next) =>{
         console.log("Attempting to authorize Master...");
         if (req.isOk || authService.accessorIsMaster(req.body.auth)) {
@@ -55,6 +58,7 @@ module.exports = {
             //TODO: res.render(accessNotAllowed)
         }
     },
+
     authorizeSelfService: async(req, res, next)=>{
         console.log("Attempting to authorize self service...");
 

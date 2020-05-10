@@ -99,9 +99,6 @@ describe('Maker Service Test', function () {
 
     })
 
-//All Test files
-//turn all gets into .post and pass the mock body and
-//send key of auth and value of process.env.EnvironmentVariable.TWINBEE_MASTER_AUTH
     it('Should grab only the sheets for the specified maker (by id)', async function () {
         let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .post('/api/getAllTimeSheets', {auth:process.env.TWINBEE_MASTER_AUTH})
@@ -310,6 +307,7 @@ describe('Maker Service Test', function () {
                         "preferred_currency_code": "USD"
                     }
                 }]);
+
         let scope2 = nock(`http://${process.env.IP}:${process.env.PORT}`)
             .post('/api/getAllTimeSheets', {auth:process.env.TWINBEE_MASTER_AUTH})
             .reply(200,
