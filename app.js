@@ -44,8 +44,8 @@ app.get("/maker", makerPageController.renderLanding);
 app.get("/login",
     authController.loginNavigation);
 app.post("/api/getAllClients",
-   // authController.authorizeMaster,
-  //  authController.authorizeAdmin,
+  //  authController.authorizeMaster,
+    authController.authorizeAdmin,
     clientRestController.getAllClients);
 app.post("/api/getAllMakers",
   //  authController.authorizeMaster,
@@ -180,6 +180,7 @@ app.post("/api/clockOut",
     timeClockRestController.clockOut);
 
 (async function() {
+
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

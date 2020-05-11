@@ -40,7 +40,7 @@ module.exports = {
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "occupation": occupation of maker for time period
      * }
-     * Looks for values in the query in form:
+     * Looks for values in the body in form:
      * {
      *     "id": client's chargebee id,
      *     "auth": authentication credentials; either master or token
@@ -49,7 +49,7 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getTimeSheetsByClientId: async (req, res) => {
-        let id = req.query.id;
+        let id = req.body.id;
         let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err=>{console.log(err)});
         res.send(clientTimeSheets)
     },
@@ -66,7 +66,7 @@ module.exports = {
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "occupation": occupation of maker for time period
      * }
-     * Looks for values in the query in form:
+     * Looks for values in the body in form:
      * {
      *     "id": maker's database id,
      *     "auth": authentication credentials; either master or token
@@ -75,7 +75,7 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getTimeSheetsByMakerId: async (req, res) => {
-        let id = req.query.id;
+        let id = req.body.id;
         let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err=>{console.log(err)});
         res.send(makerTimeSheet);
     },

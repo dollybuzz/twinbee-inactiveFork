@@ -36,8 +36,11 @@ module.exports = {
 
     authorizeAdmin: async(req, res, next) =>{
         console.log("Attempting to authorize admin...");
-        if (req.isOk || authService.accessorIsAdmin(req.body.auth)) {
+        console.log(req);
+        if (req.isOk || await authService.accessorIsAdmin(req.body.auth)) {
             req.isOk = true;
+            console.log("Passed auth check");
+            console.log(authService.accessorIsAdmin(req.body.auth));
             next();
         }
         else{
@@ -47,8 +50,9 @@ module.exports = {
     },
     authorizeMaster: async(req, res, next) =>{
         console.log("Attempting to authorize Master...");
-        if (req.isOk || authService.accessorIsMaster(req.body.auth)) {
+        if (req.isOk || await authService.accessorIsMaster(req.body.auth)) {
             req.isOk = true;
+            console.log("Passed auth check");
             next();
         }
         else{
