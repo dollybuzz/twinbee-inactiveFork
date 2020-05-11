@@ -50,7 +50,7 @@ module.exports = {
     /**
      * /api/retrievePlan
      * Retrieves a chargebee plan object by chargebee plan id. Looks for values
-     * in the query as follows:
+     * in the body as follows:
      * {
      *     "planId": chargebee plan id,
      *     "auth": authentication credentials; either master or token
@@ -59,7 +59,7 @@ module.exports = {
      * @returns plan{}
      */
     retrievePlan: async function(req, res){
-        let planActual = await chargebeeService.retrievePlan(req.query.planId)
+        let planActual = await chargebeeService.retrievePlan(req.body.planId)
             .catch(err=>console.log(err));
         res.send({plan: planActual});
     },
@@ -146,7 +146,7 @@ module.exports = {
 
     /**
      * /api/retrieveSubscription
-     * Retrieves a subscription object by chargebee subscription id. Looks for values in the query
+     * Retrieves a subscription object by chargebee subscription id. Looks for values in the body
      * as follows:
      * {
      *     "subscriptionId": id of desired subscription,
@@ -156,7 +156,7 @@ module.exports = {
      * @returns subscription{}
      */
     retrieveSubscription: async function(req, res){
-        let subscription = await chargebeeService.retrieveSubscription(req.query.subscriptionId)
+        let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
             .catch(e=>console.log(e));
         res.send(subscription);
     },

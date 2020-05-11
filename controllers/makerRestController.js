@@ -63,7 +63,7 @@ module.exports ={
 
     /**
      * ENDPOINT: /api/getMaker
-     * Retrieves a maker by their database id. Looks for data in the query in the form:
+     * Retrieves a maker by their database id. Looks for data in the body in the form:
      * {
      *     "id": maker's database id,
      *     "auth": authentication credentials; either master or token
@@ -80,7 +80,7 @@ module.exports ={
      * @returns {Promise<maker>}
      */
     getMakerById: async (req, res)=>{
-        let id = req.query.id;
+        let id = req.body.id;
         let result = await makerService.getMakerById(id).catch(err=>{console.log(err)});
 
         res.send(result);
@@ -106,7 +106,6 @@ module.exports ={
      * @returns {Promise<maker>}
      */
     createMaker: async (req, res) =>{
-        console.log(req)
         let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName, req.body.email)
             .catch(err=>{console.log(err)});
         res.send(newMaker);
@@ -151,4 +150,4 @@ module.exports ={
         makerService.deleteMaker(req.body.id);
         res.end();
     }
-}
+};

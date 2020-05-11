@@ -65,14 +65,20 @@ class AuthService {
 
     async accessorIsAdmin(creds) {
         let adminList = await authRepo.getAdmins().catch(err => {
-            console.log(err)
+            console.log(err);
+            console.log("Error grabbing admin list");
+            return false;
         });
         let email = await this.getEmailFromToken(creds).catch(err => {
-            console.log(err)
+            console.log(err);
+            console.log("Error grabbing email from token");
+            return false;
         });
         for (var i = 0; i < adminList.length; ++i){
             let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
-                console.log(err)
+                console.log(err);
+                console.log("Error bcrypt.comapare'ing adminList[i] to the passed email");
+                return false;
             });
             if (emailsMatch){
                 return true;

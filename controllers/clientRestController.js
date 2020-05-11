@@ -7,7 +7,7 @@ module.exports = {
     /**
      * ENDPOINT: /api/getClient
      * Retrieves a chargebee customer object by their chargebee customer id. Looks for
-     * values in the query in the form:
+     * values in the body in the form:
      * {
      *     "id": customer id,
      *     "auth": authentication credentials; either master or token
