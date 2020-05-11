@@ -78,19 +78,23 @@ function showClients() {
                     url: "/api/getClient",
                     method: "post",
                     data: {
-                        auth: id_token
+                        auth: id_token,
+                        id: clientId
                     },
                     dataType: "json",
                     success: function (res, status) {
-                        $("#optionsClient").html("<form action='/api/updateClientContact'>\n" +
-                            "<label for='clientid'>ID:</label>\n" +
-                            "<input type='text' id='clientid' name='clientid'>\n<br>\n" +
-                            "<label for='clientname'>Full Name:</label>\n" +
-                            "<input type='text' id='clientname' name='clientname'>\n<br>\n" +
-                            "<label for='first'>Location:</label>\n" +
-                            "<input type='text' id='location' name='location'>\n<br>\n" +
-                            "<label for='email'>Email:</label>\n" +
-                            "<input type='text' id='email' name='email'>\n<br>\n" +
+                        $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+                            "<form id='modify'>\n" +
+                            "<label for='modclientid'>ID:</label>" +
+                            `<input type='text' id='modclientid' name='modclientid' value='${res.id}'>\n<br>\n` +
+                            "<label for='modclientfname'>Full Name:</label>" +
+                            `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
+                            "<label for='modclientlname'>Full Name:</label>" +
+                            `<input type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
+                            "<label for='modphone'>Phone:</label>" +
+                            `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+                            "<label for='modemail'>Email:</label>" +
+                            `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
                             "</form>\n");
                     },
                     error: function (res, status) {

@@ -15,7 +15,7 @@ module.exports = {
      * @returns customer{}
      */
     getClientById: async (req, res) => {
-        let id = req.query.id;
+        let id = req.body.id;
         let client = await clientService.getClientById(id);
         res.send(client);
     },
