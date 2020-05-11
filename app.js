@@ -45,7 +45,7 @@ app.get("/login",
     authController.loginNavigation);
 app.post("/api/getAllClients",
   //  authController.authorizeMaster,
-    authController.authorizeAdmin,
+    //authController.authorizeAdmin,
     clientRestController.getAllClients);
 app.post("/api/getAllMakers",
   //  authController.authorizeMaster,

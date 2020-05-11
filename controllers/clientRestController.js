@@ -49,11 +49,12 @@ module.exports = {
      *     "firstName": new first name,
      *     "lastName": new last name,
      *     "email": new email,
+     *     "phone": new phone,
      *     "auth": authentication credentials; either master or token
      * }
      */
     updateClientContact: (req, res) => {
-        clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName, req.body.email);
+        clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName, req.body.email, req.body.phone);
         res.end();
     },
 

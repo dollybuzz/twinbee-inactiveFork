@@ -74,14 +74,16 @@ class ClientService {
      * @param clientId  - id of client to be updated
      * @param newFirstName  - new first name of client
      * @param newLastName   - new last name of client
+     * @param newPhone   - new phone number of client
      * @param newEmail  - new email of client
      * @returns {Promise<void>}
      */
-    async updateClientContact(clientId, newFirstName, newLastName, newEmail){
+    async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone){
         let customer = await this.getClientById(clientId);
         customer.first_name = newFirstName;
         customer.last_name = newLastName;
         customer.email = newEmail;
+        customer.phone = newPhone;
         updateClient(clientId, customer)
     }
 
