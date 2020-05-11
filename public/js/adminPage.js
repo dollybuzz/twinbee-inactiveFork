@@ -83,6 +83,7 @@ function showClients() {
                     },
                     dataType: "json",
                     success: function (res, status) {
+                        //Pre-populate forms
                         $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
                             "<form id='modify'>\n" +
                             "<label for='modclientid'>ID:</label>" +
@@ -96,6 +97,36 @@ function showClients() {
                             "<label for='modemail'>Email:</label>" +
                             `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
                             "</form>\n");
+
+                        //Submit button function
+                        $("#SubmitButton").click(function () {
+                            $.ajax({
+                                url: "/api/updateClientContact",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                    id: $("#modclientid").text(value),
+                                    firstName: $("#modclientfname").text(value),
+                                    lastName: $("#modclientlname").text(value) ,
+                                    phone: $("#modphone").text(value),
+                                    email: $("#modemail").text(value)
+                                },
+                                dataType: "json",
+                                success: function (res, status) {
+                                    $("#optionsClient").append(
+                                        "<div class='success'></div>");
+                                    $(".success").html("");
+                                    $(".success").html("<h5>Client `$('#modclientid').text(value)` successfully updated!</h5>");
+                                },
+                                error: function (res, status) {
+                                $("#floor").html("Something isn't working!");
+                                //log, send error report
+                            }
+
+
+                            })
+                        })//end internal ajax
+
                     },
                     error: function (res, status) {
                         $("#floor").html("Table will not populate!");
