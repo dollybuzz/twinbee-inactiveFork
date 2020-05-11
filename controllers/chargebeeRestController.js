@@ -3,6 +3,7 @@ const chargebeeService = require('../services/chargebeeService.js');
 module.exports = {
 
     /**
+     * ENDPOINT: /api/getAllPlans
      * Retrieves all plans from the {TEST} environment as chargebee entries.
      * Note that in order to access meaningful data, an intermediate object is
      * accessed.  E.g, to access "pricing_model", given that "returnedValue" is the
@@ -30,6 +31,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/createPlan
      * Creates a new plan in the {TEST} environment. looks for values in the body as follows:
      * {
      *     "planName": name of plan,
@@ -46,6 +48,7 @@ module.exports = {
     },
 
     /**
+     * /api/retrievePlan
      * Retrieves a chargebee plan object by chargebee plan id. Looks for values
      * in the query as follows:
      * {
@@ -62,6 +65,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/updatePlan
      * Updates a plan with new values. Note that the plan id is
      * NOT updated on changing the plan's name. Looks for values in the body as follows;
      * {
@@ -80,6 +84,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/deletePlan
      * Deletes a plan by chargebee plan id. Looks for values in the body as follows:
      * {
      *     "planId": chargebee plan id,
@@ -92,6 +97,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getAllSubscriptions
      * Retrieves all subscriptions.
      * Returns values as follows:
      * [
@@ -120,6 +126,7 @@ module.exports = {
     },
 
     /**
+     * /api/createSubscription
      * Creates a new subscription for an existing customer.
      * Note that auto_collection is ALWAYS off. Looks for values in the body as follows:
      * {
@@ -138,6 +145,7 @@ module.exports = {
     },
 
     /**
+     * /api/retrieveSubscription
      * Retrieves a subscription object by chargebee subscription id. Looks for values in the query
      * as follows:
      * {
@@ -148,13 +156,13 @@ module.exports = {
      * @returns subscription{}
      */
     retrieveSubscription: async function(req, res){
-        console.log(req)
         let subscription = await chargebeeService.retrieveSubscription(req.query.subscriptionId)
             .catch(e=>console.log(e));
         res.send(subscription);
     },
 
     /**
+     * /api/updateSubscription
      * Updates a subscription with new values. Note that
      * the pricePerHour will override defaults. This can be used
      * to create "custom" subscriptions. Use caution when doing so.
@@ -170,13 +178,13 @@ module.exports = {
      * @returns subscription{}
      */
     updateSubscription: async function(req, res){
-        console.log(req)
         let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
             req.body.planQuantity, req.body.pricePerHour);
         res.send(subscription);
     },
 
     /**
+     * /api/cancelSubscription
      * cancels a subscription by chargebee subscription id. Looks for values in the
      * body as follows:
      * {
@@ -188,4 +196,4 @@ module.exports = {
         chargebeeService.cancelSubscription(req.body.subscriptionId);
         res.end();
     }
-}
+};

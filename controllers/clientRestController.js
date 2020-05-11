@@ -5,6 +5,7 @@ const clientService = require('../services/ClientService.js');
 module.exports = {
 
     /**
+     * ENDPOINT: /api/getClient
      * Retrieves a chargebee customer object by their chargebee customer id. Looks for
      * values in the query in the form:
      * {
@@ -20,6 +21,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/updateClientBilling
      * Updates a client's billing info. looks for data in the body in the form:
      * {
      *     "id": id of customer to update,
@@ -40,6 +42,7 @@ module.exports = {
 
 
     /**
+     * ENDPOINT: /api/updateClientContact
      * Updates a client's contact info. looks for data in the body in the form:
      * {
      *     "id": id of customer to update,
@@ -55,6 +58,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/updateClientMetadata
      * Updates a client's metadata within chargebee.
      * Looks for data in the body in the form:
      * {
@@ -72,6 +76,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/updateClientTimeBucket
      * Updates a client's time bucket for one plan with the given number
      * of minutes (adds or subtracts). Looks for data in the body in the form:
      * {
@@ -87,6 +92,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/createClient
      * Creates a chargebee customer object. Once created, the object is sent back.
      * Looks for values in the body in the form:
      * {
@@ -109,6 +115,7 @@ module.exports = {
     },
 
     /**
+     * /api/deleteClient
      * Marks a customer as deleted. Looks for values in the body in the form:
      * {
      *     "id": chargebee customer id for customer to be 'deleted',
@@ -121,6 +128,7 @@ module.exports = {
     },
 
     /**
+     * /api/getAllClients
      * Retrieves a list of entries containing all clients.
      * Note that in order to access meaningful data, an intermediate object is
      * accessed. E.g., to access a phone number, use resultList[0].customer.phone.

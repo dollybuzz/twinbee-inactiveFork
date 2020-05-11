@@ -110,7 +110,6 @@ footer a {
     width: 100%;
     height: auto;
     padding: 10px;
-    overflow: auto;
     background-color: blue;
 }
 
@@ -131,7 +130,6 @@ footer a {
     margin-bottom: auto;
     margin-top: 0;
     opacity: 0;
-    float: left;
 }
 
 #userEmail, #userPassword {

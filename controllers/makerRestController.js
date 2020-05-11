@@ -3,6 +3,7 @@ const makerService = require('../services/MakerService.js');
 module.exports ={
 
     /**
+     * ENDPOINT: /api/getOnlineMakers
      * Retrieves a list of online makers. Returns data in the form:
      * [
      *  {
@@ -31,6 +32,7 @@ module.exports ={
     },
 
     /**
+     * ENDPOINT: /api/getAllMakers
      * Retrieves a list of all makers. Returns data in the form:
      *
      * [
@@ -60,6 +62,7 @@ module.exports ={
     },
 
     /**
+     * ENDPOINT: /api/getMaker
      * Retrieves a maker by their database id. Looks for data in the query in the form:
      * {
      *     "id": maker's database id,
@@ -84,6 +87,7 @@ module.exports ={
     },
 
     /**
+     * ENDPOINT: /api/createMaker
      * Creates a new maker and sends an updated object to the requester.
      * Looks for values in the body in the form:
      * {
@@ -109,6 +113,7 @@ module.exports ={
     },
 
     /**
+     * ENDPOINT: /api/updateMaker
      * Updates an existing maker with new values. Looks for data in the body in the form:
      * {
      *     "id": maker's database id,
@@ -133,6 +138,7 @@ module.exports ={
     },
 
     /**
+     * ENDPOINT: api/deleteMaker
      * deletes a maker from the database. Note that sheets are not deleted. Should
      * only be used to delete erroneous data. Looks for values in the body in the form:
      * {

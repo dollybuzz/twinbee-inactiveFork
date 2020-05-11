@@ -4,6 +4,7 @@ const timeSheetService = require('../services/timeSheetService.js');
 module.exports = {
 
     /**
+     * ENDPOINT: /api/getAllTimeSheets
      * Retrieves a list of all timesheets in form
      * {
      *      "id": sheet id,
@@ -28,6 +29,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getTimeSheetsByClientId
      * Retrieves a list of all timesheets for work performed for a given client in form
      * {
      *      "id": sheet id,
@@ -53,6 +55,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /getTimeSheetsByMakerId
      * Retrieves a list of all timesheets for a given maker in form
      * {
      *      "id": sheet id,
@@ -78,6 +81,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/updateTimeSheet
      * Updates the hourly rate, start time, and end time of the
      * timesheet with the given id. Looks for values in the body in the form:
      * {
@@ -96,6 +100,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/deleteTimeSheet
      * Marks a timesheet for deletion. Looks for values in the body in the form:
      * {
      *     "id": id of timesheet to be marked for deletion,
@@ -108,6 +113,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/createTimeSheet
      * Creates a new timesheet based on the given data.  Looks for values in the body
      * in the form:
      * {
@@ -128,4 +134,4 @@ module.exports = {
             req.body.timeIn, req.body.timeOut, req.body.occupation).catch(err=>{console.log(err)});
         res.send(createdSheet);
     }
-}
+};

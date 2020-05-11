@@ -3,6 +3,7 @@ const timeClockService = require('../services/timeClockService.js');
 module.exports = {
 
     /**
+     * ENDPOINT: /api/clockIn
      * "Clocks in" a given user. Initializes a new timesheet with the provided
      * client, hourly rate, and occupation. Looks for values in the body in the form:
      * {
@@ -20,6 +21,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/clockOut
      * "Clocks out" a given user. Commpletes any timesheets without valid "clock in"
      * values (ideally should only ever be one) with the current time. Looks for
      * values in the body in the form:
