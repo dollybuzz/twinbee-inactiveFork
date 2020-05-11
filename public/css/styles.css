@@ -5,6 +5,20 @@ header {
     background-color: #e8ecef;
 }
 
+#landingContainer {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 3fr 1fr;
+    vertical-align: center;
+}
+
+#headContainer {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 3fr 1fr;
+    vertical-align: center;
+}
+
 body {
     width: 100%;
     height: auto;
@@ -58,7 +72,6 @@ body a:hover {
 
 footer {
     width: 100%;
-    height: auto;
     color: white;
     text-decoration: none;
     text-align: center;
@@ -66,6 +79,7 @@ footer {
 }
 
 footer a {
+    width: 100%;
     color: white;
     text-decoration: none;
     padding: 20px;
@@ -110,25 +124,18 @@ footer a {
     width: 100%;
     height: auto;
     padding: 10px;
-    background-color: blue;
-}
-
-#logoutButton {
-    position: absolute;
-    top:50px;
-    right: 20px;
 }
 
 #SubmitButton {
-    margin-bottom: auto;
-    margin-top: 0;
-    opacity: 0;
     float: right;
+    opacity: 0;
 }
 
 #ExpandButton {
     margin-bottom: auto;
     margin-top: 0;
+    margin-left: 0;
+    margin-right: auto;
     opacity: 0;
 }
 
@@ -166,12 +173,34 @@ label {
 }
 
 #adminTitle {
-    display: inline-block;
     font-size: 1.5em;
-    padding-top: 80px;
-    width: 60%;
     text-align: center;
-    float: left;
+}
+
+#pageTitle {
+    text-align: center;
+    position: relative;
+    top: 70px;
+}
+
+#userOptions {
+    text-align: right;
+    padding-top: 20px;
+    padding-right: 20px;
+}
+
+#welcome {
+    font-size: 1.2em;
+    padding-bottom: 10px;
+}
+
+#landingTime {
+    position: relative;
+    top: 100px;
+}
+
+#time {
+    padding-top: 10px;
 }
 
 #landingTitle {
@@ -180,8 +209,9 @@ label {
     font-size: 1.5em;
     background-color: #32444e;
     color: white;
+    color: white;
     text-align: center;
-    padding: 10px;
+    padding: 6px;
 }
 
 #floor {
@@ -191,12 +221,6 @@ label {
     max-height: 200px;
     overflow-y: scroll;
     border-radius: 5px 5px 5px 5px;
-}
-
-#time {
-    position: absolute;
-    top: 120px;
-    right: 20px;
 }
 
 #floor::-webkit-scrollbar {

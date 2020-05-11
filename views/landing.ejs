@@ -1,6 +1,42 @@
-<%- include('partials/header.ejs') -%>
+<!doctype html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <!-- <meta name="google-signin-client_id" content=""> -->
+    <title>TwinBee</title>
+
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" href="img/favicon-16x16.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/time.js"></script>
+    <script type="text/javascript" src="./js/google.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/jquery-3.3.1.js"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css"/>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com">
+</head>
+<body>
+<header>
+    <div id="landingContainer">
+        <div id="intentionallyEmpty"></div>
+        <div id="landingLogo">
+            <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+
+        </div>
+        <div id="landingTime">
+            <div id="time"></div>
+        </div>
+    </div>
+        <div id=landingTitle>
+            <%=welcome["text"]%>
+        </div>
+</header>
 <script src="/js/landingPage.js"></script>
 <div id="landingMain">
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <form action="/api/login" method="post">
         <div id="form-row-email">
                 <label for="userEmail">Email</label>

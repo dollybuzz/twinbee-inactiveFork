@@ -21,16 +21,19 @@
 
 <body>
 <header>
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
-    <div id="landingLogo">
-        <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+    <div id="headContainer">
+        <div id="landingLogo">
+            <img src="<%=headerImg["src"]%>" id="actualImage" alt="<%=headerImg["alt"]%>">
+        </div>
+        <div id=<%=siteTitle["text"]%>>
+            <div id="pageTitle"><%=pageTitle["text"]%></div>
+        </div>
+        <div id="userOptions">
+            <div id="welcome"><%=welcome["text"]%></div>
+            <div id="logout"></div>
+            <div id="time"></div>
+        </div>
     </div>
-    <div id=<%=siteTitle["text"]%>>
-        <%=welcome["text"]%>
-        <%=pageTitle["text"]%>
-    </div>
-    <div id="logout"></div>
-    <div id="time"></div>
 </header>
 
 

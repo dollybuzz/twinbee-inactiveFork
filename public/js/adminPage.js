@@ -68,6 +68,7 @@ function showClients() {
             $("#userMainContent").append('<div id="buttonsBottom"></div>');
             $("#buttonsBottom").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
             $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+            $("#buttonsBottom").hide();
 
             //Event Listeners
             $(".clientRow").click(function () {
@@ -81,6 +82,8 @@ function showClients() {
              //Expand Table Button
              $("#ExpandButton").click(function () {
                  $("#optionsClient").hide();
+                 $("#buttonsBottom").hide();
+                 $("#buttonsBottom").css("transition", "height 2s ease-in-out");
                  $("#optionsClient").css("width", "0%");
                  $("#optionsClient").css("opacity", "0");
                  $("#floor").css("width", "100%");
@@ -100,7 +103,10 @@ function showClients() {
                 //show block after table stops moving
                 setTimeout(function () {
                     $("#optionsClient").show();
+                    $("#buttonsBottom").show();
+                    $("#buttonsBottom").css("transition", "height 2s ease-in-out");
                     $("#optionsClient").css("opacity", "1");
+                    $("#optionsClient").css("width", "50%");
                     $("#optionsClient").css("width", "50%");
                     $("#SubmitButton").css("opacity", "1");
                     $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
@@ -302,8 +308,6 @@ function showOnlineMakers() {
 
 $(document).ready(function () {
 
-    $("header").css("height", "222");
-
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
     //otherwise it will not load unless clicking on 'Main'
@@ -324,17 +328,10 @@ $(document).ready(function () {
         $(this).css("font-style", 'normal');
     });
 
-    //shifts the time and date
-    $("#time").css("top", "150px");
-
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-    $("#landingLogo").css("float", "left");
 
     //shifts the welcome textS
-    $("#welcome").css("position", "absolute");
-    $("#welcome").css("top", "15px");
-    $("#welcome").css("right", "20px");
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
