@@ -141,8 +141,11 @@ class ClientService {
      * @param customerEmail - customer email
      * @param addressStreet - customer streed address
      * @param customerCity  - customer city
+     * @param phoneNumber  - customer phone
      * @param customerStateFull - customer state typed fully
      * @param customerZip   - customer zip code
+     * @param billingFirst  - customer billing address
+     * @param billingLast   - customer billing address
      * @returns {Promise<chargebee customer object>}
      */
     async createNewClient(firstName, lastName, customerEmail, addressStreet,
