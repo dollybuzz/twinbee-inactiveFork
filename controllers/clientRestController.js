@@ -54,8 +54,10 @@ module.exports = {
      * }
      */
     updateClientContact: (req, res) => {
+        console.log("this is before");
         clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName, req.body.email, req.body.phone);
-        res.end();
+        res.send({});
+        console.log("this is after");
     },
 
     /**

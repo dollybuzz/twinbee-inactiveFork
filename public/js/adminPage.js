@@ -14,9 +14,10 @@ let navMapper = {
     reviewTimeSheets: function () {
         showSheets();
     }
-}
+};//end navMapper
 
 function showClients() {
+    //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
@@ -36,36 +37,27 @@ function showClients() {
                 '        <thead class="thead">\n' +
                 '            <th scope="col">ID</th>\n' +
                 '            <th scope="col">Name</th>\n' +
-                '            <th scope="col">Remaining Hours</th>\n' +
+                '            <th scope="col">Phone</th>\n' +
                 '            <th scope="col">Email</th>\n' +
+                '            <th scope="col">Remaining Hours</th>\n' +
                 '        </thead><tbody>');
+            //Populate table
             res.forEach(item => {
                 if (item.customer.billing_address) {
                     $("#clientTable").append('\n' +
                         '<tr class="clientRow">' +
                         '   <td scope="row">' + item.customer.id + '</td>' +
                         '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
-                        '   <td>' + "not implemented" + '</td>' +
-                        '   <td>' + item.customer.email + '</td></tr>'
+                        '   <td>' + item.customer.phone + '</td>' +
+                        '   <td>' + item.customer.email + '</td>' +
+                        '   <td>' + "not implemented" + '</td></tr>'
                     );
                 };
             });
             $("#clientTable").append('\n</tbody>');
 
             //Body Block content
-            //top row
-            $("#topRow").append('\n<div id="optionsClient"></div>');
-            $("#optionsClient").hide();
-            $("#optionsClient").css("width", "50%");
-            $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-            $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>-</button>");
-
-            //bottom row
-            $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
-            $("#userMainContent").append('<div id="buttonsBottom"></div>');
-            $("#buttonsBottom").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
-            $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-            $("#buttonsBottom").hide();
+            createBody();
 
             //Event Listeners
             //on clicking a client row, populate the modify form
@@ -87,7 +79,7 @@ function showClients() {
                         $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
                             "<form id='modify'>\n" +
                             "<label for='modclientid'>ID:</label>" +
-                            `<input type='text' id='modclientid' name='modclientid' value='${res.id}'>\n<br>\n` +
+                            `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
                             "<label for='modclientfname'>Full Name:</label>" +
                             `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
                             "<label for='modclientlname'>Full Name:</label>" +
@@ -100,84 +92,30 @@ function showClients() {
 
                         //Submit button function
                         $("#SubmitButton").click(function () {
-                            $.ajax({
-                                url: "/api/updateClientContact",
-                                method: "post",
-                                data: {
-                                    auth: id_token,
-                                    id: $("#modclientid").text(value),
-                                    firstName: $("#modclientfname").text(value),
-                                    lastName: $("#modclientlname").text(value) ,
-                                    phone: $("#modphone").text(value),
-                                    email: $("#modemail").text(value)
-                                },
-                                dataType: "json",
-                                success: function (res, status) {
-                                    $("#optionsClient").append(
-                                        "<div class='success'></div>");
-                                    $(".success").html("");
-                                    $(".success").html("<h5>Client `$('#modclientid').text(value)` successfully updated!</h5>");
-                                },
-                                error: function (res, status) {
-                                $("#floor").html("Something isn't working!");
-                                //log, send error report
-                            }
-
-
-                            })
-                        })//end internal ajax
-
+                            modSubmit();
+                        });
                     },
                     error: function (res, status) {
-                        $("#floor").html("Table will not populate!");
-                        //log, send error report
+                        $("#optionsClient").html("Form will not populate!");
                     }
-                })//end internal ajax
-
+                });//end internal ajax
 
                 //on clicking add client, populate the add form
 
 
                 //on click delete client, show prompt to verify
 
-
-            })
+            });
 
              //Expand Table Button
              $("#ExpandButton").click(function () {
-                 $("#optionsClient").hide();
-                 $("#buttonsBottom").hide();
-                 $("#buttonsBottom").css("transition", "height 2s ease-in-out");
-                 $("#optionsClient").css("width", "0%");
-                 $("#optionsClient").css("opacity", "0");
-                 $("#floor").css("width", "100%");
-                 $("#floor").css("margin-left", "0");
-                 $("#floor").css("margin-right", "auto");
-                 $("#floor").css("transition", "width 2s ease-in-out");
-                 $("#SubmitButton").css("opacity", "0");
-                 $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
-                 $("#ExpandButton").css("opacity", "0");
-                 $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
+                 expandTable();
              })
 
             //Show Block content
             $(".clientRow").click(function () {
                 $("#floor").css("transition", "width 2s ease-in-out");
-
-                //show block after table stops moving
-                setTimeout(function () {
-                    $("#optionsClient").show();
-                    $("#buttonsBottom").show();
-                    $("#buttonsBottom").css("transition", "height 2s ease-in-out");
-                    $("#optionsClient").css("opacity", "1");
-                    $("#optionsClient").css("width", "50%");
-                    $("#optionsClient").css("width", "50%");
-                    $("#SubmitButton").css("opacity", "1");
-                    $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
-                    $("#ExpandButton").css("opacity", "1");
-                    $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
-
-                }, 2000)
+                showBlock();
             })
 
             //Row effect
@@ -190,12 +128,13 @@ function showClients() {
         },
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
-            //log, send error report
         }
     });//end ajax
-};//end showClients
+};
+
 
 function showMakers(){
+    //Create table
     $(".row").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"makerTable\" class=\"table\">\n" +
@@ -216,6 +155,7 @@ function showMakers(){
                 '            <th scope="col">Last Name</th>\n' +
                 '            <th scope="col">Email</th>\n' +
                 '        </thead><tbody>');
+            //Populate table
             res.forEach(item => {
                 $("#makerTable").append('\n' +
                     '<tr class="makerRow">' +
@@ -249,9 +189,10 @@ function showMakers(){
             //log, send error report
         }
     });//end ajax
-};//end showMakers
+};
 
 function showSheets(){
+    //Create table
     $(".row").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"sheetsTable\" class=\"table\">\n" +
@@ -275,6 +216,7 @@ function showSheets(){
                 '            <th scope="col">Clock Out</th>\n' +
                 '            <th scope="col">Occupation</th>\n' +
                 '        </thead><tbody>');
+            //Populate table
             res.forEach(item => {
                 $("#sheetsTable").append('\n' +
                     '<tr class="sheetRow">' +
@@ -314,6 +256,7 @@ function showSheets(){
 };//end showSheets
 
 function showOnlineMakers() {
+    //Create table
     $("#online").html(
         "<div id=\"floor\">\n" +
         "    <table id=\"onlineTable\" class=\"table\">\n" +
@@ -334,6 +277,7 @@ function showOnlineMakers() {
                 '            <th scope="col">Last Name</th>\n' +
                 '            <th scope="col">Email</th>\n' +
                 '        </thead><tbody>');
+            //Populate table
             res.forEach(item => {
                 $("#onlineTable").append('\n' +
                     '<tr class="onlineRow">' +
@@ -367,7 +311,86 @@ function showOnlineMakers() {
             //log, send error report
         }
     });//end ajax
-};//end showOnlineMakers
+};
+
+//Helper Functions
+function createBody() {
+    //top row
+    $("#topRow").append('\n<div id="optionsClient"></div>');
+    $("#optionsClient").hide();
+    $("#optionsClient").css("width", "50%");
+    $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
+    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>-</button>");
+
+    //bottom row
+    $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
+    $("#userMainContent").append('<div id="buttonsBottom"></div>');
+    $("#buttonsBottom").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
+    $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#buttonsBottom").hide();
+};
+
+function showBlock() {
+    //show block after table stops moving
+    setTimeout(function () {
+        $("#optionsClient").show();
+        $("#buttonsBottom").show();
+        $("#buttonsBottom").css("transition", "height 2s ease-in-out");
+        $("#optionsClient").css("opacity", "1");
+        $("#optionsClient").css("width", "50%");
+        $("#optionsClient").css("width", "50%");
+        $("#SubmitButton").css("opacity", "1");
+        $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
+        $("#ExpandButton").css("opacity", "1");
+        $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
+
+    }, 2000)
+};
+
+function expandTable() {
+    $("#optionsClient").hide();
+    $("#buttonsBottom").hide();
+    $("#buttonsBottom").css("transition", "height 2s ease-in-out");
+    $("#optionsClient").css("width", "0%");
+    $("#optionsClient").css("opacity", "0");
+    $("#floor").css("width", "100%");
+    $("#floor").css("margin-left", "0");
+    $("#floor").css("margin-right", "auto");
+    $("#floor").css("transition", "width 2s ease-in-out");
+    $("#SubmitButton").css("opacity", "0");
+    $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
+    $("#ExpandButton").css("opacity", "0");
+    $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
+
+    setTimeout(function () {
+        showClients();
+    }, 2000)
+};
+
+function modSubmit() {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $.ajax({
+        url: "/api/updateClientContact",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: $("#modclientid").val(),
+            firstName: $("#modclientfname").val(),
+            lastName: $("#modclientlname").val() ,
+            phone: $("#modphone").val(),
+            email: $("#modemail").val()
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#modsuccess").html("");
+            $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+        },
+        error: function (res, status) {
+            $("#optionsClient").html("Something isn't working!");
+            //log, send error report
+        }
+    });//end ajax
+};
 
 $(document).ready(function () {
 
@@ -402,4 +425,5 @@ $(document).ready(function () {
         window.location.href = "/";
     })
 
-})
+
+})//end document ready
