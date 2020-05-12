@@ -64,6 +64,8 @@ function showClients() {
             //Modify Client
             $(".clientRow").click(function () {
                 minimizeTable();
+                selectedRow = $(this);
+                showBlock();
                 let clientId = $(this).children()[0].innerHTML;
                 $.ajax({
                     url: "/api/getClient",
@@ -189,13 +191,6 @@ function showClients() {
              $("#ExpandButton").click(function () {
                  expandTable();
              });
-
-            //Show Block content based on user selection
-            $(".clientRow").click(function () {
-                $("#floor").css("transition", "width 0.5s ease-in-out");
-                selectedRow = $(this);
-                showBlock();
-            });
 
             //Row effect
             $(".clientRow").mouseenter(function () {
@@ -425,6 +420,7 @@ function showBlock() {
 };
 
 function minimizeTable() {
+    $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#floor").css("width", "50%");
     $("#floor").css("margin-left", "0");
     $("#floor").css("margin-right", "auto");
