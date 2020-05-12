@@ -118,13 +118,13 @@ function showClients() {
                             "</form>\n");
 
                         //Submit button function
+                        $("#SubmitButton").off("click");
                         $("#SubmitButton").on('click', function (e) {
-                            $(this).off();
                             modSubmit();
                         });
                     },
                     error: function (res, status) {
-                        $("#optionsClient").html("Form will not populate!");
+                        $("#optionsClient").html("Mod Form is not populating!");
                     }
                 });//end ajax
             });//end modify client
@@ -176,8 +176,8 @@ function showClients() {
                     "</form>\n");
 
                 //Submit button function
+                $("#SubmitButton").off("click");
                 $("#SubmitButton").on('click', function (e) {
-                    $(this).off();
                     addSubmit();
                 });
 
@@ -201,7 +201,7 @@ function showClients() {
             });
         },
         error: function (res, status) {
-            $("#floor").html("Something went wrong!");
+            $("#floor").html("Add form is not populating!");
         }
     });//end outer ajax
 };// end showClient
@@ -491,7 +491,7 @@ function modSubmit() {
             $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
         },
         error: function (res, status) {
-            $("#optionsClient").html("Something isn't working!");
+            $("#optionsClient").html("Update Client isn't working!");
             //log, send error report
         }
     });//end ajax
@@ -530,7 +530,7 @@ function addSubmit() {
             );
         },
         error: function (res, status) {
-            $("#optionsClient").html("Something isn't working!");
+            $("#optionsClient").html("Add Client isn't working!");
             //log, send error report
         }
     });//end ajax
