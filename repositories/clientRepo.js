@@ -8,15 +8,16 @@ class ClientRepository {
     constructor() {
     };
 
-    createClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
+    createClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber,
+                 billingFirst, billingLast) {
         return new Promise((resolve, reject) => {
             chargebee.customer.create({
                 first_name : firstName,
                 last_name : lastName,
                 email : customerEmail,
                 billing_address : {
-                    first_name : firstName,
-                    last_name : lastName,
+                    first_name : billingFirst,
+                    last_name : billingLast,
                     line1 : addressStreet,
                     city : customerCity,
                     state : customerStateFull,

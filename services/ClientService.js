@@ -146,9 +146,10 @@ class ClientService {
      * @returns {Promise<chargebee customer object>}
      */
     async createNewClient(firstName, lastName, customerEmail, addressStreet,
-                          customerCity, customerStateFull, customerZip, phoneNumber) {
+                          customerCity, customerStateFull, customerZip, phoneNumber,
+                          billingFirst, billingLast) {
         return await clientRepo.createClient(firstName, lastName, customerEmail, addressStreet,
-            customerCity, customerStateFull, customerZip, phoneNumber).catch(err=>{console.log(err)});
+            customerCity, customerStateFull, customerZip, phoneNumber, billingFirst, billingLast).catch(err=>{console.log(err)});
     }
 
     /**

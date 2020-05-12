@@ -104,13 +104,16 @@ module.exports = {
      *     "city": customer's city,
      *     "state": customer's state,
      *     "zip": customer's zip,
+     *     "billingFirst": customer's billing first name,
+     *     "billingLast": customer's billing last name,
      *     "auth": authentication credentials; either master or token
      * }
      * @returns customer{}
      */
     createClient: async (req, res) => {
         let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
-            req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip)
+            req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip, req.body.billingFirst,
+            req.body.billingLast)
             .catch(err=>{console.log(err)});
         res.send(client);
     },
