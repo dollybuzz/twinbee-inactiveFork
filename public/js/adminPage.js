@@ -1,3 +1,6 @@
+//global variable
+let selectedRow = null;
+
 let navMapper = {
     main: function () {
         location.reload();
@@ -39,7 +42,6 @@ function showClients() {
                 '            <th scope="col">Name</th>\n' +
                 '            <th scope="col">Phone</th>\n' +
                 '            <th scope="col">Email</th>\n' +
-                '            <th scope="col">Remaining Hours</th>\n' +
                 '        </thead><tbody>');
             //Populate table
             res.forEach(item => {
@@ -49,8 +51,7 @@ function showClients() {
                         '   <td scope="row">' + item.customer.id + '</td>' +
                         '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
                         '   <td>' + item.customer.phone + '</td>' +
-                        '   <td>' + item.customer.email + '</td>' +
-                        '   <td>' + "not implemented" + '</td></tr>'
+                        '   <td>' + item.customer.email + '</td>'
                     );
                 };
             });
@@ -60,11 +61,9 @@ function showClients() {
             createBody();
 
             //Event Listeners
-            //on clicking a client row, populate the modify form
+            //Modify Client
             $(".clientRow").click(function () {
-                $("#floor").css("width", "50%");
-                $("#floor").css("margin-left", "0");
-                $("#floor").css("margin-right", "auto");
+                minimizeTable();
                 let clientId = $(this).children()[0].innerHTML;
                 $.ajax({
                     url: "/api/getClient",
@@ -77,6 +76,70 @@ function showClients() {
                     success: function (res, status) {
                         //Pre-populate forms
                         $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+                            "<form id='modify'>\n" +
+                            "<label for='modbilling'>Client Information</label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='modclientid'>ID:</label>" +
+                            `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
+                            "<label for='modclientfname'>First Name:</label>" +
+                            `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
+                            "<label for='modclientlname'>Last Name:</label>" +
+                            `<input type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
+                            "<label for='modphone'>Phone:</label>" +
+                            `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+                            "<label for='modemail'>Email:</label>" +
+                            `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='modbilling'>Billing Address</label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='empty'></label>" +
+                            "<label for='modaddress'>Street:</label>" +
+                            `<input type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
+                            "<label for='modcity'>City:</label>" +
+                            `<input type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
+                            "<label for='modstate'>State:</label>" +
+                            `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
+                            "<label for='modemail'>Zip:</label>" +
+                            `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
+                            "</form>\n");
+
+                        //Submit button function
+                        $("#SubmitButton").click(function () {
+                            modSubmit();
+                        });
+                    },
+                    error: function (res, status) {
+                        $("#optionsClient").html("Form will not populate!");
+                    }
+                });//end ajax
+            });//end modify client
+
+            //Add Client
+            $("#AddButton").click(function () {
+                minimizeTable();
+                $.ajax({
+                    url: "/api/createClient",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        id: clientId
+                    },
+                    dataType: "json",
+                    success: function (res, status) {
+                        //Pre-populate forms
+                        $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
                             "<form id='modify'>\n" +
                             "<label for='modclientid'>ID:</label>" +
                             `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
@@ -98,25 +161,24 @@ function showClients() {
                     error: function (res, status) {
                         $("#optionsClient").html("Form will not populate!");
                     }
-                });//end internal ajax
+                });//end ajax
+            });// end add client
 
-                //on clicking add client, populate the add form
+            //Delete Client
 
 
-                //on click delete client, show prompt to verify
-
-            });
 
              //Expand Table Button
              $("#ExpandButton").click(function () {
                  expandTable();
-             })
+             });
 
             //Show Block content
             $(".clientRow").click(function () {
-                $("#floor").css("transition", "width 2s ease-in-out");
+                $("#floor").css("transition", "width 0.5s ease-in-out");
+                selectedRow = $(this);
                 showBlock();
-            })
+            });
 
             //Row effect
             $(".clientRow").mouseenter(function () {
@@ -129,8 +191,8 @@ function showClients() {
         error: function (res, status) {
             $("#floor").html("Something went wrong!");
         }
-    });//end ajax
-};
+    });//end outer ajax
+};// end showClient
 
 
 function showMakers(){
@@ -313,7 +375,7 @@ function showOnlineMakers() {
     });//end ajax
 };
 
-//Helper Functions
+//Versatile Helper Functions
 function createBody() {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
@@ -335,36 +397,35 @@ function showBlock() {
     setTimeout(function () {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
-        $("#buttonsBottom").css("transition", "height 2s ease-in-out");
         $("#optionsClient").css("opacity", "1");
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
         $("#SubmitButton").css("opacity", "1");
-        $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
+        $("#SubmitButton").css("transition", "opacity 0.5s ease-in-out");
         $("#ExpandButton").css("opacity", "1");
-        $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
-
-    }, 2000)
+        $("#ExpandButton").css("transition", "opacity 0.5s ease-in-out");
+    }, 500)
 };
+
+function minimizeTable() {
+    $("#floor").css("width", "50%");
+    $("#floor").css("margin-left", "0");
+    $("#floor").css("margin-right", "auto");
+}
 
 function expandTable() {
     $("#optionsClient").hide();
     $("#buttonsBottom").hide();
-    $("#buttonsBottom").css("transition", "height 2s ease-in-out");
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
     $("#floor").css("width", "100%");
     $("#floor").css("margin-left", "0");
     $("#floor").css("margin-right", "auto");
-    $("#floor").css("transition", "width 2s ease-in-out");
+    $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#SubmitButton").css("opacity", "0");
-    $("#SubmitButton").css("transition", "opacity 2s ease-in-out");
+    $("#SubmitButton").css("transition", "opacity 0.5s ease-in-out");
     $("#ExpandButton").css("opacity", "0");
-    $("#ExpandButton").css("transition", "opacity 2s ease-in-out");
-
-    setTimeout(function () {
-        showClients();
-    }, 2000)
+    $("#ExpandButton").css("transition", "opacity 0.5s ease-in-out");
 };
 
 function modSubmit() {
@@ -379,6 +440,37 @@ function modSubmit() {
             lastName: $("#modclientlname").val() ,
             phone: $("#modphone").val(),
             email: $("#modemail").val()
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#modsuccess").html("");
+            $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+            
+            //Updating viewable rows in table
+            selectedRow.children()[1].innerHTML = $("#modclientfname").val() + " " + $("#modclientlname").val();
+            selectedRow.children()[2].innerHTML = $("#modphone").val();
+            selectedRow.children()[3].innerHTML = $("#modemail").val();
+        },
+        error: function (res, status) {
+            $("#optionsClient").html("Something isn't working!");
+            //log, send error report
+        }
+    });//end ajax
+
+    $.ajax({
+        url: "/api/updateClientBilling",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: $("#modclientid").val(),
+            firstName: $("#modclientfname").val(),
+            lastName: $("#modclientlname").val() ,
+            phone: $("#modphone").val(),
+            email: $("#modemail").val(),
+            street: $("#modaddress").val(),
+            city: $("#modcity").val(),
+            state: $("#modstate").val(),
+            zip: $("#modzip").val()
         },
         dataType: "json",
         success: function (res, status) {
@@ -424,6 +516,4 @@ $(document).ready(function () {
     $("#logoutButton").click(function () {
         window.location.href = "/";
     })
-
-
 })//end document ready

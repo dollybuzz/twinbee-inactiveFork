@@ -37,7 +37,7 @@ module.exports = {
     updateClientBilling: (req, res) => {
         clientService.updateClientBilling(req.body.id, req.body.firstName, req.body.lastName,
             req.body.street, req.body.city, req.body.state, req.body.zip);
-        res.end();
+        res.send({});
     },
 
 
@@ -54,10 +54,8 @@ module.exports = {
      * }
      */
     updateClientContact: (req, res) => {
-        console.log("this is before");
         clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName, req.body.email, req.body.phone);
         res.send({});
-        console.log("this is after");
     },
 
     /**
