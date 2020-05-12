@@ -63,125 +63,11 @@ function showClients() {
             //Event Listeners
             //Modify Client
             $(".clientRow").click(function () {
-                minimizeTable();
-                selectedRow = $(this);
-                showBlock();
-                let clientId = $(this).children()[0].innerHTML;
-                $.ajax({
-                    url: "/api/getClient",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        id: clientId
-                    },
-                    dataType: "json",
-                    success: function (res, status) {
-                        //Pre-populate forms
-                        $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-                            "<form id='modify'>\n" +
-                            "<label for='modbilling'>Client Information</label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='modclientid'>ID:</label>" +
-                            `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
-                            "<label for='modclientfname'>First Name:</label>" +
-                            `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
-                            "<label for='modclientlname'>Last Name:</label>" +
-                            `<input type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
-                            "<label for='modphone'>Phone:</label>" +
-                            `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
-                            "<label for='modemail'>Email:</label>" +
-                            `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='modbilling'>Billing Address</label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='empty'></label>" +
-                            "<label for='modaddress'>Street:</label>" +
-                            `<input type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
-                            "<label for='modcity'>City:</label>" +
-                            `<input type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
-                            "<label for='modstate'>State:</label>" +
-                            `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
-                            "<label for='modemail'>Zip:</label>" +
-                            `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
-                            "</form>\n");
-
-                        //Submit button function
-                        $("#SubmitButton").off("click");
-                        $("#SubmitButton").on('click', function (e) {
-                            modSubmit();
-                        });
-                    },
-                    error: function (res, status) {
-                        $("#optionsClient").html("Mod Form is not populating!");
-                    }
-                });//end ajax
+                prepopulateModForm($(this));
             });//end modify client
 
             //Add Client
-            $("#AddButton").click(function () {
-                minimizeTable();
-                showBlock();
-                $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                    "<form id='add'>\n" +
-                    "<label for='modbilling'>Client Information</label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='addclientfname'>First Name:</label>" +
-                    `<input type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
-                    "<label for='addclientlname'>Last Name:</label>" +
-                    `<input type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
-                    "<label for='addphone'>Phone:</label>" +
-                    `<input type='text' id='addphone' name='addphone'>\n<br>\n` +
-                    "<label for='addemail'>Email:</label>" +
-                    `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='addbilling'>Billing Address</label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='empty'></label>" +
-                    "<label for='addbillingfname'>First Name:</label>" +
-                    `<input type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
-                    "<label for='addbillinglname'>Last Name:</label>" +
-                    `<input type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
-                    "<label for='addaddress'>Street:</label>" +
-                    `<input type='text' id='addaddress' name='addaddress'>\n<br>\n` +
-                    "<label for='addcity'>City:</label>" +
-                    `<input type='text' id='addcity' name='addcity'>\n<br>\n` +
-                    "<label for='addstate'>State:</label>" +
-                    `<input type='text' id='addstate' name='addstate'>\n<br>\n` +
-                    "<label for='addemail'>Zip:</label>" +
-                    `<input type='text' id='addzip' name='addzip'>\n<br>\n` +
-                    "</form>\n");
-
-                //Submit button function
-                $("#SubmitButton").off("click");
-                $("#SubmitButton").on('click', function (e) {
-                    addSubmit();
-                });
-
-            });// end add client
+            populateAddForm();
 
             //Delete Client
 
@@ -522,20 +408,150 @@ function addSubmit() {
 
             //Adding new client to table
             $("#clientTable").append('\n' +
-                '<tr class="clientRow">' +
+                `<tr id="${res.id}" class="clientRow">` +
                 '   <td scope="row">' + `${res.id}` + '</td>' +
                 '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
                 '   <td>' + `${res.phone}` + '</td>' +
                 '   <td>' + `${res.email}` + '</td></tr>'
             );
+
+            $(`#${res.id}`).mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#e8ecef');
+            }).mouseleave(function () {
+                $(this).css('background-color', 'white');
+            }).click(function () {
+                prepopulateModForm($(this));
+            });
         },
         error: function (res, status) {
             $("#optionsClient").html("Add Client isn't working!");
             //log, send error report
         }
     });//end ajax
-
 };
+
+function prepopulateModForm(jqueryObject){
+    minimizeTable();
+    selectedRow = jqueryObject;
+    showBlock();
+    let clientId = jqueryObject.children()[0].innerHTML;
+    $.ajax({
+        url: "/api/getClient",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: clientId
+        },
+        dataType: "json",
+        success: function (res, status) {
+            //Pre-populate forms
+            $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+                "<form id='modify'>\n" +
+                "<label for='modbilling'>Client Information</label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='modclientid'>ID:</label>" +
+                `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
+                "<label for='modclientfname'>First Name:</label>" +
+                `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
+                "<label for='modclientlname'>Last Name:</label>" +
+                `<input type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
+                "<label for='modphone'>Phone:</label>" +
+                `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+                "<label for='modemail'>Email:</label>" +
+                `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='modbilling'>Billing Address</label>" +
+                "<label for='empty'></label>" +
+                "<label for='empty'></label>" +
+                "<label for='modaddress'>Street:</label>" +
+                `<input type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
+                "<label for='modcity'>City:</label>" +
+                `<input type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
+                "<label for='modstate'>State:</label>" +
+                `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
+                "<label for='modemail'>Zip:</label>" +
+                `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
+                "</form>\n");
+
+            //Submit button function
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on('click', function (e) {
+                modSubmit();
+            });
+        },
+        error: function (res, status) {
+            $("#optionsClient").html("Mod Form is not populating!");
+        }
+    });//end ajax
+}
+
+function populateAddForm(){
+    $("#AddButton").click(function () {
+        minimizeTable();
+        showBlock();
+        $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+            "<form id='add'>\n" +
+            "<label for='modbilling'>Client Information</label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='addclientfname'>First Name:</label>" +
+            `<input type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
+            "<label for='addclientlname'>Last Name:</label>" +
+            `<input type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
+            "<label for='addphone'>Phone:</label>" +
+            `<input type='text' id='addphone' name='addphone'>\n<br>\n` +
+            "<label for='addemail'>Email:</label>" +
+            `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='addbilling'>Billing Address</label>" +
+            "<label for='empty'></label>" +
+            "<label for='empty'></label>" +
+            "<label for='addbillingfname'>First Name:</label>" +
+            `<input type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
+            "<label for='addbillinglname'>Last Name:</label>" +
+            `<input type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
+            "<label for='addaddress'>Street:</label>" +
+            `<input type='text' id='addaddress' name='addaddress'>\n<br>\n` +
+            "<label for='addcity'>City:</label>" +
+            `<input type='text' id='addcity' name='addcity'>\n<br>\n` +
+            "<label for='addstate'>State:</label>" +
+            `<input type='text' id='addstate' name='addstate'>\n<br>\n` +
+            "<label for='addemail'>Zip:</label>" +
+            `<input type='text' id='addzip' name='addzip'>\n<br>\n` +
+            "</form>\n");
+
+        //Submit button function
+        $("#SubmitButton").off("click");
+        $("#SubmitButton").on('click', function (e) {
+            addSubmit();
+        });
+
+    });// end add client
+}
 
 $(document).ready(function () {
 
