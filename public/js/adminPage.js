@@ -116,8 +116,8 @@ function showClients() {
                             "</form>\n");
 
                         //Submit button function
-                        $("#SubmitButton").click(function (e) {
-                            e.preventDefault();
+                        $("#SubmitButton").on('click', function (e) {
+                            $(this).off();
                             modSubmit();
                         });
                     },
@@ -137,7 +137,7 @@ function showClients() {
                     "<label for='empty'></label>" +
                     "<label for='empty'></label>" +
                     "<label for='addclientfname'>First Name:</label>" +
-                    `<input type='text' id='addclientfname' name='modclientfname'>\n<br>\n` +
+                    `<input type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
                     "<label for='addclientlname'>Last Name:</label>" +
                     `<input type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
                     "<label for='addphone'>Phone:</label>" +
@@ -159,6 +159,10 @@ function showClients() {
                     "<label for='addbilling'>Billing Address</label>" +
                     "<label for='empty'></label>" +
                     "<label for='empty'></label>" +
+                    "<label for='addbillingfname'>First Name:</label>" +
+                    `<input type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
+                    "<label for='addbillinglname'>Last Name:</label>" +
+                    `<input type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
                     "<label for='addaddress'>Street:</label>" +
                     `<input type='text' id='addaddress' name='addaddress'>\n<br>\n` +
                     "<label for='addcity'>City:</label>" +
@@ -170,8 +174,8 @@ function showClients() {
                     "</form>\n");
 
                 //Submit button function
-                $("#SubmitButton").click(function (e) {
-                    e.preventDefault();
+                $("#SubmitButton").on('click', function (e) {
+                    $(this).off();
                     addSubmit();
                 });
 
@@ -511,7 +515,9 @@ function addSubmit() {
             street: $("#addaddress").val(),
             city: $("#addcity").val(),
             state: $("#addstate").val(),
-            zip: $("#addzip").val()
+            zip: $("#addzip").val(),
+            billingFirst: $("#addbillingfname").val(),
+            billingLast:$("#addbillinglname").val()
         },
         dataType: "json",
         success: function (res, status) {
