@@ -101,6 +101,7 @@ module.exports = {
      *     "lastName": customer's last name,
      *     "email": customer's email,
      *     "address": customer's street address,
+     *     "phone": customer's phone,
      *     "city": customer's city,
      *     "state": customer's state,
      *     "zip": customer's zip,
@@ -112,8 +113,8 @@ module.exports = {
      */
     createClient: async (req, res) => {
         let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
-            req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip, req.body.billingFirst,
-            req.body.billingLast)
+            req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip,
+            req.body.phone, req.body.billingFirst, req.body.billingLast)
             .catch(err=>{console.log(err)});
         res.send(client);
     },
