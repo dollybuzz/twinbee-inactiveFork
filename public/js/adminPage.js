@@ -285,6 +285,7 @@ function createBody() {
     $("#optionsClient").css("width", "50%");
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
     $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
+    $("#AddButton").css("opacity", "1");
 
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
@@ -299,13 +300,16 @@ function showBlock() {
     setTimeout(function () {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
+        $("#AddButton").show();
         $("#DeleteButton").show();
+        $("#SubmitButton").show();
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("opacity", "1");
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1");
         $("#DeleteButton").css("opacity", "1");
+        $("#AddButton").css("opacity", "1");
     }, 500)
 };
 
@@ -329,6 +333,7 @@ function expandTable() {
     $("#SubmitButton").css("opacity", "0");
     $("#ExpandButton").css("opacity", "0");
     $("#DeleteButton").css("opacity", "0");
+    $("#AddButton").css("opacity", "1");
 };
 
 function modSubmit() {
@@ -555,6 +560,7 @@ function populateAddForm(){
 
 function showPrompt() {
     $("#optionsClient").hide();
+
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
     setTimeout(function() {
@@ -562,22 +568,48 @@ function showPrompt() {
         $("#deletePrompt").append("<div id='selectionYorN'></div>");
         $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
         $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
+        $("#SubmitButton").css("opacity", "0");
+        $("#AddButton").css("opacity", "0");
         $("#deletePrompt").css("opacity", "1");
         $("#YesDelete").css("opacity", "1");
         $("#NoDelete").css("opacity", "1");
-    },500); //note - breaks if any less than 500
 
+        setTimeout(function () {
+            $("#SubmitButton").hide();
+            $("#AddButton").hide();
+        }, 800);
 
-            /*if(yes) {
-                "<br><h6>Type in client's full name to delete.</h6><br>" +
+        $("#NoDelete").click(function() {
+            $("#SubmitButton").show();
+            $("#AddButton").show();
+            expandTable();
+
+        });
+
+        $("#YesDelete").click(function() {
+            $("#SubmitButton").show();
+            $("#AddButton").show();
+            $("#SubmitButton").css("opacity", "1");
+            $("#AddButton").css("opacity", "1");
+            $("#deletePrompt").html(
+                `<h6>Please type in the full name to delete the selected user.</h6><br>` +
+                `<h5>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h5>` +
                 "<form id='delete'>" +
                 "<label for='deleteclientname'>Full Name:</label>" +
                 `<input type='text' id='deleteclientname' name='deleteclientname'>\n<br>\n` +
                 "</form>\n");
+        });
+
+    },500); //note - breaks if any less than 500
+
+
+
+            /*if(yes) {
+
             } else {
 
     }
-`<h5>You selected ${selectedRow.children()[1].innerHTML}, client ${selectedRow.children()[0].innerHTML}.</h5>` +
+
 
 
         let fullName = selectedRow.children()[1].innerHTML;
