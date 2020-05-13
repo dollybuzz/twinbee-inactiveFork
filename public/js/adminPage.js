@@ -65,17 +65,24 @@ function showClients() {
             $(".clientRow").click(function () {
                 selectedRow = $(this);
                 prepopulateModForm();
+                $("#DeleteButton").show();
+                $("#DeleteButton").css("opacity", "1");
+                $("#DeleteButton").click(function () {
+                    showPrompt();
+                });
             });//end modify client
 
             //Add Client
             $("#AddButton").click(function () {
                 populateAddForm();
+                $("#DeleteButton").css("opacity", "0");
+                setTimeout(function(){
+                    $("#DeleteButton").hide();
+                }, 500);
             });//end add client
 
             //Delete Client
-            $("#DeleteButton").click(function () {
-                showPrompt();
-            });//end delete client
+            //end delete client
 
             //Expand Table Button
             $("#ExpandButton").click(function () {
@@ -301,14 +308,12 @@ function showBlock() {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
         $("#AddButton").show();
-        $("#DeleteButton").show();
         $("#SubmitButton").show();
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("opacity", "1");
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1");
-        $("#DeleteButton").css("opacity", "1");
         $("#AddButton").css("opacity", "1");
     }, 500)
 };
@@ -559,17 +564,16 @@ function populateAddForm(){
 }
 
 function showPrompt() {
-    $("#optionsClient").hide();
-
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
     setTimeout(function() {
-        $("#deletePrompt").append("<h5>Are you sure you want to delete this user?</h5>");
+        $("#deletePrompt").html("<h5>Are you sure you want to delete this user?</h5>");
         $("#deletePrompt").append("<div id='selectionYorN'></div>");
         $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
         $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
         $("#SubmitButton").css("opacity", "0");
         $("#AddButton").css("opacity", "0");
+        $("#DeleteButton").css("opacity", "0");
         $("#deletePrompt").css("opacity", "1");
         $("#YesDelete").css("opacity", "1");
         $("#NoDelete").css("opacity", "1");
@@ -583,7 +587,6 @@ function showPrompt() {
             $("#SubmitButton").show();
             $("#AddButton").show();
             expandTable();
-
         });
 
         $("#YesDelete").click(function() {
@@ -592,14 +595,13 @@ function showPrompt() {
             $("#SubmitButton").css("opacity", "1");
             $("#AddButton").css("opacity", "1");
             $("#deletePrompt").html(
-                `<h6>Please type in the full name to delete the selected user.</h6><br>` +
-                `<h5>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h5>` +
-                "<form id='delete'>" +
+                `<h5>Please type in the full name to delete the selected user.</h5>` +
+                `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                "<br><form id='delete'>" +
                 "<label for='deleteclientname'>Full Name:</label>" +
                 `<input type='text' id='deleteclientname' name='deleteclientname'>\n<br>\n` +
                 "</form>\n");
         });
-
     },500); //note - breaks if any less than 500
 
 
