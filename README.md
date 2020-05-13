@@ -45,20 +45,12 @@ Endpoint: '/api/getAllPlans'</br>
       accessed.  E.g, to access "pricing_model", given that "returnedValue" is the
       result of this funciton, use:
        returnedValue[0].plan.pricing_model
-       returns data as follows:
-       [
-           {
-               "plan":{}
-           },
-           {
-               "plan":{}
-           }
-       ]
-     
+```
        Looks for data in the body in the form:
        {
           "auth": authentication token
        }
+```
 
 Sample response:
 ```
@@ -146,7 +138,7 @@ Sample response:
 
 Endpoint: '/api/createPlan'</br>
       Creates a new plan in the current chargebee environment. looks for values in the body as follows:
-      ```
+```
       {
           "planName": name of plan,
           "invoiceName": name as it should appear on an invoice,
@@ -154,7 +146,8 @@ Endpoint: '/api/createPlan'</br>
           "planDescription": general description of plan,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
+
 Sample input: 
 ```
 
@@ -175,14 +168,14 @@ Note that no data is returned to the user.
 Endpoint: '/api/retrievePlan'</br>
       Retrieves a chargebee plan object by chargebee plan id. Looks for values
       in the body as follows:
-      ```
+```
       {
           "planId": chargebee plan id,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
      
-sample request body:
+Sample request body:
 ```
 {
   "planId": "freedom-makers-32",      
@@ -190,7 +183,7 @@ sample request body:
 }
 ```
 
-sample response:
+Sample response:
 ```
 {
     "plan": {
@@ -224,7 +217,7 @@ sample response:
 Endpoint: '/api/updatePlan'</br>
       Updates a plan with new values. Note that the plan id is
       NOT updated on changing the plan's name. Looks for values in the body as follows;
-      ```
+```
       {
            "planId": existing chargebee plan id,
            "newName": new desired name for plan,
@@ -232,7 +225,8 @@ Endpoint: '/api/updatePlan'</br>
            "planPrice": overridden plan price in cents as integer,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
+
 Sample request body:
 ```
 {
@@ -251,12 +245,12 @@ Note that no data is returned to the user.
 
 Endpoint: '/api/deletePlan'</br>
       Deletes a plan by chargebee plan id. Looks for values in the body as follows:
-      ```
+```
       {
           "planId": chargebee plan id,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 
 Sample request body:
 ```
@@ -275,11 +269,11 @@ Endpoint: '/api/getAllSubscriptions'</br>
       ENDPOINT: /api/getAllSubscriptions
       Retrieves all subscriptions.
       Looks for data in the body as follows
-      ```
+```
       {
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 Sample Request:
 ```
 {
@@ -500,14 +494,14 @@ Sample response:
 Endpoint: '/api/createSubscription'</br>
       Creates a new subscription for an existing customer.
       Note that auto_collection is ALWAYS off. Looks for values in the body as follows:
-      ```
+```
       {
           "planId": id of the plan to subscribe to,
           "customerId": id of the subscribing customer,
           "planQuantity": initial number of hours to subscribe to,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 
 The newly created subscription is returned in the response.
 Sample request body:
@@ -560,12 +554,12 @@ SampleResponse:
 Endpoint: '/api/retrieveSubscription'</br>
       Retrieves a subscription object by chargebee subscription id. Looks for values in the body
       as follows:
-      ```
+```
       {
           "subscriptionId": id of desired subscription,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 
 Sample request body:
 ```
@@ -620,7 +614,7 @@ Endpoint: '/api/updateSubscription'</br>
       Note that changes will not be made until the current term (usually month) 
       ends and a new cycle begins.
       The revised subscription is returned. Looks for values in the body as follows:
-      ```
+```
       {
           "subscriptionId": id of subscription to be modified,
           "planId": new plan to use for subscription,
@@ -628,7 +622,7 @@ Endpoint: '/api/updateSubscription'</br>
           "pricePerHour": overridden price per hour for subscription,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 
 Sample request body:
 ```
@@ -685,12 +679,12 @@ Sample response:
 Endpoint: '/api/retrieveSubscription'</br>
       Retrieves a subscription object by chargebee subscription id. Looks for values in the body
       as follows:
-      ```
+```
       {
           "subscriptionId": id of desired subscription,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 
 Sample request body:
 ```
@@ -764,11 +758,11 @@ Endpoint: '/api/getAllClients'</br>
       Note that in order to access meaningful data, an intermediate object is
       accessed. E.g., to access a phone number, use resultList[0].customer.phone.
        Looks for authentication in the body as follows:
-       ```
+```
        {
           "auth": authentication credentials; either master or token
        }
-       ```
+```
 
 Sample response:
 ```
@@ -836,12 +830,12 @@ Sample response:
 Endpoint: '/api/getClient'</br>
       Retrieves a chargebee customer object by their chargebee customer id. Looks for
       values in the body in the form:
-      ```
+```
       {
           "id": customer id,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 Sample request body:
 ```
 {
@@ -886,7 +880,7 @@ Sample response:
 
 Endpoint: '/api/updateClientBilling'</br>
       Updates a client's billing info. looks for data in the body in the form:
-      ```
+```
       {
           "id": id of customer to update,
           "firstName": new first name for billing,
@@ -897,7 +891,7 @@ Endpoint: '/api/updateClientBilling'</br>
           "zip": new zip for billing,
           "auth": authentication credentials; either master or token
       }
-      ```
+```
 
 Sample request body:
 ```
@@ -920,7 +914,7 @@ Returns no meaningful data to the user.
 
 Endpoint: '/api/updateClientContact'</br>
      Updates a client's contact info. looks for data in the body in the form:
-     ```
+```
      {
          "id": id of customer to update,
          "firstName": new first name,
@@ -929,7 +923,7 @@ Endpoint: '/api/updateClientContact'</br>
          "phone": new phone,
          "auth": authentication credentials; either master or token
      }
-     ```
+```
      
 Sample request body:
 ```
@@ -951,7 +945,7 @@ Returns no meaningful data to the user.
 Endpoint: '/api/updateClientMetadata'</br>
      Updates a client's metadata within chargebee.
      Looks for data in the body in the form:
-     ```
+```
      {
          "id": client's id,
          "metadata":  {
@@ -960,7 +954,7 @@ Endpoint: '/api/updateClientMetadata'</br>
                       }
          "auth": authentication credentials; either master or token,
      }
-     ```
+```
 
 No data is returned
 
@@ -970,14 +964,14 @@ No data is returned
 Endpoint: '/api/updateClientTimeBucket'</br>
      Updates a client's time bucket for one plan with the given number
      of minutes (adds or subtracts). Looks for data in the body in the form:
-     ```
+```
      {
          "id": id of the client to update,
          "planName": name of the client's plan to update,
          "minutes": positive or negative integer of minutes to update with,
          "auth": authentication credentials; either master or token
      }
-     ```
+```
      
 Sample request body:
 ```
@@ -998,7 +992,7 @@ No data is returned.
 Endpoint: '/api/createClient'</br>
      Creates a chargebee customer object. Once created, the object is sent back.
      Looks for values in the body in the form:
-     ```
+```
      {
          "firstName": customer's first name,
          "lastName": customer's last name,
@@ -1012,7 +1006,7 @@ Endpoint: '/api/createClient'</br>
          "billingLast": customer's billing last name,
          "auth": authentication credentials; either master or token
      }
-     ```
+```
 
 Sample request body:
 ```
@@ -1075,12 +1069,12 @@ Sample response:
 
 Endpoint: '/api/deleteClient'</br>
      Marks a customer as deleted. Looks for values in the body in the form:
-     ```
+```
      {
          "id": chargebee customer id for customer to be 'deleted',
          "auth": authentication credentials; either master or token
      }
-     ```
+```
 
 Sample request body:
 ```
