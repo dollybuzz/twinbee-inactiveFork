@@ -45,8 +45,8 @@ Endpoint: '/api/getAllPlans'</br>
       accessed.  E.g, to access "pricing_model", given that "returnedValue" is the
       result of this funciton, use:
        returnedValue[0].plan.pricing_model
-```
        Looks for data in the body in the form:
+```
        {
           "auth": authentication token
        }
