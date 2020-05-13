@@ -8,6 +8,7 @@ chargebee.configure({site : "freedom-makers-test",
 
 
 let updateClient = (customerId, keyValuePairs)=>{
+    console.log("Updating client");
     chargebee.customer.update(customerId, keyValuePairs).request(function(error,result) {
         if(error){
             //handle error
@@ -16,6 +17,7 @@ let updateClient = (customerId, keyValuePairs)=>{
             console.log(result);
             var customer = result.customer;
             var card = result.card;
+            console.log(customer);
         }
     });
 }
@@ -42,7 +44,11 @@ class ClientService {
      * @param keyValuePairs - key/value pairs to add
      */
     async updateClientMetadata(clientId, keyValuePairs){
+        console.log("Updating client metadata");
         let customer = await this.getClientById(clientId);
+        if(!customer.meta_data){
+            customer.meta_data = {};
+        }
         for (var key in keyValuePairs){
             customer.meta_data[key] = keyValuePairs[key];
         }
@@ -57,9 +63,14 @@ class ClientService {
      * @param minuteChange- positive or negative change in minutes
      */
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
+        console.log("Updating client time bucket")
         let client = await this.getClientById(clientId);
+        if(!client.meta_data){
+            client.meta_data = {};
+        }
         if (!client.meta_data[planBucket]) {
-            console.log(client.meta_data[planBucket])
+            client.meta_data[planBucket] = {};
+            console.log(client.meta_data[planBucket]);
             client.meta_data[planBucket] = 0;
         }
         let newMinutes = minuteChange + client.meta_data[planBucket];

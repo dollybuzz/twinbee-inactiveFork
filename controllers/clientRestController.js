@@ -88,7 +88,9 @@ module.exports = {
      * }
      */
     updateClientTimeBucket(req, res){
-      clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes));
+        console.log("up")
+      clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes))
+          .catch(error => {console.log(error)});
       res.end();
     },
 
