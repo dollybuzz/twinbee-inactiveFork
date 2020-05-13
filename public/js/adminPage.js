@@ -63,20 +63,24 @@ function showClients() {
             //Event Listeners
             //Modify Client
             $(".clientRow").click(function () {
-                prepopulateModForm($(this));
+                selectedRow = $(this);
+                prepopulateModForm();
             });//end modify client
 
             //Add Client
-            populateAddForm();
+            $("#AddButton").click(function () {
+                populateAddForm();
+            });//end add client
 
             //Delete Client
+            $("#DeleteButton").click(function () {
+                showPrompt();
+            });//end delete client
 
-
-
-             //Expand Table Button
-             $("#ExpandButton").click(function () {
-                 expandTable();
-             });
+            //Expand Table Button
+            $("#ExpandButton").click(function () {
+                expandTable();
+            });
 
             //Row effect
             $(".clientRow").mouseenter(function () {
@@ -280,7 +284,7 @@ function createBody() {
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>-</button>");
+    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
 
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
@@ -295,6 +299,7 @@ function showBlock() {
     setTimeout(function () {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
+        $("#DeleteButton").show();
         $("#optionsClient").css("opacity", "1");
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
@@ -302,6 +307,8 @@ function showBlock() {
         $("#SubmitButton").css("transition", "opacity 0.5s ease-in-out");
         $("#ExpandButton").css("opacity", "1");
         $("#ExpandButton").css("transition", "opacity 0.5s ease-in-out");
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").css("transition", "opacity 0.5s ease-in-out");
     }, 500)
 };
 
@@ -315,6 +322,7 @@ function minimizeTable() {
 function expandTable() {
     $("#optionsClient").hide();
     $("#buttonsBottom").hide();
+    $("#DeleteButton").hide();
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
     $("#floor").css("width", "100%");
@@ -325,6 +333,8 @@ function expandTable() {
     $("#SubmitButton").css("transition", "opacity 0.5s ease-in-out");
     $("#ExpandButton").css("opacity", "0");
     $("#ExpandButton").css("transition", "opacity 0.5s ease-in-out");
+    $("#DeleteButton").css("opacity", "0");
+    $("#DeleteButton").css("transition", "opacity 0.5s ease-in-out");
 };
 
 function modSubmit() {
@@ -431,11 +441,10 @@ function addSubmit() {
     });//end ajax
 };
 
-function prepopulateModForm(jqueryObject){
+function prepopulateModForm(){
     minimizeTable();
-    selectedRow = jqueryObject;
     showBlock();
-    let clientId = jqueryObject.children()[0].innerHTML;
+    let clientId = selectedRow.children()[0].innerHTML;
     $.ajax({
         url: "/api/getClient",
         method: "post",
@@ -499,7 +508,6 @@ function prepopulateModForm(jqueryObject){
 }
 
 function populateAddForm(){
-    $("#AddButton").click(function () {
         minimizeTable();
         showBlock();
         $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
@@ -549,9 +557,39 @@ function populateAddForm(){
         $("#SubmitButton").on('click', function (e) {
             addSubmit();
         });
-
-    });// end add client
 }
+
+function showPrompt() {
+    selectedRow = null;
+    minimizeTable();
+    showBlock();
+    $("#optionsClient").html("<h5>Please select a client that you would like to delete.</h5>");
+
+    $(".clientRow").off("click");
+    $(".clientRow").click(function() {
+        selectedRow = $(this);
+        console.log($(this));
+        $("#optionsClient").html(`<h5>You selected ${selectedRow.children()[1].innerHTML}, client ${selectedRow.children()[0].innerHTML}.</h5>` +
+            "<br><h5>Are you sure you want to delete this client?</h5>");
+            /*if(yes) {
+                "<br><h6>Type in client's full name to delete.</h6><br>" +
+                "<form id='delete'>" +
+                "<label for='deleteclientname'>Full Name:</label>" +
+                `<input type='text' id='deleteclientname' name='deleteclientname'>\n<br>\n` +
+                "</form>\n");
+            } else {
+
+    }
+
+
+
+        let fullName = selectedRow.children()[1].innerHTML;
+        console.log(fullName);
+        if($("#deleteclientname").val() == fullName)
+        {}*/
+    });
+}
+
 
 $(document).ready(function () {
 

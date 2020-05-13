@@ -98,29 +98,34 @@ footer a {
     background-color: #32444e;
 }
 
+#DeleteButton {
+    color: white;
+    background-color: darkred;
+}
+
 #loginButton:hover,
 #logoutButton:hover,
 #SubmitButton:hover {
     background-color: #dbb459;
 }
 
-#ExpandButton:hover,
-#AddButton:hover,
 #DeleteButton:hover {
+    background-color: #ba4141;
+}
+
+#ExpandButton:hover,
+#AddButton:hover {
     background-color: #e8ecef;
 }
 
 #ExpandButton,
-#AddButton,
-#DeleteButton {
+#AddButton {
     background-color: #a4b6ba;
 }
 
 #buttonsTop {
-    width: max-content;
+    width: 100%;
     height: auto;
-    background-color: #a4b6ba;
-    border-radius: 15px 15px 0 0;
 }
 
 #buttonsBottom {
@@ -129,6 +134,11 @@ footer a {
 }
 
 #SubmitButton {
+    float: right;
+    opacity: 0;
+}
+
+#DeleteButton {
     float: right;
     opacity: 0;
 }
@@ -265,5 +275,11 @@ th {
 #add {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    place-items: center;
+}
+
+#delete {
+    display: grid;
+    grid-template-columns: 1fr;
     place-items: center;
 }
