@@ -300,15 +300,12 @@ function showBlock() {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
         $("#DeleteButton").show();
+        $("#optionsClient").css("width", "50%");
+        $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("opacity", "1");
-        $("#optionsClient").css("width", "50%");
-        $("#optionsClient").css("width", "50%");
         $("#SubmitButton").css("opacity", "1");
-        $("#SubmitButton").css("transition", "opacity 0.5s ease-in-out");
         $("#ExpandButton").css("opacity", "1");
-        $("#ExpandButton").css("transition", "opacity 0.5s ease-in-out");
         $("#DeleteButton").css("opacity", "1");
-        $("#DeleteButton").css("transition", "opacity 0.5s ease-in-out");
     }, 500)
 };
 
@@ -330,11 +327,8 @@ function expandTable() {
     $("#floor").css("margin-right", "auto");
     $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#SubmitButton").css("opacity", "0");
-    $("#SubmitButton").css("transition", "opacity 0.5s ease-in-out");
     $("#ExpandButton").css("opacity", "0");
-    $("#ExpandButton").css("transition", "opacity 0.5s ease-in-out");
     $("#DeleteButton").css("opacity", "0");
-    $("#DeleteButton").css("transition", "opacity 0.5s ease-in-out");
 };
 
 function modSubmit() {
@@ -431,7 +425,7 @@ function addSubmit() {
             }).mouseleave(function () {
                 $(this).css('background-color', 'white');
             }).click(function () {
-                prepopulateModForm($(this));
+                prepopulateModForm();
             });
         },
         error: function (res, status) {
@@ -560,17 +554,20 @@ function populateAddForm(){
 }
 
 function showPrompt() {
-    selectedRow = null;
-    minimizeTable();
+    $("#optionsClient").hide();
     showBlock();
-    $("#optionsClient").html("<h5>Please select a client that you would like to delete.</h5>");
+    $("#optionsClient").html("<div id='deletePrompt'></div>");
+    setTimeout(function() {
+        $("#deletePrompt").append("<h5>Are you sure you want to delete this user?</h5>");
+        $("#deletePrompt").append("<div id='selectionYorN'></div>");
+        $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
+        $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
+        $("#deletePrompt").css("opacity", "1");
+        $("#YesDelete").css("opacity", "1");
+        $("#NoDelete").css("opacity", "1");
+    },500); //note - breaks if any less than 500
 
-    $(".clientRow").off("click");
-    $(".clientRow").click(function() {
-        selectedRow = $(this);
-        console.log($(this));
-        $("#optionsClient").html(`<h5>You selected ${selectedRow.children()[1].innerHTML}, client ${selectedRow.children()[0].innerHTML}.</h5>` +
-            "<br><h5>Are you sure you want to delete this client?</h5>");
+
             /*if(yes) {
                 "<br><h6>Type in client's full name to delete.</h6><br>" +
                 "<form id='delete'>" +
@@ -580,14 +577,13 @@ function showPrompt() {
             } else {
 
     }
-
+`<h5>You selected ${selectedRow.children()[1].innerHTML}, client ${selectedRow.children()[0].innerHTML}.</h5>` +
 
 
         let fullName = selectedRow.children()[1].innerHTML;
         console.log(fullName);
         if($("#deleteclientname").val() == fullName)
         {}*/
-    });
 }
 
 
