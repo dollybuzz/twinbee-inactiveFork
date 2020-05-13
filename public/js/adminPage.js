@@ -290,7 +290,7 @@ function createBody() {
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
     $("#userMainContent").append('<div id="buttonsBottom"></div>');
-    $("#buttonsBottom").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
+    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#buttonsBottom").hide();
 };
