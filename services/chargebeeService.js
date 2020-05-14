@@ -1,6 +1,8 @@
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
-    api_key : process.env.CHARGEBEE_TEST_API})
+    api_key : process.env.CHARGEBEE_TEST_API});
+const util = require('util');
+const request = util.promisify(require('request'));
 
 
 //TODO: Add validation
@@ -275,6 +277,46 @@ class ChargebeeService {
         });
     }
 
+    /**
+     * Charges a customer's primary payment method to
+     * add the given number of hours to the client's given
+     * plan.
+     *
+     * @param plan      - id of plan for which to add hours
+     * @param numHours  - number of hours to add
+     * @param customerId- customer that is adding hours
+     * @returns {Promise<void>}
+     */
+    async chargeCustomerNow(plan, numHours, customerId){
+        let planObj = await this.retrievePlan(plan);
+        let pricePerHour = Number.parseFloat(planObj.price);
+        let calculatedPrice = pricePerHour * Number.parseFloat(numHours);
+        let minutesString = (numHours * 60).toString();
+
+        chargebee.invoice.charge({
+            customer_id : customerId,
+            amount : calculatedPrice.toString(),
+            description : `Buy ${numHours} hour(s) for ${planObj.name}`
+        }).request(function(error,result) {
+            if(error){
+                //handle error
+                console.log(error);
+            }else{
+                let response = request({
+                    method: 'POST',
+                    uri: `http://${process.env.IP}:${process.env.PORT}/api/updateClientTimeBucket`,
+                    form: {
+                        'id': customerId,
+                        'planName': plan,
+                        'minutes': minutesString,
+                        'auth':process.env.TWINBEE_MASTER_AUTH
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
+        });
+    }
 }
 
 module.exports = new ChargebeeService();

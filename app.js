@@ -15,7 +15,6 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
-const chargebee = require('chargebee');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
@@ -23,6 +22,9 @@ const util = require('util');
 const request = util.promisify(require('request'));
 const ts = require('./services/timeClockService.js');
 const timeClockService = require('./services/timeClockService.js');
+var chargebee = require("chargebee");
+chargebee.configure({site : "freedom-makers-test",
+    api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"});
 
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
@@ -178,8 +180,17 @@ app.post("/api/clockOut",
     //authController.authorizeMaster,
     //authController.authorizeMaker,
     timeClockRestController.clockOut);
+app.post("/api/creditNow",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    chargebeeRestController.chargeCustomerNow);
 
+
+const chargebeeService = require('./services/chargebeeService.js');
 (async function() {
+
+    chargebeeService.chargeCustomerNow('twinbee-new-plan', '1', '16CHT7Ryu5EhnPWY');
 
 })();
 
