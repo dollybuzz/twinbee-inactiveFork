@@ -86,7 +86,7 @@ module.exports = {
      * timesheet with the given id. Looks for values in the body in the form:
      * {
      *     "id": database id of the timesheet,
-     *     "hourlyRate": new hourly rate for this pay period,
+     *     "hourlyRate": new associated plan rate, e.g, 'freedom-makers-32',
      *     "timeIn": new clock-in time,
      *     "timeOut": new clock-out time,
      *     "auth": authentication credentials; either master or token

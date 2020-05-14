@@ -29,7 +29,7 @@ class TimeSheetService {
      *
      * @param id    - timesheet's database id
      * @param makerId   - id of the maker who owns the timesheet
-     * @param hourlyRate- hourly pay rate of maker
+     * @param hourlyRate- associated plan rate, e.g, 'freedom-makers-32'
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
      */
@@ -88,9 +88,10 @@ class TimeSheetService {
         let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err=>{console.log(err)});
         let makerSheets = [];
         await sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row).catch(err=>{console.log(err)});
+            let refinedSheet = await createSheetFromRow(row).catch(err=>{console.log(err)})
+                .catch(error => {console.log(error)});
             makerSheets.push(refinedSheet);
-        })
+        });
         return makerSheets;
     }
 
@@ -105,7 +106,7 @@ class TimeSheetService {
         await sheets.forEach(async row=>{
             let refinedSheet = await createSheetFromRow(row).catch(err=>{console.log(err)});
             clientSheets.push(refinedSheet);
-        })
+        });
         return clientSheets;
     }
 }
@@ -114,7 +115,7 @@ class TimeSheetService {
 createSheetFromRow = async row => {
     return new TimeSheet(row.id, row.maker_id, row.hourly_rate,
         row.client_id, row.start_time, row.end_time, row.occupation);
-}
+};
 
 
 module.exports = new TimeSheetService();

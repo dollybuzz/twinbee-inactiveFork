@@ -15,6 +15,8 @@ module.exports = {
      * }
      */
     clockIn: async (req, res) => {
+        console.log('Attempting to clock in user from REST:');
+        console.log(req.body);
         timeClockService.clockIn(req.body.makerId, req.body.hourlyRate,
             req.body.clientId, req.body.occupation);
         res.end();
@@ -35,6 +37,8 @@ module.exports = {
      * @returns {Promise<void>}
      */
     clockOut: async (req, res) => {
+        console.log('Attempting to clock out user from REST:');
+        console.log(req.body);
         timeClockService.clockOut(req.body.makerId);
         res.end();
     }
