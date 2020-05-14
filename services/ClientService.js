@@ -207,9 +207,10 @@ class ClientService {
      * Removes a client from the database. TODO: remove from chargebee
      * @param chargebeeId    - Id of client to be removed
      */
-    deleteClientById(chargebeeId){
+    async deleteClientById(chargebeeId){
         console.log("Deleting client...");
         clientRepo.deleteClient(chargebeeId);
+        await this.updateClientMetadata(chargebeeId, {"deleted":"true"});
     }
 
     /**

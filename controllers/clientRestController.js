@@ -144,10 +144,10 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    deleteClient: (req, res) => {
+    deleteClient: async (req, res) => {
         console.log("Attempting to delete a client from REST: ");
         console.log(req.body);
-        clientService.deleteClientById(req.body.id);
+        await clientService.deleteClientById(req.body.id);
         res.send({});
     },
 

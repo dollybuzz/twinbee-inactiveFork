@@ -96,16 +96,14 @@ class ClientRepository {
             if (err) throw err;
         });
 
-        chargebee.customer.update(chargebeeId,{
-            deleted : true
-        }).request(function(error,result) {
+
+        chargebee.customer.delete(chargebeeId)
+            .request(function(error,result) {
             if(error){
-                //TODO handle error
                 console.log(`Failed to delete ${chargebeeId}`);
                 console.log(error);
             }else{
-                var customer = result.customer;
-                console.log(`Deleted ${chargebeeId}`);
+                console.log(`Deleted ${chargebeeId}. Will update shortly.`);
             }
         });
     }
