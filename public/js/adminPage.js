@@ -46,7 +46,7 @@ function showClients() {
                 '        </thead><tbody>');
             //Populate table
             res.forEach(item => {
-                if (item.customer.billing_address) {
+                if (item.customer.billing_address && !item.customer.deleted) {
                     $("#clientTable").append('\n' +
                         '<tr class="clientRow">' +
                         '   <td scope="row">' + item.customer.id + '</td>' +
@@ -611,6 +611,7 @@ function showDeletePrompt() {
             });
 
             let thisEndPoint = null;
+            let thisFunction = null;
             if(selectedTab == "manageClients")
             {
                 thisEndPoint = "/api/deleteClient";
@@ -641,8 +642,8 @@ function showDeletePrompt() {
                         success: function (res, status) {
                             $("#verifyEntry").html(`<h6>Successfully deleted user ${selectedRow.children()[0].innerHTML}!</h6>`);
                             setTimeout(function () {
-                                expandTable();
-                            }, 500);
+                                showClients();
+                            }, 1000);
                         },
                         error: function (res, status) {
                             $("#optionsClient").html("Delete user not working!");

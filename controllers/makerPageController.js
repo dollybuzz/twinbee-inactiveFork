@@ -1,20 +1,29 @@
 
 module.exports ={
     renderLanding: (req, res)=>{
+        let thisID = {
+            text: "FMTitle"
+        };
+        let headerTitle = {
+            text: "Freedom Maker Portal"
+        };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
         };
         let headerLinks = [
-            {link: "", text: "Past Hours"},
-            {link: "", text: "My Clients"},
+            {link: "/maker", text: "Main", id:"main"},
+            {link: "", text: "View Previous Hours", id:"previousHours"},
+            {link: "", text: "My Clients", id: "manageClients"},
         ];
         let footerLinks = [
-            {link: "", text: "Past Hours"},
-            {link: "", text: "My Clients"},
             {link: "", text: "Report a problem"},
+            {link: "", text: "FAQ"}
         ];
+        let user = {
+            text: "Welcome, Freedom Maker!"
+        };
 
-        res.render("maker", {headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("maker", {welcome: user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
 };

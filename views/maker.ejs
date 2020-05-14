@@ -1,6 +1,26 @@
 <%- include('partials/header.ejs') -%>
+<script src="/js/makerPage.js"></script>
+<nav>
+    <%if (typeof navItemsTop !== "undefined"){%>
+        <% for (var i = 0; i < navItemsTop.length; ++i){%>
+        <%if (i != 0){%>
+            |
+        <%}%>
+        <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
+        <%}%>
+    <%}else{%>
+    <%}%>
+</nav>
 <div id="userMainContent">
-    This is where makers will access their controls.
-
+    <div class="row" id="topRow">
+        <div class="block">
+            <span id="text1"></span>
+            <span id="online"></span>
+        </div>
+        <br>
+        <div class="block">
+            <span id="text2"></span>
+        </div>
+    </div>
 </div>
 <%- include('partials/footer.ejs') -%>
