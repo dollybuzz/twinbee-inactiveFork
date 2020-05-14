@@ -63,7 +63,7 @@ class ClientService {
      * @param minuteChange- positive or negative change in minutes
      */
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
-        console.log("Updating client time bucket")
+        console.log("Updating client time bucket");
         let client = await this.getClientById(clientId);
         if(!client.meta_data){
             client.meta_data = {};

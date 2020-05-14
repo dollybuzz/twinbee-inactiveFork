@@ -195,5 +195,28 @@ module.exports = {
     cancelSubscription: function(req, res){
         chargebeeService.cancelSubscription(req.body.subscriptionId);
         res.end();
+    },
+
+    /**
+     * /api/creditNow
+     *
+     * Charges a customer's default payment (or creates an invoice if not available)
+     * for the given number of hours for the specified plan. Looks for data in the
+     * body in the form:
+     * {
+     *     "planId": Chargebee plan id for the plan to be "refilled",
+     *     "numHours": Number of hours to add to the clients associated bucket,
+     *     "customerId": id of the customer to be updated,
+     *     "auth": auth token
+     * }
+     *
+     * @param req
+     * @param res
+     */
+    chargeCustomerNow: function (req, res) {
+        chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId);
+        res.end();
     }
+
+
 };
