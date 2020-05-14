@@ -253,6 +253,30 @@ class ClientService {
         return clientMakers;
     };
 
+    async getUpdatePaymentPage(clientId){
+        console.log(`Getting update payment page for client ${clientId}...`);
+        return new Promise((resolve, reject) => {
+            chargebee.hosted_page.manage_payment_sources({
+                card : {
+                    gateway_account_id : process.env.GATEWAY_ACCOUNT_ID
+                },
+                customer : {
+                    id : clientId
+                }
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                }else{
+                    console.log("Successfully retrieved update payment page");
+                    var hosted_page = result.hosted_page;
+                    resolve(hosted_page);
+                }
+            });
+        });
+    }
+
 
     /**
      * Retrieves the chargebee "Customer" object for a client given their email.

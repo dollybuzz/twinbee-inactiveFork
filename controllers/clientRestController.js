@@ -77,7 +77,7 @@ module.exports = {
      *     "auth": authentication credentials; either master or token,
      * }
      */
-    updateClientMetadata: (req, res) =>{
+    updateClientMetadata: (req, res) => {
         console.log("Attempting to update client meta data from REST: ");
         console.log(req.body);
         clientService.updateClientMetadata(req.body.id, req.body.metadata);
@@ -95,12 +95,14 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    updateClientTimeBucket(req, res){
+    updateClientTimeBucket(req, res) {
         console.log("Attempting to update client from REST: ");
         console.log(req.body);
-      clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes))
-          .catch(error => {console.log(error)});
-      res.send({});
+        clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes))
+            .catch(error => {
+                console.log(error)
+            });
+        res.send({});
     },
 
     /**
@@ -128,7 +130,9 @@ module.exports = {
         let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
             req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip,
             req.body.phone, req.body.billingFirst, req.body.billingLast)
-            .catch(err=>{console.log(err)});
+            .catch(err => {
+                console.log(err)
+            });
         res.send(client);
     },
 
@@ -171,7 +175,9 @@ module.exports = {
      */
     getAllClients: async (req, res) => {
         console.log("Attempting to grab all clients from REST");
-        res.send(await clientService.getAllClients().catch(err=>{console.log(err)}));
+        res.send(await clientService.getAllClients().catch(err => {
+            console.log(err)
+        }));
     },
 
     /**
@@ -191,5 +197,22 @@ module.exports = {
         console.log("Attempting to get makers for client from rest: ");
         console.log(req.body);
         res.send(await clientService.getMakersForClient(req.body.id));
+    },
+
+    /**
+     * ENDPOINT: /api/getUpdatePaymentURL
+     * {
+     *     "id": client's chargebee id,
+     *     "auth": valid auth token
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getUpdatePaymentPage: async (req, res) => {
+        console.log("Attempting to get a hosted page for payment source update: ");
+        console.log(req.body);
+        res.send(await clientService.getUpdatePaymentPage(req.body.id));
     }
 };

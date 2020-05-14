@@ -190,6 +190,11 @@ app.post("/api/getMakersForClient",
     //authController.authorizeMaster,
     //authController.authorizeClient,
     clientRestController.getMakersForClient);
+app.post("/api/getUpdatePaymentURL",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    clientRestController.getUpdatePaymentPage);
 
 (async function() {
 
