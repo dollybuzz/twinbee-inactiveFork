@@ -31,10 +31,10 @@ class ClientRepository {
                     //console.log(error);
                     reject(error);
                 }else{
-                    //console.log(result);
                     var customer = result.customer;
                     var card = result.card;
 
+                    console.log(`Customer ${customer.id} successfully created, adding to DB`);
                     let sql = 'INSERT INTO client(chargebee_id, email) ' +
                         'VALUES (?, ?)';
                     let sqlParams = [customer.id, customerEmail];
@@ -43,8 +43,8 @@ class ClientRepository {
                             throw err;
                             reject(err);
                         }
-                    })
-
+                    });
+                    console.log("Customer added to DB");
                     resolve(customer);
                 }
             });
@@ -59,12 +59,11 @@ class ClientRepository {
         }).request(function(error,result) {
             if(error){
                 //TODO handle error
-                //console.log(`Failed to update ${firstName} ${lastName}`)
-                //console.log(error);
+                console.log(`Failed to update ${clientId}`);
+                console.log(error);
             }else{
                 var customer = result.customer;
-                //console.log(`Updated ${customer.first_name} ${customer.last_name}`)
-                //console.log(result);
+                console.log(`Updated ${customer.id}`);
             }
         });
 
@@ -81,12 +80,11 @@ class ClientRepository {
         }).request(function(error,result) {
             if(error){
                 //TODO handle error
-                //console.log(`Failed to update ${firstName} ${lastName} billing info`)
-                //console.log(error);
+                console.log(`Failed to update ${clientId} billing info`)
+                console.log(error);
             }else{
                 var customer = result.customer;
-                //console.log(`Updated ${customer.first_name} ${customer.last_name} billing info`)
-                //console.log(result);
+                console.log(`Updated ${customer.id} billing info`)
             }
         });
     }
@@ -103,35 +101,25 @@ class ClientRepository {
         }).request(function(error,result) {
             if(error){
                 //TODO handle error
-                //console.log(`Failed to update ${firstName} ${lastName}`)
-                //console.log(error);
+                console.log(`Failed to delete ${chargebeeId}`);
+                console.log(error);
             }else{
                 var customer = result.customer;
-                //console.log(`Updated ${customer.first_name} ${customer.last_name}`)
-                //console.log(result);
+                console.log(`Deleted ${chargebeeId}`);
             }
         });
     }
-/*
-    decrementHoursClient(id, hoursToSubtract) {
-        let sql = 'UPDATE client ' +
-            'SET remaining_hours = remaining_hours - ? ' +
-            'WHERE client.id = ?';
-        let sqlParams = [hoursToSubtract, id];
-        query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
-        })
-    }
-*/
+
     getAllClients() {
         return new Promise((resolve, reject)=>{
             chargebee.customer.list({
             }).request(function(error,result) {
                 if(error){
                     //handle error, email us?
-                    //console.log(error);
+                    console.log(error);
                     reject(error);
                 }else{
+                    console.log("All clients retrieved successfully");
                     resolve(result.list);
                 }
             })
@@ -146,12 +134,12 @@ class ClientRepository {
             }).request(function (error, result) {
                 if (error) {
                     //email us?
-                    //console.log(error);
+                    console.log(error);
                     reject(error);
                 } else {
-                    var entry = result.list[0]
-                    //console.log(entry);
+                    var entry = result.list[0];
                     var customer = entry.customer;
+                    console.log("Customer retrieved by email successfully");
                     resolve(customer);
                 }
             });
@@ -163,12 +151,11 @@ class ClientRepository {
             chargebee.customer.retrieve(id).request(function(error,result) {
                 if(error){
                     //email us?
-                    //console.log(`Could not find customer with id ${id}`);
-                    //console.log(error);
+                    console.log(`Could not find customer with id ${id}`);
+                    console.log(error);
                     reject(error);
                 }else{
-                    //console.log(`Customer found with id ${id}`)
-                    //console.log(result);
+                    console.log(`Customer found with id ${id}`);
                     var customer = result.customer;
                     resolve(customer);
                 }
