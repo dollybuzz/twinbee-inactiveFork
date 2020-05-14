@@ -157,5 +157,22 @@ module.exports = {
      */
     getAllClients: async (req, res) => {
         res.send(await clientService.getAllClients().catch(err=>{console.log(err)}));
+    },
+
+    /**
+     * ENDPOINT: /api/getMakersForClient
+     * Retrieves a list of all makers for a given client.
+     * Looks for data in the body in the form:
+     * {
+     *      "id": client's chargebee id,
+     *      "auth": valid auth token
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMakersForClient: async (req, res) => {
+        res.send(await clientService.getMakersForClient(req.body.id));
     }
 };

@@ -185,12 +185,15 @@ app.post("/api/creditNow",
     //authController.authorizeMaster,
     //authController.authorizeClient,
     chargebeeRestController.chargeCustomerNow);
+app.post("/api/getMakersForClient",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    clientRestController.getMakersForClient);
 
-
-const chargebeeService = require('./services/chargebeeService.js');
 (async function() {
 
-    chargebeeService.chargeCustomerNow('twinbee-new-plan', '1', '16CHT7Ryu5EhnPWY');
+   // chargebeeService.chargeCustomerNow('twinbee-new-plan', '1', '16CHT7Ryu5EhnPWY');
 
 })();
 

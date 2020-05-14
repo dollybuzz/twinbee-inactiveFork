@@ -188,10 +188,6 @@ class ClientService {
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`,
             form: {
-                id: currentSheet.id,
-                hourlyRate: currentSheet.hourlyRate,
-                timeIn: currentSheet.timeIn,
-                timeOut: await this.getCurrentMoment(),
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
@@ -200,9 +196,8 @@ class ClientService {
 
         let body = response.body;
         let sheets = JSON.parse(body);
-
         for (var i = 0; i < sheets.length; ++i) {
-            if (sheets[i].client_id == id) {
+            if (sheets[i].clientId == id) {
                 clientSheets.push(sheets[i]);
             }
         }
@@ -226,7 +221,6 @@ class ClientService {
      */
     async getMakersForClient(id) {
         let clientMakers = [];
-        let me = this;
         let response = await request({
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
@@ -249,11 +243,10 @@ class ClientService {
         let sheets = await this.getSheetsByClient(id).catch(err => {
             console.log(err)
         });
-
         for (var i = 0; i < sheets.length; ++i) {
-            if (!foundIds[sheets[i].maker_id] && makersMap[sheets[i].maker_id]) {
-                foundIds[sheets[i].maker_id] = true;
-                clientMakers.push(makersMap[sheets[i].maker_id]);
+            if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
+                foundIds[sheets[i].makerId] = true;
+                clientMakers.push(makersMap[sheets[i].makerId]);
             }
         }
         return clientMakers;
