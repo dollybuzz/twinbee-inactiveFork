@@ -11,6 +11,7 @@ class TimeClockService {
     }
 
     async clockIn(makerId, hourlyRate, clientId, occupation){
+        let rightNow = await this.getCurrentMoment();
         await request({
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/createTimeSheet`,
@@ -24,6 +25,7 @@ class TimeClockService {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         })
+        console.log(`Clock-in request sent for ${makerId} at time ${rightNow}`)
     }
 
     /**
@@ -36,9 +38,10 @@ class TimeClockService {
     async clockOut(makerId){
         let result = await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getTimeSheetsByMakerId?id=${makerId}`,
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getTimeSheetsByMakerId`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'id':makerId.toString()
             }
         });
 
@@ -56,6 +59,7 @@ class TimeClockService {
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i){
             let currentSheet = onlineSheets[i];
+            let rightNow = await this.getCurrentMoment();
             request({
                 method: 'POST',
                 uri: `http://${process.env.IP}:${process.env.PORT}/api/updateTimeSheet`,
@@ -63,11 +67,32 @@ class TimeClockService {
                     id: currentSheet.id,
                     hourlyRate: currentSheet.hourlyRate,
                     timeIn: currentSheet.timeIn,
-                    timeOut: await this.getCurrentMoment(),
+                    timeOut: rightNow,
+                    'auth':process.env.TWINBEE_MASTER_AUTH
+                }
+            });
+            console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
+
+            let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow);
+            request({
+                method: 'POST',
+                uri: `http://${process.env.IP}:${process.env.PORT}/api/updateClientTimeBucket`,
+                form: {
+                    id: currentSheet.clientId,
+                    planName: currentSheet.hourlyRate,
+                    minutes: shiftLength * -1,
                     'auth':process.env.TWINBEE_MASTER_AUTH
                 }
             })
+
+            console.log("Update client bucket due do clock-out request sent");
         }
+    }
+
+    async getMinutesBetweenMoments(start, end){
+        let exactSeconds = moment.duration(moment(end).diff(start)).asMinutes();
+        let estimatedMinutes = exactSeconds.toFixed(0);
+        return estimatedMinutes;
     }
 
     async getRunningTime(makerId){

@@ -15,6 +15,8 @@ module.exports = {
      * @returns customer{}
      */
     getClientById: async (req, res) => {
+        console.log("Attempting to get client by id from REST: ");
+        console.log(req.body);
         let id = req.body.id;
         let client = await clientService.getClientById(id);
         res.send(client);
@@ -35,6 +37,8 @@ module.exports = {
      * }
      */
     updateClientBilling: (req, res) => {
+        console.log("Attempting to update client billing from REST: ");
+        console.log(req.body);
         clientService.updateClientBilling(req.body.id, req.body.firstName, req.body.lastName,
             req.body.street, req.body.city, req.body.state, req.body.zip);
         res.send({});
@@ -54,6 +58,8 @@ module.exports = {
      * }
      */
     updateClientContact: (req, res) => {
+        console.log("Attempting to update client contact info from REST: ");
+        console.log(req.body);
         clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName, req.body.email, req.body.phone);
         res.send({});
     },
@@ -72,8 +78,10 @@ module.exports = {
      * }
      */
     updateClientMetadata: (req, res) =>{
+        console.log("Attempting to update client meta data from REST: ");
+        console.log(req.body);
         clientService.updateClientMetadata(req.body.id, req.body.metadata);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -88,9 +96,11 @@ module.exports = {
      * }
      */
     updateClientTimeBucket(req, res){
+        console.log("Attempting to update client from REST: ");
+        console.log(req.body);
       clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes))
           .catch(error => {console.log(error)});
-      res.end();
+      res.send({});
     },
 
     /**
@@ -113,6 +123,8 @@ module.exports = {
      * @returns customer{}
      */
     createClient: async (req, res) => {
+        console.log("Attempting to create a client from REST: ");
+        console.log(req.body);
         let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
             req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip,
             req.body.phone, req.body.billingFirst, req.body.billingLast)
@@ -129,8 +141,10 @@ module.exports = {
      * }
      */
     deleteClient: (req, res) => {
+        console.log("Attempting to delete a client from REST: ");
+        console.log(req.body);
         clientService.deleteClientById(req.body.id);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -156,6 +170,26 @@ module.exports = {
      * @returns [{customer:{}},...]
      */
     getAllClients: async (req, res) => {
+        console.log("Attempting to grab all clients from REST");
         res.send(await clientService.getAllClients().catch(err=>{console.log(err)}));
+    },
+
+    /**
+     * ENDPOINT: /api/getMakersForClient
+     * Retrieves a list of all makers for a given client.
+     * Looks for data in the body in the form:
+     * {
+     *      "id": client's chargebee id,
+     *      "auth": valid auth token
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMakersForClient: async (req, res) => {
+        console.log("Attempting to get makers for client from rest: ");
+        console.log(req.body);
+        res.send(await clientService.getMakersForClient(req.body.id));
     }
 };

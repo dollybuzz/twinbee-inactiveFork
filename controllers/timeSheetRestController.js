@@ -24,6 +24,7 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getAllTimeSheets: async (req,res) => {
+        console.log("Attempting to get all timesheets from REST");
         let timeSheets = await timeSheetService.getAllTimeSheets().catch(err=>{console.log(err)});
         res.send(timeSheets);
     },
@@ -49,6 +50,8 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getTimeSheetsByClientId: async (req, res) => {
+        console.log("Attempting to get sheets by client from REST");
+        console.log(req.body);
         let id = req.body.id;
         let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err=>{console.log(err)});
         res.send(clientTimeSheets)
@@ -75,6 +78,8 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getTimeSheetsByMakerId: async (req, res) => {
+        console.log("Attempting to get sheets by maker from REST");
+        console.log(req.body);
         let id = req.body.id;
         let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err=>{console.log(err)});
         res.send(makerTimeSheet);
@@ -86,7 +91,7 @@ module.exports = {
      * timesheet with the given id. Looks for values in the body in the form:
      * {
      *     "id": database id of the timesheet,
-     *     "hourlyRate": new hourly rate for this pay period,
+     *     "hourlyRate": new associated plan rate, e.g, 'freedom-makers-32',
      *     "timeIn": new clock-in time,
      *     "timeOut": new clock-out time,
      *     "auth": authentication credentials; either master or token
@@ -95,6 +100,8 @@ module.exports = {
      * @returns {Promise<void>}
      */
     updateTimeSheetsById: async (req, res) =>{
+        console.log("Attempting to update timesheet by id from REST");
+        console.log(req.body);
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
             req.body.timeIn, req.body.timeOut);
     },
@@ -108,8 +115,10 @@ module.exports = {
      * }
      */
     deleteTimeSheet: (req, res) => {
+        console.log("Attempting to delete timesheet from REST");
+        console.log(req.body);
         timeSheetService.deleteTimeSheet(req.body.id);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -130,6 +139,8 @@ module.exports = {
      * @returns {Promise<void>}
      */
     createTimeSheet: async (req, res) => {
+        console.log("Attempting to create a timesheet");
+        console.log(req.body);
         let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
             req.body.timeIn, req.body.timeOut, req.body.occupation).catch(err=>{console.log(err)});
         res.send(createdSheet);

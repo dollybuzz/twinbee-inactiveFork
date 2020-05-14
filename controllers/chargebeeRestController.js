@@ -26,6 +26,8 @@ module.exports = {
      * @returns [{entry:plan{}},...]
      */
     getAllPlans: async function(req, res){
+        console.log("Attempting to get all plans from REST: ");
+        console.log(req.body);
         let plans = await chargebeeService.getAllPlans().catch(e=>console.log(e));
         res.send(plans);
     },
@@ -42,9 +44,11 @@ module.exports = {
      * }
      */
     createPlan: function(req, res){
+        console.log("Attempting to create a plan from REST: ");
+        console.log(req.body);
         chargebeeService.createPlan(req.body.planName, req.body.invoiceName,
             req.body.pricePerHour, req.body.planDescription);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -59,6 +63,8 @@ module.exports = {
      * @returns plan{}
      */
     retrievePlan: async function(req, res){
+        console.log("Attempting to retrieve a plan from REST: ");
+        console.log(req.body);
         let planActual = await chargebeeService.retrievePlan(req.body.planId)
             .catch(err=>console.log(err));
         res.send({plan: planActual});
@@ -78,9 +84,11 @@ module.exports = {
      * }
      */
     updatePlan: function(req, res){
+        console.log("Attempting to update a plan from REST: ");
+        console.log(req.body);
         chargebeeService.updatePlan(req.body.planId, req.body.newName,
             req.body.planInvoiceName, req.body.planPrice);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -92,8 +100,10 @@ module.exports = {
      * }
      */
     deletePlan: function(req, res){
+        console.log("Attempting to delete a plan from REST: ");
+        console.log(req.body);
         chargebeeService.deletePlan(req.body.planId);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -120,6 +130,8 @@ module.exports = {
      * @returns [{"customer":{},"subscription":{},"card":{}},...]
      */
     getAllSubscriptions: async function(req, res){
+        console.log("Attempting to get all subscriptions from REST: ");
+        console.log(req.body);
         let subscriptions = await chargebeeService.getAllSubscriptions().catch(e=>console.log(e))
             .catch(e=>console.log(e));
         res.send(subscriptions);
@@ -139,6 +151,8 @@ module.exports = {
      * @returns subscription{}
      */
     createSubscription: async function(req, res){
+        console.log("Attempting to create a subscription from REST: ");
+        console.log(req.body);
         let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId, req.body.planQuantity)
             .catch(e=>console.log(e));
         res.send(sub);
@@ -156,6 +170,8 @@ module.exports = {
      * @returns subscription{}
      */
     retrieveSubscription: async function(req, res){
+        console.log("Attempting to retrieve one subscription from REST: ");
+        console.log(req.body);
         let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
             .catch(e=>console.log(e));
         res.send(subscription);
@@ -178,6 +194,8 @@ module.exports = {
      * @returns subscription{}
      */
     updateSubscription: async function(req, res){
+        console.log("Attempting to update subscription from REST: ");
+        console.log(req.body);
         let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
             req.body.planQuantity, req.body.pricePerHour);
         res.send(subscription);
@@ -193,8 +211,10 @@ module.exports = {
      * }
      */
     cancelSubscription: function(req, res){
+        console.log("Attempting to cancel subscription from REST: ");
+        console.log(req.body);
         chargebeeService.cancelSubscription(req.body.subscriptionId);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -214,8 +234,10 @@ module.exports = {
      * @param res
      */
     chargeCustomerNow: function (req, res) {
+        console.log("Attempting to charge customer from REST: ");
+        console.log(req.body);
         chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId);
-        res.end();
+        res.send({});
     }
 
 

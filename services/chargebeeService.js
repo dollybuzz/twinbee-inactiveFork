@@ -36,6 +36,7 @@ class ChargebeeService {
                     console.log(error);
                     reject(error);
                 }else{
+                    console.log("All plans retrieved");
                     resolve(result.list);
                 }
             });
@@ -51,7 +52,6 @@ class ChargebeeService {
      * @param planDescription-plan description
      */
     createPlan(planName, invoiceName, pricePerHour, planDescription) {
-
         let planId = planName.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
         chargebee.plan.create({
             id: planId,
@@ -69,7 +69,8 @@ class ChargebeeService {
                 //handle error
                 console.log(error);
             } else {
-                //console.log(result);
+                console.log(`Plan ${planName} created. Rate: $${pricePerHour} per `+
+                    `hour. Description: ${planDescription}`);
                 var plan = result.plan;
             }
         });
@@ -85,11 +86,10 @@ class ChargebeeService {
         return new Promise((resolve, reject) => {
             chargebee.plan.retrieve(planId).request(function (error, result) {
                 if (error) {
-                    //handle error, email us?
-                    //console.log(error);
+                    console.log(error);
                     reject(error);
                 } else {
-                    //console.log(result);
+                    console.log(`Plan ${planId} retrieved`);
                     var plan = result.plan;
                     resolve(plan);
                 }
@@ -115,11 +115,11 @@ class ChargebeeService {
                 price: planPrice
             }).request(function (error, result) {
                 if (error) {
-                    //handle error
                     console.log(error);
                     reject(error);
                 } else {
-                    //console.log(result);
+                    console.log(`Plan ${planId} updated. New name: ${planId}, `+
+                        `invoice name ${planInvoiceName}, price ${planPrice}`);
                     var plan = result.plan;
                     resolve(plan);
                 }
@@ -161,6 +161,7 @@ class ChargebeeService {
                     console.log(error);
                     reject(error);
                 }else{
+                    console.log("Retrieved all subscriptions");
                     resolve(result.list);
                 }
             });
@@ -194,6 +195,8 @@ class ChargebeeService {
                     var invoice = result.invoice;
                     var unbilled_charges = result.unbilled_charges;
                     resolve(subscription);
+                    console.log(`Subscription created for customer ${customerId} with` +
+                        `plan ${planId} and initial quantity ${planQuantity}`);
                 }
             });
         })
@@ -214,6 +217,7 @@ class ChargebeeService {
                     reject(error);
                 }else{
                  //   console.log(result);
+                    console.log("Subscription retrieved");
                     var subscription = result.subscription;
                     resolve(subscription);
                 }
@@ -247,6 +251,7 @@ class ChargebeeService {
                     reject(error);
                 }else{
                  //   console.log(result);
+                    console.log("Subscription updated.");
                     var subscription = result.subscription;
                     resolve(subscription);
                 }
@@ -273,6 +278,7 @@ class ChargebeeService {
                 var invoice = result.invoice;
                 var unbilled_charges = result.unbilled_charges;
                 var credit_notes = result.credit_notes;
+                console.log(`Cancellation complete for customer ${customer}, unbilled charges: ${unbilled_charges}`)
             }
         });
     }
@@ -302,6 +308,7 @@ class ChargebeeService {
                 //handle error
                 console.log(error);
             }else{
+                console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
                     method: 'POST',
                     uri: `http://${process.env.IP}:${process.env.PORT}/api/updateClientTimeBucket`,
@@ -314,6 +321,7 @@ class ChargebeeService {
                 }).catch(err => {
                     console.log(err);
                 });
+                console.log("Update time bucket due to purchase request sent")
             }
         });
     }

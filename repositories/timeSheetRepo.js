@@ -11,9 +11,9 @@ class TimeSheetRepository {
         let sqlParams = [makerId, clientId, rate, startTime, endTime, occupation];
         let result = await query(sql, sqlParams).catch(e => {
             console.log(e);
-            return('error; client or maker might not exist')
+            return('error; client or maker might not exist');
         });
-        console.log(result)
+        console.log(`Sheet ${result.insertId} successfully created`);
         return result.insertId;
     }
 
@@ -22,7 +22,8 @@ class TimeSheetRepository {
         let sqlParams = [rate, startTime, endTime, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
-        })
+        });
+        console.log(`Sheet ${id} successfully updated.`);
     }
 
 
@@ -33,7 +34,8 @@ class TimeSheetRepository {
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
-        })
+        });
+        console.log(`Sheet ${id} deleted`)
     }
 
 
@@ -46,6 +48,7 @@ class TimeSheetRepository {
             console.log(e);
             result = [];
         });
+        console.log(`Retrieved sheets for maker ${id}`);
         return result;
     }
 
@@ -58,6 +61,7 @@ class TimeSheetRepository {
             console.log(e);
             result = [];
         });
+        console.log(`Sheets retrieved for client ${id}`);
         return result;
     }
 
@@ -69,6 +73,7 @@ class TimeSheetRepository {
             console.log(e);
             result = [];
         });
+        console.log(`All sheets retrieved`);
         return result;
     }
 }

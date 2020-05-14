@@ -12,13 +12,14 @@ class MakerService {
      * @returns {Promise<[Maker]>}
      */
     async getAllMakers(){
+        console.log("Getting all makers...");
         let makers = [];
         let repoResult = await makerRepo.getAllMakers();
         repoResult.forEach(item => {
             let newObj = new Maker(item.id, item.first_name, item.last_name, item.email);
 
             makers.push(newObj);
-        })
+        });
         return makers;
     }
 
@@ -32,6 +33,7 @@ class MakerService {
      * @returns {Promise<maker>}
      */
     async createNewMaker(firstName, lastName, email){
+        console.log("Creating new maker...");
         await makerRepo.createMaker(firstName, lastName, email).catch(err=>{console.log(err)});
         let id = await makerRepo.getMakerIdByEmail(email).catch(err=>{console.log(err)});
         return new Maker(id[0].id, firstName, lastName, email);
@@ -44,6 +46,7 @@ class MakerService {
      * @returns {Promise<[maker]>}
      */
     async getOnlineMakers() {
+        console.log("Getting online makers...");
         let onliners = [];
         let retrieved = await makerRepo.getOnlineMakers().catch(err=>{console.log(err)});
         retrieved.forEach(item => {
@@ -63,6 +66,7 @@ class MakerService {
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
     async updateMaker(id, firstName, lastName, email){
+        console.log(`Updating maker ${id}...`);
         await makerRepo.updateMaker(id, firstName, lastName, email).catch(err=>{console.log(err)});
         return this.getMakerById(id);
     }
@@ -72,6 +76,7 @@ class MakerService {
      * @param id    - maker to be deleted
      */
     deleteMaker(id){
+        console.log(`Deleting maker ${id}...`);
         makerRepo.deleteMaker(id);
     }
 
@@ -81,6 +86,7 @@ class MakerService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByMaker(id){
+        console.log(`Getting sheets for maker ${id}...`);
         let result =  await request({
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimeSheets`,
@@ -108,6 +114,7 @@ class MakerService {
      * @returns {Promise<[Customer]>}
      */
     async getClientListForMakerId(id){
+        console.log(`Getting client list for maker ${id}...`);
         let result = await request({
             method: 'POST',
             uri: `http://${process.env.IP}:${process.env.port}/api/getAllClients`,
@@ -156,6 +163,7 @@ class MakerService {
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
     async getMakerById(id){
+        console.log(`Getting maker data for maker ${id}`);
         let result = await  makerRepo.getMakerById(id).catch(err=>{console.log(err)});
 
         if (result[0]) {
