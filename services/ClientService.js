@@ -8,16 +8,13 @@ chargebee.configure({site : "freedom-makers-test",
 
 
 let updateClient = (customerId, keyValuePairs)=>{
-    console.log("Updating client");
+    console.log(`Updating client ${customerId}...`);
     chargebee.customer.update(customerId, keyValuePairs).request(function(error,result) {
         if(error){
             //handle error
             console.log(error);
         }else{
-            console.log(result);
-            var customer = result.customer;
-            var card = result.card;
-            console.log(customer);
+            console.log(`Client ${customerId} updated successfully`)
         }
     });
 }
@@ -44,7 +41,7 @@ class ClientService {
      * @param keyValuePairs - key/value pairs to add
      */
     async updateClientMetadata(clientId, keyValuePairs){
-        console.log("Updating client metadata");
+        console.log("Updating client metadata...");
         let customer = await this.getClientById(clientId);
         if(!customer.meta_data){
             customer.meta_data = {};
@@ -63,7 +60,7 @@ class ClientService {
      * @param minuteChange- positive or negative change in minutes
      */
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
-        console.log("Updating client time bucket");
+        console.log("Updating client time bucket...");
         let client = await this.getClientById(clientId);
         if(!client.meta_data){
             client.meta_data = {};
@@ -90,6 +87,7 @@ class ClientService {
      * @returns {Promise<void>}
      */
     async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone){
+        console.log(`Updating client ${clientId} contact info...`);
         let customer = await this.getClientById(clientId);
         customer.first_name = newFirstName;
         customer.last_name = newLastName;
@@ -110,6 +108,7 @@ class ClientService {
      * @param newZip        - new zip for billing
      */
     updateClientBilling(clientId, newFirstName, newLastName, newAddress, newCity, newState, newZip){
+        console.log(`Updating ${clientId} billing info...`);
         chargebee.customer.update_billing_info(clientId,{
             billing_address : {
                 first_name : newFirstName,
@@ -122,12 +121,9 @@ class ClientService {
             }
         }).request(function(error,result) {
             if(error){
-                //handle error
                 console.log(error);
             }else{
-                //     console.log(result);
-                var customer = result.customer;
-                var card = result.card;
+                console.log(`Client ${clientId} billing updated successfully`);
             }
         });
     }
@@ -162,6 +158,7 @@ class ClientService {
     async createNewClient(firstName, lastName, customerEmail, addressStreet,
                           customerCity, customerStateFull, customerZip, phoneNumber,
                           billingFirst, billingLast) {
+        console.log(`Creating new client with last name ${lastName}...`);
         return await clientRepo.createClient(firstName, lastName, customerEmail, addressStreet,
             customerCity, customerStateFull, customerZip, phoneNumber, billingFirst, billingLast).catch(err=>{console.log(err)});
     }
@@ -172,6 +169,7 @@ class ClientService {
      * @returns {Promise<chargebee customer object>}
      */
     async getClientById(id) {
+        console.log(`Getting data for client ${id}...`);
         let clientData = await clientRepo.getClientById(id).catch(err=>{console.log(err)});
         return clientData;
     }
@@ -183,6 +181,7 @@ class ClientService {
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByClient(id) {
+        console.log(`Getting timesheets for client ${id}...`);
         let clientSheets = [];
         let response = await request({
             method: 'POST',
@@ -197,7 +196,7 @@ class ClientService {
         let body = response.body;
         let sheets = JSON.parse(body);
         for (var i = 0; i < sheets.length; ++i) {
-            if (sheets[i].clientId == id) {
+            if (sheets[i].clientId === id) {
                 clientSheets.push(sheets[i]);
             }
         }
@@ -206,9 +205,10 @@ class ClientService {
 
     /**
      * Removes a client from the database. TODO: remove from chargebee
-     * @param id    - Id of client to be removed
+     * @param chargebeeId    - Id of client to be removed
      */
     deleteClientById(chargebeeId){
+        console.log("Deleting client...");
         clientRepo.deleteClient(chargebeeId);
     }
 
@@ -220,6 +220,7 @@ class ClientService {
      * @returns {Promise<[maker objects]>}
      */
     async getMakersForClient(id) {
+        console.log(`Getting makers for client ${id}...`);
         let clientMakers = [];
         let response = await request({
             method: 'POST',
@@ -261,6 +262,7 @@ class ClientService {
      *                      error if none is found.
      */
     async getClientByEmail(email){
+        console.log(`Getting client by email...`);
        return await clientRepo.getClientByEmail(email).catch(err=>{console.log(err)});
     }
 }
