@@ -24,6 +24,7 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getAllTimeSheets: async (req,res) => {
+        console.log("Attempting to get all timesheets from REST");
         let timeSheets = await timeSheetService.getAllTimeSheets().catch(err=>{console.log(err)});
         res.send(timeSheets);
     },
@@ -49,6 +50,8 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getTimeSheetsByClientId: async (req, res) => {
+        console.log("Attempting to get sheets by client from REST");
+        console.log(req.body);
         let id = req.body.id;
         let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err=>{console.log(err)});
         res.send(clientTimeSheets)
@@ -75,6 +78,8 @@ module.exports = {
      * @returns {Promise<[timeSheet]>}
      */
     getTimeSheetsByMakerId: async (req, res) => {
+        console.log("Attempting to get sheets by maker from REST");
+        console.log(req.body);
         let id = req.body.id;
         let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err=>{console.log(err)});
         res.send(makerTimeSheet);
@@ -95,6 +100,8 @@ module.exports = {
      * @returns {Promise<void>}
      */
     updateTimeSheetsById: async (req, res) =>{
+        console.log("Attempting to update timesheet by id from REST");
+        console.log(req.body);
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
             req.body.timeIn, req.body.timeOut);
     },
@@ -108,6 +115,8 @@ module.exports = {
      * }
      */
     deleteTimeSheet: (req, res) => {
+        console.log("Attempting to delete timesheet from REST");
+        console.log(req.body);
         timeSheetService.deleteTimeSheet(req.body.id);
         res.send({});
     },
@@ -130,6 +139,8 @@ module.exports = {
      * @returns {Promise<void>}
      */
     createTimeSheet: async (req, res) => {
+        console.log("Attempting to create a timesheet");
+        console.log(req.body);
         let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
             req.body.timeIn, req.body.timeOut, req.body.occupation).catch(err=>{console.log(err)});
         res.send(createdSheet);
