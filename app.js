@@ -15,6 +15,7 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
@@ -40,7 +41,7 @@ app.get("/landing", landingPageController.renderLanding);
 app.get("/admin", adminPageController.renderLanding);
 app.get("/administrator", adminPageController.renderLanding);
 app.get("/client", clientPageController.renderLanding);
-app.get("/maker", makerPageController.renderLanding);
+app.get("/freedom-maker", makerPageController.renderLanding);
 
 //api routes
 app.get("/login",
@@ -198,6 +199,9 @@ app.post("/api/getUpdatePaymentURL",
 
 (async function() {
 
+    bcrypt.compare("email@email.e", "$2b$10$ch4/W1GX3cXRSbCF.Vwj0OfXfI3kTeH73XYzbSTKMGD", function(err, result) {
+        console.log(result)
+    });
    // chargebeeService.chargeCustomerNow('twinbee-new-plan', '1', '16CHT7Ryu5EhnPWY');
 
 })();

@@ -1,5 +1,6 @@
 const {query} = require('./repoMaster');
 const request = require('request');
+const bcrypt = require('bcrypt');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
     api_key : process.env.CHARGEBEE_TEST_API})
@@ -33,19 +34,23 @@ class ClientRepository {
                 }else{
                     var customer = result.customer;
                     var card = result.card;
-
                     console.log(`Customer ${customer.id} successfully created, adding to DB`);
-                    let sql = 'INSERT INTO client(chargebee_id, email) ' +
-                        'VALUES (?, ?)';
-                    let sqlParams = [customer.id, customerEmail];
-                    query(sql, sqlParams, function (err, result) {
-                        if (err) {
-                            throw err;
-                            reject(err);
-                        }
+
+                    bcrypt.hash(customerEmail, 10, (err, hash)=>{
+                       if (err){console.log(err)}
+                       else{
+                           let sql = 'INSERT INTO client(chargebee_id, email) ' +
+                               'VALUES (?, ?)';
+                           let sqlParams = [customer.id, hash];
+                           query(sql, sqlParams, function (err, result) {
+                               if (err) {
+                                   reject(err);
+                               }
+                           });
+                           console.log("Customer added to DB");
+                           resolve(customer);
+                       }
                     });
-                    console.log("Customer added to DB");
-                    resolve(customer);
                 }
             });
         })
