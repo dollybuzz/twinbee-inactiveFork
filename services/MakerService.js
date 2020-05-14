@@ -12,7 +12,7 @@ class MakerService {
      * @returns {Promise<[Maker]>}
      */
     async getAllMakers(){
-        console.log("Getting all makers..."):
+        console.log("Getting all makers...");
         let makers = [];
         let repoResult = await makerRepo.getAllMakers();
         repoResult.forEach(item => {
