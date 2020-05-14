@@ -1,6 +1,10 @@
 var GOOGLE_USER = null;
 var id_token = null;
-
+$(document).ready(function () {
+    $("#logout").click(function () {
+        signOut();
+    })
+})
 //per google's spec at https://developers.google.com/identity/sign-in/web/sign-in
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
