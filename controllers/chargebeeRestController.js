@@ -48,7 +48,7 @@ module.exports = {
         console.log(req.body);
         chargebeeService.createPlan(req.body.planName, req.body.invoiceName,
             req.body.pricePerHour, req.body.planDescription);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -88,7 +88,7 @@ module.exports = {
         console.log(req.body);
         chargebeeService.updatePlan(req.body.planId, req.body.newName,
             req.body.planInvoiceName, req.body.planPrice);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -103,7 +103,7 @@ module.exports = {
         console.log("Attempting to delete a plan from REST: ");
         console.log(req.body);
         chargebeeService.deletePlan(req.body.planId);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -214,7 +214,7 @@ module.exports = {
         console.log("Attempting to cancel subscription from REST: ");
         console.log(req.body);
         chargebeeService.cancelSubscription(req.body.subscriptionId);
-        res.end();
+        res.send({});
     },
 
     /**
@@ -237,7 +237,7 @@ module.exports = {
         console.log("Attempting to charge customer from REST: ");
         console.log(req.body);
         chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId);
-        res.end();
+        res.send({});
     }
 
 

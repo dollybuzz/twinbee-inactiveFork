@@ -109,7 +109,7 @@ module.exports = {
      */
     deleteTimeSheet: (req, res) => {
         timeSheetService.deleteTimeSheet(req.body.id);
-        res.end();
+        res.send({});
     },
 
     /**

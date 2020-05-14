@@ -133,7 +133,7 @@ module.exports ={
     updateMaker: async (req, res) =>{
         let maker = await makerService.updateMaker(req.body.id, req.body.firstName, req.body.lastName, req.body.email)
             .catch(err=>{console.log(err)});
-        res.end();
+        res.send({});
     },
 
     /**
@@ -148,6 +148,6 @@ module.exports ={
      */
     deleteMaker: async (req, res) =>{
         makerService.deleteMaker(req.body.id);
-        res.end();
+        res.send({});
     }
 };
