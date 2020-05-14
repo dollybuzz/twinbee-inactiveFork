@@ -69,7 +69,7 @@ function showClients() {
                 $("#DeleteButton").show();
                 $("#DeleteButton").css("opacity", "1");
                 $("#DeleteButton").click(function () {
-                    showPrompt();
+                    showDeletePrompt();
                 });
             });//end modify client
 
@@ -564,7 +564,7 @@ function populateAddForm(){
         });
 }
 
-function showPrompt() {
+function showDeletePrompt() {
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
     setTimeout(function() {
@@ -582,7 +582,7 @@ function showPrompt() {
         setTimeout(function () {
             $("#SubmitButton").hide();
             $("#AddButton").hide();
-        }, 800);
+        }, 500);
 
         $("#NoDelete").click(function() {
             $("#SubmitButton").show();
@@ -605,15 +605,55 @@ function showPrompt() {
 
             $("#deletePrompt").append("<div id='verifyEntry'></div>");
 
-            if($("#deleteClientName") == selectedRow.children()[1].innerHTML)
-            {
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on('click', function (e) {
+                addSubmit();
+            });
 
-            }
-            else
+            let thisEndPoint = null;
+            if(selectedTab == "manageClients")
             {
-                $("#verifyEntry").html("<h6>Invalid entry. Please type in the name again.</h6>");
-
+                thisEndPoint = "/api/deleteClient";
             }
+            else if (selectedTab == "manageMakers")
+            {
+                thisEndPoint = "/api/deleteMaker";
+            }
+            else if (selectedTab == "reviewTimeSheets")
+            {
+                thisEndPoint = "/api/deleteTimeSheet";
+            };
+
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on("click", function (e) {
+                let clientId = selectedRow.children()[0].innerHTML;
+                let deleteUser = $("#deleteClientName").val();
+                if(deleteUser == selectedRow.children()[1].innerHTML)
+                {
+                    $.ajax({
+                        url: thisEndPoint,
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            id: clientId
+                        },
+                        dataType: "json",
+                        success: function (res, status) {
+                            $("#verifyEntry").html(`<h6>Successfully deleted user ${selectedRow.children()[0].innerHTML}!</h6>`);
+                            setTimeout(function () {
+                                expandTable();
+                            }, 500);
+                        },
+                        error: function (res, status) {
+                            $("#optionsClient").html("Delete user not working!");
+                        }
+                    });//end ajax
+                }
+                else
+                {
+                    $("#verifyEntry").html("<h6>Invalid entry. Please type in the name again.</h6>");
+                }
+            });
         });
     },500); //note - breaks if any less than 500
 
