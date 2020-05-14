@@ -1,5 +1,6 @@
 //global variable
 let selectedRow = null;
+let selectedTab = null;
 
 let navMapper = {
     main: function () {
@@ -598,13 +599,26 @@ function showPrompt() {
                 `<h5>Please type in the full name to delete the selected user.</h5>` +
                 `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
                 "<br><form id='delete'>" +
-                "<label for='deleteclientname'>Full Name:</label>" +
-                `<input type='text' id='deleteclientname' name='deleteclientname'>\n<br>\n` +
+                "<label for='deleteClientName'>Full Name:</label>" +
+                `<input type='text' id='deleteClientName' name='deleteClientName'>\n<br>\n` +
                 "</form>\n");
+
+            $("#deletePrompt").append("<div id='verifyEntry'></div>");
+
+            if($("#deleteClientName") == selectedRow.children()[1].innerHTML)
+            {
+
+            }
+            else
+            {
+                $("#verifyEntry").html("<h6>Invalid entry. Please type in the name again.</h6>");
+
+            }
         });
     },500); //note - breaks if any less than 500
 
 
+    //call selectedTab: if manageClients, manageMakers, reviewTimeSheets, call appropriate endpoint
 
             /*if(yes) {
 
@@ -631,6 +645,7 @@ $(document).ready(function () {
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
+        selectedTab = $(this)[0].id;
     })
 
     $(".navItem").hover(function () {
@@ -645,8 +660,6 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-
-    //shifts the welcome textS
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
