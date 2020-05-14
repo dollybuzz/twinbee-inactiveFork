@@ -48,7 +48,7 @@ class TimeSheetRepository {
             console.log(e);
             result = [];
         });
-        console.log(`Sheet ${id} deleted`);
+        console.log(`Retrieved sheets for maker ${id}`);
         return result;
     }
 
