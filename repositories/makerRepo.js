@@ -11,6 +11,7 @@ class MakerRepository {
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         })
+        console.log(`Maker with last name ${lastName} created`)
     }
 
     async updateMaker(id, firstName, lastName, email) {
@@ -19,6 +20,7 @@ class MakerRepository {
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         })
+        console.log(`Maker ${id} updated`);
     }
 
     deleteMaker(id) {
@@ -26,7 +28,8 @@ class MakerRepository {
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
-        })
+        });
+        console.log(`Maker ${id} deleted`);
     }
 
 
@@ -42,6 +45,7 @@ class MakerRepository {
             console.log(e);
             result = [];
         });
+        console.log("Online makers retrieved from database");
         return result;
     }
 
@@ -52,6 +56,7 @@ class MakerRepository {
             console.log(e);
             result = [];
         });
+        console.log(`Maker ${id} retrieved from database`);
         return result;
     }
 
@@ -62,6 +67,7 @@ class MakerRepository {
             console.log(e);
             result = [];
         });
+        console.log("All makers retrieved from database");
         return result;
     }
 
@@ -75,6 +81,7 @@ class MakerRepository {
             console.log(e);
             result = [];
         });
+        console.log(`Makers retrieved with last name ${lastName}`);
         return result;
     }
 
@@ -86,6 +93,7 @@ class MakerRepository {
             console.log(e);
             result = [];
         });
+        console.log(`Maker ID retrieved for maker with email ${email}`);
         return result;
     }
 
@@ -101,21 +109,7 @@ class MakerRepository {
             console.log(e);
             result = [];
         });
-        return result;
-    }
-
-    async getMakersByNumShifts() {
-        let sql = 'SELECT maker.id, first_name, last_name, email, count(time_sheet.end_time > 0) AS num_shifts ' +
-            'FROM maker ' +
-            'JOIN time_sheet ON maker.id = time_sheet.maker_id ' +
-            'WHERE end_time > 0 ' +
-            'GROUP BY maker.id ' +
-            'ORDER BY num_shifts DESC';
-        let sqlParam = [];
-        let result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
+        console.log(`Makers retrieved with hourly rate of ${rate}`);
         return result;
     }
 }

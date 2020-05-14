@@ -27,6 +27,7 @@ module.exports ={
      * @returns {Promise<[{},...]>}
      */
     getOnlineMakers: async (req, res) => {
+        console.log("Attempting to get online makers from REST");
         let onliners = await makerService.getOnlineMakers().catch(err=>{console.log(err)});
         res.send(onliners);
     },
@@ -57,6 +58,7 @@ module.exports ={
      * @returns {Promise<[{},...]>}
      */
     getAllMakers: async (req, res) => {
+        console.log("Attempting to get all makers from REST");
         let makers = await makerService.getAllMakers().catch(err=>{console.log(err)});
         res.send(makers);
     },
@@ -80,6 +82,8 @@ module.exports ={
      * @returns {Promise<maker>}
      */
     getMakerById: async (req, res)=>{
+        console.log("Attempting to get maker by ID from REST: ");
+        console.log(req.body);
         let id = req.body.id;
         let result = await makerService.getMakerById(id).catch(err=>{console.log(err)});
 
@@ -106,6 +110,8 @@ module.exports ={
      * @returns {Promise<maker>}
      */
     createMaker: async (req, res) =>{
+        console.log("Attempting to create a maker from REST: ");
+        console.log(req.body);
         let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName, req.body.email)
             .catch(err=>{console.log(err)});
         res.send(newMaker);
@@ -131,9 +137,11 @@ module.exports ={
      * @returns {Promise<maker>}
      */
     updateMaker: async (req, res) =>{
+        console.log("Attempting to update a maker from REST: ");
+        console.log(req.body);
         let maker = await makerService.updateMaker(req.body.id, req.body.firstName, req.body.lastName, req.body.email)
             .catch(err=>{console.log(err)});
-        res.send({});
+        res.send(maker);
     },
 
     /**
@@ -147,6 +155,8 @@ module.exports ={
      *
      */
     deleteMaker: async (req, res) =>{
+        console.log("Attempting to delete a maker from REST: ");
+        console.log(req.body);
         makerService.deleteMaker(req.body.id);
         res.send({});
     }
