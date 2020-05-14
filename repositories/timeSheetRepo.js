@@ -13,7 +13,7 @@ class TimeSheetRepository {
             console.log(e);
             return('error; client or maker might not exist');
         });
-        console.log(`Sheet ${result.id} successfully created`);
+        console.log(`Sheet ${result.insertId} successfully created`);
         return result.insertId;
     }
 
