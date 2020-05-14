@@ -199,11 +199,6 @@ app.post("/api/getUpdatePaymentURL",
 
 (async function() {
 
-    bcrypt.compare("email@email.e", "$2b$10$ch4/W1GX3cXRSbCF.Vwj0OfXfI3kTeH73XYzbSTKMGD", function(err, result) {
-        console.log(result)
-    });
-   // chargebeeService.chargeCustomerNow('twinbee-new-plan', '1', '16CHT7Ryu5EhnPWY');
-
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
