@@ -94,9 +94,9 @@ class ClientRepository {
         let sqlParams = [chargebeeId];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
-        })
+        });
 
-        chargebee.customer.update(clientId,{
+        chargebee.customer.update(chargebeeId,{
             deleted : true
         }).request(function(error,result) {
             if(error){
