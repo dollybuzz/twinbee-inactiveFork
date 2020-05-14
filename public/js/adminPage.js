@@ -705,6 +705,7 @@ $(document).ready(function () {
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(function () {
+        signOut();
         window.location.href = "/";
     })
 })//end document ready
