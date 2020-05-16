@@ -8,99 +8,37 @@ let navMapper = {
     },
 
     manageClients: function () {
-      showClients();
+      showFunction(clientFunctionality, "/api/getAllClients");
     },
 
     manageMakers: function () {
-        showMakers();
+        showFunction($(this));
     },
 
     reviewTimeSheets: function () {
-        showSheets();
+        showFunction($(this));
     }
 };//end navMapper
 
-function showClients() {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"clientTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
+function showFunction(functionality, endpoint) {
     $.ajax({
-        url: "/api/getAllClients",
+        url: endpoint,
         method: "post",
         data: {
             auth: id_token
         },
         dataType: "json",
         success: function (res, status) {
-            $("#clientTable").append('\n' +
-                '        <thead class="thead">\n' +
-                '            <th scope="col">ID</th>\n' +
-                '            <th scope="col">Name</th>\n' +
-                '            <th scope="col">Phone</th>\n' +
-                '            <th scope="col">Email</th>\n' +
-                '        </thead><tbody>');
-            //Populate table
-            res.forEach(item => {
-                if (item.customer.billing_address && !item.customer.deleted) {
-                    $("#clientTable").append('\n' +
-                        '<tr class="clientRow">' +
-                        '   <td scope="row">' + item.customer.id + '</td>' +
-                        '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
-                        '   <td>' + item.customer.phone + '</td>' +
-                        '   <td>' + item.customer.email + '</td></tr>'
-                    );
-                };
-            });
-            $("#clientTable").append('\n</tbody>');
-
-            //Body Block content
-            createBody();
-
-            //Event Listeners
-            //Modify Client
-            $(".clientRow").click(function () {
-                selectedRow = $(this);
-                prepopClientModForm();
-                $("#DeleteButton").show();
-                $("#DeleteButton").css("opacity", "1");
-                $("#DeleteButton").click(function () {
-                    showDeletePrompt();
-                });
-            });//end modify client
-
-            //Add Client
-            $("#AddButton").click(function () {
-                popClientAddForm();
-                $("#DeleteButton").css("opacity", "0");
-                setTimeout(function(){
-                    $("#DeleteButton").hide();
-                }, 500);
-            });//end add client
-
-            //Expand Table Button
-            $("#ExpandButton").click(function () {
-                expandTable();
-            });
-
-            //Row effect
-            $(".clientRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-            });
+            functionality(res);
         },
         error: function (res, status) {
-            $("#floor").html("Add form is not populating!");
+            $("#userMainContent").html("Something went wrong!");
         }
     });//end outer ajax
-};// end showClient
+};// end showFunction
 
+
+/*
 
 function showMakers(){
     //Create table
@@ -143,7 +81,7 @@ function showMakers(){
             //Modify Maker
             $(".makerRow").click(function () {
                 selectedRow = $(this);
-                prepopClientModForm();
+                prepopModForm();
                 $("#DeleteButton").show();
                 $("#DeleteButton").css("opacity", "1");
                 $("#DeleteButton").click(function () {
@@ -158,7 +96,7 @@ function showMakers(){
 
             //Add Maker
             $("#AddButton").click(function () {
-                popClientAddForm();
+                popMakerAddForm();
                 $("#DeleteButton").css("opacity", "0");
                 setTimeout(function(){
                     $("#DeleteButton").hide();
@@ -243,6 +181,13 @@ function showSheets(){
         }
     });//end ajax
 };//end showSheets
+
+*/
+
+function showMain() {
+    //Contains any main tab functionality
+    showOnlineMakers();
+}
 
 function showOnlineMakers() {
     //Create table
@@ -359,226 +304,99 @@ function expandTable() {
     $("#AddButton").css("opacity", "1");
 };
 
-function modSubmit() {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
+function modSubmit(endpoint, object, successFunction) {
     $.ajax({
-        url: "/api/updateClientContact",
+        url: endpoint,
         method: "post",
-        data: {
-            auth: id_token,
-            id: $("#modclientid").val(),
-            firstName: $("#modclientfname").val(),
-            lastName: $("#modclientlname").val() ,
-            phone: $("#modphone").val(),
-            email: $("#modemail").val()
-        },
+        data: object,
         dataType: "json",
-        success: function (res, status) {
-            $("#modsuccess").html("");
-            $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
-
-            //Updating viewable rows in table
-            selectedRow.children()[1].innerHTML = $("#modclientfname").val() + " " + $("#modclientlname").val();
-            selectedRow.children()[2].innerHTML = $("#modphone").val();
-            selectedRow.children()[3].innerHTML = $("#modemail").val();
-        },
-        error: function (res, status) {
-            $("#optionsClient").html("Something isn't working!");
-            //log, send error report
-        }
-    });//end ajax
-
-    $.ajax({
-        url: "/api/updateClientBilling",
-        method: "post",
-        data: {
-            auth: id_token,
-            id: $("#modclientid").val(),
-            firstName: $("#modclientfname").val(),
-            lastName: $("#modclientlname").val() ,
-            phone: $("#modphone").val(),
-            email: $("#modemail").val(),
-            street: $("#modaddress").val(),
-            city: $("#modcity").val(),
-            state: $("#modstate").val(),
-            zip: $("#modzip").val()
-        },
-        dataType: "json",
-        success: function (res, status) {
-            $("#modsuccess").html("");
-            $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
-        },
+        success: successFunction,
         error: function (res, status) {
             $("#optionsClient").html("Update Client isn't working!");
             //log, send error report
         }
     });//end ajax
-};
+}
 
-function addSubmit() {
-    $("#optionsClient").append("<div id='addsuccess'></div>");
+function modClientSuccessContact (res, status) {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+
+    //Updating viewable rows in table
+    selectedRow.children()[1].innerHTML = $("#modclientfname").val() + " " + $("#modclientlname").val();
+    selectedRow.children()[2].innerHTML = $("#modphone").val();
+    selectedRow.children()[3].innerHTML = $("#modemail").val();
+}
+
+function modClientSuccessBilling (res, status) {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+}
+
+function addSubmit(endpoint, object, successFunction) {
     $.ajax({
-        url: "/api/createClient",
+        url: endpoint,
         method: "post",
-        data: {
-            auth: id_token,
-            firstName: $("#addclientfname").val(),
-            lastName: $("#addclientlname").val() ,
-            phone: $("#addphone").val(),
-            email: $("#addemail").val(),
-            street: $("#addaddress").val(),
-            city: $("#addcity").val(),
-            state: $("#addstate").val(),
-            zip: $("#addzip").val(),
-            billingFirst: $("#addbillingfname").val(),
-            billingLast:$("#addbillinglname").val()
-        },
+        data: object,
         dataType: "json",
-        success: function (res, status) {
-            $("#addsuccess").html("");
-            $("#addsuccess").html(`<br><h5>Successfully added client ${res.id}!</h5>`);
-
-            //Adding new client to table
-            $("#clientTable").append('\n' +
-                `<tr id="${res.id}" class="clientRow">` +
-                '   <td scope="row">' + `${res.id}` + '</td>' +
-                '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
-                '   <td>' + `${res.phone}` + '</td>' +
-                '   <td>' + `${res.email}` + '</td></tr>'
-            );
-
-            $(`#${res.id}`).mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-            }).click(function () {
-                prepopClientModForm();
-            });
-        },
+        success: successFunction,
         error: function (res, status) {
-            $("#optionsClient").html("Add Client isn't working!");
+            $("#optionsClient").html("Add isn't working!");
             //log, send error report
         }
     });//end ajax
 };
 
-function prepopClientModForm(){
+function addClientSuccess (res, status) {
+    $("#optionsClient").append("<div id='addsuccess'></div>");
+    $("#addsuccess").html("");
+    $("#addsuccess").html(`<br><h5>Successfully added client ${res.id}!</h5>`);
+
+    //Adding new client to table
+    $("#clientTable").append('\n' +
+        `<tr id="${res.id}" class="clientRow">` +
+        '   <td scope="row">' + `${res.id}` + '</td>' +
+        '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
+        '   <td>' + `${res.phone}` + '</td>' +
+        '   <td>' + `${res.email}` + '</td></tr>'
+    );
+
+    $(`#${res.id}`).mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    }).click(function () {
+        prepopModForm("/api/getClient", clientModForm);
+    });
+}
+
+
+function prepopModForm(endpoint, modForm){
     minimizeTable();
     showBlock();
     let clientId = selectedRow.children()[0].innerHTML;
     $.ajax({
-        url: "/api/getClient",
+        url: endpoint,
         method: "post",
         data: {
             auth: id_token,
             id: clientId
         },
         dataType: "json",
-        success: function (res, status) {
-            //Pre-populate forms
-            $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-                "<form id='modify'>\n" +
-                "<label for='modbilling'>Client Information</label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='modclientid'>ID:</label>" +
-                `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
-                "<label for='modclientfname'>First Name:</label>" +
-                `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
-                "<label for='modclientlname'>Last Name:</label>" +
-                `<input type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
-                "<label for='modphone'>Phone:</label>" +
-                `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
-                "<label for='modemail'>Email:</label>" +
-                `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='modbilling'>Billing Address</label>" +
-                "<label for='empty'></label>" +
-                "<label for='empty'></label>" +
-                "<label for='modaddress'>Street:</label>" +
-                `<input type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
-                "<label for='modcity'>City:</label>" +
-                `<input type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
-                "<label for='modstate'>State:</label>" +
-                `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
-                "<label for='modemail'>Zip:</label>" +
-                `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
-                "</form>\n");
-
-            //Submit button function
-            $("#SubmitButton").off("click");
-            $("#SubmitButton").on('click', function (e) {
-                modSubmit();
-            });
-        },
+        success: modForm,
         error: function (res, status) {
             $("#optionsClient").html("Mod Form is not populating!");
         }
     });//end ajax
 }
 
-function popClientAddForm(){
+function popAddForm(addForm){
         minimizeTable();
         showBlock();
-        $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-            "<form id='add'>\n" +
-            "<label for='modbilling'>Client Information</label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='addclientfname'>First Name:</label>" +
-            `<input type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
-            "<label for='addclientlname'>Last Name:</label>" +
-            `<input type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
-            "<label for='addphone'>Phone:</label>" +
-            `<input type='text' id='addphone' name='addphone'>\n<br>\n` +
-            "<label for='addemail'>Email:</label>" +
-            `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='addbilling'>Billing Address</label>" +
-            "<label for='empty'></label>" +
-            "<label for='empty'></label>" +
-            "<label for='addbillingfname'>First Name:</label>" +
-            `<input type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
-            "<label for='addbillinglname'>Last Name:</label>" +
-            `<input type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
-            "<label for='addaddress'>Street:</label>" +
-            `<input type='text' id='addaddress' name='addaddress'>\n<br>\n` +
-            "<label for='addcity'>City:</label>" +
-            `<input type='text' id='addcity' name='addcity'>\n<br>\n` +
-            "<label for='addstate'>State:</label>" +
-            `<input type='text' id='addstate' name='addstate'>\n<br>\n` +
-            "<label for='addemail'>Zip:</label>" +
-            `<input type='text' id='addzip' name='addzip'>\n<br>\n` +
-            "</form>\n");
-
-        //Submit button function
-        $("#SubmitButton").off("click");
-        $("#SubmitButton").on('click', function (e) {
-            addSubmit();
-        });
+        addForm();
 }
 
 function showDeletePrompt() {
@@ -624,11 +442,10 @@ function showDeletePrompt() {
 
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
-                addSubmit();
+                addClientSubmit();
             });
 
             let thisEndPoint = null;
-            let thisFunction = null;
             if(selectedTab == "manageClients")
             {
                 thisEndPoint = "/api/deleteClient";
@@ -674,31 +491,213 @@ function showDeletePrompt() {
             });
         });
     },500); //note - breaks if any less than 500
-
-
-    //call selectedTab: if manageClients, manageMakers, reviewTimeSheets, call appropriate endpoint
-
-            /*if(yes) {
-
-            } else {
-
-    }
-
-
-
-        let fullName = selectedRow.children()[1].innerHTML;
-        console.log(fullName);
-        if($("#deleteclientname").val() == fullName)
-        {}*/
 }
 
+function clientFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"clientTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#clientTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Name</th>\n' +
+        '            <th scope="col">Phone</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        if (item.customer.billing_address && !item.customer.deleted) {
+            $("#clientTable").append('\n' +
+                '<tr class="clientRow">' +
+                '   <td scope="row">' + item.customer.id + '</td>' +
+                '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
+                '   <td>' + item.customer.phone + '</td>' +
+                '   <td>' + item.customer.email + '</td></tr>'
+            );
+        };
+    });
+    $("#clientTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody();
+
+    //Event Listeners
+    //Modify Client
+    $(".clientRow").click(function () {
+        selectedRow = $(this);
+        prepopModForm("/api/getClient", clientModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            showDeletePrompt();
+        });
+    });//end modify client
+
+    //Add Client
+    $("#AddButton").click(function () {
+        popAddForm(clientAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function(){
+            $("#DeleteButton").hide();
+        }, 500);
+    });//end add client
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".clientRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+function clientModForm(res, status) {
+    //Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        "<form id='modify'>\n" +
+        "<label for='modClient'>Client Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modclientid'>ID:</label>" +
+        `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
+        "<label for='modclientfname'>First Name:</label>" +
+        `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
+        "<label for='modclientlname'>Last Name:</label>" +
+        `<input type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
+        "<label for='modphone'>Phone:</label>" +
+        `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+        "<label for='modemail'>Email:</label>" +
+        `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modbilling'>Billing Address</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modaddress'>Street:</label>" +
+        `<input type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
+        "<label for='modcity'>City:</label>" +
+        `<input type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
+        "<label for='modstate'>State:</label>" +
+        `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
+        "<label for='modemail'>Zip:</label>" +
+        `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        modSubmit("/api/updateClientContact", {
+            auth: id_token,
+            id: $("#modclientid").val(),
+            firstName: $("#modclientfname").val(),
+            lastName: $("#modclientlname").val() ,
+            phone: $("#modphone").val(),
+            email: $("#modemail").val()
+        }, modClientSuccessContact);
+
+        modSubmit("/api/updateClientBilling", {
+            auth: id_token,
+            id: $("#modclientid").val(),
+            firstName: $("#modclientfname").val(),
+            lastName: $("#modclientlname").val() ,
+            phone: $("#modphone").val(),
+            email: $("#modemail").val(),
+            street: $("#modaddress").val(),
+            city: $("#modcity").val(),
+            state: $("#modstate").val(),
+            zip: $("#modzip").val()
+        }, modClientSuccessBilling);
+    });
+}
+
+function clientAddForm () {
+    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+        "<form id='add'>\n" +
+        "<label for='addClient'>Client Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='addclientfname'>First Name:</label>" +
+        `<input type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
+        "<label for='addclientlname'>Last Name:</label>" +
+        `<input type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
+        "<label for='addphone'>Phone:</label>" +
+        `<input type='text' id='addphone' name='addphone'>\n<br>\n` +
+        "<label for='addemail'>Email:</label>" +
+        `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='addbilling'>Billing Address</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='addbillingfname'>First Name:</label>" +
+        `<input type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
+        "<label for='addbillinglname'>Last Name:</label>" +
+        `<input type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
+        "<label for='addaddress'>Street:</label>" +
+        `<input type='text' id='addaddress' name='addaddress'>\n<br>\n` +
+        "<label for='addcity'>City:</label>" +
+        `<input type='text' id='addcity' name='addcity'>\n<br>\n` +
+        "<label for='addstate'>State:</label>" +
+        `<input type='text' id='addstate' name='addstate'>\n<br>\n` +
+        "<label for='addemail'>Zip:</label>" +
+        `<input type='text' id='addzip' name='addzip'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        addSubmit("/api/createClient", {
+                auth: id_token,
+                firstName: $("#addclientfname").val(),
+                lastName: $("#addclientlname").val() ,
+                phone: $("#addphone").val(),
+                email: $("#addemail").val(),
+                street: $("#addaddress").val(),
+                city: $("#addcity").val(),
+                state: $("#addstate").val(),
+                zip: $("#addzip").val(),
+                billingFirst: $("#addbillingfname").val(),
+                billingLast:$("#addbillinglname").val()
+            }, addClientSuccess);
+    });
+}
 
 $(document).ready(function () {
 
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
     //otherwise it will not load unless clicking on 'Main'
-    showOnlineMakers();
+    showMain();
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
