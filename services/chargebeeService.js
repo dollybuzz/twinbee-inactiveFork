@@ -170,7 +170,7 @@ class ChargebeeService {
 
     /**
      * Creates a new subscription for an existing customer.
-     * Note that auto_collection is ALWAYS off.
+     * Note that auto_collection is ALWAYS ON.
      *
      * @param planId    - id of the plan to subscribe to
      * @param customerId- id of the customer that is subscribing
@@ -181,7 +181,7 @@ class ChargebeeService {
             chargebee.subscription.create_for_customer(customerId, {
                 plan_id: planId,
                 plan_quantity: planQuantity,
-                auto_collection: "off"
+                auto_collection: "on"
             }).request(function (error, result) {
                 if (error) {
                     //handle error
