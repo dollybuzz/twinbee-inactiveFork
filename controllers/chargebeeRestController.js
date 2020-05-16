@@ -140,7 +140,7 @@ module.exports = {
     /**
      * /api/createSubscription
      * Creates a new subscription for an existing customer.
-     * Note that auto_collection is ALWAYS off. Looks for values in the body as follows:
+     * Note that auto_collection is ALWAYS on. Looks for values in the body as follows:
      * {
      *     "planId": id of the plan to subscribe to,
      *     "customerId": id of the subscribing customer,
