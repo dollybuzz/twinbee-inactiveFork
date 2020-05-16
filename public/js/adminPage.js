@@ -65,7 +65,7 @@ function showClients() {
             //Modify Client
             $(".clientRow").click(function () {
                 selectedRow = $(this);
-                prepopulateModForm();
+                prepopClientModForm();
                 $("#DeleteButton").show();
                 $("#DeleteButton").css("opacity", "1");
                 $("#DeleteButton").click(function () {
@@ -75,15 +75,12 @@ function showClients() {
 
             //Add Client
             $("#AddButton").click(function () {
-                populateAddForm();
+                popClientAddForm();
                 $("#DeleteButton").css("opacity", "0");
                 setTimeout(function(){
                     $("#DeleteButton").hide();
                 }, 500);
             });//end add client
-
-            //Delete Client
-            //end delete client
 
             //Expand Table Button
             $("#ExpandButton").click(function () {
@@ -140,14 +137,34 @@ function showMakers(){
             $("#makerTable").append('\n</tbody>');
 
             //Body Block content
+            createBody();
 
             //Event Listeners
+            //Modify Maker
             $(".makerRow").click(function () {
-                let makerId = $(this).children()[0].innerHTML;
-                $("#floor").css("width", "50vw");
-                $(".row").css("float", "left");
-                //alert ("You selected maker " + makerId);
+                selectedRow = $(this);
+                prepopClientModForm();
+                $("#DeleteButton").show();
+                $("#DeleteButton").css("opacity", "1");
+                $("#DeleteButton").click(function () {
+                    showDeletePrompt();
+                });
+            });//end modify maker
+
+            //Expand Table Button
+            $("#ExpandButton").click(function () {
+                expandTable();
             });
+
+            //Add Maker
+            $("#AddButton").click(function () {
+                popClientAddForm();
+                $("#DeleteButton").css("opacity", "0");
+                setTimeout(function(){
+                    $("#DeleteButton").hide();
+                }, 500);
+            });//end add maker
+
             //Row effect
             $(".makerRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
@@ -161,7 +178,7 @@ function showMakers(){
             //log, send error report
         }
     });//end ajax
-};
+};//end showMaker
 
 function showSheets(){
     //Create table
@@ -436,7 +453,7 @@ function addSubmit() {
             }).mouseleave(function () {
                 $(this).css('background-color', 'white');
             }).click(function () {
-                prepopulateModForm();
+                prepopClientModForm();
             });
         },
         error: function (res, status) {
@@ -446,7 +463,7 @@ function addSubmit() {
     });//end ajax
 };
 
-function prepopulateModForm(){
+function prepopClientModForm(){
     minimizeTable();
     showBlock();
     let clientId = selectedRow.children()[0].innerHTML;
@@ -512,7 +529,7 @@ function prepopulateModForm(){
     });//end ajax
 }
 
-function populateAddForm(){
+function popClientAddForm(){
         minimizeTable();
         showBlock();
         $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
