@@ -11,7 +11,7 @@ let navMapper = {
     },
 
     manageMakers: function () {
-        showFunction($(this));
+        showFunction(makerFunctionality, "/api/getAllMakers");
     },
 
     reviewTimeSheets: function () {
@@ -19,86 +19,8 @@ let navMapper = {
     }
 };//end navMapper
 
+
 /*
-
-function showMakers(){
-    //Create table
-    $(".row").html(
-        "<div id=\"floor\">\n" +
-        "    <table id=\"makerTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div>");
-    $.ajax({
-        url: "/api/getAllMakers",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (res, status) {
-            $("#makerTable").append('\n' +
-                '        <thead class="thead">\n' +
-                '            <th scope="col">#</th>\n' +
-                '            <th scope="col">First Name</th>\n' +
-                '            <th scope="col">Last Name</th>\n' +
-                '            <th scope="col">Email</th>\n' +
-                '        </thead><tbody>');
-            //Populate table
-            res.forEach(item => {
-                $("#makerTable").append('\n' +
-                    '<tr class="makerRow">' +
-                    '   <td scope="row">' + item.id +'</td>' +
-                    '   <td>' + item.firstName + '</td>'+
-                    '   <td>' + item.lastName + '</td>'+
-                    '   <td>' + item.email + '</td></tr>'
-                );
-            });
-            $("#makerTable").append('\n</tbody>');
-
-            //Body Block content
-            createBody();
-
-            //Event Listeners
-            //Modify Maker
-            $(".makerRow").click(function () {
-                selectedRow = $(this);
-                prePopModForm();
-                $("#DeleteButton").show();
-                $("#DeleteButton").css("opacity", "1");
-                $("#DeleteButton").click(function () {
-                    showDeletePrompt();
-                });
-            });//end modify maker
-
-            //Expand Table Button
-            $("#ExpandButton").click(function () {
-                expandTable();
-            });
-
-            //Add Maker
-            $("#AddButton").click(function () {
-                popMakerAddForm();
-                $("#DeleteButton").css("opacity", "0");
-                setTimeout(function(){
-                    $("#DeleteButton").hide();
-                }, 500);
-            });//end add maker
-
-            //Row effect
-            $(".makerRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-            });
-        },
-        error: function (res, status) {
-            $("#floor").html("Something went wrong!");
-            //log, send error report
-        }
-    });//end ajax
-};//end showMaker
-
 function showSheets(){
     //Create table
     $(".row").html(
@@ -166,7 +88,7 @@ function showSheets(){
 */
 
 //Versatile Functions
-function createBody() {
+function createBody () {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
     $("#optionsClient").hide();
@@ -183,7 +105,7 @@ function createBody() {
     $("#buttonsBottom").hide();
 };
 
-function showBlock() {
+function showBlock () {
     //show block after table stops moving
     setTimeout(function () {
         $("#optionsClient").show();
@@ -199,14 +121,14 @@ function showBlock() {
     }, 500)
 };
 
-function minimizeTable() {
+function minimizeTable () {
     $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#floor").css("width", "50%");
     $("#floor").css("margin-left", "0");
     $("#floor").css("margin-right", "auto");
 }
 
-function expandTable() {
+function expandTable () {
     $("#optionsClient").hide();
     $("#buttonsBottom").hide();
     $("#DeleteButton").hide();
@@ -222,7 +144,7 @@ function expandTable() {
     $("#AddButton").css("opacity", "1");
 };
 
-function showFunction(functionality, endpoint) {
+function showFunction (functionality, endpoint) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -240,7 +162,7 @@ function showFunction(functionality, endpoint) {
 };// end showFunction
 
 //Mod
-function prePopModForm(endpoint, modForm){
+function prePopModForm (endpoint, modForm){
     minimizeTable();
     showBlock();
     let clientId = selectedRow.children()[0].innerHTML;
@@ -259,7 +181,7 @@ function prePopModForm(endpoint, modForm){
     });//end ajax
 }
 
-function modSubmit(endpoint, object, successFunction) {
+function modSubmit (endpoint, object, successFunction) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -274,13 +196,13 @@ function modSubmit(endpoint, object, successFunction) {
 }
 
 //Add
-function popAddForm(addForm){
+function popAddForm (addForm){
     minimizeTable();
     showBlock();
     addForm();
 }
 
-function addSubmit(endpoint, object, successFunction) {
+function addSubmit (endpoint, object, successFunction) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -295,7 +217,7 @@ function addSubmit(endpoint, object, successFunction) {
 };
 
 //Delete
-function showDeletePrompt(endpoint, object, successFunction, verifyDeleteUser) {
+function showDeletePrompt (prompt, endpoint, object, successFunction, verifyDeleteUser) {
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
     setTimeout(function() {
@@ -327,12 +249,8 @@ function showDeletePrompt(endpoint, object, successFunction, verifyDeleteUser) {
             $("#SubmitButton").css("opacity", "1");
             $("#AddButton").css("opacity", "1");
             $("#deletePrompt").html(
-                `<h5>Please type in the full name to delete the selected user.</h5>` +
-                `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-                "<br><form id='delete'>" +
-                "<label for='deleteUser'>Full Name:</label>" +
-                `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-                "</form>\n");
+                prompt
+            );
 
             $("#deletePrompt").append("<div id='verifyEntry'></div>");
 
@@ -361,12 +279,12 @@ function showDeletePrompt(endpoint, object, successFunction, verifyDeleteUser) {
 }
 
 //Main Methods
-function showMain() {
+function showMain () {
     //Contains any main tab functionality
     showOnlineMakers();
 }
 
-function showOnlineMakers() {
+function showOnlineMakers () {
     //Create table
     $("#online").html(
         "<div id=\"floor\">\n" +
@@ -407,7 +325,6 @@ function showOnlineMakers() {
             //Event Listeners
             $(".onlineRow").click(function () {
                 let clientId = $(this).children()[0].innerHTML;
-                //alert("You selected client " + clientId);
             })
             //Row effect
             $(".onlineRow").mouseenter(function () {
@@ -425,7 +342,7 @@ function showOnlineMakers() {
 };
 
 //Client Methods
-function clientFunctionality (res) {
+function clientFunctionality (res){
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -462,12 +379,19 @@ function clientFunctionality (res) {
     //Modify Client
     $(".clientRow").click(function () {
         selectedRow = $(this);
+        let clientPrompt = `<h5>Please type in the full name to delete the selected user.</h5>` +
+            `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><form id='delete'>" +
+            "<label for='deleteUser'>Full Name:</label>" +
+            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            "</form>\n" ;
+
         prePopModForm("/api/getClient", clientModForm);
         $("#DeleteButton").show();
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("/api/deleteClient", {
+            showDeletePrompt(clientPrompt,"/api/deleteClient", {
                 auth: id_token,
                 id: clientId
             }, deleteClientSuccess, verifyDeleteClient);
@@ -497,14 +421,14 @@ function clientFunctionality (res) {
     });
 }
 
-function clientModForm(res, status) {
+function clientModForm (res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
         "<label for='modClient'>Client Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modclientid'>ID:</label>" +
+        "<label for='modClientid'>ID:</label>" +
         `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modclientfname'>First Name:</label>" +
         `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
@@ -658,19 +582,10 @@ function addClientSuccess (res, status) {
         '   <td>' + `${res.phone}` + '</td>' +
         '   <td>' + `${res.email}` + '</td></tr>'
     );
-
-    $(`#${res.id}`).mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    }).click(function () {
-        prePopModForm("/api/getClient", clientModForm);
-    });
 }
 
 function deleteClientSuccess (res, status) {
-    $("#verifyEntry").html(`<h6>Successfully deleted user ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<h6>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h6>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1000);
@@ -682,7 +597,185 @@ function verifyDeleteClient () {
 }
 
 //Maker Methods
+function makerFunctionality (res){
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"makerTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#makerTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">#</th>\n' +
+        '            <th scope="col">First Name</th>\n' +
+        '            <th scope="col">Last Name</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        if (item.deleted == false) {
+            $("#makerTable").append('\n' +
+                '<tr class="makerRow">' +
+                '   <td scope="row">' + item.id + '</td>' +
+                '   <td>' + item.firstName + '</td>' +
+                '   <td>' + item.lastName + '</td>' +
+                '   <td>' + item.email + '</td></tr>'
+            );
+        };
+    });
+    $("#makerTable").append('\n</tbody>');
 
+    //Body Block content
+    createBody();
+
+    //Event Listeners
+    // Modify Maker
+    $(".makerRow").click(function () {
+        selectedRow = $(this);
+        let makerPrompt = `<h5>Please type in the full name to delete the selected user.</h5>` +
+            `<h6>You selected ${selectedRow.children()[1].innerHTML} ${selectedRow.children()[2].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><form id='delete'>" +
+            "<label for='deleteUser'>Full Name:</label>" +
+            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            "</form>\n";
+
+        prePopModForm("/api/getMaker", makerModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let makerId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt(makerPrompt,"/api/deleteMaker", {
+                auth: id_token,
+                id: makerId
+            }, deleteMakerSuccess, verifyDeleteMaker);
+        });
+    });//end modify maker
+
+    //Add Maker
+    $("#AddButton").click(function () {
+        popAddForm(makerAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function(){
+            $("#DeleteButton").hide();
+        }, 500);
+    });//end add maker
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".makerRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+function makerModForm (res, status) {
+    //Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        "<form id='modify'>\n" +
+        "<label for='modMaker'>Freedom Maker Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modmakerid'>ID:</label>" +
+        `<input type='text' id='modmakerid' name='modmakerid' value='${res.id}' disabled>\n<br>\n` +
+        "<label for='modmakerfname'>First Name:</label>" +
+        `<input type='text' id='modmakerfname' name='modmakerfname' value='${res.first_name}'>\n<br>\n` +
+        "<label for='modmakerlname'>Last Name:</label>" +
+        `<input type='text' id='modmakerlname' name='modmakerlname' value='${res.last_name}'>\n<br>\n` +
+        "<label for='modphone'>Phone:</label>" +
+        `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+        "<label for='modemail'>Email:</label>" +
+        `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        modSubmit("/api/updateMaker", {
+            auth: id_token,
+            id: $("#modmakerid").val(),
+            firstName: $("#modmakerfname").val(),
+            lastName: $("#modmakerlname").val() ,
+            phone: $("#modphone").val(),
+            email: $("#modemail").val()
+        }, modMakerSuccess);
+    });
+}
+
+function makerAddForm () {
+    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+        "<form id='add'>\n" +
+        "<label for='addmaker'>Freedom Maker Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='addmakerfname'>First Name:</label>" +
+        `<input type='text' id='addmakerfname' name='addmakerfname'>\n<br>\n` +
+        "<label for='addmakerlname'>Last Name:</label>" +
+        `<input type='text' id='addmakerlname' name='addmakerlname'>\n<br>\n` +
+        "<label for='addphone'>Phone:</label>" +
+        `<input type='text' id='addphone' name='addphone'>\n<br>\n` +
+        "<label for='addemail'>Email:</label>" +
+        `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        addSubmit("/api/createMaker", {
+            auth: id_token,
+            id: $("#addmakerid").val(),
+            firstName: $("#addmakerfname").val(),
+            lastName: $("#addmakerlname").val() ,
+            phone: $("#addphone").val(),
+            email: $("#addemail").val()
+        } , addMakerSuccess);
+    });
+}
+
+function modMakerSuccess (res, status) {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated Freedom Maker ${$("#modmakerid").val()}!</h5>`);
+
+    //Updating viewable rows in table
+    selectedRow.children()[1].innerHTML = $("#modmakerfname").val() + " " + $("#modmakerlname").val();
+    selectedRow.children()[2].innerHTML = $("#modphone").val();
+    selectedRow.children()[3].innerHTML = $("#modemail").val();
+}
+
+function addMakerSuccess (res, status) {
+    $("#optionsClient").append("<div id='addsuccess'></div>");
+    $("#addsuccess").html("");
+    $("#addsuccess").html(`<br><h5>Successfully added Freedom Maker ${res.id}!</h5>`);
+
+    //Adding new client to table
+    $("#makerTable").append('\n' +
+        `<tr id="${res.id}" class="makerRow">` +
+        '   <td scope="row">' + `${res.id}` + '</td>' +
+        '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
+        '   <td>' + `${res.phone}` + '</td>' +
+        '   <td>' + `${res.email}` + '</td></tr>'
+    );
+}
+
+function deleteMakerSuccess (res, status) {
+    $("#verifyEntry").html(`<h6>Successfully deleted Freedom Maker ${selectedRow.children()[0].innerHTML}!</h6>`);
+    setTimeout(function () {
+        showFunction(makerFunctionality, "/api/getAllMakers");
+    }, 1000);
+}
+
+function verifyDeleteMaker () {
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == (selectedRow.children()[1].innerHTML + " " + selectedRow.children()[2].innerHTML));
+}
 
 //TimeSheet Methods
 

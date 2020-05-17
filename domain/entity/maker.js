@@ -6,6 +6,7 @@ module.exports = class Maker{
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.deleted = false;
     }
 
 }
