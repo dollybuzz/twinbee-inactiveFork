@@ -1,6 +1,5 @@
 //global variable
 let selectedRow = null;
-let selectedTab = null;
 
 let navMapper = {
     main: function () {
@@ -19,24 +18,6 @@ let navMapper = {
         showFunction($(this));
     }
 };//end navMapper
-
-function showFunction(functionality, endpoint) {
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (res, status) {
-            functionality(res);
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Something went wrong!");
-        }
-    });//end outer ajax
-};// end showFunction
-
 
 /*
 
@@ -81,7 +62,7 @@ function showMakers(){
             //Modify Maker
             $(".makerRow").click(function () {
                 selectedRow = $(this);
-                prepopModForm();
+                prePopModForm();
                 $("#DeleteButton").show();
                 $("#DeleteButton").css("opacity", "1");
                 $("#DeleteButton").click(function () {
@@ -184,6 +165,202 @@ function showSheets(){
 
 */
 
+//Versatile Functions
+function createBody() {
+    //top row
+    $("#topRow").append('\n<div id="optionsClient"></div>');
+    $("#optionsClient").hide();
+    $("#optionsClient").css("width", "50%");
+    $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
+    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
+    $("#AddButton").css("opacity", "1");
+
+    //bottom row
+    $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
+    $("#userMainContent").append('<div id="buttonsBottom"></div>');
+    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
+    $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#buttonsBottom").hide();
+};
+
+function showBlock() {
+    //show block after table stops moving
+    setTimeout(function () {
+        $("#optionsClient").show();
+        $("#buttonsBottom").show();
+        $("#AddButton").show();
+        $("#SubmitButton").show();
+        $("#optionsClient").css("width", "50%");
+        $("#optionsClient").css("width", "50%");
+        $("#optionsClient").css("opacity", "1");
+        $("#SubmitButton").css("opacity", "1");
+        $("#ExpandButton").css("opacity", "1");
+        $("#AddButton").css("opacity", "1");
+    }, 500)
+};
+
+function minimizeTable() {
+    $("#floor").css("transition", "width 0.5s ease-in-out");
+    $("#floor").css("width", "50%");
+    $("#floor").css("margin-left", "0");
+    $("#floor").css("margin-right", "auto");
+}
+
+function expandTable() {
+    $("#optionsClient").hide();
+    $("#buttonsBottom").hide();
+    $("#DeleteButton").hide();
+    $("#optionsClient").css("width", "0%");
+    $("#optionsClient").css("opacity", "0");
+    $("#floor").css("width", "100%");
+    $("#floor").css("margin-left", "0");
+    $("#floor").css("margin-right", "auto");
+    $("#floor").css("transition", "width 0.5s ease-in-out");
+    $("#SubmitButton").css("opacity", "0");
+    $("#ExpandButton").css("opacity", "0");
+    $("#DeleteButton").css("opacity", "0");
+    $("#AddButton").css("opacity", "1");
+};
+
+function showFunction(functionality, endpoint) {
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (res, status) {
+            functionality(res);
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Something went wrong!");
+        }
+    });//end outer ajax
+};// end showFunction
+
+//Mod
+function prePopModForm(endpoint, modForm){
+    minimizeTable();
+    showBlock();
+    let clientId = selectedRow.children()[0].innerHTML;
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: {
+            auth: id_token,
+            id: clientId
+        },
+        dataType: "json",
+        success: modForm,
+        error: function (res, status) {
+            $("#optionsClient").html("Mod Form is not populating!");
+        }
+    });//end ajax
+}
+
+function modSubmit(endpoint, object, successFunction) {
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: object,
+        dataType: "json",
+        success: successFunction,
+        error: function (res, status) {
+            $("#optionsClient").html("Update Client isn't working!");
+            //log, send error report
+        }
+    });//end ajax
+}
+
+//Add
+function popAddForm(addForm){
+    minimizeTable();
+    showBlock();
+    addForm();
+}
+
+function addSubmit(endpoint, object, successFunction) {
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: object,
+        dataType: "json",
+        success: successFunction,
+        error: function (res, status) {
+            $("#optionsClient").html("Add isn't working!");
+            //log, send error report
+        }
+    });//end ajax
+};
+
+//Delete
+function showDeletePrompt(endpoint, object, successFunction, verifyDeleteUser) {
+    showBlock();
+    $("#optionsClient").html("<div id='deletePrompt'></div>");
+    setTimeout(function() {
+        $("#deletePrompt").html("<h5>Are you sure you want to delete this user?</h5>");
+        $("#deletePrompt").append("<div id='selectionYorN'></div>");
+        $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
+        $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
+        $("#SubmitButton").css("opacity", "0");
+        $("#AddButton").css("opacity", "0");
+        $("#DeleteButton").css("opacity", "0");
+        $("#deletePrompt").css("opacity", "1");
+        $("#YesDelete").css("opacity", "1");
+        $("#NoDelete").css("opacity", "1");
+
+        setTimeout(function () {
+            $("#SubmitButton").hide();
+            $("#AddButton").hide();
+        }, 500);
+
+        $("#NoDelete").click(function() {
+            $("#SubmitButton").show();
+            $("#AddButton").show();
+            expandTable();
+        });
+
+        $("#YesDelete").click(function() {
+            $("#SubmitButton").show();
+            $("#AddButton").show();
+            $("#SubmitButton").css("opacity", "1");
+            $("#AddButton").css("opacity", "1");
+            $("#deletePrompt").html(
+                `<h5>Please type in the full name to delete the selected user.</h5>` +
+                `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                "<br><form id='delete'>" +
+                "<label for='deleteUser'>Full Name:</label>" +
+                `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+                "</form>\n");
+
+            $("#deletePrompt").append("<div id='verifyEntry'></div>");
+
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on("click", function (e) {
+                if(verifyDeleteUser())
+                {
+                    $.ajax({
+                        url: endpoint,
+                        method: "post",
+                        data: object,
+                        dataType: "json",
+                        success:successFunction,
+                        error: function (res, status) {
+                            $("#optionsClient").html("Delete user not working!");
+                        }
+                    });//end ajax
+                }
+                else
+                {
+                    $("#verifyEntry").html("<h6>Invalid entry. Please type in the name again.</h6>");
+                }
+            });
+        });
+    },500);
+}
+
+//Main Methods
 function showMain() {
     //Contains any main tab functionality
     showOnlineMakers();
@@ -247,252 +424,7 @@ function showOnlineMakers() {
     });//end ajax
 };
 
-//Versatile Helper Functions
-function createBody() {
-    //top row
-    $("#topRow").append('\n<div id="optionsClient"></div>');
-    $("#optionsClient").hide();
-    $("#optionsClient").css("width", "50%");
-    $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
-    $("#AddButton").css("opacity", "1");
-
-    //bottom row
-    $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
-    $("#userMainContent").append('<div id="buttonsBottom"></div>');
-    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
-    $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#buttonsBottom").hide();
-};
-
-function showBlock() {
-    //show block after table stops moving
-    setTimeout(function () {
-        $("#optionsClient").show();
-        $("#buttonsBottom").show();
-        $("#AddButton").show();
-        $("#SubmitButton").show();
-        $("#optionsClient").css("width", "50%");
-        $("#optionsClient").css("width", "50%");
-        $("#optionsClient").css("opacity", "1");
-        $("#SubmitButton").css("opacity", "1");
-        $("#ExpandButton").css("opacity", "1");
-        $("#AddButton").css("opacity", "1");
-    }, 500)
-};
-
-function minimizeTable() {
-    $("#floor").css("transition", "width 0.5s ease-in-out");
-    $("#floor").css("width", "50%");
-    $("#floor").css("margin-left", "0");
-    $("#floor").css("margin-right", "auto");
-}
-
-function expandTable() {
-    $("#optionsClient").hide();
-    $("#buttonsBottom").hide();
-    $("#DeleteButton").hide();
-    $("#optionsClient").css("width", "0%");
-    $("#optionsClient").css("opacity", "0");
-    $("#floor").css("width", "100%");
-    $("#floor").css("margin-left", "0");
-    $("#floor").css("margin-right", "auto");
-    $("#floor").css("transition", "width 0.5s ease-in-out");
-    $("#SubmitButton").css("opacity", "0");
-    $("#ExpandButton").css("opacity", "0");
-    $("#DeleteButton").css("opacity", "0");
-    $("#AddButton").css("opacity", "1");
-};
-
-function modSubmit(endpoint, object, successFunction) {
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: object,
-        dataType: "json",
-        success: successFunction,
-        error: function (res, status) {
-            $("#optionsClient").html("Update Client isn't working!");
-            //log, send error report
-        }
-    });//end ajax
-}
-
-function modClientSuccessContact (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
-
-    //Updating viewable rows in table
-    selectedRow.children()[1].innerHTML = $("#modclientfname").val() + " " + $("#modclientlname").val();
-    selectedRow.children()[2].innerHTML = $("#modphone").val();
-    selectedRow.children()[3].innerHTML = $("#modemail").val();
-}
-
-function modClientSuccessBilling (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
-}
-
-function addSubmit(endpoint, object, successFunction) {
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: object,
-        dataType: "json",
-        success: successFunction,
-        error: function (res, status) {
-            $("#optionsClient").html("Add isn't working!");
-            //log, send error report
-        }
-    });//end ajax
-};
-
-function addClientSuccess (res, status) {
-    $("#optionsClient").append("<div id='addsuccess'></div>");
-    $("#addsuccess").html("");
-    $("#addsuccess").html(`<br><h5>Successfully added client ${res.id}!</h5>`);
-
-    //Adding new client to table
-    $("#clientTable").append('\n' +
-        `<tr id="${res.id}" class="clientRow">` +
-        '   <td scope="row">' + `${res.id}` + '</td>' +
-        '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
-        '   <td>' + `${res.phone}` + '</td>' +
-        '   <td>' + `${res.email}` + '</td></tr>'
-    );
-
-    $(`#${res.id}`).mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    }).click(function () {
-        prepopModForm("/api/getClient", clientModForm);
-    });
-}
-
-
-function prepopModForm(endpoint, modForm){
-    minimizeTable();
-    showBlock();
-    let clientId = selectedRow.children()[0].innerHTML;
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token,
-            id: clientId
-        },
-        dataType: "json",
-        success: modForm,
-        error: function (res, status) {
-            $("#optionsClient").html("Mod Form is not populating!");
-        }
-    });//end ajax
-}
-
-function popAddForm(addForm){
-        minimizeTable();
-        showBlock();
-        addForm();
-}
-
-function showDeletePrompt() {
-    showBlock();
-    $("#optionsClient").html("<div id='deletePrompt'></div>");
-    setTimeout(function() {
-        $("#deletePrompt").html("<h5>Are you sure you want to delete this user?</h5>");
-        $("#deletePrompt").append("<div id='selectionYorN'></div>");
-        $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
-        $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
-        $("#SubmitButton").css("opacity", "0");
-        $("#AddButton").css("opacity", "0");
-        $("#DeleteButton").css("opacity", "0");
-        $("#deletePrompt").css("opacity", "1");
-        $("#YesDelete").css("opacity", "1");
-        $("#NoDelete").css("opacity", "1");
-
-        setTimeout(function () {
-            $("#SubmitButton").hide();
-            $("#AddButton").hide();
-        }, 500);
-
-        $("#NoDelete").click(function() {
-            $("#SubmitButton").show();
-            $("#AddButton").show();
-            expandTable();
-        });
-
-        $("#YesDelete").click(function() {
-            $("#SubmitButton").show();
-            $("#AddButton").show();
-            $("#SubmitButton").css("opacity", "1");
-            $("#AddButton").css("opacity", "1");
-            $("#deletePrompt").html(
-                `<h5>Please type in the full name to delete the selected user.</h5>` +
-                `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-                "<br><form id='delete'>" +
-                "<label for='deleteClientName'>Full Name:</label>" +
-                `<input type='text' id='deleteClientName' name='deleteClientName'>\n<br>\n` +
-                "</form>\n");
-
-            $("#deletePrompt").append("<div id='verifyEntry'></div>");
-
-            $("#SubmitButton").off("click");
-            $("#SubmitButton").on('click', function (e) {
-                addClientSubmit();
-            });
-
-            let thisEndPoint = null;
-            if(selectedTab == "manageClients")
-            {
-                thisEndPoint = "/api/deleteClient";
-            }
-            else if (selectedTab == "manageMakers")
-            {
-                thisEndPoint = "/api/deleteMaker";
-            }
-            else if (selectedTab == "reviewTimeSheets")
-            {
-                thisEndPoint = "/api/deleteTimeSheet";
-            };
-
-            $("#SubmitButton").off("click");
-            $("#SubmitButton").on("click", function (e) {
-                let clientId = selectedRow.children()[0].innerHTML;
-                let deleteUser = $("#deleteClientName").val();
-                if(deleteUser == selectedRow.children()[1].innerHTML)
-                {
-                    $.ajax({
-                        url: thisEndPoint,
-                        method: "post",
-                        data: {
-                            auth: id_token,
-                            id: clientId
-                        },
-                        dataType: "json",
-                        success: function (res, status) {
-                            $("#verifyEntry").html(`<h6>Successfully deleted user ${selectedRow.children()[0].innerHTML}!</h6>`);
-                            setTimeout(function () {
-                                showClients();
-                            }, 1000);
-                        },
-                        error: function (res, status) {
-                            $("#optionsClient").html("Delete user not working!");
-                        }
-                    });//end ajax
-                }
-                else
-                {
-                    $("#verifyEntry").html("<h6>Invalid entry. Please type in the name again.</h6>");
-                }
-            });
-        });
-    },500); //note - breaks if any less than 500
-}
-
+//Client Methods
 function clientFunctionality (res) {
     //Create table
     $("#userMainContent").html(
@@ -530,11 +462,15 @@ function clientFunctionality (res) {
     //Modify Client
     $(".clientRow").click(function () {
         selectedRow = $(this);
-        prepopModForm("/api/getClient", clientModForm);
+        prePopModForm("/api/getClient", clientModForm);
         $("#DeleteButton").show();
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
-            showDeletePrompt();
+            let clientId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt("/api/deleteClient", {
+                auth: id_token,
+                id: clientId
+            }, deleteClientSuccess, verifyDeleteClient);
         });
     });//end modify client
 
@@ -677,20 +613,80 @@ function clientAddForm () {
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
         addSubmit("/api/createClient", {
-                auth: id_token,
-                firstName: $("#addclientfname").val(),
-                lastName: $("#addclientlname").val() ,
-                phone: $("#addphone").val(),
-                email: $("#addemail").val(),
-                street: $("#addaddress").val(),
-                city: $("#addcity").val(),
-                state: $("#addstate").val(),
-                zip: $("#addzip").val(),
-                billingFirst: $("#addbillingfname").val(),
-                billingLast:$("#addbillinglname").val()
-            }, addClientSuccess);
+            auth: id_token,
+            firstName: $("#addclientfname").val(),
+            lastName: $("#addclientlname").val() ,
+            phone: $("#addphone").val(),
+            email: $("#addemail").val(),
+            street: $("#addaddress").val(),
+            city: $("#addcity").val(),
+            state: $("#addstate").val(),
+            zip: $("#addzip").val(),
+            billingFirst: $("#addbillingfname").val(),
+            billingLast:$("#addbillinglname").val()
+        }, addClientSuccess);
     });
 }
+
+function modClientSuccessContact (res, status) {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+
+    //Updating viewable rows in table
+    selectedRow.children()[1].innerHTML = $("#modclientfname").val() + " " + $("#modclientlname").val();
+    selectedRow.children()[2].innerHTML = $("#modphone").val();
+    selectedRow.children()[3].innerHTML = $("#modemail").val();
+}
+
+function modClientSuccessBilling (res, status) {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+}
+
+function addClientSuccess (res, status) {
+    $("#optionsClient").append("<div id='addsuccess'></div>");
+    $("#addsuccess").html("");
+    $("#addsuccess").html(`<br><h5>Successfully added client ${res.id}!</h5>`);
+
+    //Adding new client to table
+    $("#clientTable").append('\n' +
+        `<tr id="${res.id}" class="clientRow">` +
+        '   <td scope="row">' + `${res.id}` + '</td>' +
+        '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
+        '   <td>' + `${res.phone}` + '</td>' +
+        '   <td>' + `${res.email}` + '</td></tr>'
+    );
+
+    $(`#${res.id}`).mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    }).click(function () {
+        prePopModForm("/api/getClient", clientModForm);
+    });
+}
+
+function deleteClientSuccess (res, status) {
+    $("#verifyEntry").html(`<h6>Successfully deleted user ${selectedRow.children()[0].innerHTML}!</h6>`);
+    setTimeout(function () {
+        showFunction(clientFunctionality, "/api/getAllClients");
+    }, 1000);
+}
+
+function verifyDeleteClient () {
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == selectedRow.children()[1].innerHTML);
+}
+
+//Maker Methods
+
+
+//TimeSheet Methods
+
+
 
 $(document).ready(function () {
 
