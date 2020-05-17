@@ -10,7 +10,7 @@ class MakerRepository {
         let sqlParams = [firstName, lastName, email];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
-        })
+        });
         console.log(`Maker with last name ${lastName} created`)
     }
 
@@ -19,19 +19,18 @@ class MakerRepository {
         let sqlParams = [firstName, lastName, email, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
-        })
+        });
         console.log(`Maker ${id} updated`);
     }
 
     deleteMaker(id) {
-        let sql = "DELETE FROM maker WHERE id = ?";
+        let sql = 'UPDATE maker SET deleted = true where id = ?';
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         });
-        console.log(`Maker ${id} deleted`);
+        console.log(`Maker ${id} marked as deleted`);
     }
-
 
     async getOnlineMakers() {
         let sql = 'SELECT maker_id, first_name, last_name, maker.email ' +

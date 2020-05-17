@@ -547,7 +547,7 @@ function makerFunctionality (res){
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
-        if (item.deleted == false) {
+        if (!item.deleted) {
             $("#makerTable").append('\n' +
                 '<tr class="makerRow">' +
                 '   <td scope="row">' + item.id + '</td>' +

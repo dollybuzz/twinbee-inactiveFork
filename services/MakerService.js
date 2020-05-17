@@ -16,7 +16,7 @@ class MakerService {
         let makers = [];
         let repoResult = await makerRepo.getAllMakers();
         repoResult.forEach(item => {
-            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email);
+            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted);
 
             makers.push(newObj);
         });
@@ -168,7 +168,7 @@ class MakerService {
 
         if (result[0]) {
             let maker = result[0];
-            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email);
+            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email, maker.deleted);
         }
         return 'not found';
     }
