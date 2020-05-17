@@ -15,77 +15,9 @@ let navMapper = {
     },
 
     reviewTimeSheets: function () {
-        showFunction($(this));
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     }
 };//end navMapper
-
-
-/*
-function showSheets(){
-    //Create table
-    $(".row").html(
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div>");
-    $.ajax({
-        url: "/api/getAllTimeSheets",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (res, status) {
-            $("#sheetsTable").append('\n' +
-                '        <thead class="thead">\n' +
-                '            <th scope="col">#</th>\n' +
-                '            <th scope="col">Maker ID</th>\n' +
-                '            <th scope="col">Client ID</th>\n' +
-                '            <th scope="col">Hourly Rate</th>\n' +
-                '            <th scope="col">Clock In</th>\n' +
-                '            <th scope="col">Clock Out</th>\n' +
-                '            <th scope="col">Occupation</th>\n' +
-                '        </thead><tbody>');
-            //Populate table
-            res.forEach(item => {
-                $("#sheetsTable").append('\n' +
-                    '<tr class="sheetRow">' +
-                    '   <td scope="row">' + item.id +'</td>' +
-                    '   <td>' + item.maker_id + '</td>'+
-                    '   <td>' + item.client_id + '</td>'+
-                    '   <td>' + item.hourly_rate + '</td>'+
-                    '   <td>' + item.start_time + '</td>'+
-                    '   <td>' + item.end_time + '</td>'+
-                    '   <td>' + item.occupation + '</td></tr>'
-                );
-            });
-            $("#sheetsTable").append('\n</tbody>');
-
-            //Body Block content
-
-            //Event Listeners
-            $(".sheetRow").click(function () {
-                let makerId = $(this).children()[0].innerHTML;
-                $("#floor").css("width", "50vw");
-                $(".row").css("float", "left");
-                //alert ("You selected sheet " + makerId);
-            });
-            //Row effect
-            $(".sheetRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                    $(this).css('background-color', 'white');
-            });
-        },
-        error: function (res, status) {
-            $("#floor").html("Something went wrong!");
-            //log, send error report
-        }
-    });//end ajax
-};//end showSheets
-
-*/
 
 //Versatile Functions
 function createBody () {
@@ -778,8 +710,216 @@ function verifyDeleteMaker () {
 }
 
 //TimeSheet Methods
+function timeSheetFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#sheetsTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">#</th>\n' +
+        '            <th scope="col">Maker ID</th>\n' +
+        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Hourly Rate</th>\n' +
+        '            <th scope="col">Clock In</th>\n' +
+        '            <th scope="col">Clock Out</th>\n' +
+        '            <th scope="col">Occupation</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        $("#sheetsTable").append('\n' +
+            '<tr class="sheetRow">' +
+            '   <td scope="row">' + item.id +'</td>' +
+            '   <td>' + item.makerId + '</td>'+
+            '   <td>' + item.clientId + '</td>'+
+            '   <td>' + item.hourlyRate + '</td>'+
+            '   <td>' + item.timeIn + '</td>'+
+            '   <td>' + item.timeOut + '</td>'+
+            '   <td>' + item.occupation + '</td></tr>'
+        );
+    });
+    $("#sheetsTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody();
 
 
+    //Event Listeners
+    $(".sheetRow").click(function () {
+        let makerId = $(this).children()[0].innerHTML;
+        $("#floor").css("width", "50vw");
+        $(".row").css("float", "left");
+        //alert ("You selected sheet " + makerId);
+    });
+    //Row effect
+    $(".sheetRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+
+
+
+    //Modify Sheet
+    $(".sheetRow").click(function () {
+        selectedRow = $(this);
+
+        prePopModForm("/api/getTimeSheet", sheetModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let sheetId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt("/api/deleteTimeSheet", {
+                auth: id_token,
+                id: sheetId
+            }, deleteSheetSuccess, verifyDeleteSheet);
+
+
+        });
+
+    });//end modify sheet
+
+    //Add Sheet
+    $("#AddButton").click(function () {
+        popAddForm(sheetAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function(){
+            $("#DeleteButton").hide();
+        }, 500);
+    });//end add sheet
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".sheetRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+function sheetModForm(res, status) {
+    //Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        "<form id='modify'>\n" +
+        "<label for='modSheet'>Time Sheet Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modsheetid'>ID:</label>" +
+        `<input type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
+        "<label for='modsheetplanname'>Plan ID:</label>" +
+        `<input type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'>\n<br>\n` +
+        "<label for='modsheettimein'>Time In:</label>" +
+        `<input type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
+        "<label for='modsheettimeout'>Time Out:</label>" +
+        `<input type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        modSubmit("/api/updateTimeSheet", {
+            auth: id_token,
+            id: $("#modsheetid").val(),
+            hourlyRate: $("#modsheetplanname").val(),
+            timeIn: $("#modsheettimein").val() ,
+            timeOut: $("#modsheettimeout").val(),
+        }, modSheetSuccess);
+    });
+}
+
+function sheetAddForm () {
+    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+        "<form id='add'>\n" +
+        "<label for='addSheet'>Time Sheet Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modsheetplanname'>Plan ID:</label>" +
+        `<input type='text' id='modsheetplanname' name='modsheetplanname'>\n<br>\n` +
+        "<label for='modsheettimein'>Time In:</label>" +
+        `<input type='text' id='modsheettimein' name='modsheettimein'>\n<br>\n` +
+        "<label for='modsheettimeout'>Time Out:</label>" +
+        `<input type='text' id='modsheettimeout' name='modsheettimeout'>\n<br>\n` +
+        "<label for='modsheetclientid'>Client ID:</label>" +
+        `<input type='text' id='modsheetclientid' name='modsheetclientid'>\n<br>\n` +
+        "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
+        `<input type='text' id='modsheetmakerid' name='modsheetmakerid'>\n<br>\n` +
+        "<label for='modsheetoccupation'>Freedom Maker Occupation:</label>" +
+        `<input type='text' id='modsheetoccupation' name='modsheetoccupation'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        addSubmit("/api/createTimeSheet", {
+            auth: id_token,
+            makerId: $("#modsheetmakerid").val(),
+            hourlyRate: $("#modsheetplanname").val() ,
+            clientId: $("#modsheetclientid").val(),
+            timeIn: $("#modsheettimein").val(),
+            timeOut: $("#modsheettimeout").val(),
+            occupation: $("#addcity").val(),
+        }, addSheetSuccess);
+    });
+}
+
+function modSheetSuccess (res, status) {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated sheet ${$("#modsheetid").val()}!</h5>`);
+
+    //Updating viewable rows in table
+    selectedRow.children()[3].innerHTML = $("#modsheetplanname").val();
+    selectedRow.children()[4].innerHTML = $("#modsheettimein").val();
+    selectedRow.children()[5].innerHTML = $("#modsheettimeout").val();
+}
+
+function addSheetSuccess (res, status) {
+    $("#optionsClient").append("<div id='addsuccess'></div>");
+    $("#addsuccess").html("");
+    $("#addsuccess").html(`<br><h5>Successfully added sheet ${res.id}!</h5>`);
+
+    //Adding new client to table
+    $("#sheetTable").append('\n' +
+        `<tr id="${res.id}" class="sheetRow">` +
+        '   <td scope="row">' + `${res.id}` + '</td>' +
+        '   <td>' + `${res.makerId}` + '</td>' +
+        '   <td>' + `${res.clientId}` + '</td>' +
+        '   <td>' + `${res.timeIn}` + '</td>' +
+        '   <td>' + `${res.timeOut}` + '</td>' +
+        '   <td>' + `${res.occupation}` + '</td></tr>'
+    );
+
+    $(`#${res.id}`).mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    }).click(function () {
+        prePopModForm("/api/getTimeSheet", sheetModForm);
+    });
+}
+
+function deleteSheetSuccess (res, status) {
+    $("#verifyEntry").html(`<h6>Successfully cleared sheet ${selectedRow.children()[0].innerHTML}!</h6>`);
+    setTimeout(function () {
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    }, 1000);
+}
+
+function verifyDeleteSheet () {
+    let deleteId = $("#deleteUser").val();
+    return (deleteId == selectedRow.children()[0].innerHTML);
+}
 
 $(document).ready(function () {
 

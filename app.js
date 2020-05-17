@@ -196,6 +196,10 @@ app.post("/api/getUpdatePaymentURL",
     //authController.authorizeMaster,
     //authController.authorizeClient,
     clientRestController.getUpdatePaymentPage);
+app.post("/api/getTimeSheet",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    timeSheetRestController.getTimeSheet );
 
 (async function() {
 

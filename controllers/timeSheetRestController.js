@@ -57,6 +57,36 @@ module.exports = {
         res.send(clientTimeSheets)
     },
 
+
+    /**
+     * ENDPOINT: /api/getTimeSheet
+     * Retrieves a time sheet in the form
+     * {
+     *      "id": sheet id,
+     *      "makerId": id of owning maker,
+     *      "hourlyRate": pay rate of owning maker,
+     *      "clientId": id of client maker is assigned to for pay period,
+     *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *      "occupation": occupation of maker for time period
+     * }
+     * Looks for values in the body in form:
+     * {
+     *     "id": time sheet id,
+     *     "auth": authentication credentials; either master or token
+     * }
+     *
+     * @returns {Promise<timeSheet>}
+     */
+    getTimeSheet: async (req, res) => {
+        console.log("Attempting to get a time sheet from REST");
+        console.log(req.body);
+        let id = req.body.id;
+        let sheet = await timeSheetService.getTimeSheet(id).catch(err=>{console.log(err)});
+        console.log(await timeSheetService.getTimeSheet(id));
+        res.send(sheet)
+    },
+
     /**
      * ENDPOINT: /getTimeSheetsByMakerId
      * Retrieves a list of all timesheets for a given maker in form
@@ -104,6 +134,7 @@ module.exports = {
         console.log(req.body);
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
             req.body.timeIn, req.body.timeOut);
+        res.send({});
     },
 
     /**
@@ -143,6 +174,9 @@ module.exports = {
         console.log(req.body);
         let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
             req.body.timeIn, req.body.timeOut, req.body.occupation).catch(err=>{console.log(err)});
+        if (!createdSheet.id){
+            res.send(undefined);
+        }
         res.send(createdSheet);
     }
 };
