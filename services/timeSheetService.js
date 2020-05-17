@@ -43,7 +43,7 @@ class TimeSheetService {
      * @param id    - id of the sheet to be deleted
      */
     deleteTimeSheet(id){
-        timeSheetRepo.deleteSheet(id);
+        return timeSheetRepo.deleteSheet(id);
     }
 
     /**
@@ -77,6 +77,22 @@ class TimeSheetService {
             refinedSheets.push(refinedSheet);
         }
         return refinedSheets;
+    }
+
+    /**
+     * Retrieves a time sheet
+     *
+     * @returns {Promise<void>}
+     */
+    async getTimeSheet(id){
+        console.log(`Getting timesheet ${id}...`);
+        let sheets = await this.getAllTimeSheets();
+        for (var i = 0; i < sheets.length; ++i){
+            if (sheets[i].id == id){
+                console.log(sheets[i]);
+                return sheets[i];
+            }
+        }
     }
 
     /**
