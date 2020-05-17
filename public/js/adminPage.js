@@ -648,8 +648,6 @@ function makerAddForm () {
         `<input type='text' id='addmakerfname' name='addmakerfname'>\n<br>\n` +
         "<label for='addmakerlname'>Last Name:</label>" +
         `<input type='text' id='addmakerlname' name='addmakerlname'>\n<br>\n` +
-        "<label for='addphone'>Phone:</label>" +
-        `<input type='text' id='addphone' name='addphone'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
         `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
         "</form>\n");
@@ -661,8 +659,7 @@ function makerAddForm () {
             auth: id_token,
             id: $("#addmakerid").val(),
             firstName: $("#addmakerfname").val(),
-            lastName: $("#addmakerlname").val() ,
-            phone: $("#addphone").val(),
+            lastName: $("#addmakerlname").val(),
             email: $("#addemail").val()
         } , addMakerSuccess);
     });
