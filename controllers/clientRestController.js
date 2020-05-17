@@ -1,5 +1,5 @@
 const clientService = require('../services/ClientService.js');
-
+const authService = require('../services/authService.js');
 
 //TODO Add validation before action
 module.exports = {
@@ -197,6 +197,27 @@ module.exports = {
         console.log("Attempting to get makers for client from rest: ");
         console.log(req.body);
         res.send(await clientService.getMakersForClient(req.body.id));
+    },
+
+
+    /**
+     * ENDPOINT: /api/getClientByToken
+     * Retrieves a client object associated with a gmail token.
+     * Looks for data in the body in the form:
+     * {
+     *      "token": client's token,
+     *      "auth": valid auth token
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getClientByToken: async (req, res) => {
+        console.log("Attempting to get client by token from REST: ");
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        res.send(await clientService.getClientByEmail(email));
     },
 
     /**

@@ -1,6 +1,7 @@
 //global variable
 let selectedRow = null;
 let selectedTab = null;
+let clientId = null;
 
 let navMapper = {
     main: function () {
@@ -8,30 +9,17 @@ let navMapper = {
     },
 
     viewEditHours: function () {
-        showHours();
+        showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
     },
 
     manageMakers: function () {
-        showMakers();
+        showFunction(makerFunctionality, "/api/getMakersForClient");
     },
 
     reviewTimeSheets: function () {
-        showSheets();
+        showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
     }
 };//end navMapper
-
-function showHours() {
-    $("#userMainContent").html("Options go here");
-};// end showHours
-
-
-function showMakers(){
-    $("#userMainContent").html("Client's freedom makers go here");
-};//end showMakers
-
-function showSheets(){
-    $("#userMainContent").html("Their freedom maker's timesheets go here");
-};//end showSheets
 
 
 //Versatile Helper Functions
@@ -41,7 +29,6 @@ function createBody() {
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
     $("#AddButton").css("opacity", "1");
 
     //bottom row
@@ -52,13 +39,209 @@ function createBody() {
     $("#buttonsBottom").hide();
 };
 
+
+function showBlock () {
+    //show block after table stops moving
+    setTimeout(function () {
+        $("#optionsClient").show();
+        $("#buttonsBottom").show();
+        $("#AddButton").show();
+        $("#SubmitButton").show();
+        $("#optionsClient").css("width", "50%");
+        $("#optionsClient").css("width", "50%");
+        $("#optionsClient").css("opacity", "1");
+        $("#SubmitButton").css("opacity", "1");
+        $("#ExpandButton").css("opacity", "1");
+        $("#AddButton").css("opacity", "1");
+    }, 500)
+};
+
+
+function minimizeTable () {
+    $("#floor").css("transition", "width 0.5s ease-in-out");
+    $("#floor").css("width", "50%");
+    $("#floor").css("margin-left", "0");
+    $("#floor").css("margin-right", "auto");
+}
+
+function expandTable () {
+    $("#optionsClient").hide();
+    $("#buttonsBottom").hide();
+    $("#DeleteButton").hide();
+    $("#optionsClient").css("width", "0%");
+    $("#optionsClient").css("opacity", "0");
+    $("#floor").css("width", "100%");
+    $("#floor").css("margin-left", "0");
+    $("#floor").css("margin-right", "auto");
+    $("#floor").css("transition", "width 0.5s ease-in-out");
+    $("#SubmitButton").css("opacity", "0");
+    $("#ExpandButton").css("opacity", "0");
+    $("#DeleteButton").css("opacity", "0");
+    $("#AddButton").css("opacity", "1");
+};
+
+function showFunction (functionality, endpoint) {
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: {
+            auth: id_token,
+            id: clientId
+        },
+        dataType: "json",
+        success: function (res, status) {
+            console.log(res);
+            functionality(res);
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Something went wrong!");
+        }
+    });//end outer ajax
+};// end showFunction
+
+
+//Main Methods
+function showMain () {
+    //Contains any main tab functionality
+    showOnlineMakers();
+}
+
+//TODO show online makers only for client
+function showOnlineMakers () {
+    //Create table
+    $("#online").html(
+        "<div id=\"floor\">\n" +
+        "    <table id=\"onlineTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div>");
+    $.ajax({
+        url: "/api/getOnlineMakers",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#onlineTable").append('\n' +
+                '        <thead class="thead">\n' +
+                '            <th scope="col">Maker ID</th>\n' +
+                '            <th scope="col">First Name</th>\n' +
+                '            <th scope="col">Last Name</th>\n' +
+                '            <th scope="col">Email</th>\n' +
+                '        </thead><tbody>');
+            //Populate table
+            res.forEach(item => {
+                $("#onlineTable").append('\n' +
+                    '<tr class="onlineRow">' +
+                    '   <td>' + item.id + '</td>' +
+                    '   <td>' + item.firstName + '</td>'+
+                    '   <td>' + item.lastName + '</td>'+
+                    '   <td>' + item.email + '</td></tr>'
+                );
+            });
+            $("#onlineTable").append('\n</tbody>');
+
+            //Body Block content
+            $("#text1").append('<h6>This is a table of current online makers.</h6>');
+            $("#text2").append('<h6>This is a running table of daily/weekly/monthly hours?</h6>');
+
+            //Event Listeners
+            $(".onlineRow").click(function () {
+                let clientId = $(this).children()[0].innerHTML;
+            })
+            //Row effect
+            $(".onlineRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#e8ecef');
+            }).mouseleave(function () {
+                $(this).css('background-color', 'white');
+            });
+        },
+        error: function (res, status) {
+            $("#floor").html("Something went wrong!");
+            //log, send error report
+        }
+    });//end ajax
+};
+
+//Maker Methods
+function makerFunctionality (res) {
+    //Create table
+
+    let id = res.id;
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"makerTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#makerTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">#</th>\n' +
+        '            <th scope="col">First Name</th>\n' +
+        '            <th scope="col">Last Name</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        if (!item.deleted) {
+            $("#makerTable").append('\n' +
+                '<tr class="makerRow">' +
+                '   <td scope="row">' + item.id + '</td>' +
+                '   <td>' + item.firstName + '</td>' +
+                '   <td>' + item.lastName + '</td>' +
+                '   <td>' + item.email + '</td></tr>'
+            );
+        }
+        ;
+    });
+    $("#makerTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody();
+
+    //Event Listeners
+
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".makerRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+
+
+}
+
+
 $(document).ready(function () {
+    $.ajax({
+        url: "/api/getClientByToken",
+        method: "post",
+        data: {
+            token: id_token,
+            auth: id_token
+        },
+        success: function (res, status) {
+            clientId = res.id;
+        },
+        error: function (res, status) {
+            console.log(res)
+        }
+    });
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
-    })
+    });
 
     $(".navItem").hover(function () {
         $(this).css("color", '#dbb459');

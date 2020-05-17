@@ -200,6 +200,11 @@ app.post("/api/getTimeSheet",
     //authController.authorizeAdmin,
     //authController.authorizeMaster,
     timeSheetRestController.getTimeSheet );
+app.post("/api/getClientByToken",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    clientRestController.getClientByToken );
 
 (async function() {
 
