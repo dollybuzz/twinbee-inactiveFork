@@ -111,6 +111,7 @@ class ClientRepository {
     getAllClients() {
         return new Promise((resolve, reject)=>{
             chargebee.customer.list({
+                "limit": "100"
             }).request(function(error,result) {
                 if(error){
                     //handle error, email us?

@@ -13,6 +13,9 @@ let navMapper = {
     manageMakers: function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
     },
+    manageSubscriptions: function () {
+        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
+    },
 
     reviewTimeSheets: function () {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
@@ -103,7 +106,8 @@ function prePopModForm (endpoint, modForm){
         method: "post",
         data: {
             auth: id_token,
-            id: clientId
+            id: clientId,
+            subscriptionId: clientId
         },
         dataType: "json",
         success: modForm,
@@ -702,6 +706,221 @@ function verifyDeleteMaker () {
     let deleteUser = $("#deleteUser").val();
     return (deleteUser == (selectedRow.children()[1].innerHTML + " " + selectedRow.children()[2].innerHTML));
 }
+
+
+//Subscription Methods
+function subscriptionFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"subscriptionTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#subscriptionTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Customer</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Number of Hours</th>\n' +
+        '            <th scope="col">Scheduled changes</th>\n' +
+        '            <th scope="col">Cancelled</th>\n' +
+        '            <th scope="col">Next Billing</th>\n' +
+        '        </thead><tbody>');
+
+    //get clients to cross reference
+
+
+    //Populate table
+    res.forEach(item => {
+        let subscription = item.subscription;
+        let customer = item.customer;
+        item = item.subscription;
+        if (item && !subscription.deleted) {
+            $("#subscriptionTable").append('\n' +
+                '<tr class="subscriptionRow">' +
+                '   <td scope="row">' + subscription.id + '</td>' +
+                '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
+                '   <td>' + subscription.plan_id + '</td>' +
+                '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
+                '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
+                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
+            );
+        }
+    });
+    $("#subscriptionTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody();
+
+    //Event Listeners
+    //Modify Subscription
+    $(".subscriptionRow").click(function () {
+        selectedRow = $(this);
+        let subscriptionPrompt = `<h5>Please type in the subscription id to cancel the selected subscription.</h5>` +
+            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><form id='delete'>" +
+            "<label for='deleteUser'>Retype ID:</label>" +
+            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            "</form>\n";
+
+        prePopModForm("/api/retrieveSubscription", subscriptionModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let subscriptionId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt(subscriptionPrompt, "/api/cancelSubscription", {
+                auth: id_token,
+                subscriptionId: subscriptionId
+            }, deleteSubscriptionSuccess, verifyDeleteSubscription);
+        });
+
+    });
+
+
+    //Add Subscription
+    $("#AddButton").click(function () {
+        popAddForm(subscriptionAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function () {
+            $("#DeleteButton").hide();
+        }, 500);
+    });//end add subscription
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".subscriptionRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+function subscriptionModForm (res, status) {
+    //Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        "<form id='modify'>\n" +
+        "<label for='modSubscription'>Subscription Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modsubscriptionid'>ID:</label>" +
+        `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.plan_id}' disabled>\n<br>\n` +
+        "<label for='modsubscriptionplanname'>Plan:</label>" +
+        `<input type='text' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${res.plan_id}'>\n<br>\n` +
+        "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
+        `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
+        "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
+        `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        modSubmit("/api/updateSubscription", {
+            auth: id_token,
+            subscriptionId: $("#modsubscriptionid").val(),
+            planId: $("#modsubscriptionplanname").val(),
+            planQuantity: $("#modsubscriptionplanquantity").val()
+        }, modSubscriptionSuccess);
+    });
+}
+
+function subscriptionAddForm () {
+    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+        "<form id='add'>\n" +
+        "<label for='addSubscription'>Subscription Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='addsubscriptionplanid'>Plan ID:</label>" +
+        `<input type='text' id='addsubscriptionplanid' name='addsubscriptionplanid'>\n<br>\n` +
+        "<label for='addsubscriptioncustomerid'>Customer ID:</label>" +
+        `<input type='text' id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'>\n<br>\n` +
+        "<label for='addsubscriptionplanquantity'>Monthly Hours:</label>" +
+        `<input type='text' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        addSubmit("/api/createSubscription", {
+            auth: id_token,
+            planId: $("#addsubscriptionplanid").val(),
+            customerId: $("#addsubscriptioncustomerid").val() ,
+            planQuantity: $("#addsubscriptionplanquantity").val(),
+        }, addSubscriptionSuccess);
+    });
+}
+
+function modSubscriptionSuccess (res, status) {
+    $("#optionsSubscription").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated subscription ${$("#modsubscriptionid").val()}!</h5>`);
+
+    //Updating viewable rows in table
+    selectedRow.children()[1].innerHTML = $("#modsubscriptionfname").val() + " " + $("#modsubscriptionlname").val();
+    selectedRow.children()[2].innerHTML = $("#modphone").val();
+    selectedRow.children()[3].innerHTML = $("#modemail").val();
+}
+
+function addSubscriptionSuccess (res, status) {
+    $("#optionsSubscription").append("<div id='addsuccess'></div>");
+    $("#addsuccess").html("");
+    $("#addsuccess").html(`<br><h5>Successfully added subscription ${res.id}!</h5>`);
+    $.ajax({
+        url: '/api/getAllClients',
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (innerRes, innerStatus) {
+            let clientMap = {};
+            for (var i = 0; i < innerRes.length; ++i) {
+                let client = innerRes[i].customer;
+                if (client && client.billing_address) {
+                    clientMap[client.id] = client;
+                }
+            }
+            let customer = clientMap[res.customer_id];
+
+            //Adding new subscription to table
+            $("#subscriptionTable").append('\n' +
+                '<tr class="subscriptionRow">' +
+                '   <td scope="row">' + res.id + '</td>' +
+                '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
+                '   <td>' + res.plan_id + '</td>' +
+                '   <td>' + customer.meta_data[res.plan_id] + '</td></tr>' +
+                '   <td>' + `${res.has_scheduled_changes}` + '</td>' +
+                '   <td>' + res.cancelled + '</td>' +
+                '   <td>' + res.next_billing_at + '</td></tr>'
+            );
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Something went wrong!");
+        }
+    });
+
+}
+
+function deleteSubscriptionSuccess (res, status) {
+    $("#verifyEntry").html(`<h6>Successfully deleted Subscription ${selectedRow.children()[0].innerHTML}!</h6>`);
+    setTimeout(function () {
+        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
+    }, 1000);
+}
+
+function verifyDeleteSubscription () {
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == selectedRow.children()[0].innerHTML);
+}
+
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {

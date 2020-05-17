@@ -234,7 +234,7 @@ class ChargebeeService {
      * @param suscriptionId - id of the subscription to modify
      * @param planId        - id of the new plan to be used
      * @param planQuantity  - number of hours to be used
-     * @param pricePerHour  - custom price per hour
+     * @param pricePerHour  - custom price per hour - DEACTIVATED
      * @returns {Promise<subscription>}
      */
     updateSubscription(suscriptionId, planId, planQuantity, pricePerHour) {
@@ -243,7 +243,7 @@ class ChargebeeService {
                 plan_id : planId,
                 end_of_term : true,
                 plan_quantity: planQuantity,
-                plan_unit_price: pricePerHour
+            //    plan_unit_price: pricePerHour
             }).request(function(error,result) {
                 if(error){
                     //handle error
@@ -264,8 +264,9 @@ class ChargebeeService {
      * @param subscriptionId    - subscription to be cancelled
      */
     cancelSubscription(subscriptionId) {
+        console.log(`Cancelling subscription ${subscriptionId}...`);
         chargebee.subscription.cancel(subscriptionId,{
-            end_of_term : true
+            end_of_term : false
         }).request(function(error,result) {
             if(error){
                 //handle error

@@ -187,7 +187,7 @@ module.exports = {
      *     "subscriptionId": id of subscription to be modified,
      *     "planId": new plan to use for subscription,
      *     "planQuantity": new number of hours to use,
-     *     "pricePerHour": overridden price per hour for subscription,
+     *     "pricePerHour": overridden price per hour for subscription, - DEACTIVATED
      *     "auth": authentication credentials; either master or token
      * }
      *
