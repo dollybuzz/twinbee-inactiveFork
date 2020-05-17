@@ -618,11 +618,9 @@ function makerModForm (res, status) {
         "<label for='modmakerid'>ID:</label>" +
         `<input type='text' id='modmakerid' name='modmakerid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modmakerfname'>First Name:</label>" +
-        `<input type='text' id='modmakerfname' name='modmakerfname' value='${res.first_name}'>\n<br>\n` +
+        `<input type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br>\n` +
         "<label for='modmakerlname'>Last Name:</label>" +
-        `<input type='text' id='modmakerlname' name='modmakerlname' value='${res.last_name}'>\n<br>\n` +
-        "<label for='modphone'>Phone:</label>" +
-        `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+        `<input type='text' id='modmakerlname' name='modmakerlname' value='${res.lastName}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
         `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
         "</form>\n");
@@ -635,7 +633,6 @@ function makerModForm (res, status) {
             id: $("#modmakerid").val(),
             firstName: $("#modmakerfname").val(),
             lastName: $("#modmakerlname").val() ,
-            phone: $("#modphone").val(),
             email: $("#modemail").val()
         }, modMakerSuccess);
     });
