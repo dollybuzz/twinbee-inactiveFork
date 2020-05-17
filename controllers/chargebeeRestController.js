@@ -43,12 +43,11 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    createPlan: function(req, res){
+    createPlan: async function(req, res){
         console.log("Attempting to create a plan from REST: ");
         console.log(req.body);
-        chargebeeService.createPlan(req.body.planName, req.body.invoiceName,
-            req.body.pricePerHour, req.body.planDescription);
-        res.send({});
+        res.send(await chargebeeService.createPlan(req.body.planName, req.body.invoiceName,
+            req.body.pricePerHour, req.body.planDescription));
     },
 
     /**
@@ -76,7 +75,6 @@ module.exports = {
      * NOT updated on changing the plan's name. Looks for values in the body as follows;
      * {
      *      "planId": existing chargebee plan id,
-     *      "newName": new desired name for plan,
      *      "planInvoiceName": new desired name as it should appear on an invoice,
      *      "planPrice": overridden plan price in cents as integer,
      *     "auth": authentication credentials; either master or token
@@ -86,7 +84,7 @@ module.exports = {
     updatePlan: function(req, res){
         console.log("Attempting to update a plan from REST: ");
         console.log(req.body);
-        chargebeeService.updatePlan(req.body.planId, req.body.newName,
+        chargebeeService.updatePlan(req.body.planId, req.body.planId,
             req.body.planInvoiceName, req.body.planPrice);
         res.send({});
     },

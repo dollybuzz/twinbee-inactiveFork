@@ -52,28 +52,33 @@ class ChargebeeService {
      * @param planDescription-plan description
      */
     createPlan(planName, invoiceName, pricePerHour, planDescription) {
-        let planId = planName.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
-        chargebee.plan.create({
-            id: planId,
-            name: planName,
-            invoice_name: invoiceName,
-            description: planDescription,
-            price: pricePerHour,
-            pricing_model: "per_unit",
-            currency_code: "USD",
-            period: 1,
-            period_unit: "month",
+        return new Promise((resolve, reject) => {
+            let planId = planName.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
+            chargebee.plan.create({
+                id: planId,
+                name: planName,
+                invoice_name: invoiceName,
+                description: planDescription,
+                price: pricePerHour,
+                pricing_model: "per_unit",
+                currency_code: "USD",
+                period: 1,
+                period_unit: "month",
 
-        }).request(function (error, result) {
-            if (error) {
-                //handle error
-                console.log(error);
-            } else {
-                console.log(`Plan ${planName} created. Rate: $${pricePerHour} per `+
-                    `hour. Description: ${planDescription}`);
-                var plan = result.plan;
-            }
+            }).request(function (error, result) {
+                if (error) {
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                } else {
+                    console.log(`Plan ${planName} created. Rate: $${pricePerHour} per `+
+                        `hour. Description: ${planDescription}`);
+                    var plan = result.plan;
+                    resolve(plan);
+                }
+            });
         });
+
     }
 
     /**
@@ -132,7 +137,6 @@ class ChargebeeService {
      * @param planId
      */
     deletePlan(planId) {
-        throw new Error("Not implemented")
         chargebee.plan.delete(planId).request(function (error, result) {
             if (error) {
                 //handle error

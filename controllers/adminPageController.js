@@ -15,6 +15,7 @@ module.exports ={
             {link: "", text: "Manage Clients", id:"manageClients"},
             {link: "", text: "Manage Freedom Makers", id: "manageMakers"},
             {link: "", text: "Manage Subscriptions", id: "manageSubscriptions"},
+            {link: "", text: "Manage Plans", id: "managePlans"},
             {link: "", text: "Review TimeSheets", id:"reviewTimeSheets"}
         ];
         let footerLinks = [

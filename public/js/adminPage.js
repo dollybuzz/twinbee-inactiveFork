@@ -16,6 +16,9 @@ let navMapper = {
     manageSubscriptions: function () {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     },
+    managePlans: function () {
+        showFunction(planFunctionality, "/api/getAllPlans");
+    },
 
     reviewTimeSheets: function () {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
@@ -107,7 +110,8 @@ function prePopModForm (endpoint, modForm){
         data: {
             auth: id_token,
             id: clientId,
-            subscriptionId: clientId
+            subscriptionId: clientId,
+            planId: clientId
         },
         dataType: "json",
         success: modForm,
@@ -921,6 +925,182 @@ function verifyDeleteSubscription () {
     return (deleteUser == selectedRow.children()[0].innerHTML);
 }
 
+
+//Plan Methods
+function planFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"planTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#planTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Price Per Hour</th>\n' +
+        '            <th scope="col">Description</th>\n' +
+        '        </thead><tbody>');
+
+    //get clients to cross reference
+
+
+    //Populate table
+    res.forEach(item => {
+        let plan = item.plan;
+        item = item.plan;
+        $("#planTable").append('\n' +
+            '<tr class="planRow">' +
+            '   <td scope="row">' + plan.id + '</td>' +
+            '   <td>$' + Number.parseInt(plan.price)/100 + '</td>' +
+            '   <td>' + plan.description + '</td></tr>'
+        );
+
+    });
+    $("#planTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody();
+
+    //Event Listeners
+    //Modify Plan
+    $(".planRow").click(function () {
+        selectedRow = $(this);
+        let planPrompt = `<h5>Please type in the plan id to cancel the selected plan.</h5>` +
+            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><form id='delete'>" +
+            "<label for='deleteUser'>Retype ID:</label>" +
+            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            "</form>\n";
+
+        prePopModForm("/api/retrievePlan", planModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let planId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt(planPrompt, "/api/deletePlan", {
+                auth: id_token,
+                planId: planId
+            }, deletePlanSuccess, verifyDeletePlan);
+        });
+
+    });
+
+
+    //Add Plan
+    $("#AddButton").click(function () {
+        popAddForm(planAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function () {
+            $("#DeleteButton").hide();
+        }, 500);
+    });//end add plan
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".planRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+function planModForm (res, status) {
+    //Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        "<form id='modify'>\n" +
+        "<label for='modPlan'>Plan Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modplanid'>ID:</label>" +
+        `<input type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
+        "<label for='modplaninvoicename'>Name on Invoice:</label>" +
+        `<input type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br>\n` +
+        "<label for='modplanprice'>Price Per Hour ($):</label>" +
+        `<input type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        modSubmit("/api/updatePlan", {
+            auth: id_token,
+            planId: $("#modplanid").val(),
+            planInvoiceName: $("#modplaninvoicename").val(),
+            planPrice: Number.parseFloat($("#modplanprice").val()).toFixed(2) * 100
+        }, modPlanSuccess);
+    });
+}
+
+function planAddForm () {
+    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+        "<form id='add'>\n" +
+        "<label for='addPlan'>Plan Information</label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='addplanname'>New Plan Id (no spaces!):</label>" +
+        `<input type='text' id='addplanname' name='addplanname'>\n<br>\n` +
+        "<label for='addplaninvoicename'>Name on Invoice:</label>" +
+        `<input type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
+        "<label for='addplanprice'>Price Per Hour ($):</label>" +
+        `<input type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
+        "<label for='addplandescription'>Plan Description:</label>" +
+        `<input type='text' id='addplandescription' name='addplandescription'>\n<br>\n` +
+        "</form>\n");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        addSubmit("/api/createPlan", {
+            auth: id_token,
+            planName: $("#addplanname").val(),
+            invoiceName: $("#addplaninvoicename").val() ,
+            pricePerHour: Number.parseFloat($("#addplanprice").val()).toFixed(2) * 100,
+            planDescription: $("#addplandescription").val()
+        }, addPlanSuccess);
+    });
+}
+
+function modPlanSuccess (res, status) {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated plan ${$("#modplanid").val()}!</h5>`);
+
+    //Updating viewable rows in table
+    selectedRow.children()[1].innerHTML = `$${$("#modplanprice").val()}`;
+}
+
+function addPlanSuccess (res, status) {
+    $("#optionsClient").append("<div id='addsuccess'></div>");
+    $("#addsuccess").html("");
+    $("#addsuccess").html(`<br><h5>Successfully added plan ${res.id}!</h5>`);
+
+    //Adding new plan to table
+    $("#planTable").append('\n' +
+        '<tr class="planRow">' +
+        `   <td scope="row">${res.id}</td>` +
+        `   <td>${res.price}</td>` +
+        `   <td>${res.description}</td></tr>`
+    );
+}
+
+function deletePlanSuccess (res, status) {
+    $("#verifyEntry").html(`<h6>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h6>`);
+    setTimeout(function () {
+        showFunction(planFunctionality, "/api/getAllPlans");
+    }, 1000);
+}
+
+function verifyDeletePlan () {
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == selectedRow.children()[0].innerHTML);
+}
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {
