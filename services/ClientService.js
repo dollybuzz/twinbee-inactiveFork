@@ -209,6 +209,31 @@ class ClientService {
      */
     async deleteClientById(chargebeeId){
         console.log("Deleting client...");
+        let subscriptionList = await request({
+            method: 'POST',
+            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllSubscriptions`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err)
+        });
+
+        for (var i = 0; i < subscriptionList.length; ++i){
+            let entry = subscriptionList[i];
+            if (entry.customer.id == chargebeeId){
+                 await request({
+                    method: 'POST',
+                    uri: `http://${process.env.IP}:${process.env.PORT}/api/cancelSubscription`,
+                    form: {
+                        'auth':process.env.TWINBEE_MASTER_AUTH,
+                        'subscriptionId': entry.subscription.id
+                    }
+                }).catch(err => {
+                    console.log(err)
+                });
+            }
+        }
         clientRepo.deleteClient(chargebeeId);
         await this.updateClientMetadata(chargebeeId, {"deleted":"true"});
     }
