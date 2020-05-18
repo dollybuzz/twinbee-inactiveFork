@@ -1207,8 +1207,6 @@ function timeSheetFunctionality (res) {
                 auth: id_token,
                 id: sheetId
             }, deleteSheetSuccess, verifyDeleteSheet);
-
-
         });
 
     });//end modify sheet
