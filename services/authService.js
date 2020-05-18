@@ -20,7 +20,7 @@ class AuthService {
         });
         let response = await request({
             method: 'POST',
-            uri: `https://www.freedom-makers-hours/api/getAllMakers`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
