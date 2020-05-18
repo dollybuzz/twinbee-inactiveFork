@@ -1,6 +1,13 @@
 //global variable
 let selectedRow = null;
 
+gapi.load('auth2', function() {
+    gapi.auth2.init();
+});
+let auth2 = gapi.auth2.getAuthInstance();
+const id_token = auth2.currentUser.je.tc.access_token;
+console.log(`Welcome, google user. Your ID token is: ${id_token}`);
+
 let navMapper = {
     main: function () {
         location.reload();
@@ -1321,9 +1328,6 @@ function signOut() {
         window.location.replace(`/`);
     });
 }
-gapi.load('auth2', function() {
-    gapi.auth2.init();
-});
 
 $(document).ready(function () {
 
