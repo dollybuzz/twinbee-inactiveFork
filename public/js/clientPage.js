@@ -79,6 +79,7 @@ function expandTable () {
 function showFunction (functionality, endpoint) {
 
     $.ajax({
+        method: "post",
         url: '/api/getClientByToken',
         data: {
             auth: id_token,
