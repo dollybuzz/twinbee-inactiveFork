@@ -112,8 +112,8 @@ module.exports ={
     getMakerIdByToken: async (req, res)=>{
         console.log("Attempting to get maker by ID from REST: ");
         console.log(req.body);
-     //   let email = await authService.getEmailFromToken(req.body.token);
-        let result = await makerService.getMakerIdByEmail("dalibuzon@gmail.com").catch(err=>{console.log(err)});
+        let email = await authService.getEmailFromToken(req.body.token);
+        let result = await makerService.getMakerIdByEmail(email).catch(err=>{console.log(err)});
         res.send(result[0]);
     },
 
