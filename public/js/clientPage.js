@@ -78,23 +78,35 @@ function expandTable () {
 
 function showFunction (functionality, endpoint) {
 
-
     $.ajax({
-        url: endpoint,
-        method: "post",
+        url: '/api/getClientByToken',
         data: {
             auth: id_token,
-            id: clientId
+            token: id_token
         },
-        dataType: "json",
         success: function (res, status) {
-            console.log(res);
-            functionality(res);
+            $.ajax({
+                url: endpoint,
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: res.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    console.log(innerStatus);
+                    functionality(innerRes);
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Something went wrong!");
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
         }
-    });//end outer ajax
+    });
 };// end showFunction
 
 
