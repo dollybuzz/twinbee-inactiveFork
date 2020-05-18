@@ -15,6 +15,7 @@ class AuthService {
 
     async accessorIsMaker(creds) {
         let email = await this.getEmailFromToken(creds).catch(err => {
+            console.log("ERROR IN GET EMAIL FROM TOKEN\n\n\n")
             console.log(err)
         });
         let response = await request({
@@ -24,6 +25,7 @@ class AuthService {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
+            console.log("ERROR IN ACCESSOR IS MAKER REQUEST \n\n\n\n")
             console.log(err)
         });
 

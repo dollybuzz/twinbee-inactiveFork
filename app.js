@@ -219,7 +219,18 @@ app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 
 (async function() {
+    let response = await request({
+        method: 'POST',
+        uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
+        form: {
+            'auth': process.env.TWINBEE_MASTER_AUTH
+        }
+    }).catch(err => {
+        console.log(err)
+    });
 
+    console.log("!!!!!\n\n\n")
+    console.log(response)
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
