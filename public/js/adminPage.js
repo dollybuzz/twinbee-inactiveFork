@@ -1326,10 +1326,14 @@ $(document).ready(function () {
 
     gapi.load('auth2', function() {
         gapi.auth2.init();
-    });
+        setTimeout(function(){
+            let auth2 = gapi.auth2.getAuthInstance();
+            id_token = auth2.currentUser.je.tc.access_token;
+            console.log("ID TOKEN")
+            console.log(id_token)
+        }, 1000)
 
-    let auth2 = gapi.auth2.getAuthInstance();
-    id_token = auth2.currentUser.je.tc.access_token;
+    });
 
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
