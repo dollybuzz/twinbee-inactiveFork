@@ -2,7 +2,6 @@
 let selectedRow = null;
 let selectedTab = null;
 let id_token = null;
-let signOut = null;
 
 let navMapper = {
     main: function () {
@@ -292,9 +291,9 @@ $(document).ready(function () {
                 $("#logoutButton").click(function () {
                     signOut();
                 });
-            }, 1000)
+            }, 2000)
         });
-    }, 500);
+    }, 1000);
 
     $.ajax({
         url: "/api/getClientByToken",
