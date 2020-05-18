@@ -27,6 +27,9 @@ class AuthService {
             console.log(err)
         });
 
+        console.log("!!!!!\n\n\n")
+        console.log(response)
+
         let body = response.body;
         let makers = JSON.parse(body);
 
