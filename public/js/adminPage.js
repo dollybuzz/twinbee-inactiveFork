@@ -851,7 +851,7 @@ function subscriptionModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsubscriptionid'>ID:</label>" +
-        `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.plan_id}' disabled>\n<br>\n` +
+        `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
         `<input type='text' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${res.plan_id}'>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
