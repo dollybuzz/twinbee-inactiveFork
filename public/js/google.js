@@ -18,8 +18,12 @@ function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     GOOGLE_USER = googleUser;
     var id_token = GOOGLE_USER.getAuthResponse().id_token;
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    console.log(`ID token: ${id_token}`);
 }
-
 
 /**
  * Wrapper for the google token verification process. Limited use;

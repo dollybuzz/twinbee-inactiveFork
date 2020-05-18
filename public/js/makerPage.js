@@ -1,6 +1,7 @@
 //global variable
 let selectedRow = null;
 let selectedTab = null;
+let makerId = null;
 
 let navMapper = {
     main: function () {
@@ -8,25 +9,33 @@ let navMapper = {
     },
 
     previousHours: function () {
-        showHours();
+        showFunction(timeSheetFunctionality, "/api/getTimeSheetsByMakerId");
     },
 
     manageClients: function () {
-        showClients();
+        showFunction(clientFunctionality, "/api/getClientsForMaker");
     },
 
 };//end navMapper
 
-function showHours() {
-    $("#userMainContent").html("FM's previous hours go here");
-};// end showHours
+function showFunction (functionality, endpoint) {
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: {
+            auth: id_token,
+            id: makerId
+        },
+        dataType: "json",
+        success: function (res, status) {
+            functionality(res);
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Something went wrong!");
+        }
+    });//end outer ajax
+};// end showFunction
 
-
-function showClients(){
-    $("#userMainContent").html("FM's clients go here");
-};//end showMakers
-
-//Versatile Helper Functions
 function createBody() {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
@@ -44,7 +53,69 @@ function createBody() {
     $("#buttonsBottom").hide();
 };
 
+function clientFunctionality (res){
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"clientTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#clientTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Name</th>\n' +
+        '            <th scope="col">Phone</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        if (!item.deleted) {
+            $("#clientTable").append('\n' +
+                '<tr class="clientRow">' +
+                '   <td scope="row">' + item.id + '</td>' +
+                '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
+                '   <td>' + item.phone + '</td>' +
+                '   <td>' + item.email + '</td></tr>'
+            );
+        };
+    });
+    $("#clientTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody();
+
+    //Event Listeners
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".clientRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
 $(document).ready(function () {
+    $.ajax({
+        url: "/api/getMakerIdByToken",
+        method: "post",
+        data: {
+            token: id_token,
+            auth: id_token
+        },
+        success: function (res, status) {
+            makerId = res.id;
+        },
+        error: function (res, status) {
+            console.log(res)
+        }
+    });
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {

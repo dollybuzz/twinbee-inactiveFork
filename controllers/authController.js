@@ -11,6 +11,13 @@ const landingPageController = require('./landingPageController.js');
 
 
 module.exports = {
+
+    tokenToEmail: async(req, res)=>{
+        let token = req.body.token;
+        let email = await authService.getEmailFromToken(token);
+        res.send(email);
+    },
+
     authorizeClient: async (req, res, next) =>{
         console.log("Attempting to authorize client...");
       if (req.isOk || await authService.accessorIsClient()){

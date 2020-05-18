@@ -8,16 +8,12 @@ let navMapper = {
         location.reload();
     },
 
-    viewEditHours: function () {
+    reviewTimeSheets: function () {
         showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
     },
 
     manageMakers: function () {
         showFunction(makerFunctionality, "/api/getMakersForClient");
-    },
-
-    reviewTimeSheets: function () {
-        showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
     }
 };//end navMapper
 
@@ -81,6 +77,8 @@ function expandTable () {
 };
 
 function showFunction (functionality, endpoint) {
+
+
     $.ajax({
         url: endpoint,
         method: "post",

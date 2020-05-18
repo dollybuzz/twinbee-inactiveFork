@@ -199,12 +199,24 @@ app.post("/api/getUpdatePaymentURL",
 app.post("/api/getTimeSheet",
     //authController.authorizeAdmin,
     //authController.authorizeMaster,
-    timeSheetRestController.getTimeSheet );
+    timeSheetRestController.getTimeSheet);
 app.post("/api/getClientByToken",
     //authController.authorizeAdmin,
     //authController.authorizeMaster,
     //authController.authorizeClient,
-    clientRestController.getClientByToken );
+    clientRestController.getClientByToken);
+app.post("/api/getClientsForMaker",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    makerRestController.getClientsForMaker);
+app.post("/api/getMakerIdByToken",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    makerRestController.getMakerIdByToken);
+app.post("/api/tokenToEmail",
+    authController.tokenToEmail);
 
 (async function() {
 

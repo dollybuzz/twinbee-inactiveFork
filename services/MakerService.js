@@ -57,6 +57,15 @@ class MakerService {
     }
 
     /**
+     * Retrieves a maker's id according to their email.
+     *
+     * @returns {Promise<unknown>}
+     */
+    async getMakerIdByEmail(email){
+        return await makerRepo.getMakerIdByEmail(email).catch(err=>{console.log(err)});
+    }
+
+    /**
      * Updates a single maker with new data.
      *
      * @param id    - database id of the maker to be updated
@@ -148,7 +157,8 @@ class MakerService {
 
         for (var i = 0; i < sheets.length; ++i){
             let clientOnSheet = sheets[i].clientId;
-            if (clientMap[clientOnSheet].isPresent && !alreadyOnList[clientOnSheet]){
+            if (clientMap[clientOnSheet] && clientMap[clientOnSheet].isPresent
+                && !alreadyOnList[clientOnSheet] && sheets[i].makerId == id){
                 makersClients.push(clientMap[clientOnSheet].object);
                 alreadyOnList[clientOnSheet] = true;
             }

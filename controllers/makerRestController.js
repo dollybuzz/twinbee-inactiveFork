@@ -1,4 +1,5 @@
 const makerService = require('../services/MakerService.js');
+const authService = require('../services/authService.js');
 
 module.exports ={
 
@@ -88,6 +89,50 @@ module.exports ={
         let result = await makerService.getMakerById(id).catch(err=>{console.log(err)});
 
         res.send(result);
+    },
+
+    /**
+     * ENDPOINT: /api/getMakerIdByToken
+     * Retrieves a maker by their database id. Looks for data in the body in the form:
+     * {
+     *     "token": maker's gmail token,
+     *     "auth": authentication credentials; either master or token
+     * }
+     * and returns data in the form:
+     * {
+     *  {
+     *      "id": maker's database id,
+     *      "firstName": maker's first name,
+     *      "lastName": maker's last name,
+     *      "email": maker's email address
+     *  }
+     * }
+     * @returns {Promise<maker>}
+     */
+    getMakerIdByToken: async (req, res)=>{
+        console.log("Attempting to get maker by ID from REST: ");
+        console.log(req.body);
+     //   let email = await authService.getEmailFromToken(req.body.token);
+        let result = await makerService.getMakerIdByEmail("dalibuzon@gmail.com").catch(err=>{console.log(err)});
+        res.send(result[0]);
+    },
+
+    /**
+     * ENDPOINT: /api/getClientsForMaker
+     * Updates an existing maker with new values. Looks for data in the body in the form:
+     * {
+     *     "id": maker's database id,
+     *     "auth": authentication credentials; either master or token
+     * }
+     * and returns data in the form:
+     *  [
+     *      customer object,
+     *      customer object,...
+     *  ]
+     * @returns {Promise<maker>}
+     */
+    getClientsForMaker: async (req, res) =>{
+        res.send(await makerService.getClientListForMakerId(req.body.id));
     },
 
     /**
