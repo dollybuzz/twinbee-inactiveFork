@@ -1,5 +1,13 @@
 var GOOGLE_USER = null;
-var id_token = null;
+gapi.load('auth2', function() {
+    gapi.auth2.init();
+});
+let auth2 = gapi.auth2.getAuthInstance();
+var id_token = auth2.currentUser.je.tc.access_token || null;
+console.log(`Welcome, google user. Your ID token is: ${!!id_token ? id_token : "Wait a minute, you aren't a google user!"}`);
+
+
+
 //per google's spec at https://developers.google.com/identity/sign-in/web/sign-in
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
