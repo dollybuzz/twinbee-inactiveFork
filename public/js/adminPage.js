@@ -1,7 +1,6 @@
 //global variable
 let selectedRow = null;
-
-
+let id_token = null;
 let navMapper = {
     main: function () {
         location.reload();
@@ -1324,6 +1323,13 @@ function signOut() {
 }
 
 $(document).ready(function () {
+
+    gapi.load('auth2', function() {
+        gapi.auth2.init();
+    });
+
+    let auth2 = gapi.auth2.getAuthInstance();
+    id_token = auth2.currentUser.je.tc.access_token;
 
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
