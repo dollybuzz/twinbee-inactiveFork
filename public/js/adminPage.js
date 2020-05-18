@@ -1314,17 +1314,18 @@ function verifyDeleteSheet () {
     return (deleteId == selectedRow.children()[0].innerHTML);
 }
 
-$(document).ready(function () {
-    gapi.load('auth2', function() {
-        gapi.auth2.init();
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        console.log('User signed out.');
+        window.location.replace(`/`);
     });
+}
+gapi.load('auth2', function() {
+    gapi.auth2.init();
+});
 
-    function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-            console.log('User signed out.');
-        });
-    }
+$(document).ready(function () {
 
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
