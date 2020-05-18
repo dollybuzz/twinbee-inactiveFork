@@ -402,6 +402,10 @@ function clientModForm (res, status) {
         "<label for='modbilling'>Billing Address</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
+        "<label for='modbillfname'>First Name:</label>" +
+        `<input type='text' id='modbillfname' name='modbillfname' value='${res.billing_address.first_name}'>\n<br>\n` +
+        "<label for='modbilllname'>Last Name:</label>" +
+        `<input type='text' id='modbilllname' name='modbilllname' value='${res.billing_address.last_name}'>\n<br>\n` +
         "<label for='modaddress'>Street:</label>" +
         `<input type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
         "<label for='modcity'>City:</label>" +
@@ -428,8 +432,8 @@ function clientModForm (res, status) {
             modSubmit("/api/updateClientBilling", {
                 auth: id_token,
                 id: $("#modclientid").val(),
-                firstName: $("#modclientfname").val(),
-                lastName: $("#modclientlname").val(),
+                firstName: $("#modbillfname").val(),
+                lastName: $("#modbilllname").val(),
                 phone: $("#modphone").val(),
                 email: $("#modemail").val(),
                 street: $("#modaddress").val(),
