@@ -221,7 +221,7 @@ app.post("/api/tokenToEmail",
 (async function() {
     let response = await request({
         method: 'POST',
-        uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
+        uri: `https://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
         form: {
             'auth': process.env.TWINBEE_MASTER_AUTH
         }
