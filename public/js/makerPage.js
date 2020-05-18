@@ -15,7 +15,6 @@ let navMapper = {
     manageClients: function () {
         showFunction(clientFunctionality, "/api/getClientsForMaker");
     },
-
 };//end navMapper
 
 function showFunction (functionality, endpoint) {
@@ -149,9 +148,9 @@ function timeSheetFunctionality (res) {
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Maker ID</th>\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Hourly Rate</th>\n' +
+        '            <th scope="col">Plan ID</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
         '            <th scope="col">Occupation</th>\n' +

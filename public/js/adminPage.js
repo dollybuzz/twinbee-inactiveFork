@@ -35,13 +35,13 @@ function isZip(val) {
 }
 
 //Versatile Functions
-function createBody () {
+function createBody (button) {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
+    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
     $("#AddButton").css("opacity", "1");
 
     //bottom row
@@ -166,11 +166,11 @@ function addSubmit (endpoint, object, successFunction) {
 };
 
 //Delete
-function showDeletePrompt (prompt, endpoint, object, successFunction, verifyDeleteUser) {
+function showDeletePrompt (option, prompt, endpoint, object, successFunction, verifyDeleteUser) {
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
     setTimeout(function() {
-        $("#deletePrompt").html("<h5>Are you sure you want to delete?</h5>");
+        $("#deletePrompt").html("<h5>Are you sure you want to " + option + "?</h5>");
         $("#deletePrompt").append("<div id='selectionYorN'></div>");
         $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
         $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
@@ -322,7 +322,7 @@ function clientFunctionality (res){
     $("#clientTable").append('\n</tbody>');
 
     //Body Block content
-    createBody();
+    createBody("Delete");
 
     //Event Listeners
     //Modify Client
@@ -331,7 +331,7 @@ function clientFunctionality (res){
         let clientPrompt = `<h5>Please type in the full name to delete the selected user.</h5>` +
             `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
-            "<label for='deleteUser'>Full Name:</label>" +
+            "<label for='deleteUser'>Enter Full Name:</label>" +
             `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n" ;
 
@@ -340,7 +340,7 @@ function clientFunctionality (res){
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt(clientPrompt,"/api/deleteClient", {
+            showDeletePrompt("delete", clientPrompt,"/api/deleteClient", {
                 auth: id_token,
                 id: clientId
             }, deleteClientSuccess, verifyDeleteClient);
@@ -594,7 +594,7 @@ function makerFunctionality (res){
     $("#makerTable").append('\n</tbody>');
 
     //Body Block content
-    createBody();
+    createBody("Delete");
 
     //Event Listeners
     // Modify Maker
@@ -603,7 +603,7 @@ function makerFunctionality (res){
         let makerPrompt = `<h5>Please type in the full name to delete the selected user.</h5>` +
             `<h6>You selected ${selectedRow.children()[1].innerHTML} ${selectedRow.children()[2].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
-            "<label for='deleteUser'>Full Name:</label>" +
+            "<label for='deleteUser'>Enter Full Name:</label>" +
             `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
@@ -612,7 +612,7 @@ function makerFunctionality (res){
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let makerId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt(makerPrompt,"/api/deleteMaker", {
+            showDeletePrompt("delete", makerPrompt,"/api/deleteMaker", {
                 auth: id_token,
                 id: makerId
             }, deleteMakerSuccess, verifyDeleteMaker);
@@ -771,7 +771,6 @@ function subscriptionFunctionality (res) {
 
     //get clients to cross reference
 
-
     //Populate table
     res.forEach(item => {
         let subscription = item.subscription;
@@ -793,16 +792,16 @@ function subscriptionFunctionality (res) {
     $("#subscriptionTable").append('\n</tbody>');
 
     //Body Block content
-    createBody();
+    createBody("Cancel");
 
     //Event Listeners
     //Modify Subscription
     $(".subscriptionRow").click(function () {
         selectedRow = $(this);
-        let subscriptionPrompt = `<h5>Please type in the subscription id to cancel the selected subscription.</h5>` +
+        let subscriptionPrompt = `<h5>Please type in the subscription ID to cancel the selected subscription.</h5>` +
             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
-            "<label for='deleteUser'>Retype ID:</label>" +
+            "<label for='deleteUser'>Enter ID:</label>" +
             `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
@@ -811,14 +810,13 @@ function subscriptionFunctionality (res) {
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let subscriptionId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt(subscriptionPrompt, "/api/cancelSubscription", {
+            showDeletePrompt("cancel", subscriptionPrompt, "/api/cancelSubscription", {
                 auth: id_token,
                 subscriptionId: subscriptionId
             }, deleteSubscriptionSuccess, verifyDeleteSubscription);
         });
 
     });
-
 
     //Add Subscription
     $("#AddButton").click(function () {
@@ -851,7 +849,7 @@ function subscriptionModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsubscriptionid'>ID:</label>" +
-        `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.plan_id}' disabled>\n<br>\n` +
+        `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
         `<input type='text' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${res.plan_id}'>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
@@ -997,7 +995,7 @@ function planFunctionality (res) {
     $("#planTable").append('\n</tbody>');
 
     //Body Block content
-    createBody();
+    createBody("Cancel");
 
     //Event Listeners
     //Modify Plan
@@ -1006,7 +1004,7 @@ function planFunctionality (res) {
         let planPrompt = `<h5>Please type in the plan id to cancel the selected plan.</h5>` +
             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
-            "<label for='deleteUser'>Retype ID:</label>" +
+            "<label for='deleteUser'>Enter ID:</label>" +
             `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
@@ -1015,7 +1013,7 @@ function planFunctionality (res) {
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let planId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt(planPrompt, "/api/deletePlan", {
+            showDeletePrompt("delete", planPrompt, "/api/deletePlan", {
                 auth: id_token,
                 planId: planId
             }, deletePlanSuccess, verifyDeletePlan);
@@ -1080,7 +1078,7 @@ function planAddForm () {
         "<label for='addPlan'>Plan Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='addplanname'>New Plan Id (no spaces!):</label>" +
+        "<label for='addplanname'>New Plan ID (no spaces!):</label>" +
         `<input type='text' id='addplanname' name='addplanname'>\n<br>\n` +
         "<label for='addplaninvoicename'>Name on Invoice:</label>" +
         `<input type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
@@ -1151,9 +1149,9 @@ function timeSheetFunctionality (res) {
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Maker ID</th>\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Hourly Rate</th>\n' +
+        '            <th scope="col">Plan ID</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
         '            <th scope="col">Occupation</th>\n' +
@@ -1174,8 +1172,7 @@ function timeSheetFunctionality (res) {
     $("#sheetsTable").append('\n</tbody>');
 
     //Body Block content
-    createBody();
-
+    createBody("Delete");
 
     //Event Listeners
     $(".sheetRow").click(function () {
@@ -1192,23 +1189,24 @@ function timeSheetFunctionality (res) {
         $(this).css('background-color', 'white');
     });
 
-
-
     //Modify Sheet
     $(".sheetRow").click(function () {
         selectedRow = $(this);
-
+        let timeSheetPrompt = `<h5>Please type in the time sheet ID to delete the selected time sheet.</h5>` +
+            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><form id='delete'>" +
+            "<label for='deleteUser'>Enter ID:</label>" +
+            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            "</form>\n";
         prePopModForm("/api/getTimeSheet", sheetModForm);
         $("#DeleteButton").show();
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let sheetId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("/api/deleteTimeSheet", {
+            showDeletePrompt("delete", timeSheetPrompt,"/api/deleteTimeSheet", {
                 auth: id_token,
                 id: sheetId
             }, deleteSheetSuccess, verifyDeleteSheet);
-
-
         });
 
     });//end modify sheet
