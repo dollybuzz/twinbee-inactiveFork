@@ -77,7 +77,23 @@ function expandTable () {
 };
 
 function showFunction (functionality, endpoint) {
-
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: {
+            auth: id_token,
+            id: "16CHT7Ryu5EhnPWY" //Chris Redfield
+        },
+        dataType: "json",
+        success: function (innerRes, innerStatus) {
+            console.log(innerStatus);
+            functionality(innerRes);
+        },
+        error: function (innerRes, innerStatus) {
+            $("#userMainContent").html("Something went wrong!");
+        }
+    });
+    /*  Uncomment when time for live
     $.ajax({
         method: "post",
         url: '/api/getClientByToken',
@@ -108,6 +124,8 @@ function showFunction (functionality, endpoint) {
             console.log(res);
         }
     });
+    */
+
 };// end showFunction
 
 

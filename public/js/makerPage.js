@@ -20,12 +20,13 @@ let navMapper = {
 };//end navMapper
 
 function showFunction (functionality, endpoint) {
+    /*
     $.ajax({
         url: endpoint,
         method: "post",
         data: {
             auth: id_token,
-            id: makerId
+            id: 4 // some maker in our db
         },
         dataType: "json",
         success: function (res, status) {
@@ -35,6 +36,41 @@ function showFunction (functionality, endpoint) {
             $("#userMainContent").html("Something went wrong!");
         }
     });//end outer ajax
+
+    /*  Uncomment when time for live*/
+    $.ajax({
+        method: "post",
+        url: '/api/getMakerIdByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (res, status) {
+            $.ajax({
+                url: endpoint,
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: res.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    console.log(innerStatus);
+                    functionality(innerRes);
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });// ajax
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
+        }
+    });
+
+
+
 };// end showFunction
 
 function createBody() {
