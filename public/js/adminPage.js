@@ -170,7 +170,7 @@ function showDeletePrompt (prompt, endpoint, object, successFunction, verifyDele
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
     setTimeout(function() {
-        $("#deletePrompt").html("<h5>Are you sure you want to delete this user?</h5>");
+        $("#deletePrompt").html("<h5>Are you sure you want to delete?</h5>");
         $("#deletePrompt").append("<div id='selectionYorN'></div>");
         $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
         $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
