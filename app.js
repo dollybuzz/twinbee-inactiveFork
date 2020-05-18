@@ -219,9 +219,13 @@ app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 
 (async function() {
+
+    console.log("TESTING URI \n\n\n\n\n\n\n")
+    let testUri = `${process.env.IP}:${process.env.PORT}/api/getAllMakers`;
+
     let response = await request({
         method: 'POST',
-        uri: `${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
+        uri: testUri,
         form: {
             'auth': process.env.TWINBEE_MASTER_AUTH
         }
