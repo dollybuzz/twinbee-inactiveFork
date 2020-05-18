@@ -128,9 +128,9 @@ $(document).ready(function () {
                 $("#logoutButton").click(function () {
                     signOut();
                 });
-            }, 1000)
+            }, 2000)
         });
-    }, 500);
+    }, 1000);
 
     $.ajax({
         url: "/api/getMakerIdByToken",

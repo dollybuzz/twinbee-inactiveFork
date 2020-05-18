@@ -1335,9 +1335,9 @@ $(document).ready(function () {
                 $("#logoutButton").click(function () {
                     signOut();
                 });
-            }, 1000)
+            }, 2000)
         });
-    }, 500);
+    }, 1000);
 
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
