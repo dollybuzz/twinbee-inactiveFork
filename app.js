@@ -222,7 +222,8 @@ app.post("/api/tokenToEmail",
 
     console.log("TESTING URI \n\n\n\n\n\n\n")
     let testUri = `${process.env.IP}:${process.env.PORT}/api/getAllMakers`;
-    console.log(testUri)
+    console.log(testUri);
+    console.log("THAT WAS THE URI")
 
     let response = await request({
         method: 'POST',
