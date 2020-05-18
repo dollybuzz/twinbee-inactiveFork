@@ -1,6 +1,5 @@
 var GOOGLE_USER = null;
 
-console.log(`Welcome, google user. Your ID token is: ${!!id_token ? id_token : "Wait a minute, you aren't a google user!"}`);
 
 
 

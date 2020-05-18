@@ -1,7 +1,8 @@
 //global variable
 let selectedRow = null;
 let selectedTab = null;
-let makerId = null;
+let id_token = null;
+let signOut = null;
 
 let navMapper = {
     main: function () {
@@ -101,19 +102,35 @@ function clientFunctionality (res){
     });
 }
 
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-        console.log('User signed out.');
-        window.location.replace(`/`);
-    });
-}
 gapi.load('auth2', function() {
     gapi.auth2.init();
 });
 
 
 $(document).ready(function () {
+
+    //Adding logout Button
+    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
+
+    setTimeout(function () {
+        gapi.load('auth2', function() {
+            gapi.auth2.init();
+            setTimeout(function(){
+                let auth2 = gapi.auth2.getAuthInstance();
+                id_token = auth2.currentUser.je.tc.id_token;
+                signOut = ()=>{
+                    var auth2 = gapi.auth2.getAuthInstance();
+                    auth2.signOut().then(function () {
+                        console.log('User signed out.');
+                        window.location.replace(`/`);
+                    });
+                };
+                $("#logoutButton").click(function () {
+                    signOut();
+                });
+            }, 1000)
+        });
+    }, 500);
 
     $.ajax({
         url: "/api/getMakerIdByToken",
@@ -149,9 +166,4 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
-    //Adding logout Button
-    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
-    $("#logoutButton").click(function () {
-        window.location.href = "/";
-    })
 })//end document ready

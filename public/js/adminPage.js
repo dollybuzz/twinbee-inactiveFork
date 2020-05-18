@@ -1314,26 +1314,30 @@ function verifyDeleteSheet () {
     return (deleteId == selectedRow.children()[0].innerHTML);
 }
 
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-        console.log('User signed out.');
-        window.location.replace(`/`);
-    });
-}
-
 $(document).ready(function () {
 
-    gapi.load('auth2', function() {
-        gapi.auth2.init();
-        setTimeout(function(){
-            let auth2 = gapi.auth2.getAuthInstance();
-            id_token = auth2.currentUser.je.tc.access_token;
-            console.log("ID TOKEN")
-            console.log(id_token)
-        }, 1000)
+    //Adding logout Button
+    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
 
-    });
+    setTimeout(function () {
+        gapi.load('auth2', function() {
+            gapi.auth2.init();
+            setTimeout(function(){
+                let auth2 = gapi.auth2.getAuthInstance();
+                id_token = auth2.currentUser.je.tc.id_token;
+                signOut = ()=>{
+                    var auth2 = gapi.auth2.getAuthInstance();
+                    auth2.signOut().then(function () {
+                        console.log('User signed out.');
+                        window.location.replace(`/`);
+                    });
+                };
+                $("#logoutButton").click(function () {
+                    signOut();
+                });
+            }, 1000)
+        });
+    }, 500);
 
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
@@ -1359,10 +1363,4 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
-    //Adding logout Button
-    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
-    $("#logoutButton").click(function () {
-        signOut();
-        window.location.href = "/";
-    })
 })//end document ready
