@@ -220,18 +220,6 @@ app.post("/api/tokenToEmail",
 
 (async function() {
 
-    let response = await request({
-        method: 'POST',
-        uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
-        form: {
-            'auth': process.env.TWINBEE_MASTER_AUTH
-        }
-    }).catch(err => {
-        console.log(err)
-    });
-
-    console.log("!!!!!\n\n\n")
-    console.log(response.body)
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

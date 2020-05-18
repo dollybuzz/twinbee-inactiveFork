@@ -19,7 +19,7 @@ let navMapper = {
 };//end navMapper
 
 function showFunction (functionality, endpoint) {
-/*
+
     $.ajax({
         url: endpoint,
         method: "post",
@@ -36,7 +36,7 @@ function showFunction (functionality, endpoint) {
         }
     });//end outer ajax
 
-    /*  Uncomment when time for live*/
+    /*  Uncomment when time for live
     $.ajax({
         method: "post",
         url: '/api/getMakerIdByToken',
@@ -67,7 +67,7 @@ function showFunction (functionality, endpoint) {
             console.log(res);
         }
     });
-
+*/
 
 
 };// end showFunction
