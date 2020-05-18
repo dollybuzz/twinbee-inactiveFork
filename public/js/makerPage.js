@@ -208,9 +208,9 @@ $(document).ready(function () {
                 $("#logoutButton").click(function () {
                     signOut();
                 });
-            }, 2000)
+            }, 1000)
         });
-    }, 1000);
+    }, 2000);
 
 
     //Event Listeners for other nav menu items
