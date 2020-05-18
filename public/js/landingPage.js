@@ -1,17 +1,6 @@
-
+var GOOGLE_USER = null;
 
 $(document).ready(function () {
-    gapi.load('auth2', function() {
-        gapi.auth2.init();
-    });
-
-    function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-            console.log('User signed out.');
-        });
-    }
-
 
     //alters nav menu banner
     $("nav").css("background-color", "transparent");
@@ -25,3 +14,11 @@ $(document).ready(function () {
 })
 
 
+
+var id_token = null;
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    GOOGLE_USER = googleUser;
+    var id_token = GOOGLE_USER.getAuthResponse().id_token;
+    window.location.replace(`/login?token=${id_token}`);
+}
