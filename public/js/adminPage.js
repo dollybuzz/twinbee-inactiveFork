@@ -25,6 +25,15 @@ let navMapper = {
     }
 };//end navMapper
 
+function isEmail(val){
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val);
+}
+
+function isZip(val) {
+    let strippedString = Number.parseInt(Number.parseInt(val).toString());
+    return strippedString.toString().length == 5 && !(strippedString.toString().includes('-'))
+}
+
 //Versatile Functions
 function createBody () {
     //top row
@@ -399,34 +408,42 @@ function clientModForm (res, status) {
         `<input type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
         "<label for='modstate'>State:</label>" +
         `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
-        "<label for='modemail'>Zip:</label>" +
+        "<label for='modzip'>Zip:</label>" +
         `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
         "</form>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        modSubmit("/api/updateClientContact", {
-            auth: id_token,
-            id: $("#modclientid").val(),
-            firstName: $("#modclientfname").val(),
-            lastName: $("#modclientlname").val() ,
-            phone: $("#modphone").val(),
-            email: $("#modemail").val()
-        }, modClientSuccessContact);
+        if (isEmail($("#modemail").val()) && isZip($("#modzip").val())) {
+            modSubmit("/api/updateClientContact", {
+                auth: id_token,
+                id: $("#modclientid").val(),
+                firstName: $("#modclientfname").val(),
+                lastName: $("#modclientlname").val(),
+                phone: $("#modphone").val(),
+                email: $("#modemail").val()
+            }, modClientSuccessContact);
 
-        modSubmit("/api/updateClientBilling", {
-            auth: id_token,
-            id: $("#modclientid").val(),
-            firstName: $("#modclientfname").val(),
-            lastName: $("#modclientlname").val() ,
-            phone: $("#modphone").val(),
-            email: $("#modemail").val(),
-            street: $("#modaddress").val(),
-            city: $("#modcity").val(),
-            state: $("#modstate").val(),
-            zip: $("#modzip").val()
-        }, modClientSuccessBilling);
+            modSubmit("/api/updateClientBilling", {
+                auth: id_token,
+                id: $("#modclientid").val(),
+                firstName: $("#modclientfname").val(),
+                lastName: $("#modclientlname").val(),
+                phone: $("#modphone").val(),
+                email: $("#modemail").val(),
+                street: $("#modaddress").val(),
+                city: $("#modcity").val(),
+                state: $("#modstate").val(),
+                zip: $("#modzip").val()
+            }, modClientSuccessBilling);
+        }
+        else if (!isEmail($("#modemail").val())){
+            alert("Invalid email!");
+        }
+        else if (!isZip($("#modzip").val())){
+            alert("Invalid zip!");
+        }
     });
 }
 
@@ -476,20 +493,29 @@ function clientAddForm () {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        addSubmit("/api/createClient", {
-            auth: id_token,
-            firstName: $("#addclientfname").val(),
-            lastName: $("#addclientlname").val() ,
-            phone: $("#addphone").val(),
-            email: $("#addemail").val(),
-            street: $("#addaddress").val(),
-            city: $("#addcity").val(),
-            state: $("#addstate").val(),
-            zip: $("#addzip").val(),
-            billingFirst: $("#addbillingfname").val(),
-            billingLast:$("#addbillinglname").val()
-        }, addClientSuccess);
+        if ( isEmail($("#addemail").val()) && isZip($("#addzip").val())) {
+            addSubmit("/api/createClient", {
+                auth: id_token,
+                firstName: $("#addclientfname").val(),
+                lastName: $("#addclientlname").val(),
+                phone: $("#addphone").val(),
+                email: $("#addemail").val(),
+                street: $("#addaddress").val(),
+                city: $("#addcity").val(),
+                state: $("#addstate").val(),
+                zip: $("#addzip").val(),
+                billingFirst: $("#addbillingfname").val(),
+                billingLast: $("#addbillinglname").val()
+            }, addClientSuccess);
+        } else if (!isZip($("#addzip").val())){
+            alert("Invalid zip!");
+        }
+        else if (!isEmail($("#addemail").val())){
+            alert("Invalid email!");
+        }
+
     });
+
 }
 
 function modClientSuccessContact (res, status) {
@@ -636,13 +662,18 @@ function makerModForm (res, status) {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        modSubmit("/api/updateMaker", {
-            auth: id_token,
-            id: $("#modmakerid").val(),
-            firstName: $("#modmakerfname").val(),
-            lastName: $("#modmakerlname").val() ,
-            email: $("#modemail").val()
-        }, modMakerSuccess);
+        if (isEmail($("#modemail").val())) {
+            modSubmit("/api/updateMaker", {
+                auth: id_token,
+                id: $("#modmakerid").val(),
+                firstName: $("#modmakerfname").val(),
+                lastName: $("#modmakerlname").val(),
+                email: $("#modemail").val()
+            }, modMakerSuccess);
+        }
+        else if(isEmail($("#modemail").val())){
+            alert("Email not valid!");
+        }
     });
 }
 
@@ -663,13 +694,18 @@ function makerAddForm () {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        addSubmit("/api/createMaker", {
-            auth: id_token,
-            id: $("#addmakerid").val(),
-            firstName: $("#addmakerfname").val(),
-            lastName: $("#addmakerlname").val(),
-            email: $("#addemail").val()
-        } , addMakerSuccess);
+        if (isEmail($("#addemail").val())) {
+            addSubmit("/api/createMaker", {
+                auth: id_token,
+                id: $("#addmakerid").val(),
+                firstName: $("#addmakerfname").val(),
+                lastName: $("#addmakerlname").val(),
+                email: $("#addemail").val()
+            }, addMakerSuccess);
+        }
+        else{
+            alert("Invalid email!");
+        }
     });
 }
 
@@ -1260,7 +1296,7 @@ function sheetAddForm () {
             clientId: $("#modsheetclientid").val(),
             timeIn: $("#modsheettimein").val(),
             timeOut: $("#modsheettimeout").val(),
-            occupation: $("#addcity").val(),
+            occupation: $("#modsheetoccupation").val(),
         }, addSheetSuccess);
     });
 }
