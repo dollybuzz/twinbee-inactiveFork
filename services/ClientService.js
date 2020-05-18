@@ -185,7 +185,7 @@ class ClientService {
         let clientSheets = [];
         let response = await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimesheets`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllTimesheets`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -211,7 +211,7 @@ class ClientService {
         console.log("Deleting client...");
         let subscriptionList = await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllSubscriptions`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllSubscriptions`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -224,7 +224,7 @@ class ClientService {
             if (entry.customer.id == chargebeeId){
                  await request({
                     method: 'POST',
-                    uri: `http://${process.env.IP}:${process.env.PORT}/api/cancelSubscription`,
+                    uri: `https://www.freedom-makers-hours.com/api/cancelSubscription`,
                     form: {
                         'auth':process.env.TWINBEE_MASTER_AUTH,
                         'subscriptionId': entry.subscription.id
@@ -250,7 +250,7 @@ class ClientService {
         let clientMakers = [];
         let response = await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllMakers`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }

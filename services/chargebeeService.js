@@ -316,7 +316,7 @@ class ChargebeeService {
                 console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
                     method: 'POST',
-                    uri: `http://${process.env.IP}:${process.env.PORT}/api/updateClientTimeBucket`,
+                    uri: `https://www.freedom-makers-hours.com/api/updateClientTimeBucket`,
                     form: {
                         'id': customerId,
                         'planName': plan,

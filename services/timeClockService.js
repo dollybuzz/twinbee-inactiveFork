@@ -14,7 +14,7 @@ class TimeClockService {
         let rightNow = await this.getCurrentMoment();
         await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/createTimeSheet`,
+            uri: `https://www.freedom-makers-hours.com/api/createTimeSheet`,
             form: {
                 'makerId': makerId,
                 'hourlyRate': hourlyRate,
@@ -38,7 +38,7 @@ class TimeClockService {
     async clockOut(makerId){
         let result = await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getTimeSheetsByMakerId`,
+            uri: `https://www.freedom-makers-hours.com/api/getTimeSheetsByMakerId`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'id':makerId.toString()
@@ -62,7 +62,7 @@ class TimeClockService {
             let rightNow = await this.getCurrentMoment();
             request({
                 method: 'POST',
-                uri: `http://${process.env.IP}:${process.env.PORT}/api/updateTimeSheet`,
+                uri: `https://www.freedom-makers-hours.com/api/updateTimeSheet`,
                 form: {
                     id: currentSheet.id,
                     hourlyRate: currentSheet.hourlyRate,
@@ -76,7 +76,7 @@ class TimeClockService {
             let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow);
             request({
                 method: 'POST',
-                uri: `http://${process.env.IP}:${process.env.PORT}/api/updateClientTimeBucket`,
+                uri: `https://www.freedom-makers-hours.com/api/updateClientTimeBucket`,
                 form: {
                     id: currentSheet.clientId,
                     planName: currentSheet.hourlyRate,

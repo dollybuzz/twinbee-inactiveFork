@@ -220,14 +220,9 @@ app.post("/api/tokenToEmail",
 
 (async function() {
 
-    console.log("TESTING URI \n\n\n\n\n\n\n")
-    let testUri = `${process.env.IP}:${process.env.PORT}/api/getAllMakers`;
-    console.log(testUri);
-    console.log("THAT WAS THE URI")
-
     let response = await request({
         method: 'POST',
-        uri: testUri,
+        uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
         form: {
             'auth': process.env.TWINBEE_MASTER_AUTH
         }
@@ -236,7 +231,7 @@ app.post("/api/tokenToEmail",
     });
 
     console.log("!!!!!\n\n\n")
-    console.log(response)
+    console.log(response.body)
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

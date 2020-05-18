@@ -98,7 +98,7 @@ class MakerService {
         console.log(`Getting sheets for maker ${id}...`);
         let result =  await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimeSheets`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllTimeSheets`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -126,7 +126,7 @@ class MakerService {
         console.log(`Getting client list for maker ${id}...`);
         let result = await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.port}/api/getAllClients`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllClients`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -136,7 +136,7 @@ class MakerService {
         let clients = JSON.parse(result.body);
         result = await request({
             method: 'POST',
-            uri: `http://${process.env.IP}:${process.env.PORT}/api/getAllTimeSheets`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllTimeSheets`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
