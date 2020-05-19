@@ -11,6 +11,7 @@ const clientRestController = require('./controllers/clientRestController.js');
 const makerRestController = require('./controllers/makerRestController.js');
 const timeSheetRestController = require('./controllers/timeSheetRestController.js');
 const timeClockRestController = require('./controllers/timeClockRestController.js');
+const relationshipRestController = require('./controllers/relationshipRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
 const authController = require('./controllers/authController.js');
 const app = express();
@@ -225,6 +226,34 @@ app.post("/api/getTimeBucketByClientId",
     //authController.authorizeMaster,
     //authController.authorizeClient,
     clientRestController.getTimeBucketByClientId);
+app.post("/api/getAllRelationships",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    relationshipRestController.getAllRelationships);
+app.post("/api/createRelationship",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    relationshipRestController.createRelationship);
+app.post("/api/getRelationshipsByMakerId",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    relationshipRestController.getRelationshipsByMakerId);
+app.post("/api/getRelationshipsByClientId",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    relationshipRestController.getRelationshipsByClientId);
+app.post("/api/getRelationshipById",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    relationshipRestController.getRelationshipById);
+app.post("/api/deleteRelationship",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    relationshipRestController.deleteRelationship);
+app.post("/api/updateRelationship",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    relationshipRestController.updateRelationship);
 app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 

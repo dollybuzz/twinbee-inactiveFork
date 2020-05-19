@@ -5,15 +5,21 @@ class RelationshipRepository {
     constructor() {
     };
 
-    async createRelationship(makerId, clientId, planId, occupation) {
-        let sql = 'INSERT INTO relationship(maker_id, client_id, plan_id, occupation)' +
-            ' VALUES (?, ?, ?, ?)';
-        let sqlParams = [makerId, clientId, planId, occupation];
-        let result = await query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
-        });
-        console.log(`Relationship ${result.insertId} successfully created`);
-        return result.insertId;
+    createRelationship(makerId, clientId, planId, occupation) {
+        return new Promise((resolve, reject) => {
+
+            let sql = 'INSERT INTO relationship(maker_id, client_id, plan_id, occupation)' +
+                ' VALUES (?, ?, ?, ?)';
+            let sqlParams = [makerId, clientId, planId, occupation];
+            query(sql, sqlParams, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                }
+                console.log(`Relationship ${result.insertId} successfully created`);
+                resolve(result.insertId);
+            });
+        })
     }
 
     async updateRelationship(id, planId, occupation) {
@@ -22,8 +28,8 @@ class RelationshipRepository {
         let sqlParams = [planId, occupation, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
+            console.log(`Relationship ${id} updated`);
         });
-        console.log(`Relationship ${id} updated`);
     }
 
     deleteRelationship(id) {
