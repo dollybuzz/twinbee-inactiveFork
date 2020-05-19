@@ -12,12 +12,12 @@ let navMapper = {
       showFunction(clientFunctionality, "/api/getAllClients");
     },
 
-    manageSubscriptions: function () {
-        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
-    },
-
     manageMakers: function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
+    },
+
+    manageSubscriptions: function () {
+        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     },
 
     managePlans: function () {
@@ -26,7 +26,12 @@ let navMapper = {
 
     reviewTimeSheets: function () {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    },
+
+    manageCredit: function () {
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     }
+
 };//end navMapper
 
 //Versatile Functions
@@ -45,7 +50,10 @@ function createBody (button) {
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
+    if(button != null)
+    {
+        $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
+    }
     $("#AddButton").css("opacity", "1");
 
     //bottom row
@@ -755,7 +763,6 @@ function verifyDeleteMaker () {
     return (deleteUser == (selectedRow.children()[1].innerHTML + " " + selectedRow.children()[2].innerHTML));
 }
 
-
 //Subscription Methods
 function subscriptionFunctionality (res) {
     //Create table
@@ -771,7 +778,7 @@ function subscriptionFunctionality (res) {
         '            <th scope="col">ID</th>\n' +
         '            <th scope="col">Customer</th>\n' +
         '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Number of Hours</th>\n' +
+        '            <th scope="col">Planned Monthly Hours</th>\n' +
         '            <th scope="col">Scheduled changes</th>\n' +
         '            <th scope="col">Cancelled</th>\n' +
         '            <th scope="col">Next Billing</th>\n' +
@@ -952,7 +959,6 @@ function addSubscriptionSuccess (res, status) {
             $("#userMainContent").html("Something went wrong!");
         }
     });
-
 }
 
 function deleteSubscriptionSuccess (res, status) {
@@ -966,7 +972,6 @@ function verifyDeleteSubscription () {
     let deleteUser = $("#deleteUser").val();
     return (deleteUser == selectedRow.children()[0].innerHTML);
 }
-
 
 //Plan Methods
 function planFunctionality (res) {
@@ -1354,6 +1359,44 @@ function deleteSheetSuccess (res, status) {
 function verifyDeleteSheet () {
     let deleteId = $("#deleteUser").val();
     return (deleteId == selectedRow.children()[0].innerHTML);
+}
+
+//Credit Methods
+function creditFunctionality (res) {
+    console.log(res);
+
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"creditTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#creditTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Name</th>\n' +
+        '            <th scope="col">Plan ID</th>\n' +
+        '            <th scope="col">Minutes</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(customer => {
+       for(var item in customer.buckets) {
+           $("#creditTable").append('\n' +
+               '<tr class="creditRow">' +
+               '   <td scope="row">' + customer.id + '</td>' +
+               '   <td scope="row">' + customer.firstName + ' ' + customer.lastName + '</td>' +
+               '   <td>' + item + '</td>' +
+               '   <td>' + customer.buckets[item] + '</td>'
+           );
+       };
+    });
+    $("#sheetsTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody(null);
+
 }
 
 $(document).ready(function () {
