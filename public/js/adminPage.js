@@ -30,6 +30,10 @@ let navMapper = {
 
     manageCredit: function () {
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
+    },
+
+    manageRelationships: function () {
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }
 
 };//end navMapper
@@ -1376,7 +1380,7 @@ function creditFunctionality (res) {
     $("#creditTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Name</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Plan ID</th>\n' +
         '            <th scope="col">Minutes</th>\n' +
         '        </thead><tbody>');
@@ -1398,6 +1402,221 @@ function creditFunctionality (res) {
     createBody(null);
 
 }
+
+//Relationship Methods
+function relationshipFunctionality (res) {
+    $.ajax({
+        url: "/api/getAllClients",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (clientres, clientstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getAllPlans",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (planres, planstatus) {
+                            //Create table
+                            let clientMap = {};
+                            let makerMap = {};
+                            for(item of clientres) {
+                                if(item.customer.first_name)
+                                {
+                                    clientMap[item.customer.id] = item.customer;
+                                }
+                            }
+                            for(item of makerres) {
+                                makerMap[item.id] = item;
+                            }
+                            $("#userMainContent").html(
+                                "<div id=\"buttonsTop\"></div>\n" +
+                                "<div class='row' id='topRow'>\n" +
+                                "<div id=\"floor\">\n" +
+                                "    <table id=\"relationshipTable\" class=\"table\">\n" +
+                                "    </table>\n" +
+                                "</div></div>");
+                            $("#relationshipTable").append('\n' +
+                                '        <thead class="thead">\n' +
+                                '            <th scope="col">ID</th>\n' +
+                                '            <th scope="col">Client </th>\n' +
+                                '            <th scope="col">Freedom Maker</th>\n' +
+                                '            <th scope="col">Plan ID</th>\n' +
+                                '        </thead><tbody>');
+                            //Populate table
+                            res.forEach(item => {
+                                $("#relationshipTable").append('\n' +
+                                    '<tr class="relationshipRow">' +
+                                    '   <td scope="row">' + item.id +'</td>' +
+                                    '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>'+
+                                    '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>'+
+                                    '   <td>' + item.planId + '</td>'
+                                );
+                            });
+                            $("#relationshipTable").append('\n</tbody>');
+
+                            //Body Block content
+                            createBody("Delete");
+
+                            //Event Listeners
+                            $(".relationshipRow").click(function () {
+                                $("#floor").css("width", "50vw");
+                                $(".row").css("float", "left");
+                            });
+
+                            //Row effect
+                            $(".relationshipRow").mouseenter(function () {
+                                $(this).css('transition', 'background-color 0.5s ease');
+                                $(this).css('background-color', '#e8ecef');
+                            }).mouseleave(function () {
+                                $(this).css('background-color', 'white');
+                            });
+
+                            //Modify Sheet
+                            $(".relationshipRow").click(function () {
+                                selectedRow = $(this);
+                                let relationshipPrompt = `<h5>Please type in the relationship ID to delete the selected relationship.</h5>` +
+                                    `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                                    "<br><form id='delete'>" +
+                                    "<label for='deleteUser'>Enter ID:</label>" +
+                                    `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+                                    "</form>\n";
+                                prePopModForm("/api/getRelationshipById", relationshipModForm);
+                                $("#DeleteButton").show();
+                                $("#DeleteButton").css("opacity", "1");
+                                $("#DeleteButton").click(function () {
+                                    let relationshipId = selectedRow.children()[0].innerHTML;
+                                    showDeletePrompt("delete", relationshipPrompt,"/api/deleteRelationship", {
+                                        auth: id_token,
+                                        id: relationshipId
+                                    }, deleteRelationshipSuccess, verifyDeleteRelationship);
+                                });
+
+                            });//end modify sheet
+
+                            //Add Sheet
+                            $("#AddButton").click(function () {
+                                popAddForm(relationshipAddForm);
+                                $("#DeleteButton").css("opacity", "0");
+                                setTimeout(function(){
+                                    $("#DeleteButton").hide();
+                                }, 500);
+                            });//end add sheet
+
+                            //Expand Table Button
+                            $("#ExpandButton").click(function () {
+                                expandTable();
+                            });
+
+                            //Row effect
+                            $(".relationshipRow").mouseenter(function () {
+                                $(this).css('transition', 'background-color 0.5s ease');
+                                $(this).css('background-color', '#e8ecef');
+                            }).mouseleave(function () {
+                                $(this).css('background-color', 'white');
+                            });
+                        },
+                        error: function (planres, planstatus) {
+                            $("#userMainContent").html("Plan Relationship isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Maker Relationship isn't working!");
+                }
+            });
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Relationship isn't working!");
+        }
+    });
+}
+
+function relationshipModForm(res, status) {
+//Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        `<h6>Relationship ID: ${selectedRow.children()[0].innerHTML} for Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+        "<h6>Please select a Freedom Maker to assign:</h6><br>" +
+        "<select id='modifyMaker'>\n</select>\n");
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getRelationshipById",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            id: selectedRow.children()[0].innerHTML
+                        },
+                        dataType: "json",
+                        success: function (relres, relstatus) {
+                            console.log(relres);
+                            let makerId = relres.makerId;
+                            for(var item of makerres) {
+                                if(makerId == item.id) {
+                                    $('#modifyMaker').append(
+                                        `<option id="${makerId}" value="${makerId}" selected>${makerId} ${item.firstName} ${item.lastName}</option>`
+                                    );
+                                }
+                                else {
+                                    $('#modifyMaker').append(
+                                        `<option id="${item.id}" value="${item.id}">${item.id} ${item.firstName} ${item.lastName}</option>`
+                                    );
+                                }
+                            };
+
+                            //Submit button function
+                            $("#SubmitButton").off("click");
+                            $("#SubmitButton").on('click', function (e) {
+                                modSubmit("/api/updateRelationship", {
+                                    auth: id_token,
+                                    makerId: ,
+                                    clientId: makerId
+
+                                }, modSheetSuccess);
+                            });
+                        },
+                        error: function (relres, relstatus) {
+                            $("#userMainContent").html("Makers isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Relationships isn't working!");
+                }
+            });
+}
+
+function deleteRelationshipSuccess() {
+
+}
+
+function verifyDeleteRelationship() {
+
+}
+
+function relationshipAddForm() {
+
+}
+
+
 
 $(document).ready(function () {
     $(".navItem").click(function () {
