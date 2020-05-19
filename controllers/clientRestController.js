@@ -114,6 +114,36 @@ module.exports = {
       res.send(await clientService.getAllTimeBuckets());
     },
 
+
+    /**
+     * ENDPOINT: /api/getTimeBucketByClientId
+     * Retrieves all time buckets for clients/customers.
+     * Looks for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "id": client's id
+     * }
+     * Returns data in the form:
+     *  {
+     *      "first_name": customer contact first name,
+     *      "last_name": customer contact last name,
+     *      "id": customer's chargebee id
+     *      "buckets":
+     *              {
+     *                  "planName1": minutes left in plan 1,
+     *                  "planName2": minutes left in plan 2,
+     *                  "planName3": minutes left in plan 3,...
+     *              }
+     *  }
+     * @param req
+     * @param res
+     */
+    async getTimeBucketByClientId(req, res) {
+        console.log(`Attempting to get a time bucket for client ${req.body.id} from REST`);
+        console.log(req.body);
+        res.send(await clientService.getTimeBucketByClientId(req.body.id));
+    },
+
     /**
      * ENDPOINT: /api/updateClientTimeBucket
      * Updates a client's time bucket for one plan with the given number

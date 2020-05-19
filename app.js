@@ -220,11 +220,16 @@ app.post("/api/getAllTimeBuckets",
     //authController.authorizeAdmin,
     //authController.authorizeMaster,
     clientRestController.getAllTimeBuckets);
+app.post("/api/getTimeBucketByClientId",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    clientRestController.getTimeBucketByClientId);
 app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 
 (async function() {
-    console.log(await clientService.getAllTimeBuckets())
+    console.log(await clientService.getTimeBucketByClientId("16CHT7Ryu5EhnPWY"))
 
 })();
 
