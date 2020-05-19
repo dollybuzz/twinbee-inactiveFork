@@ -22,10 +22,10 @@ class RelationshipRepository {
         })
     }
 
-    async updateRelationship(id, planId, occupation) {
+    async updateRelationship(id, planId, occupation, makerId) {
         let sql = 'UPDATE relationship SET ' +
-            'plan_id = ?, occupation = ? WHERE id = ?';
-        let sqlParams = [planId, occupation, id];
+            'plan_id = ?, occupation = ?, maker_id = ? WHERE id = ?';
+        let sqlParams = [planId, occupation, makerId, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
             console.log(`Relationship ${id} updated`);

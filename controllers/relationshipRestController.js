@@ -157,6 +157,7 @@ module.exports = {
      * {
      *     "auth": valid auth token,
      *     "id": id of the relationships,
+     *     "makerId": id of the maker in the relationship,
      *     "planId": new plan id for relationship,
      *     "occupation": new occupation for relationship
      * }
@@ -175,6 +176,6 @@ module.exports = {
     updateRelationship: async (req, res) =>{
         console.log(`Attempting to update relationship ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation));
+        res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId));
     },
 };
