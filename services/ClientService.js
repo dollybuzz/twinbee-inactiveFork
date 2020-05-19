@@ -279,6 +279,35 @@ class ClientService {
         return clientMakers;
     };
 
+    async getAllTimeBuckets(){
+        let clients = await this.getAllClients();
+        let timeBuckets = [];
+        for (var i = 0; i < clients.length; ++i){
+            let client = clients[i].customer;
+            if (client.meta_data){
+                let obj = {};
+                obj.first_name = client.first_name;
+                obj.last_name = client.last_name;
+                obj.id = client.id;
+                obj.buckets = client.meta_data;
+                timeBuckets.push(obj);
+            }
+        }
+        return timeBuckets;
+    }
+
+    async getTimeBucketByClientId(id) {
+        let client = await this.getClientById(id);
+        if (client.meta_data) {
+            let obj = {};
+            obj.first_name = client.first_name;
+            obj.last_name = client.last_name;
+            obj.id = client.id;
+            obj.buckets = client.meta_data;
+            return obj;
+        }
+    }
+
     async getUpdatePaymentPage(clientId){
         console.log(`Getting update payment page for client ${clientId}...`);
         return new Promise((resolve, reject) => {

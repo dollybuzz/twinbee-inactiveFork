@@ -1,6 +1,7 @@
 //global variable
 let selectedRow = null;
 let id_token = null;
+let selectedTab = null;
 
 let navMapper = {
     main: function () {
@@ -69,7 +70,7 @@ function showBlock () {
         $("#ExpandButton").css("opacity", "1");
         $("#AddButton").css("opacity", "1");
     }, 500)
-};
+}
 
 function minimizeTable () {
     $("#floor").css("transition", "width 0.5s ease-in-out");
@@ -92,7 +93,7 @@ function expandTable () {
     $("#ExpandButton").css("opacity", "0");
     $("#DeleteButton").css("opacity", "0");
     $("#AddButton").css("opacity", "1");
-};
+}
 
 function showFunction (functionality, endpoint) {
     $.ajax({
@@ -1356,6 +1357,8 @@ function verifyDeleteSheet () {
 }
 
 $(document).ready(function () {
+    $(".navItem").click(function () {
+    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
@@ -1389,6 +1392,10 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
+        $(".navItem").css('color', 'white');
+        $(".navItem").css('font-style', 'normal');
+        $(this).css("color", '#dbb459');
+        $(this).css("font-style", 'italic');
     })
 
     $(".navItem").hover(function () {
@@ -1397,8 +1404,11 @@ $(document).ready(function () {
     });
 
     $(".navItem").on("mouseleave", function() {
-        $(this).css("color", 'white');
-        $(this).css("font-style", 'normal');
+        if (selectedTab!= $(this)[0].id)
+        {
+            $(this).css("color", 'white');
+            $(this).css("font-style", 'normal');
+        }
     });
 
     //shifts the logo
