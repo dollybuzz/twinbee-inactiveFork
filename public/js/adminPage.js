@@ -2,6 +2,7 @@
 let selectedRow = null;
 let id_token = null;
 let selectedTab = null;
+
 let navMapper = {
     main: function () {
         location.reload();
@@ -11,12 +12,14 @@ let navMapper = {
       showFunction(clientFunctionality, "/api/getAllClients");
     },
 
-    manageMakers: function () {
-        showFunction(makerFunctionality, "/api/getAllMakers");
-    },
     manageSubscriptions: function () {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     },
+
+    manageMakers: function () {
+        showFunction(makerFunctionality, "/api/getAllMakers");
+    },
+
     managePlans: function () {
         showFunction(planFunctionality, "/api/getAllPlans");
     },
@@ -26,6 +29,7 @@ let navMapper = {
     }
 };//end navMapper
 
+//Versatile Functions
 function isEmail(val){
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val);
 }
@@ -35,7 +39,6 @@ function isZip(val) {
     return strippedString.toString().length == 5 && !(strippedString.toString().includes('-'))
 }
 
-//Versatile Functions
 function createBody (button) {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
