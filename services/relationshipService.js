@@ -61,10 +61,10 @@ class RelationshipService {
         relationshipRepo.deleteRelationship(relationshipId);
     }
 
-    async updateRelationship(relationshipId, planId, occupation){
+    async updateRelationship(relationshipId, planId, occupation, makerId){
         console.log(`Updating relationship ${relationshipId}...`);
         await relationshipRepo.updateRelationship(relationshipId, planId,
-            occupation).catch(err=>{console.log(err)});
+            occupation, makerId).catch(err=>{console.log(err)});
         return this.getRelationshipById(relationshipId);
     }
 }
