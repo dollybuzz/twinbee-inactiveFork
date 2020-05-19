@@ -3,13 +3,13 @@ const util = require('util');
 const request = util.promisify(require('request'));
 const Relationship = require('../domain/entity/relationship');
 
-class MakerService {
+class RelationshipService {
     constructor(){};
 
     async createRelationship(makerId, clientId, planId, occupation){
+        console.log("Creating a relationship...");
         let id = await relationshipRepo.createRelationship(makerId, clientId, planId, occupation);
         return new Relationship(id, makerId, clientId, planId, occupation);
-
     }
 
     async getAllRelationships(){
@@ -69,4 +69,4 @@ class MakerService {
     }
 }
 
-module.exports = new MakerService();
+module.exports = new RelationshipService();
