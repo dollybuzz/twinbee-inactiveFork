@@ -16,10 +16,10 @@ class RelationshipRepository {
         return result.insertId;
     }
 
-    async updateRelationship(id, makerId, clientId, planId, occupation) {
-        let sql = 'UPDATE relationship SET maker_id = ?, client_id = ?, ' +
+    async updateRelationship(id, planId, occupation) {
+        let sql = 'UPDATE relationship SET ' +
             'plan_id = ?, occupation = ? WHERE id = ?';
-        let sqlParams = [makerId, clientId, planId, occupation, id];
+        let sqlParams = [planId, occupation, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         });
@@ -57,6 +57,17 @@ class RelationshipRepository {
             result = [];
         });
         console.log(`Relationships retrieved for maker ${makerId}`);
+        return result;
+    }
+
+    async getRelationshipById(id){
+        let sql = 'SELECT * FROM relationship where id = ?';
+        let sqlParam = [id];
+        let result = await query(sql, sqlParam).catch(e => {
+            console.log(e);
+            result = [];
+        });
+        console.log(`Relationship ID retrieved for relationship ${id}`);
         return result;
     }
 
