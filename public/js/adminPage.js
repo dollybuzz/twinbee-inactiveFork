@@ -573,7 +573,7 @@ function deleteClientSuccess (res, status) {
     $("#verifyEntry").html(`<h6>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h6>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
-    }, 1000);
+    }, 3000);
 }
 
 function verifyDeleteClient () {
@@ -1364,7 +1364,6 @@ function creditFunctionality (res) {
         '        </thead><tbody>');
     //Populate table
     res.forEach(customer => {
-        console.log(res);
        for(var item in customer.buckets) {
            $("#creditTable").append('\n' +
                '<tr class="creditRow">' +
@@ -1381,35 +1380,16 @@ function creditFunctionality (res) {
     createBody(null);
 
     //Event Listeners
-    //Modify Sheet
-    $(".relationshipRow").click(function () {
+    //Modify
+    $(".creditRow").click(function () {
         selectedRow = $(this);
-        let relationshipPrompt = `<h5>Please type in the relationship ID to delete the selected relationship.</h5>` +
-            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter ID:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n";
-        prePopModForm("/api/getRelationshipById", relationshipModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
-        $("#DeleteButton").click(function () {
-            let relationshipId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("delete", relationshipPrompt,"/api/deleteRelationship", {
-                auth: id_token,
-                id: relationshipId
-            }, deleteRelationshipSuccess, verifyDeleteRelationship);
-        });
-
+        prePopModForm("/api/getAllTimeBuckets", creditModForm);
+        //No delete feature
     });
 
-    //Add Sheet
+    //Add
     $("#AddButton").click(function () {
-        popAddForm(relationshipAddForm);
-        $("#DeleteButton").css("opacity", "0");
-        setTimeout(function(){
-            $("#DeleteButton").hide();
-        }, 500);
+        popAddForm(creditAddForm);
     });
 
     //Expand Table Button
@@ -1418,7 +1398,7 @@ function creditFunctionality (res) {
     });
 
     //Row effect
-    $(".relationshipRow").mouseenter(function () {
+    $(".creditRow").mouseenter(function () {
         $(this).css('transition', 'background-color 0.5s ease');
         $(this).css('background-color', '#e8ecef');
     }).mouseleave(function () {
@@ -1429,81 +1409,101 @@ function creditFunctionality (res) {
 function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>Credit ID: ${selectedRow.children()[0].innerHTML} for Client: ${selectedRow.children()[1].innerHTML}</h6>` +
-        "<h6>Please select a Freedom Maker to assign:</h6><br>" +
-        "<select id='modMakerRel'>\n</select>\n");
+        `<h6>Client ID ${selectedRow.children()[0].innerHTML} for Client ${selectedRow.children()[1].innerHTML}</h6>` +
+        `<h6>Please enter a positive/negative integer<br>to increment/decrement minutes for Plan ID ${selectedRow.children()[2].innerHTML}:</h6><br>` +
+        "<input type='number' id='creditmodminutes' name='creditmodminutes'>");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        modSubmit("/api/updateClientTimeBucket", {
+            auth: id_token,
+            id: selectedRow.children()[0].innerHTML,
+            planName: selectedRow.children()[2].innerHTML,
+            minutes: $("#creditmodminutes").val()
+        }, modCreditSuccess);
+    });
+}
+
+function creditAddForm() {
     $.ajax({
-        url: "/api/getAllMakers",
+        url: "/api/getAllClients",
         method: "post",
         data: {
             auth: id_token
         },
         dataType: "json",
-        success: function (makerres, makerstatus) {
+        success: function (clientres, clientstatus) {
             $.ajax({
-                url: "/api/getCreditById",
+                url: "/api/getAllPlans",
                 method: "post",
                 data: {
-                    auth: id_token,
-                    id: selectedRow.children()[0].innerHTML
+                    auth: id_token
                 },
                 dataType: "json",
-                success: function (relres, relstatus) {
-                    let makerId = relres.makerId;
-                    for(var item of makerres) {
-                        if(makerId == item.id) {
-                            $('#modMakerRel').append(
-                                `<option id="${makerId}" value="${makerId}" selected>${makerId} ${item.firstName} ${item.lastName}</option>`
-                            );
-                        }
-                        else {
-                            $('#modMakerRel').append(
-                                `<option id="${item.id}" value="${item.id}">${item.id} ${item.firstName} ${item.lastName}</option>`
-                            );
-                        }
-                    };
+                success: function (planres, planstatus) {
+                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+                        "<h6>Please select a Client and Plan to assign:</h6><br>" +
+                        "<label for='addClientCredit'> Select a Client: </label>" +
+                        "<select id='addClientCredit'>\n</select><br><br>\n" +
+                        "<label for='addPlanCredit'> Select a Plan: </label>" +
+                        "<select id='addPlanCredit'>\n</select><br><br>\n" +
+                        "<label for='addMinCredit'> Enter Value of Minutes: </label>" +
+                        "<input type='number' id='addMinCredit' name='addMinCredit'><br><br>\n");
+
+                    for(var item of clientres) {
+                        $('#addClientCredit').append(
+                            `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name}</option>`
+                        );
+                    }
+                    for(var item of planres) {
+                        $('#addPlanCredit').append(
+                            `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
+                        );
+                    }
 
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
-                        modSubmit("/api/updateCredit", {
+                        addSubmit("/api/updateClientTimeBucket", {
                             auth: id_token,
-                            id: selectedRow.children()[0].innerHTML,
-                            makerId: $("#modMakerRel").val(),
-                            planId: relres.planId,
-                            occupation: relres.occupation
-                        }, modCreditSuccess);
+                            clientId: $("#addClientCredit").val(),
+                            planId: $("#addPlanCredit").val(),
+                            minutes: $("#addMinCredit").val()
+                        }, addCreditSuccess);
                     });
                 },
-                error: function (relres, relstatus) {
-                    $("#userMainContent").html("Makers isn't working!");
+                error: function (planres, planstatus) {
+                    $("#userMainContent").html("Plan Credit isn't working!");
                 }
             });
         },
-        error: function (makerres, makerstatus) {
-            $("#userMainContent").html("Credits isn't working!");
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Credit isn't working!");
         }
     });
 }
 
-function creditAddForm() {
-
-}
-
 function modCreditSuccess (res, status) {
+    $("#optionsClient").append("<div id='modCreditSuccess'></div>");
+    $("#modCreditSuccess").html("");
+    $("#modCreditSuccess").html(`<br><h5>Successfully updated minutes for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
+    //Different from previous methods because of ajax dependency
+    setTimeout(function () {
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
+    }, 3000);
 }
 
 function addCreditSuccess (res, status) {
+    $("#optionsClient").append("<div id='addCreditSuccess'></div>");
+    $("#addCreditSuccess").html("");
+    $("#addCreditSuccess").html(`<br><h5>Successfully added new available credit for ${res.id}!</h5>`);
 
-}
-
-function deleteCreditSuccess() {
-
-}
-
-function verifyDeleteCredit() {
-
+    //Different from previous methods because of ajax dependency
+    setTimeout(function () {
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
+    }, 3000);
 }
 
 //Relationship Methods
@@ -1637,7 +1637,7 @@ function relationshipFunctionality (res) {
 function relationshipModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>Relationship ID: ${selectedRow.children()[0].innerHTML} for Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+        `<h6>Relationship ID ${selectedRow.children()[0].innerHTML} for Client ${selectedRow.children()[1].innerHTML}</h6>` +
         "<h6>Please select a Freedom Maker to assign:</h6><br>" +
         "<select id='modMakerRel'>\n</select>\n");
             $.ajax({
@@ -1866,4 +1866,4 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
-})//end document ready
+})

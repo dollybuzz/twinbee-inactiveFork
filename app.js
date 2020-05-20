@@ -257,9 +257,6 @@ app.post("/api/updateRelationship",
 app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 
-(async function() {
-    console.log(await clientService.getTimeBucketByClientId("16CHT7Ryu5EhnPWY"))
-
-})();
+(async function() {})();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

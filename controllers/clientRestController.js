@@ -150,7 +150,7 @@ module.exports = {
      * of minutes (adds or subtracts). Looks for data in the body in the form:
      * {
      *     "id": id of the client to update,
-     *     "planName": name of the client's plan to update,
+     *     "planId": id of the client's plan to update,
      *     "minutes": positive or negative integer of minutes to update with,
      *     "auth": authentication credentials; either master or token
      * }
@@ -158,7 +158,7 @@ module.exports = {
     updateClientTimeBucket(req, res) {
         console.log("Attempting to update client from REST: ");
         console.log(req.body);
-        clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes))
+        clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
             .catch(error => {
                 console.log(error)
             });
