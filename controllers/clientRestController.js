@@ -23,6 +23,34 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getClientName
+     * Retrieves a client with only name and id exposed. Looks for
+     * values in the body in the form:
+     * {
+     *     "id": customer id,
+     *     "auth": authentication credentials; either master or token
+     * }
+     * returns values in the form:
+     * {
+     *      "id": client's id,
+     *      "name": client's first and last name space separated
+     * }
+     *
+     * @returns customer{}
+     */
+    getClientName: async (req, res) => {
+        console.log("Attempting to get client by id from REST: ");
+        console.log(req.body);
+
+        let censoredClient = {};
+        let id = req.body.id;
+        let client = await clientService.getClientById(id);
+        censoredClient.id = client.id;
+        censoredClient.name = client.first_name + " " + client.last_name;
+        res.send(censoredClient);
+    },
+
+    /**
      * ENDPOINT: /api/updateClientBilling
      * Updates a client's billing info. looks for data in the body in the form:
      * {

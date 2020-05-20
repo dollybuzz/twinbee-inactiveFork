@@ -256,6 +256,12 @@ app.post("/api/updateRelationship",
     relationshipRestController.updateRelationship);
 app.post("/api/tokenToEmail",
     authController.tokenToEmail);
+app.post("/api/getClientName",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    //authController.authorizeMaker,
+    clientRestController.getClientName);
 
 (async function() {})();
 
