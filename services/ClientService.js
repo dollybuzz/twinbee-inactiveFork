@@ -88,7 +88,7 @@ class ClientService {
         let planMinutes = {};
         planMinutes[planBucket] = newMinutes;
         if (true){
-            notifyClientOutOfCredits('master@cipher.sec.com');
+            notifyClientOutOfCredits(client.email);
         }
         this.updateClientMetadata(clientId, planMinutes);
         return client;
