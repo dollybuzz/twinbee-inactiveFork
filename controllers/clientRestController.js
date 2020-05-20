@@ -155,14 +155,14 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    updateClientTimeBucket(req, res) {
+    async updateClientTimeBucket(req, res) {
         console.log("Attempting to update client from REST: ");
         console.log(req.body);
-        clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
+
+        res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
             .catch(error => {
                 console.log(error)
-            });
-        res.send({});
+            }));
     },
 
     /**
