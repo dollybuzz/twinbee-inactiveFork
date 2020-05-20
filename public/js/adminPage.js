@@ -1409,8 +1409,8 @@ function creditFunctionality (res) {
 function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>Client ID ${selectedRow.children()[0].innerHTML} for Client ${selectedRow.children()[1].innerHTML}</h6>` +
-        `<h6>Please enter a positive/negative integer<br>to increment/decrement minutes for Plan ID ${selectedRow.children()[2].innerHTML}:</h6><br>` +
+        `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+        `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for Plan ID: ${selectedRow.children()[2].innerHTML}</h6>` +
         "<input type='number' id='creditmodminutes' name='creditmodminutes'>");
 
     //Submit button function
@@ -1637,8 +1637,8 @@ function relationshipFunctionality (res) {
 function relationshipModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>Relationship ID ${selectedRow.children()[0].innerHTML} for Client ${selectedRow.children()[1].innerHTML}</h6>` +
-        "<h6>Please select a Freedom Maker to assign:</h6><br>" +
+        `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+        "<br><h6>Please select a Freedom Maker to assign:</h6>" +
         "<select id='modMakerRel'>\n</select>\n");
             $.ajax({
                 url: "/api/getAllMakers",
