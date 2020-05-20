@@ -59,6 +59,7 @@ class RelationshipService {
     async deleteRelationship(relationshipId){
         console.log(`Deleting relationship ${relationshipId}...`);
         relationshipRepo.deleteRelationship(relationshipId);
+        return({});
     }
 
     async updateRelationship(relationshipId, planId, occupation, makerId){

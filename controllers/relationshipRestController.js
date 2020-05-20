@@ -147,6 +147,7 @@ module.exports = {
     deleteRelationship: async (req, res) =>{
         console.log(`Attempting to delete relationship ${req.body.id} from REST`);
         console.log(req.body);
+        console.log(req.body);
         res.send(await relationshipService.deleteRelationship(req.body.id))
     },
 

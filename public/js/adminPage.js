@@ -535,7 +535,6 @@ function clientAddForm () {
         }
 
     });
-
 }
 
 function modClientSuccessContact (res, status) {
@@ -1549,7 +1548,7 @@ function relationshipModForm(res, status) {
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>Relationship ID: ${selectedRow.children()[0].innerHTML} for Client: ${selectedRow.children()[1].innerHTML}</h6>` +
         "<h6>Please select a Freedom Maker to assign:</h6><br>" +
-        "<select id='modifyMaker'>\n</select>\n");
+        "<select id='modMakerRel'>\n</select>\n");
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -1567,16 +1566,15 @@ function relationshipModForm(res, status) {
                         },
                         dataType: "json",
                         success: function (relres, relstatus) {
-                            console.log(relres);
                             let makerId = relres.makerId;
                             for(var item of makerres) {
                                 if(makerId == item.id) {
-                                    $('#modifyMaker').append(
+                                    $('#modMakerRel').append(
                                         `<option id="${makerId}" value="${makerId}" selected>${makerId} ${item.firstName} ${item.lastName}</option>`
                                     );
                                 }
                                 else {
-                                    $('#modifyMaker').append(
+                                    $('#modMakerRel').append(
                                         `<option id="${item.id}" value="${item.id}">${item.id} ${item.firstName} ${item.lastName}</option>`
                                     );
                                 }
@@ -1588,7 +1586,7 @@ function relationshipModForm(res, status) {
                                 modSubmit("/api/updateRelationship", {
                                     auth: id_token,
                                     id: selectedRow.children()[0].innerHTML,
-                                    makerId: $("#modifyMaker").val(),
+                                    makerId: $("#modMakerRel").val(),
                                     planId: relres.planId,
                                     occupation: relres.occupation
                                 }, modRelationshipSuccess);
@@ -1605,28 +1603,119 @@ function relationshipModForm(res, status) {
             });
 }
 
-function deleteRelationshipSuccess() {
+function relationshipAddForm() {
+    $.ajax({
+        url: "/api/getAllClients",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (clientres, clientstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getAllPlans",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (planres, planstatus) {
+                            $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+                                "<h6>Please select a Client, Freedom Maker, and Plan to assign:</h6><br>" +
+                                "<label for='addClientRel'> Select a Client: </label>" +
+                                "<select id='addClientRel'>\n</select><br><br>\n" +
+                                "<label for='addMakerRel'> Select a Freedom Maker: </label>" +
+                                "<select id='addMakerRel'>\n</select><br><br>\n" +
+                                "<label for='addPlanRel'> Select a Plan: </label>" +
+                                "<select id='addPlanRel'>\n</select><br><br>\n" +
+                                "<label for='addOccRel'> Enter an Occupation: </label>" +
+                                "<input type='text' id='addOccRel' name='addOccRel'><br><br>\n");
 
+                            for(var item of clientres) {
+                                $('#addClientRel').append(
+                                    `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name}</option>`
+                                );
+                            }
+                            for(var item of makerres) {
+                                $('#addMakerRel').append(
+                                    `<option id="${item.id}" value="${item.id}">${item.id} ${item.firstName} ${item.lastName}</option>`
+                                );
+                            }
+                            for(var item of planres) {
+                                $('#addPlanRel').append(
+                                    `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
+                                );
+                            }
+
+                            //Submit button function
+                            $("#SubmitButton").off("click");
+                            $("#SubmitButton").on('click', function (e) {
+                                addSubmit("/api/createRelationship", {
+                                    auth: id_token,
+                                    clientId: $("#addClientRel").val(),
+                                    makerId: $("#addMakerRel").val(),
+                                    planId: $("#addPlanRel").val(),
+                                    occupation: $("#addOccRel").val(),
+                                }, addRelationshipSuccess);
+                            });
+                        },
+                        error: function (planres, planstatus) {
+                            $("#userMainContent").html("Plan Relationship isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Maker Relationship isn't working!");
+                }
+            });
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Relationship isn't working!");
+        }
+    });
 }
 
-function modRelationshipSuccess () {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
+function modRelationshipSuccess (res, status) {
+    $("#optionsClient").append("<div id='modRelSuccess'></div>");
+    $("#modRelSuccess").html("");
+    $("#modRelSuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
+
+    //Different from previous methods because of ajax dependency
+    setTimeout(function () {
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    }, 1000);
+}
+
+function addRelationshipSuccess (res, status) {
+    $("#optionsClient").append("<div id='addRelSuccess'></div>");
+    $("#addRelSuccess").html("");
+    $("#addRelSuccess").html(`<br><h5>Successfully added Relationship ${res.id}!</h5>`);
+
+    //Different from previous methods because of ajax dependency
+    setTimeout(function () {
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    }, 1000);
+}
+
+function deleteRelationshipSuccess() {
+    $("#verifyEntry").html(`<h6>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h6>`);
     setTimeout(function () {
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }, 1000);
 }
 
 function verifyDeleteRelationship() {
-
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == (selectedRow.children()[0].innerHTML));
 }
-
-function relationshipAddForm() {
-
-}
-
-
 
 $(document).ready(function () {
     $(".navItem").click(function () {
