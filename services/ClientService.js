@@ -1,6 +1,7 @@
 const clientRepo = require('../repositories/clientRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
+const emailService = require('./emailService.js');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
     api_key : process.env.CHARGEBEE_TEST_API})
@@ -17,7 +18,20 @@ let updateClient = (customerId, keyValuePairs)=>{
             console.log(`Client ${customerId} updated successfully`)
         }
     });
-}
+};
+
+let notifyClientOutOfCredits = email=>{
+    emailService.sendEmail(
+        {
+            to:email,
+            subject:"Freedom Makers - Out of credits!",
+            html:`<html lang='en'>
+                                <head><style></style><title>Freedom Makers Hours</title></head>
+                                <body><h1>Freedom Makers</h1>
+                                <h4>You're out of credits!</h4>
+                                <h5>Please <a href="https://www.freedom-makers-hours.com">log in</a> to pay any overdue fees and refill your credits as needed!</h5>
+                                </body></html>`})
+};
 
 
 //TODO: Add validation
@@ -73,6 +87,9 @@ class ClientService {
         let newMinutes = minuteChange + client.meta_data[planBucket];
         let planMinutes = {};
         planMinutes[planBucket] = newMinutes;
+        if (true){
+            notifyClientOutOfCredits('master@cipher.sec.com');
+        }
         this.updateClientMetadata(clientId, planMinutes);
         return client;
     }

@@ -83,7 +83,7 @@ class TimeClockService {
                     minutes: shiftLength * -1,
                     'auth':process.env.TWINBEE_MASTER_AUTH
                 }
-            })
+            });
 
             console.log("Update client bucket due do clock-out request sent");
         }
