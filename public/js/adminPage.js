@@ -1467,7 +1467,7 @@ function creditAddForm() {
                     $("#SubmitButton").on('click', function (e) {
                         addSubmit("/api/updateClientTimeBucket", {
                             auth: id_token,
-                            clientId: $("#addClientCredit").val(),
+                            id: $("#addClientCredit").val(),
                             planId: $("#addPlanCredit").val(),
                             minutes: $("#addMinCredit").val()
                         }, addCreditSuccess);
