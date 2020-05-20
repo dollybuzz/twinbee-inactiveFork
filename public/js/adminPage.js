@@ -735,8 +735,8 @@ function modMakerSuccess (res, status) {
     $("#modsuccess").html(`<br><h5>Successfully updated Freedom Maker ${$("#modmakerid").val()}!</h5>`);
 
     //Updating viewable rows in table
-    selectedRow.children()[1].innerHTML = $("#modmakerfname").val() + " " + $("#modmakerlname").val();
-    selectedRow.children()[2].innerHTML = $("#modphone").val();
+    selectedRow.children()[1].innerHTML = $("#modmakerfname").val();
+    selectedRow.children()[2].innerHTML = $("#modmakerlname").val();
     selectedRow.children()[3].innerHTML = $("#modemail").val();
 }
 
@@ -1587,10 +1587,11 @@ function relationshipModForm(res, status) {
                             $("#SubmitButton").on('click', function (e) {
                                 modSubmit("/api/updateRelationship", {
                                     auth: id_token,
-                                    makerId: ,
-                                    clientId: makerId
-
-                                }, modSheetSuccess);
+                                    id: selectedRow.children()[0].innerHTML,
+                                    makerId: $("#modifyMaker").val(),
+                                    planId: relres.planId,
+                                    occupation: relres.occupation
+                                }, modRelationshipSuccess);
                             });
                         },
                         error: function (relres, relstatus) {
@@ -1606,6 +1607,15 @@ function relationshipModForm(res, status) {
 
 function deleteRelationshipSuccess() {
 
+}
+
+function modRelationshipSuccess () {
+    $("#optionsClient").append("<div id='modsuccess'></div>");
+    $("#modsuccess").html("");
+    $("#modsuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
+    setTimeout(function () {
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    }, 1000);
 }
 
 function verifyDeleteRelationship() {
