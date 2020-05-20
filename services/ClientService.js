@@ -74,6 +74,7 @@ class ClientService {
         let planMinutes = {};
         planMinutes[planBucket] = newMinutes;
         this.updateClientMetadata(clientId, planMinutes);
+        return client;
     }
 
     /**
