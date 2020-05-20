@@ -122,7 +122,7 @@ function showFunction (functionality, endpoint) {
             $("#userMainContent").html("Something went wrong!");
         }
     });//end outer ajax
-};// end showFunction
+};
 
 //Mod
 function prePopModForm (endpoint, modForm){
@@ -361,7 +361,7 @@ function clientFunctionality (res){
                 id: clientId
             }, deleteClientSuccess, verifyDeleteClient);
         });
-    });//end modify client
+    });
 
     //Add Client
     $("#AddButton").click(function () {
@@ -370,7 +370,7 @@ function clientFunctionality (res){
         setTimeout(function(){
             $("#DeleteButton").hide();
         }, 500);
-    });//end add client
+    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -616,7 +616,7 @@ function makerFunctionality (res){
     createBody("Delete");
 
     //Event Listeners
-    // Modify Maker
+    // Modify
     $(".makerRow").click(function () {
         selectedRow = $(this);
         let makerPrompt = `<h5>Please type in the full name to delete the selected user.</h5>` +
@@ -636,16 +636,16 @@ function makerFunctionality (res){
                 id: makerId
             }, deleteMakerSuccess, verifyDeleteMaker);
         });
-    });//end modify maker
+    });
 
-    //Add Maker
+    //Add
     $("#AddButton").click(function () {
         popAddForm(makerAddForm);
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function(){
             $("#DeleteButton").hide();
         }, 500);
-    });//end add maker
+    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -813,7 +813,7 @@ function subscriptionFunctionality (res) {
     createBody("Cancel");
 
     //Event Listeners
-    //Modify Subscription
+    //Modify
     $(".subscriptionRow").click(function () {
         selectedRow = $(this);
         let subscriptionPrompt = `<h5>Please type in the subscription ID to cancel the selected subscription.</h5>` +
@@ -836,14 +836,14 @@ function subscriptionFunctionality (res) {
 
     });
 
-    //Add Subscription
+    //Add
     $("#AddButton").click(function () {
         popAddForm(subscriptionAddForm);
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
         }, 500);
-    });//end add subscription
+    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -993,9 +993,6 @@ function planFunctionality (res) {
         '            <th scope="col">Description</th>\n' +
         '        </thead><tbody>');
 
-    //get clients to cross reference
-
-
     //Populate table
     res.forEach(item => {
         let plan = item.plan;
@@ -1014,7 +1011,7 @@ function planFunctionality (res) {
     createBody("Cancel");
 
     //Event Listeners
-    //Modify Plan
+    //Modify
     $(".planRow").click(function () {
         selectedRow = $(this);
         let planPrompt = `<h5>Please type in the plan id to cancel the selected plan.</h5>` +
@@ -1037,15 +1034,14 @@ function planFunctionality (res) {
 
     });
 
-
-    //Add Plan
+    //Add
     $("#AddButton").click(function () {
         popAddForm(planAddForm);
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
         }, 500);
-    });//end add plan
+    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -1191,21 +1187,7 @@ function timeSheetFunctionality (res) {
     createBody("Delete");
 
     //Event Listeners
-    $(".sheetRow").click(function () {
-        let makerId = $(this).children()[0].innerHTML;
-        $("#floor").css("width", "50vw");
-        $(".row").css("float", "left");
-        //alert ("You selected sheet " + makerId);
-    });
-    //Row effect
-    $(".sheetRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
-
-    //Modify Sheet
+    //Modify
     $(".sheetRow").click(function () {
         selectedRow = $(this);
         let timeSheetPrompt = `<h5>Please type in the time sheet ID to delete the selected time sheet.</h5>` +
@@ -1224,17 +1206,16 @@ function timeSheetFunctionality (res) {
                 id: sheetId
             }, deleteSheetSuccess, verifyDeleteSheet);
         });
+    });
 
-    });//end modify sheet
-
-    //Add Sheet
+    //Add
     $("#AddButton").click(function () {
         popAddForm(sheetAddForm);
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function(){
             $("#DeleteButton").hide();
         }, 500);
-    });//end add sheet
+    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -1366,8 +1347,6 @@ function verifyDeleteSheet () {
 
 //Credit Methods
 function creditFunctionality (res) {
-    console.log(res);
-
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -1379,26 +1358,151 @@ function creditFunctionality (res) {
     $("#creditTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Plan ID</th>\n' +
         '            <th scope="col">Minutes</th>\n' +
         '        </thead><tbody>');
     //Populate table
     res.forEach(customer => {
+        console.log(res);
        for(var item in customer.buckets) {
            $("#creditTable").append('\n' +
                '<tr class="creditRow">' +
                '   <td scope="row">' + customer.id + '</td>' +
-               '   <td scope="row">' + customer.firstName + ' ' + customer.lastName + '</td>' +
+               '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
                '   <td>' + item + '</td>' +
                '   <td>' + customer.buckets[item] + '</td>'
            );
        };
     });
-    $("#sheetsTable").append('\n</tbody>');
+    $("#creditTable").append('\n</tbody>');
 
     //Body Block content
     createBody(null);
+
+    //Event Listeners
+    //Modify Sheet
+    $(".relationshipRow").click(function () {
+        selectedRow = $(this);
+        let relationshipPrompt = `<h5>Please type in the relationship ID to delete the selected relationship.</h5>` +
+            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><form id='delete'>" +
+            "<label for='deleteUser'>Enter ID:</label>" +
+            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            "</form>\n";
+        prePopModForm("/api/getRelationshipById", relationshipModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let relationshipId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt("delete", relationshipPrompt,"/api/deleteRelationship", {
+                auth: id_token,
+                id: relationshipId
+            }, deleteRelationshipSuccess, verifyDeleteRelationship);
+        });
+
+    });
+
+    //Add Sheet
+    $("#AddButton").click(function () {
+        popAddForm(relationshipAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function(){
+            $("#DeleteButton").hide();
+        }, 500);
+    });
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".relationshipRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+function creditModForm(res, status) {
+//Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        `<h6>Credit ID: ${selectedRow.children()[0].innerHTML} for Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+        "<h6>Please select a Freedom Maker to assign:</h6><br>" +
+        "<select id='modMakerRel'>\n</select>\n");
+    $.ajax({
+        url: "/api/getAllMakers",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (makerres, makerstatus) {
+            $.ajax({
+                url: "/api/getCreditById",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: selectedRow.children()[0].innerHTML
+                },
+                dataType: "json",
+                success: function (relres, relstatus) {
+                    let makerId = relres.makerId;
+                    for(var item of makerres) {
+                        if(makerId == item.id) {
+                            $('#modMakerRel').append(
+                                `<option id="${makerId}" value="${makerId}" selected>${makerId} ${item.firstName} ${item.lastName}</option>`
+                            );
+                        }
+                        else {
+                            $('#modMakerRel').append(
+                                `<option id="${item.id}" value="${item.id}">${item.id} ${item.firstName} ${item.lastName}</option>`
+                            );
+                        }
+                    };
+
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        modSubmit("/api/updateCredit", {
+                            auth: id_token,
+                            id: selectedRow.children()[0].innerHTML,
+                            makerId: $("#modMakerRel").val(),
+                            planId: relres.planId,
+                            occupation: relres.occupation
+                        }, modCreditSuccess);
+                    });
+                },
+                error: function (relres, relstatus) {
+                    $("#userMainContent").html("Makers isn't working!");
+                }
+            });
+        },
+        error: function (makerres, makerstatus) {
+            $("#userMainContent").html("Credits isn't working!");
+        }
+    });
+}
+
+function creditAddForm() {
+
+}
+
+function modCreditSuccess (res, status) {
+
+}
+
+function addCreditSuccess (res, status) {
+
+}
+
+function deleteCreditSuccess() {
+
+}
+
+function verifyDeleteCredit() {
 
 }
 
@@ -1470,20 +1574,7 @@ function relationshipFunctionality (res) {
                             createBody("Delete");
 
                             //Event Listeners
-                            $(".relationshipRow").click(function () {
-                                $("#floor").css("width", "50vw");
-                                $(".row").css("float", "left");
-                            });
-
-                            //Row effect
-                            $(".relationshipRow").mouseenter(function () {
-                                $(this).css('transition', 'background-color 0.5s ease');
-                                $(this).css('background-color', '#e8ecef');
-                            }).mouseleave(function () {
-                                $(this).css('background-color', 'white');
-                            });
-
-                            //Modify Sheet
+                            //Modify
                             $(".relationshipRow").click(function () {
                                 selectedRow = $(this);
                                 let relationshipPrompt = `<h5>Please type in the relationship ID to delete the selected relationship.</h5>` +
@@ -1503,16 +1594,16 @@ function relationshipFunctionality (res) {
                                     }, deleteRelationshipSuccess, verifyDeleteRelationship);
                                 });
 
-                            });//end modify sheet
+                            });
 
-                            //Add Sheet
+                            //Add
                             $("#AddButton").click(function () {
                                 popAddForm(relationshipAddForm);
                                 $("#DeleteButton").css("opacity", "0");
                                 setTimeout(function(){
                                     $("#DeleteButton").hide();
                                 }, 500);
-                            });//end add sheet
+                            });
 
                             //Expand Table Button
                             $("#ExpandButton").click(function () {
