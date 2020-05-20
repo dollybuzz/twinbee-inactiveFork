@@ -187,7 +187,6 @@ function timeSheetFunctionality (res) {
 
 
 $(document).ready(function () {
-
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
 
@@ -230,5 +229,62 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
+
+    $.ajax({
+        method: "post",
+        url: '/api/getMakerIdByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (tokenres, status) {
+            $.ajax({
+                url: "/api/getRelationshipsByMakerId",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: tokenres.id,
+                },
+                dataType: "json",
+                success: function (relres, status) {
+
+                    let planId = relres.child[];
+
+
+                    $.ajax({
+                        url: "/api/getRelationshipsByMakerId",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                            id:
+                        },
+                        dataType: "json",
+                        success: function (res, status) {
+
+                        },
+                        error: function (res, status) {
+                            $("#UserMainContent").html("Could not get relationships!");
+                        }
+                    });
+
+                    for(var item of relres) {
+                        $("#makerSelectedClient").append(
+                            `<option id="${item.clientId}"></option>`
+                        );
+                    }
+
+                },
+                error: function (relres, status) {
+                    $("#UserMainContent").html("Could not get relationships!");
+                }
+            });
+        },
+        error: function (tokenres, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
+        }
+    });
+
+
 
 })//end document ready

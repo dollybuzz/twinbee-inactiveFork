@@ -284,8 +284,8 @@ function showOnlineMakers () {
             $("#onlineTable").append('\n</tbody>');
 
             //Body Block content
-            $("#text1").append('<h6>This is a table of current online makers.</h6>');
-            $("#text2").append('<h6>This is a running table of daily/weekly/monthly hours?</h6>');
+            $("#adminText1").append('<h6>This is a table of current online makers.</h6>');
+            $("#adminText2").append('<h6>This is a running table of daily/weekly/monthly hours?</h6>');
 
             //Event Listeners
             $(".onlineRow").click(function () {

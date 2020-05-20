@@ -350,3 +350,24 @@ th {
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
 }
+
+#makerBottomRow {
+    justify-content: center;
+}
+
+.btn-circle.btn-xl {
+    width: 200px;
+    height: 200px;
+    padding: 10px 16px;
+    border-radius: 100%;
+    font-size: 40px;
+    color: white;
+    background-color: #dbb459;
+    text-align: center;
+}
+
+.btn-circle.btn-xl:hover {
+    background-color: #32444e;
+    color: white;
+
+}
