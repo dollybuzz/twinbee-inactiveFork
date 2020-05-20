@@ -232,7 +232,7 @@ $(document).ready(function () {
 
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllClients', //change to '/api/getMakerIdByToken' during live site
         data: {
             auth: id_token,
             token: id_token
@@ -243,36 +243,32 @@ $(document).ready(function () {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id,
+                    id: 4, //change to tokenres.id during live site
                 },
                 dataType: "json",
                 success: function (relres, status) {
+                    let relmap = {};
 
-                    let planId = relres.child[];
-
-
-                    $.ajax({
-                        url: "/api/getRelationshipsByMakerId",
-                        method: "post",
-                        data: {
-                            auth: id_token
-                            id:
-                        },
-                        dataType: "json",
-                        success: function (res, status) {
-
-                        },
-                        error: function (res, status) {
-                            $("#UserMainContent").html("Could not get relationships!");
-                        }
-                    });
-
-                    for(var item of relres) {
-                        $("#makerSelectedClient").append(
-                            `<option id="${item.clientId}"></option>`
-                        );
+                    for (var relationship of relres) {
+                        $.ajax({
+                            url: "/api/getClientName",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: relationship.clientId,
+                            },
+                            dataType: "json",
+                            success: function (clientres, status) {
+                                relmap[relationship.id] = relationship;
+                                console.log(clientres);
+                                $("#makerSelectedClient").append(
+                                    `<option value=${clientres.id}>${clientres.name}</option>`)
+                            },
+                            error: function (clientres, status) {
+                                $("#UserMainContent").html("Could not get relationships!");
+                            }
+                        });
                     }
-
                 },
                 error: function (relres, status) {
                     $("#UserMainContent").html("Could not get relationships!");
