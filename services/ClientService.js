@@ -87,8 +87,8 @@ class ClientService {
         let newMinutes = minuteChange + client.meta_data[planBucket];
         let planMinutes = {};
         planMinutes[planBucket] = newMinutes;
-        if (true){
-            notifyClientOutOfCredits(client.email);
+        if (newMinutes < 0){
+          //  notifyClientOutOfCredits(client.email);
         }
         this.updateClientMetadata(clientId, planMinutes);
         return client;
