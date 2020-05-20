@@ -12,7 +12,7 @@ class TimeClockService {
 
     async clockIn(makerId, hourlyRate, clientId, occupation){
         let rightNow = await this.getCurrentMoment();
-        await request({
+        let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/createTimeSheet`,
             form: {
@@ -24,8 +24,11 @@ class TimeClockService {
                 'occupation': occupation,
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
-        })
-        console.log(`Clock-in request sent for ${makerId} at time ${rightNow}`)
+        });
+        let body = JSON.parse(result.body);
+
+        console.log(`Clock-in request sent for ${makerId} at time ${rightNow}`);
+        return Number.isInteger(body.id);
     }
 
     /**
