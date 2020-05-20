@@ -31,7 +31,7 @@ const transporter = nodemailer.createTransport({
  * @returns {Promise<>}
  */
 exports.sendEmail = options => new Promise((resolve, reject) => {
-    console.log(`Sending an email to ${options.email} with subject ${options.subject}`);
+    console.log(`Sending an email to ${options.to} with subject ${options.subject}`);
     transporter.sendMail(options, (error) => {
         if (error) {
             console.log(error);
