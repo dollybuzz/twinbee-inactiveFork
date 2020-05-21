@@ -312,6 +312,12 @@ function setClockOutFunctionality() {
     });
 }
 
+onSignIn = function (googleUser) {
+    var profile = googleUser.getBasicProfile();
+    id_token = googleUser.getAuthResponse().id_token;
+    console.log(id_token)
+};
+
 
 $(document).ready(function () {
     setClockInFunctionality();

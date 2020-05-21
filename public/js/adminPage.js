@@ -1808,6 +1808,16 @@ function verifyDeleteRelationship() {
     return (deleteUser == (selectedRow.children()[0].innerHTML));
 }
 
+
+
+
+onSignIn = function (googleUser) {
+    var profile = googleUser.getBasicProfile();
+    id_token = googleUser.getAuthResponse().id_token;
+    console.log(id_token)
+};
+
+
 $(document).ready(function () {
     $(".navItem").click(function () {
     });
