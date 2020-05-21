@@ -197,7 +197,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
        $.ajax({
-           url: '/api/getAllMakers',  //change to '/api/getMakerIdByToken' during live site
+           url: '/api/getMakerIdByToken',
            method: "post",
            data: {
                auth: id_token,
@@ -228,6 +228,13 @@ function setClockInFunctionality() {
                            success: function (clockres, status) {
                                if(clockres) {
                                    setClockOutFunctionality();
+                                   $("#makerText2").html("<h5>Successfully clocked in!</h5>");
+                                   $("#makerText2").css("opacity", "1");
+
+                                   setTimeout(function () {
+                                       $("#makerText2").css("opacity", "0");
+                                   }, 3000)
+
                                }
                                else {
                                    $("#makerText2").html("<h5>Could not clock in!</h5>");
@@ -263,7 +270,7 @@ function setClockOutFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $.ajax({
-            url: '/api/getAllMakers',  //change to '/api/getMakerIdByToken' during live site
+            url: '/api/getMakerIdByToken',
             method: "post",
             data: {
                 auth: id_token,
@@ -276,12 +283,18 @@ function setClockOutFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        makerId: 4,  //change to tokenres.id during live site
+                        makerId: tokenres.id,
                     },
                     dataType: "json",
                     success: function (clockres, status) {
                         if(clockres) {
                             setClockInFunctionality();
+                            $("#makerText2").html("<h5>Successfully clocked out!</h5>");
+                            $("#makerText2").css("opacity", "1");
+
+                            setTimeout(function () {
+                                $("#makerText2").css("opacity", "0");
+                            }, 3000)
                         }
                         else {
                             $("#makerText2").html("<h5>Could not clock out!</h5>");
@@ -348,7 +361,7 @@ $(document).ready(function () {
     //Populating drop down selection
     $.ajax({
         method: "post",
-        url: '/api/getAllClients', //change to '/api/getMakerIdByToken' during live site
+        url: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -359,7 +372,7 @@ $(document).ready(function () {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: 4, //change to tokenres.id during live site
+                    id: tokenres.id,
                 },
                 dataType: "json",
                 success: function (relres, status) {

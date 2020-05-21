@@ -371,3 +371,9 @@ th {
     color: white;
 
 }
+
+#makerText2 {
+    padding-top: 20px;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
