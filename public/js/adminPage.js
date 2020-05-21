@@ -1811,19 +1811,18 @@ function verifyDeleteRelationship() {
 
 
 
+
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
+
 };
 
 
-
 $(document).ready(function () {
-    $(".navItem").click(function () {
-    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
-
+    $("#logoutButton").click(signOut);
 
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method

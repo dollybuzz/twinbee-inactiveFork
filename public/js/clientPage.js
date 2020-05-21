@@ -301,45 +301,19 @@ function timeSheetFunctionality (res) {
 }
 
 
+
+onSignIn = function (googleUser) {
+    id_token = googleUser.getAuthResponse().id_token;
+
+};
+
+
 $(document).ready(function () {
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
+    $("#logoutButton").click(signOut);
 
-    setTimeout(function () {
-        gapi.load('auth2', function() {
-            gapi.auth2.init();
-            setTimeout(function(){
-                let auth2 = gapi.auth2.getAuthInstance();
-                id_token = auth2.currentUser.je.tc.id_token;
-                signOut = ()=>{
-                    var auth2 = gapi.auth2.getAuthInstance();
-                    auth2.signOut().then(function () {
-                        console.log('User signed out.');
-                        window.location.replace(`/`);
-                    });
-                };
-                $("#logoutButton").click(function () {
-                    signOut();
-                });
-            }, 2000)
-        });
-    }, 1000);
-
-    $.ajax({
-        url: "/api/getClientByToken",
-        method: "post",
-        data: {
-            token: id_token,
-            auth: id_token
-        },
-        success: function (res, status) {
-            clientId = res.id;
-        },
-        error: function (res, status) {
-            console.log(res)
-        }
-    });
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
