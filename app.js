@@ -18,7 +18,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const clientService = require('./services/ClientService.js')
-
+const chargebeeService = require('./services/chargebeeService.js')
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const util = require('util');
@@ -255,6 +255,11 @@ app.post("/api/updateRelationship",
     //authController.authorizeAdmin,
     //authController.authorizeMaster,
     relationshipRestController.updateRelationship);
+app.post("/api/getClientPayInvoicesPage",
+    //authController.authorizeAdmin,
+    //authController.authorizeMaster,
+    //authController.authorizeClient,
+    clientRestController.getClientPayInvoicesPage);
 app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 app.post("/api/getClientName",
@@ -264,6 +269,7 @@ app.post("/api/getClientName",
     //authController.authorizeMaker,
     clientRestController.getClientName);
 
-(async function() {})();
+(async function() {
+})();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
