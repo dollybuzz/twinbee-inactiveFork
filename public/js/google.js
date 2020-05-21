@@ -63,7 +63,7 @@ function init() {
             });
         }
 
-        GoogleAuth.then(function () {
+        gapi.auth2.GoogleAuth.then(function () {
             console.log('auth success')
         }, ()=>{
             console.log('auth failure')
