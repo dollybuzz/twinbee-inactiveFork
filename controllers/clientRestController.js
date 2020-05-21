@@ -27,12 +27,13 @@ module.exports = {
      * Retrieves a client with only name and id exposed. Looks for
      * values in the body in the form:
      * {
-     *     "id": customer id,
+     *     "relationshipObj": relationship object for client,
      *     "auth": authentication credentials; either master or token
      * }
      * returns values in the form:
      * {
      *      "id": client's id,
+     *      "relId": relationship id,
      *      "name": client's first and last name space separated
      * }
      *
@@ -43,10 +44,11 @@ module.exports = {
         console.log(req.body);
 
         let censoredClient = {};
-        let id = req.body.id;
+        let id = req.body.relationshipObj.clientId;
         let client = await clientService.getClientById(id);
         censoredClient.id = client.id;
         censoredClient.name = client.first_name + " " + client.last_name;
+        censoredClient.relId = req.body.relationshipObj.id;
         res.send(censoredClient);
     },
 
