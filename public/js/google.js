@@ -63,8 +63,12 @@ function init() {
             });
 
             gapi.auth2.init({client_id: "760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com"})
-            console.log(gapi.auth2.getAuthInstance()
-                .getBasicProfile());
+            let instance = gapi.auth2.getAuthInstance();
+            console.log("should have gotten the instance:");
+            console.log(instance);
+            console.log("that was the instance, instance profile data is:");
+            console.log(instance.getBasicProfile());
+            console.log("that was the profile");
         };
 
     });
