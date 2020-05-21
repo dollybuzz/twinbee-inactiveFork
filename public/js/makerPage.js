@@ -1,7 +1,7 @@
 //global variable
-let selectedRow = null;
 let selectedTab = null;
 let id_token = null;
+let currentRelationship = null;
 
 let navMapper = {
     main: function () {
@@ -230,6 +230,7 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
+    //Populating drop down selection
     $.ajax({
         method: "post",
         url: '/api/getAllClients', //change to '/api/getMakerIdByToken' during live site
@@ -255,7 +256,7 @@ $(document).ready(function () {
                             method: "post",
                             data: {
                                 auth: id_token,
-                                id: relationship.clientId,
+                                id: relationship,
                             },
                             dataType: "json",
                             success: function (clientres, status) {
@@ -265,7 +266,7 @@ $(document).ready(function () {
                                     `<option value=${clientres.id}>${clientres.name}</option>`)
                             },
                             error: function (clientres, status) {
-                                $("#UserMainContent").html("Could not get relationships!");
+                                $("#UserMainContent").html("Could not get clients!");
                             }
                         });
                     }
@@ -277,10 +278,64 @@ $(document).ready(function () {
         },
         error: function (tokenres, status) {
             $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
         }
     });
 
+    //Clock button functionality
+    $("#makerClock").on('click', function () {
+        $.ajax({
+            url: '/api/getAllMakers',  //change to '/api/getMakerIdByToken' during live site
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+            },
+            dataType: "json",
+            success: function (tokenres, status) {
+                $.ajax({
+                    url: "api/getRelationshipById",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        id: $("#makerSelectedClient").val() , //change to tokenres.id during live site
+                    },
+                    dataType: "json",
+                    success: function (relres, status) {
+                        $.ajax({
+                            url: "api/clockIn",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                makerId: relres.makerId,
+                                hourlyRate: relres.planId,
+                                clientId: relres.clientId,
+                                occupation: relres.occupation,
+                            },
+                            dataType: "json",
+                            success: function (clockres, status) {
+                                    if(clockres) {
+                                        clockInButton();
+                                    }
+                                    else {
+                                        $("#makerText2").html("<h5>Could not clock in!</h5>");
+                                    }
+                            },
+                            error: function (clockres, status) {
+                                $("#userMainContent").html("Clock not working!");
+                            }
+                        });
+                    },
+                    error: function (relres, status) {
+                        $("#userMainContent").html("Could not get relationships!");
+                    }
+                });
+            },
+            error: function (tokenres, status) {
+                $("#userMainContent").html("Failed to verify you!");
+            }
+        });
+
+    });
 
 
 })//end document ready
