@@ -61,7 +61,12 @@ function init() {
                 console.log('User signed out.');
                 window.location.reload();
             });
-        }
+
+            gapi.auth2.init({client_id: "760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com"})
+                .then(function{
+                    console.log('init with client success')
+                });
+        };
 
         gapi.auth2.GoogleAuth.then(function () {
             console.log('auth success')
