@@ -3,6 +3,7 @@ var GOOGLE_USER = null;
 
 
 
+
 //per google's spec at https://developers.google.com/identity/sign-in/web/sign-in
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
@@ -49,4 +50,20 @@ function googleUserAction(route, callback = null,) {
             }
         }
     })
+}
+
+
+function init() {
+    gapi.load('auth2', function() {
+        signOut = ()=>{
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+                window.location.reload();
+            });
+        }
+    });
+    console.log("Google init success")
+
+
 }
