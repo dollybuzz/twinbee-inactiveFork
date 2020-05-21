@@ -59,11 +59,12 @@ function init() {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
                 console.log('User signed out.');
-                window.location.reload();
+                window.location.replace('/');
             });
 
-            gapi.auth2.GoogleAuth=gapi.auth2.init({client_id: "760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com"})
-                
+            gapi.auth2.init({client_id: "760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com"})
+                .then(()=>{console.log('success?')}, ()=> {console.log("failure?")}, ()=>{console.log("i don't know?")})
+
         };
 
     });
