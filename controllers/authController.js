@@ -90,7 +90,7 @@ module.exports = {
         else if (await authService.accessorIsMaker(userToken)){
             makerPageController.renderLanding(req, res);
         }
-        else if (await authService.accessorIsClient()){
+        else if (await authService.accessorIsClient(userToken)){
             clientPageController.renderLanding(req, res);
         }
         else{
