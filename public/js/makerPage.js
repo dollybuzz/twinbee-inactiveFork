@@ -369,13 +369,13 @@ onSignIn = function (googleUser) {
     });
 
     //Adding logout Button
-    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
-    $("#logoutButton").click(signOut);
 
 };
 
 
 $(document).ready(function () {
+    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
+    $("#logoutButton").click(signOut);
 
 
     //Event Listeners for other nav menu items
