@@ -355,7 +355,7 @@ th {
     justify-content: center;
 }
 
-.btn-circle.btn-xl {
+#makerClock {
     width: 200px;
     height: 200px;
     padding: 10px 16px;
@@ -366,7 +366,7 @@ th {
     text-align: center;
 }
 
-.btn-circle.btn-xl:hover {
+#makerClock:hover {
     background-color: #32444e;
     color: white;
 
