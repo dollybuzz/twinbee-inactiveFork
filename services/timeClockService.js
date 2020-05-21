@@ -82,7 +82,7 @@ class TimeClockService {
                 uri: `https://www.freedom-makers-hours.com/api/updateClientTimeBucket`,
                 form: {
                     id: currentSheet.clientId,
-                    planName: currentSheet.hourlyRate,
+                    planId: currentSheet.hourlyRate,
                     minutes: shiftLength * -1,
                     'auth':process.env.TWINBEE_MASTER_AUTH
                 }
