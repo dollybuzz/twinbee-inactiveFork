@@ -63,8 +63,8 @@ function init() {
             });
 
             gapi.auth2.init({client_id: "760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com"})
-                .then(()=>{console.log('success?')}, ()=> {console.log("failure?")}, ()=>{console.log("i don't know?")})
-
+            console.log(gapi.auth2.getAuthInstance()
+                .getBasicProfile());
         };
 
     });
