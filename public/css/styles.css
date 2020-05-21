@@ -32,7 +32,7 @@ body {
     width: 100vw;
     height: 64vh;
     text-align: center;
-    padding-top: 100px;
+    padding-top: 250px;
 }
 
 #userMainContent {
@@ -211,6 +211,7 @@ label {
 
 #adminTitle, #clientTitle, #FMTitle {
     font-size: 1.5em;
+    padding-top: 30px;
     text-align: center;
 }
 
@@ -223,6 +224,7 @@ label {
     margin-right: 0 !important;
     margin-left: auto !important;
 }
+
 .abcRioButton{
     display: block;
     margin: 0 auto;
@@ -230,8 +232,9 @@ label {
 }
 #userOptions {
     text-align: right;
-    padding-top: 20px;
-    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
 }
 
 #welcome {
@@ -246,6 +249,7 @@ label {
 
 #time {
     padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #landingTitle {
