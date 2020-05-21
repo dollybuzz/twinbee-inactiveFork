@@ -748,7 +748,7 @@ function addMakerSuccess (res, status) {
     $("#makerTable").append('\n' +
         `<tr id="${res.id}" class="makerRow">` +
         '   <td scope="row">' + `${res.id}` + '</td>' +
-        '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
+        '   <td>' + `${res.firstName} ${res.lastName}` + '</td>' +
         '   <td>' + `${res.phone}` + '</td>' +
         '   <td>' + `${res.email}` + '</td></tr>'
     );
