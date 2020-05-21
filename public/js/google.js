@@ -9,7 +9,7 @@ function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
         console.log('User signed out.');
-        window.location.reload();
+        window.location.replace('/');
     });
 }
 
@@ -55,23 +55,6 @@ function googleUserAction(route, callback = null,) {
 
 function init() {
     gapi.load('auth2', function() {
-        signOut = ()=>{
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-                console.log('User signed out.');
-                window.location.replace('/');
-            });
-
-            gapi.auth2.init();
-            let instance = gapi.auth2.getAuthInstance();
-            console.log("should have gotten the instance:");
-            console.log(instance);
-            console.log("that was the instance, instance profile data is:");
-            console.log(instance.getBasicProfile());
-            console.log("that was the profile");
-        };
-
-    });
     console.log("Google init success")
 
 
