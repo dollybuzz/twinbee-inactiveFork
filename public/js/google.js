@@ -54,8 +54,9 @@ function googleUserAction(route, callback = null,) {
 
 
 function init() {
-    gapi.load('auth2', function() {
-    console.log("Google init success")
+    gapi.load('auth2', function () {
+        console.log("Google init success")
 
 
+    })
 }
