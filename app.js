@@ -37,6 +37,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 //page routes (including to-be-removed dev routes)
+app.get("/googlee47aeec58d0a4570.html", (req, res) => {res.render("googlee47aeec58d0a4570");});
 app.get("/", landingPageController.renderLanding);
 app.get("/home", landingPageController.renderLanding);
 app.get("/landing", landingPageController.renderLanding);
