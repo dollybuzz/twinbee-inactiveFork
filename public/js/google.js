@@ -62,12 +62,13 @@ function init() {
                 window.location.reload();
             });
         }
+
+        GoogleAuth.then(function () {
+            console.log('auth success')
+        }, ()=>{
+            console.log('auth failure')
+        })
     });
-    GoogleAuth.then(function () {
-        console.log('auth success')
-    }, ()=>{
-        console.log('auth failure')
-    })
     console.log("Google init success")
 
 
