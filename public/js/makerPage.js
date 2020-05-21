@@ -313,56 +313,9 @@ function setClockOutFunctionality() {
 }
 
 onSignIn = function (googleUser) {
-    var profile = googleUser.getBasicProfile();
     id_token = googleUser.getAuthResponse().id_token;
-    console.log(id_token)
-};
-
-
-$(document).ready(function () {
     setClockInFunctionality();
 
-    //Adding logout Button
-    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
-
-    setTimeout(function () {
-        gapi.load('auth2', function() {
-            gapi.auth2.init();
-            setTimeout(function(){
-                let auth2 = gapi.auth2.getAuthInstance();
-                id_token = auth2.currentUser.je.tc.id_token;
-                signOut = ()=>{
-                    var auth2 = gapi.auth2.getAuthInstance();
-                    auth2.signOut().then(function () {
-                        console.log('User signed out.');
-                        window.location.replace(`/`);
-                    });
-                };
-                $("#logoutButton").click(function () {
-                    signOut();
-                });
-            }, 1000)
-        });
-    }, 2000);
-
-    //Event Listeners for other nav menu items
-    $(".navItem").click(function (e) {
-        navMapper[e.target.id]();
-        selectedTab = $(this)[0].id;
-    })
-
-    $(".navItem").hover(function () {
-        $(this).css("color", '#dbb459');
-        $(this).css("font-style", 'italic');
-    });
-
-    $(".navItem").on("mouseleave", function() {
-        $(this).css("color", 'white');
-        $(this).css("font-style", 'normal');
-    });
-
-    //shifts the logo
-    $("#landingLogo").css("width", "20%");
 
     //Populating drop down selection
     $.ajax({
@@ -414,6 +367,35 @@ $(document).ready(function () {
             $("#userMainContent").html("Failed to verify you!");
         }
     });
+
+    //Adding logout Button
+    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
+    $("#logoutButton").click(signOut);
+
+};
+
+
+$(document).ready(function () {
+
+
+    //Event Listeners for other nav menu items
+    $(".navItem").click(function (e) {
+        navMapper[e.target.id]();
+        selectedTab = $(this)[0].id;
+    })
+
+    $(".navItem").hover(function () {
+        $(this).css("color", '#dbb459');
+        $(this).css("font-style", 'italic');
+    });
+
+    $(".navItem").on("mouseleave", function() {
+        $(this).css("color", 'white');
+        $(this).css("font-style", 'normal');
+    });
+
+    //shifts the logo
+    $("#landingLogo").css("width", "20%");
 
 
 
