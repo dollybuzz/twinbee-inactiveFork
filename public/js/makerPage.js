@@ -256,14 +256,14 @@ $(document).ready(function () {
                             method: "post",
                             data: {
                                 auth: id_token,
-                                id: relationship,
+                                relationshipObj: relationship,
                             },
                             dataType: "json",
                             success: function (clientres, status) {
                                 relmap[relationship.id] = relationship;
                                 console.log(clientres);
                                 $("#makerSelectedClient").append(
-                                    `<option value=${clientres.id}>${clientres.name}</option>`)
+                                    `<option value=${clientres.relId}>${clientres.name}</option>`)
                             },
                             error: function (clientres, status) {
                                 $("#UserMainContent").html("Could not get clients!");

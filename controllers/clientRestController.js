@@ -44,11 +44,11 @@ module.exports = {
         console.log(req.body);
 
         let censoredClient = {};
-        let id = req.body.relationshipObj.clientId;
+        let id = req.body['relationshipObj[clientId]'];
         let client = await clientService.getClientById(id);
         censoredClient.id = client.id;
         censoredClient.name = client.first_name + " " + client.last_name;
-        censoredClient.relId = req.body.relationshipObj.id;
+        censoredClient.relId = req.body['relationshipObj[id]'];
         res.send(censoredClient);
     },
 
