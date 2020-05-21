@@ -63,8 +63,10 @@ function init() {
             });
 
             gapi.auth2.init({client_id: "760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com"})
-                .then(function(){
+                .then(()=>{
                     console.log('init with client success')
+                }, ()=>{
+                    console.log('init with client error')
                 });
         };
 
