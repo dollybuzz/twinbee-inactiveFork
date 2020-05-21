@@ -26,9 +26,6 @@
 
 <body>
 <header>
-    <div id="userLogin">
-        <div class="g-signin2" data-onsuccess="onSignIn">
-        </div>
 
     </div>
     <div id="headContainer">
@@ -40,7 +37,10 @@
         </div>
         <div id="userOptions">
             <div id="welcome"><%=welcome["text"]%></div>
-            <div id="logout"></div>
+            <div class="g-signin2" data-onsuccess="onSignIn">
+            </div>
+
+            <div id="logout"><div id="userLogin"></div>
             <div id="time"></div>
         </div>
     </div>

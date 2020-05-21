@@ -36,20 +36,8 @@
 </header>
 <script src="/js/landingPage.js"></script>
 <div id="landingMain">
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <form action="/api/login" method="post">
-        <div id="form-row-email">
-                <label for="userEmail">Email</label>
-                <input id="userEmail" name="userEmail" type="email" class="form-control" placeholder="myemail@email.com">
-        </div>
-        <div id="form-row-pass">
-                <label for="userPassword">Password</label>
-                <input id="userPassword" name="userPassword" type="password" class="form-control" placeholder="password">
-        </div>
-        <button id="loginButton" type="submit" class="btn btn-default">Log In</button>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </form>
-    <br>
-    <a href="">Forgot username or password?</a>
-    <br>
 </div>
 <%- include('partials/footer.ejs') -%>

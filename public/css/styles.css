@@ -32,7 +32,7 @@ body {
     width: 100vw;
     height: 64vh;
     text-align: center;
-    padding: 100px;
+    padding-top: 100px;
 }
 
 #userMainContent {
@@ -219,7 +219,15 @@ label {
     position: relative;
     top: 70px;
 }
-
+#userOptions>.g-signin2>.abcRioButton{
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}
+.abcRioButton{
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+}
 #userOptions {
     text-align: right;
     padding-top: 20px;
