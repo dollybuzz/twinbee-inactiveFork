@@ -188,7 +188,7 @@ function timeSheetFunctionality (res) {
 function setClockInFunctionality() {
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
-    $("#makerClock").text("Clock Out");
+    $("#makerClock").text("Clock In");
     $("#makerClock").on('mouseenter', function () {
         $("#makerClock").css("background-color", "#32444e");
     });
@@ -210,7 +210,7 @@ function setClockInFunctionality() {
                    method: "post",
                    data: {
                        auth: id_token,
-                       id: $("#makerSelectedClient").val() , //change to tokenres.id during live site
+                       id: $("#makerSelectedClient").val(),
                    },
                    dataType: "json",
                    success: function (relres, status) {
@@ -272,42 +272,28 @@ function setClockOutFunctionality() {
             dataType: "json",
             success: function (tokenres, status) {
                 $.ajax({
-                    url: "api/getRelationshipById",
+                    url: "api/clockOut",
                     method: "post",
                     data: {
                         auth: id_token,
-                        id: $("#makerSelectedClient").val() , //change to tokenres.id during live site
+                        makerId: 4,  //change to tokenres.id during live site
                     },
                     dataType: "json",
-                    success: function (relres, status) {
-                        $.ajax({
-                            url: "api/clockOut",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                makerId: relres.makerId,
-                            },
-                            dataType: "json",
-                            success: function (clockres, status) {
-                                if(clockres) {
-                                    setClockInFunctionality();
-                                }
-                                else {
-                                    $("#makerText2").html("<h5>Could not clock out!</h5>");
-                                }
-                            },
-                            error: function (clockres, status) {
-                                $("#userMainContent").html("Clock not working!");
-                            }
-                        });
+                    success: function (clockres, status) {
+                        if(clockres) {
+                            setClockInFunctionality();
+                        }
+                        else {
+                            $("#makerText2").html("<h5>Could not clock out!</h5>");
+                        }
                     },
-                    error: function (relres, status) {
-                        $("#userMainContent").html("Could not get relationships!");
+                    error: function (clockres, status) {
+                        $("#userMainContent").html("Clock not working!");
                     }
                 });
             },
             error: function (tokenres, status) {
-                $("#userMainContent").html("Failed to verify you!");
+                $("#userMainContent").html("Clock not working!");
             }
         });
     });
@@ -339,7 +325,6 @@ $(document).ready(function () {
             }, 1000)
         });
     }, 2000);
-
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
