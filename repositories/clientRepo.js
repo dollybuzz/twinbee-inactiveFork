@@ -15,6 +15,7 @@ class ClientRepository {
                 first_name : firstName,
                 last_name : lastName,
                 email : customerEmail,
+                phone: phoneNumber,
                 billing_address : {
                     first_name : billingFirst,
                     last_name : billingLast,
@@ -22,8 +23,7 @@ class ClientRepository {
                     city : customerCity,
                     state : customerStateFull,
                     zip : customerZip,
-                    country : "US",
-                    phone: phoneNumber
+                    country : "US"
                 }
             }).request(function(error,result) {
                 if(error){
