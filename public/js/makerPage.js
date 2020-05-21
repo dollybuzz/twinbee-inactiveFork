@@ -185,8 +185,138 @@ function timeSheetFunctionality (res) {
     });
 }
 
+function setClockInFunctionality() {
+    $("#makerClock").off("click");
+    $("#makerClock").css("background-color", "#dbb459");
+    $("#makerClock").text("Clock Out");
+    $("#makerClock").on('mouseenter', function () {
+        $("#makerClock").css("background-color", "#32444e");
+    });
+    $("#makerClock").on('mouseleave', function () {
+        $("#makerClock").css("background-color", "#dbb459");
+    });
+    $("#makerClock").on('click', function () {
+       $.ajax({
+           url: '/api/getAllMakers',  //change to '/api/getMakerIdByToken' during live site
+           method: "post",
+           data: {
+               auth: id_token,
+               token: id_token,
+           },
+           dataType: "json",
+           success: function (tokenres, status) {
+               $.ajax({
+                   url: "api/getRelationshipById",
+                   method: "post",
+                   data: {
+                       auth: id_token,
+                       id: $("#makerSelectedClient").val() , //change to tokenres.id during live site
+                   },
+                   dataType: "json",
+                   success: function (relres, status) {
+                       $.ajax({
+                           url: "api/clockIn",
+                           method: "post",
+                           data: {
+                               auth: id_token,
+                               makerId: relres.makerId,
+                               hourlyRate: relres.planId,
+                               clientId: relres.clientId,
+                               occupation: relres.occupation,
+                           },
+                           dataType: "json",
+                           success: function (clockres, status) {
+                               if(clockres) {
+                                   setClockOutFunctionality();
+                               }
+                               else {
+                                   $("#makerText2").html("<h5>Could not clock in!</h5>");
+                               }
+                           },
+                           error: function (clockres, status) {
+                               $("#userMainContent").html("Clock not working!");
+                           }
+                       });
+                   },
+                   error: function (relres, status) {
+                       $("#userMainContent").html("Could not get relationships!");
+                   }
+               });
+           },
+           error: function (tokenres, status) {
+               $("#userMainContent").html("Failed to verify you!");
+           }
+       });
+   });
+
+}
+
+function setClockOutFunctionality() {
+    $("#makerClock").off("click");
+    $("#makerClock").css("background-color", "#32444e");
+    $("#makerClock").text("Clock Out");
+    $("#makerClock").on('mouseenter', function () {
+        $("#makerClock").css("background-color", "#dbb459");
+    });
+    $("#makerClock").on('mouseleave', function () {
+        $("#makerClock").css("background-color", "#32444e");
+    });
+    $("#makerClock").on('click', function () {
+        $.ajax({
+            url: '/api/getAllMakers',  //change to '/api/getMakerIdByToken' during live site
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+            },
+            dataType: "json",
+            success: function (tokenres, status) {
+                $.ajax({
+                    url: "api/getRelationshipById",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        id: $("#makerSelectedClient").val() , //change to tokenres.id during live site
+                    },
+                    dataType: "json",
+                    success: function (relres, status) {
+                        $.ajax({
+                            url: "api/clockOut",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                makerId: relres.makerId,
+                            },
+                            dataType: "json",
+                            success: function (clockres, status) {
+                                if(clockres) {
+                                    setClockInFunctionality();
+                                }
+                                else {
+                                    $("#makerText2").html("<h5>Could not clock out!</h5>");
+                                }
+                            },
+                            error: function (clockres, status) {
+                                $("#userMainContent").html("Clock not working!");
+                            }
+                        });
+                    },
+                    error: function (relres, status) {
+                        $("#userMainContent").html("Could not get relationships!");
+                    }
+                });
+            },
+            error: function (tokenres, status) {
+                $("#userMainContent").html("Failed to verify you!");
+            }
+        });
+    });
+}
+
 
 $(document).ready(function () {
+    setClockInFunctionality();
+
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
 
@@ -281,61 +411,6 @@ $(document).ready(function () {
         }
     });
 
-    //Clock button functionality
-    $("#makerClock").on('click', function () {
-        $.ajax({
-            url: '/api/getAllMakers',  //change to '/api/getMakerIdByToken' during live site
-            method: "post",
-            data: {
-                auth: id_token,
-                token: id_token,
-            },
-            dataType: "json",
-            success: function (tokenres, status) {
-                $.ajax({
-                    url: "api/getRelationshipById",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        id: $("#makerSelectedClient").val() , //change to tokenres.id during live site
-                    },
-                    dataType: "json",
-                    success: function (relres, status) {
-                        $.ajax({
-                            url: "api/clockIn",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                makerId: relres.makerId,
-                                hourlyRate: relres.planId,
-                                clientId: relres.clientId,
-                                occupation: relres.occupation,
-                            },
-                            dataType: "json",
-                            success: function (clockres, status) {
-                                    if(clockres) {
-                                        clockInButton();
-                                    }
-                                    else {
-                                        $("#makerText2").html("<h5>Could not clock in!</h5>");
-                                    }
-                            },
-                            error: function (clockres, status) {
-                                $("#userMainContent").html("Clock not working!");
-                            }
-                        });
-                    },
-                    error: function (relres, status) {
-                        $("#userMainContent").html("Could not get relationships!");
-                    }
-                });
-            },
-            error: function (tokenres, status) {
-                $("#userMainContent").html("Failed to verify you!");
-            }
-        });
-
-    });
 
 
 })//end document ready
