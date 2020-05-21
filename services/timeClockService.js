@@ -90,6 +90,7 @@ class TimeClockService {
 
             console.log("Update client bucket due do clock-out request sent");
         }
+        return onlineSheets.length > 0;
     }
 
     async getMinutesBetweenMoments(start, end){

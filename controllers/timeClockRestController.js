@@ -38,7 +38,7 @@ module.exports = {
     clockOut: async (req, res) => {
         console.log('Attempting to clock out user from REST:');
         console.log(req.body);
-        timeClockService.clockOut(req.body.makerId);
-        res.send({});
+        await timeClockService.clockOut(req.body.makerId);
+        res.send(await timeClockService.clockOut(req.body.makerId));
     }
 }
