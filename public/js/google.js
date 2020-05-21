@@ -63,6 +63,11 @@ function init() {
             });
         }
     });
+    GoogleAuth.then(function () {
+        console.log('auth success')
+    }, ()=>{
+        console.log('auth failure')
+    })
     console.log("Google init success")
 
 
