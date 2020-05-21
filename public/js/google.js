@@ -62,7 +62,7 @@ function init() {
                 window.location.replace('/');
             });
 
-            gapi.auth2.init({client_id: "760340914077-phpj0smkhofspo2nvh6o7g40hqvsbphc.apps.googleusercontent.com"})
+            gapi.auth2.init();
             let instance = gapi.auth2.getAuthInstance();
             console.log("should have gotten the instance:");
             console.log(instance);
