@@ -79,7 +79,7 @@ function expandTable () {
 function showFunction (functionality, endpoint) {
     $.ajax({
         method: "post",
-        url: '/api/getAllMakers', // change when ready for live:'/api/getClientByToken',
+        url: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -90,7 +90,7 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change when ready for live: res.id
+                    id: res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -256,7 +256,7 @@ onSignIn = function (googleUser) {
 function openHostedPage(getPageEndpoint){
     $.ajax({
         method: "post",
-        url: 'api/getAllMakers', //uncomment when live '/api/getClientByToken',
+        url: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -267,7 +267,7 @@ function openHostedPage(getPageEndpoint){
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change to res.id
+                    id: res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {

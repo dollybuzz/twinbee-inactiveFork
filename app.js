@@ -274,6 +274,8 @@ app.post("/api/getClientName",
     //authController.authorizeClient,
     //authController.authorizeMaker,
     clientRestController.getClientName);
+app.post("/api/subscriptionRenewed",
+    clientRestController.getClientName);
 
 (async function() {
     eventRepo.createEvent("b");
