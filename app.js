@@ -14,6 +14,7 @@ const timeClockRestController = require('./controllers/timeClockRestController.j
 const relationshipRestController = require('./controllers/relationshipRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
 const authController = require('./controllers/authController.js');
+const eventRepo = require('./repositories/eventRepo.js')
 const app = express();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
@@ -275,6 +276,7 @@ app.post("/api/getClientName",
     clientRestController.getClientName);
 
 (async function() {
+    eventRepo.createEvent("b");
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

@@ -311,6 +311,23 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/subscriptionRenewed
+     *
+     * Updates client bucket on subscription renewal.
+     * For use with chargebee webhook, not to be independently called.
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    subscriptionRenewed: async (req, res)=>{
+        console.log("Client subscription renewed; updating from REST");
+        console.log(req.body);
+        let body = JSON.parse(req.body);
+        res.send(await clientService.subscriptionRenewed(body));
+    },
+
+    /**
      * ENDPOINT: /api/getUpdatePaymentURL
      * {
      *     "id": client's chargebee id,

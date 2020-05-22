@@ -1,4 +1,5 @@
 const clientRepo = require('../repositories/clientRepo.js');
+const eventRepo = require('../repositories/eventRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 const emailService = require('./emailService.js');
@@ -348,6 +349,23 @@ class ClientService {
                 }
             });
         });
+    }
+
+    async subscriptionRenewed(parsedBody){
+        if (parsedBody.event_type == "subscription_renewed") {
+            console.log("Subscription renewal request received");
+            let subscription = parsedBody.content.subscription;
+            let customerId = subscription.customer_id;
+            let minutes = subscription.plan_quantity * 60;
+            let planId = subscription.plan_id;
+            if (await eventRepo.createEvent(parsedBody.id)) {
+                return await this.updateClientRemainingMinutes(customerId, planId, minutes);
+            }
+            else{
+                console.log(`Duplicate subscription blocked: ${parsedBody}`);
+                return false;
+            }
+        }
     }
 
     async getOutstandingPaymentsPage(clientId){
