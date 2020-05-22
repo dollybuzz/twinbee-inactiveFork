@@ -323,7 +323,6 @@ module.exports = {
     subscriptionRenewed: async (req, res)=>{
         console.log("Client subscription renewed; updating from REST");
         console.log(req.body);
-        let body = JSON.parse(req.body);
         res.send(await clientService.subscriptionRenewed(req.body));
     },
 
