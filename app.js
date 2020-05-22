@@ -275,7 +275,7 @@ app.post("/api/getClientName",
     //authController.authorizeMaker,
     clientRestController.getClientName);
 app.post("/api/subscriptionRenewed",
-    clientRestController.getClientName);
+    clientRestController.subscriptionRenewed);
 
 (async function() {
 })();
