@@ -389,3 +389,20 @@ th {
     opacity: 0;
     transition: opacity 1s ease-in-out;
 }
+
+#updatePayment, #revInvoices {
+    font-size: 1.2em;
+    color: white;
+    background-color: #32444e;
+    margin: auto 40px;
+}
+
+#updatePayment:hover, #revInvoices:hover {
+    color: white;
+    background-color: #dbb459;
+}
+
+#clientTopRow {
+    justify-content: center;
+    padding: 40px;
+}

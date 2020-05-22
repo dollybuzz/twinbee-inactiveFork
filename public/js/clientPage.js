@@ -101,10 +101,11 @@ function showMain () {
     //Contains any main tab functionality
 }
 
+
+
 //Maker Methods
 function makerFunctionality (res) {
     //Create table
-
 }
 
 //Subscription Methods
