@@ -278,7 +278,6 @@ app.post("/api/subscriptionRenewed",
     clientRestController.getClientName);
 
 (async function() {
-    eventRepo.createEvent("b");
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
