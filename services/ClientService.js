@@ -353,6 +353,7 @@ class ClientService {
 
     async subscriptionRenewed(parsedBody){
         if (parsedBody.event_type == "subscription_renewed") {
+            console.log("NEW BATCH")
             console.log("Subscription renewal request received");
             let subscription = parsedBody.content.subscription;
             console.log(`subscription is ${subscription}`);
@@ -360,6 +361,7 @@ class ClientService {
             let minutes = subscription.plan_quantity * 60;
             let planId = subscription.plan_id;
             if (await eventRepo.createEvent(parsedBody.id)) {
+                console.log("New event, updating minutes");
                 return await this.updateClientRemainingMinutes(customerId, planId, minutes);
             }
             else{
