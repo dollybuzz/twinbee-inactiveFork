@@ -1808,15 +1808,11 @@ function verifyDeleteRelationship() {
     return (deleteUser == (selectedRow.children()[0].innerHTML));
 }
 
-
-
-
-
+//Google
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
 
 };
-
 
 $(document).ready(function () {
 

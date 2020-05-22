@@ -310,12 +310,12 @@ function setClockOutFunctionality() {
             }
         });
     });
-}
+};
 
+//Google
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
     setClockInFunctionality();
-
 
     //Populating drop down selection
     $.ajax({
@@ -367,16 +367,14 @@ onSignIn = function (googleUser) {
             $("#userMainContent").html("Failed to verify you!");
         }
     });
-
-    //Adding logout Button
-
 };
 
 
 $(document).ready(function () {
+
+    //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
-
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {

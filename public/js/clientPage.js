@@ -13,14 +13,13 @@ let navMapper = {
     },
 
     reviewSubscriptions: function () {
-        showFunction(subscriptionFunctionality, );
+        showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
     },
 
     manageMakers: function () {
         showFunction(makerFunctionality, "/api/getMakersForClient");
     }
 };//end navMapper
-
 
 //Versatile Helper Functions
 function createBody() {
@@ -55,7 +54,6 @@ function showBlock () {
         $("#AddButton").css("opacity", "1");
     }, 500)
 };
-
 
 function minimizeTable () {
     $("#floor").css("transition", "width 0.5s ease-in-out");
@@ -103,99 +101,90 @@ function showMain () {
     //Contains any main tab functionality
 }
 
-
+//Maker Methods
 function makerFunctionality (res) {
     //Create table
 
-    let id = res.id;
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"makerTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#makerTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
-        '            <th scope="col">First Name</th>\n' +
-        '            <th scope="col">Last Name</th>\n' +
-        '            <th scope="col">Email</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    res.forEach(item => {
-        if (!item.deleted) {
-            $("#makerTable").append('\n' +
-                '<tr class="makerRow">' +
-                '   <td scope="row">' + item.id + '</td>' +
-                '   <td>' + item.firstName + '</td>' +
-                '   <td>' + item.lastName + '</td>' +
-                '   <td>' + item.email + '</td></tr>'
-            );
-        }
-        ;
-    });
-    $("#makerTable").append('\n</tbody>');
-
-    //Body Block content
-    createBody();
-
-    //Event Listeners
-
-
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
-
-    //Row effect
-    $(".makerRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
 }
 
-function timeSheetFunctionality (res) {
+//Subscription Methods
+function subscriptionFunctionality (res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    <table id=\"subscriptionTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
-    $("#sheetsTable").append('\n' +
+    $("#subscriptionTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Maker ID</th>\n' +
-        '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Hourly Rate</th>\n' +
-        '            <th scope="col">Clock In</th>\n' +
-        '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Customer</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Planned Monthly Hours</th>\n' +
+        '            <th scope="col">Scheduled changes</th>\n' +
+        '            <th scope="col">Cancelled</th>\n' +
+        '            <th scope="col">Next Billing</th>\n' +
         '        </thead><tbody>');
+
+    //get clients to cross reference
+
     //Populate table
     res.forEach(item => {
-        $("#sheetsTable").append('\n' +
-            '<tr class="sheetRow">' +
-            '   <td scope="row">' + item.id +'</td>' +
-            '   <td>' + item.makerId + '</td>'+
-            '   <td>' + item.clientId + '</td>'+
-            '   <td>' + item.hourlyRate + '</td>'+
-            '   <td>' + item.timeIn + '</td>'+
-            '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.occupation + '</td></tr>'
-        );
+        let subscription = item.subscription;
+        let customer = item.customer;
+        item = item.subscription;
+        if (item && !subscription.deleted) {
+            $("#subscriptionTable").append('\n' +
+                '<tr class="subscriptionRow">' +
+                '   <td scope="row">' + subscription.id + '</td>' +
+                '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
+                '   <td>' + subscription.plan_id + '</td>' +
+                '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
+                '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
+                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
+            );
+        }
     });
-    $("#sheetsTable").append('\n</tbody>');
+    $("#subscriptionTable").append('\n</tbody>');
 
     //Body Block content
-    createBody();
-
+    createBody("Cancel");
 
     //Event Listeners
+    //Modify
+    $(".subscriptionRow").click(function () {
+        selectedRow = $(this);
+        let subscriptionPrompt = `<h5>Please type in the subscription ID to cancel the selected subscription.</h5>` +
+            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><form id='delete'>" +
+            "<label for='deleteUser'>Enter ID:</label>" +
+            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            "</form>\n";
+
+        prePopModForm("/api/retrieveSubscription", subscriptionModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let subscriptionId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt("cancel", subscriptionPrompt, "/api/cancelSubscription", {
+                auth: id_token,
+                subscriptionId: subscriptionId
+            }, deleteSubscriptionSuccess, verifyDeleteSubscription);
+        });
+
+    });
+
+    //Add
+    $("#AddButton").click(function () {
+        popAddForm(subscriptionAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function () {
+            $("#DeleteButton").hide();
+        }, 500);
+    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -203,7 +192,7 @@ function timeSheetFunctionality (res) {
     });
 
     //Row effect
-    $(".sheetRow").mouseenter(function () {
+    $(".subscriptionRow").mouseenter(function () {
         $(this).css('transition', 'background-color 0.5s ease');
         $(this).css('background-color', '#e8ecef');
     }).mouseleave(function () {
@@ -211,12 +200,15 @@ function timeSheetFunctionality (res) {
     });
 }
 
+//TimeSheet Methods
+function timeSheetFunctionality (res) {
 
+}
 
+//Google
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
 };
-
 
 $(document).ready(function () {
 
