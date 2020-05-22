@@ -324,6 +324,25 @@ module.exports = {
     getUpdatePaymentPage: async (req, res) => {
         console.log("Attempting to get a hosted page for payment source update: ");
         console.log(req.body);
-        res.send(await clientService.getUpdatePaymentPage(req.body.id));
+        let page = await clientService.getUpdatePaymentPage(req.body.id);
+        res.send({url: page.url});
+    },
+
+    /**
+     * ENDPOINT: /api/getClientPayInvoicesPage
+     * {
+     *     "id": client's chargebee id,
+     *     "auth": valid auth token
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getClientPayInvoicesPage: async (req, res) =>{
+        console.log("Attempting to get a hosted page for client pay invoices from REST");
+        console.log(req.body);
+        let page = await clientService.getOutstandingPaymentsPage(req.body.id);
+        res.send({url: page.url});
     }
 };

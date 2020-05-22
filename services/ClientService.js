@@ -350,6 +350,25 @@ class ClientService {
         });
     }
 
+    async getOutstandingPaymentsPage(clientId){
+        console.log(`Getting outstanding payments page for client ${clientId}...`);
+        return new Promise((resolve, reject) => {
+            chargebee.hosted_page.collect_now({
+                customer : {
+                    id : clientId
+                }
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                }else{
+                    var hosted_page = result.hosted_page;
+                    resolve(hosted_page);
+                }
+            });
+        });
+    }
 
     /**
      * Retrieves the chargebee "Customer" object for a client given their email.
