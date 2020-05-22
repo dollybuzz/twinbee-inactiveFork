@@ -355,6 +355,7 @@ class ClientService {
         if (parsedBody.event_type == "subscription_renewed") {
             console.log("Subscription renewal request received");
             let subscription = parsedBody.content.subscription;
+            console.log(`subscription is ${subscription}`);
             let customerId = subscription.customer_id;
             let minutes = subscription.plan_quantity * 60;
             let planId = subscription.plan_id;
