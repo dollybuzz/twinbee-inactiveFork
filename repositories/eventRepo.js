@@ -5,19 +5,22 @@ class EventRepository {
     constructor() {
     };
 
-    async createEvent(eventId) {
-        let sql = 'INSERT INTO chargebee_events(id) VALUES (?)';
-        let sqlParams = [eventId];
-        query(sql, sqlParams, function (err, result) {
-            if (err) {
-                console.log(`Duplicate Event not created: Event ${eventId}`);
-                return false;
-            }
-            else{
-                console.log(`Event ${eventId} created`);
-                return true;
-            }
-        });
+    createEvent(eventId) {
+        return new Promise((resolve, reject) => {
+            let sql = 'INSERT INTO chargebee_events(id) VALUES (?)';
+            let sqlParams = [eventId];
+            query(sql, sqlParams, function (err, result) {
+                if (err) {
+                    console.log(`Duplicate Event not created: Event ${eventId}`);
+                    resolve(false);
+                }
+                else{
+                    console.log(`Event ${eventId} created`);
+                    resolve(true);
+                }
+            });
+        })
+
     }
 }
 
