@@ -324,7 +324,7 @@ module.exports = {
         console.log("Client subscription renewed; updating from REST");
         console.log(req.body);
         let body = JSON.parse(req.body);
-        res.send(await clientService.subscriptionRenewed(body));
+        res.send(await clientService.subscriptionRenewed(req.body));
     },
 
     /**
