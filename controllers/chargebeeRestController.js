@@ -236,7 +236,36 @@ module.exports = {
         console.log(req.body);
         chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId);
         res.send({});
+    },
+
+    /**
+     * ENDPOINT: /api/getSubscriptionsByClient
+     *
+     * Retrieves all subscriptions for a given client. Looks for data in the body
+     * in the form:
+     * {
+     *     "id": Client's chargebee id,
+     *     "auth": valid auth token
+     * }
+     * Returns data in the form
+     * [
+     *      {
+     *          subscription: {...},
+     *          customer:{...}
+     *      },
+     *      {
+     *          subscription: {...},
+     *          customer:{...}
+     *      },...
+     * ]
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getSubscriptionsByClient: async function (req, res) {
+        console.log(`Attempting to get subscriptions for client ${req.body.id} from REST`);
+        console.log(req.body);
+        res.send(await chargebeeService.getSubscriptionsByClient(req.body.id));
     }
-
-
 };

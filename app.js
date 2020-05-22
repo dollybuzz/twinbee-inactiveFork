@@ -19,6 +19,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const clientService = require('./services/ClientService.js')
 const chargebeeService = require('./services/chargebeeService.js')
+
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const util = require('util');
@@ -146,6 +147,10 @@ app.post("/api/updatePlan",
     //authController.authorizeMaster,
     //authController.authorizeAdmin,
     chargebeeRestController.updatePlan);
+app.post("/api/getSubscriptionsByClient",
+    //authController.authorizeMaster,
+    //authController.authorizeAdmin,
+    chargebeeRestController.getSubscriptionsByClient);
 app.post("/api/deletePlan",
     //authController.authorizeMaster,
     //authController.authorizeAdmin,

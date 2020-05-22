@@ -345,5 +345,4 @@ module.exports = {
         let page = await clientService.getOutstandingPaymentsPage(req.body.id);
         res.send({url: page.url});
     }
-
 };

@@ -264,6 +264,34 @@ class ChargebeeService {
     }
 
     /**
+     * Gets all subscriptions (up to 100) for a given client. Looks
+     * for values in the body in the form:
+     * {
+     *     "id": client's chargebee id,
+     *     "auth": valid auth token
+     * }
+     * @param clientId
+     * @returns {Promise<[subscription]>}
+     */
+    getSubscriptionsByClient(clientId) {
+        console.log(`Getting subscription for client ${clientId}...`);
+        return new Promise((resolve, reject) => {
+            chargebee.subscription.list({
+                limit: 100,
+                "customer_id[is]": clientId
+            }).request(function (error, result) {
+                if (error) {
+                    //handle error
+                    console.log(error);
+                    reject(error);
+                } else {
+                    resolve(result.list);
+                }
+            })
+        });
+    }
+
+    /**
      * cancels a subscription by chargebee subscription id
      * @param subscriptionId    - subscription to be cancelled
      */
