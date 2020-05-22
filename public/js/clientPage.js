@@ -27,8 +27,6 @@ function createBody() {
     $("#topRow").append('\n<div id="optionsClient"></div>');
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
-    $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-    $("#AddButton").css("opacity", "1");
 
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
@@ -80,17 +78,33 @@ function expandTable () {
 
 function showFunction (functionality, endpoint) {
     $.ajax({
-        url: endpoint,
         method: "post",
+        url: '/api/getAllMakers', // change when ready for live:'/api/getClientByToken',
         data: {
-            auth: id_token
+            auth: id_token,
+            token: id_token
         },
-        dataType: "json",
         success: function (res, status) {
-            functionality(res);
+            $.ajax({
+                url: endpoint,
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change when ready for live: res.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    console.log(innerStatus);
+                    functionality(innerRes);
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Something went wrong!");
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
         }
     });
 };// end showFunction
@@ -155,37 +169,6 @@ function subscriptionFunctionality (res) {
     createBody("Cancel");
 
     //Event Listeners
-    //Modify
-    $(".subscriptionRow").click(function () {
-        selectedRow = $(this);
-        let subscriptionPrompt = `<h5>Please type in the subscription ID to cancel the selected subscription.</h5>` +
-            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter ID:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n";
-
-        prePopModForm("/api/retrieveSubscription", subscriptionModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
-        $("#DeleteButton").click(function () {
-            let subscriptionId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("cancel", subscriptionPrompt, "/api/cancelSubscription", {
-                auth: id_token,
-                subscriptionId: subscriptionId
-            }, deleteSubscriptionSuccess, verifyDeleteSubscription);
-        });
-
-    });
-
-    //Add
-    $("#AddButton").click(function () {
-        popAddForm(subscriptionAddForm);
-        $("#DeleteButton").css("opacity", "0");
-        setTimeout(function () {
-            $("#DeleteButton").hide();
-        }, 500);
-    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -203,13 +186,106 @@ function subscriptionFunctionality (res) {
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#sheetsTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">#</th>\n' +
+        '            <th scope="col">Maker ID</th>\n' +
+        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Clock In</th>\n' +
+        '            <th scope="col">Clock Out</th>\n' +
+        '            <th scope="col">Occupation</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        $("#sheetsTable").append('\n' +
+            '<tr class="sheetRow">' +
+            '   <td scope="row">' + item.id +'</td>' +
+            '   <td>' + item.makerId + '</td>'+
+            '   <td>' + item.clientId + '</td>'+
+            '   <td>' + item.hourlyRate + '</td>'+
+            '   <td>' + item.timeIn + '</td>'+
+            '   <td>' + item.timeOut + '</td>'+
+            '   <td>' + item.occupation + '</td></tr>'
+        );
+    });
+    $("#sheetsTable").append('\n</tbody>');
 
+    //Body Block content
+    createBody();
+
+
+    //Event Listeners
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".sheetRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
 }
 
 //Google
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
+
+    $("#updatePayment").click(function () {
+        openHostedPage('/api/getUpdatePaymentURL');
+    })
+
+    $("#revInvoices").click(function () {
+        openHostedPage('/api/getClientPayInvoicesPage');
+    })
 };
+
+
+function openHostedPage(getPageEndpoint){
+    $.ajax({
+        method: "post",
+        url: 'api/getAllMakers', //uncomment when live '/api/getClientByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (res, status) {
+            $.ajax({
+                url: getPageEndpoint,
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change to res.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    console.log(innerStatus);
+                    window.open(innerRes.url);
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("failed to get page!");
+                }
+            });// ajax
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
+        }
+    });
+
+}
 
 $(document).ready(function () {
 
