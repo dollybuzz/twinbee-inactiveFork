@@ -121,7 +121,7 @@ function showFunction (functionality, endpoint) {
         error: function (res, status) {
             $("#userMainContent").html("Something went wrong!");
         }
-    });//end outer ajax
+    });
 };
 
 //Mod

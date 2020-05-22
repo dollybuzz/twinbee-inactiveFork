@@ -12,6 +12,10 @@ let navMapper = {
         showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
     },
 
+    reviewSubscriptions: function () {
+        showFunction(subscriptionFunctionality, );
+    },
+
     manageMakers: function () {
         showFunction(makerFunctionality, "/api/getMakersForClient");
     }
@@ -81,117 +85,24 @@ function showFunction (functionality, endpoint) {
         url: endpoint,
         method: "post",
         data: {
-            auth: id_token,
-            id: "16CHT7Ryu5EhnPWY" //Chris Redfield
+            auth: id_token
         },
         dataType: "json",
-        success: function (innerRes, innerStatus) {
-            console.log(innerStatus);
-            functionality(innerRes);
+        success: function (res, status) {
+            functionality(res);
         },
-        error: function (innerRes, innerStatus) {
+        error: function (res, status) {
             $("#userMainContent").html("Something went wrong!");
         }
     });
-    /*  Uncomment when time for live
-    $.ajax({
-        method: "post",
-        url: '/api/getClientByToken',
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        success: function (res, status) {
-            $.ajax({
-                url: endpoint,
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: res.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
-                    console.log(innerStatus);
-                    functionality(innerRes);
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
-                }
-            });// ajax
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
-        }
-    });
-    */
-
 };// end showFunction
 
 
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
-    showOnlineMakers();
 }
 
-//TODO show online makers only for client
-function showOnlineMakers () {
-    //Create table
-    $("#online").html(
-        "<div id=\"floor\">\n" +
-        "    <table id=\"onlineTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div>");
-    $.ajax({
-        url: "/api/getOnlineMakers",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (res, status) {
-            $("#onlineTable").append('\n' +
-                '        <thead class="thead">\n' +
-                '            <th scope="col">Maker ID</th>\n' +
-                '            <th scope="col">First Name</th>\n' +
-                '            <th scope="col">Last Name</th>\n' +
-                '            <th scope="col">Email</th>\n' +
-                '        </thead><tbody>');
-            //Populate table
-            res.forEach(item => {
-                $("#onlineTable").append('\n' +
-                    '<tr class="onlineRow">' +
-                    '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.firstName + '</td>'+
-                    '   <td>' + item.lastName + '</td>'+
-                    '   <td>' + item.email + '</td></tr>'
-                );
-            });
-            $("#onlineTable").append('\n</tbody>');
-
-            //Body Block content
-            $("#text1").append('<h6>This is a table of current online makers.</h6>');
-            $("#text2").append('<h6>This is a running table of daily/weekly/monthly hours?</h6>');
-
-            //Event Listeners
-            $(".onlineRow").click(function () {
-                let clientId = $(this).children()[0].innerHTML;
-            })
-            //Row effect
-            $(".onlineRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-            });
-        },
-        error: function (res, status) {
-            $("#floor").html("Something went wrong!");
-            //log, send error report
-        }
-    });//end ajax
-};
 
 function makerFunctionality (res) {
     //Create table
@@ -304,7 +215,6 @@ function timeSheetFunctionality (res) {
 
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
-
 };
 
 
@@ -314,6 +224,7 @@ $(document).ready(function () {
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
 
+    showMain();
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
