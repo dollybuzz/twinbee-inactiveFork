@@ -11,8 +11,24 @@ class TimeClockService {
     }
 
     async clockIn(makerId, hourlyRate, clientId, occupation){
-        let rightNow = await this.getCurrentMoment();
         let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getTimeSheetsByMakerId`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'id':makerId.toString()
+            }
+        });
+        result = JSON.parse(result.body);
+        for (var sheet of result){
+            if (sheet.timeOut == '0000-00-00 00:00:00'){
+                console.log(`User ${makerId} bad clock in attempt; already clocked in`);
+                return true; //attempt successful, a clock-in exists.
+            }
+        }
+
+        let rightNow = await this.getCurrentMoment();
+        result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/createTimeSheet`,
             form: {
