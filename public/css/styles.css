@@ -394,15 +394,31 @@ th {
     font-size: 1.2em;
     color: white;
     background-color: #32444e;
-    margin: auto 40px;
 }
 
-#updatePayment:hover, #revInvoices:hover {
+#buyHoursNow {
+    font-size: 1.2em;
+    color: white;
+    background-color: #32444e;
+}
+
+#updatePayment:hover, #revInvoices:hover, #buyHoursNow:hover {
     color: white;
     background-color: #dbb459;
 }
 
 #clientTopRow {
-    justify-content: center;
-    padding: 40px;
+    display: grid;
+    width: 100%;
+    grid-template-columns: 2fr 2fr;
+    padding-top: 20px;
+    vertical-align: center;
+    margin: 0;
+}
+
+#clientText1, #clientButtons {
+    position: relative;
+    text-align: center;
+    padding: 10px;
+    margin: auto;
 }

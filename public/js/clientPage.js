@@ -113,9 +113,8 @@ function showFunction (functionality, endpoint) {
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
+    showBuyPrompt();
 }
-
-
 
 //Maker Methods
 function makerFunctionality (res) {
@@ -222,7 +221,6 @@ function timeSheetFunctionality (res) {
     //Body Block content
     createBody();
 
-
     //Event Listeners
 
     //Expand Table Button
@@ -287,6 +285,66 @@ function openHostedPage(getPageEndpoint){
 
 }
 
+//Buy Hours Methods
+function showBuyPrompt () {
+    $.ajax({
+        url: '/api/getAllClients', //"/api/getClientByToken",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+        },
+        dataType: "json",
+        success: function (tokenres, tokenstatus) {
+            $.ajax({
+                url: "/api/getTimeBucketByClientId",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: '16CHT7Ryu5EhnPWY',//tokenres.id,
+                },
+                dataType: "json",
+                success: function (planres, planstatus) {
+                    $("#clientText1").html("<h5>Add data into the following fields</h5><br>" +
+                        "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
+                        "<label for='buyPlan'> Select a Plan: </label>" +
+                        "<select id='buyPlan'>\n</select><br><br>\n" +
+                        "<label for='buyHours'> Enter Value of Hours: </label>" +
+                        "<input type='number' id='buyHours' name='buyHours'><br><br>\n");
+
+                        for(var item in planres.buckets) {
+                            $("#buyPlan").append(
+                                `<option id="${item}" value="${item}">${item}</option>`
+                            );
+                        }
+
+                        $("#clientText1").append("<div id='verifyHourEntry'></div>");
+                        $("#clientText1").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"buyHoursNow\">Buy Hours Now</button>\n");
+
+                        $("#buyHoursNow").on("click", function (e) {
+                            if($("#buyHours").val().includes(".")) {
+                                e.preventDefault();
+                                $("#verifyHourEntry").html("<h6>Invalid entry!</h6>");
+                            }
+                            else {
+                                $("#verifyHourEntry").html("<h6>Successful purchase!</h6>");
+                                //ajax all to api/creditNow
+                            }
+                        })
+
+                        },
+                error: function (planres, planstatus) {
+                    $("#userMainContent").html("Plan isn't working!");
+                }
+            });
+        },
+        error: function (tokenres, tokenstatus) {
+            $("#userMainContent").html("Token isn't working!");
+        }
+    });
+}
+
+
 $(document).ready(function () {
 
     //Adding logout Button
@@ -313,5 +371,10 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
+
+    //Buy Hours Methods
+    $("#buyHoursNow").on('click', function () {
+
+    })
 
 });//end document ready
