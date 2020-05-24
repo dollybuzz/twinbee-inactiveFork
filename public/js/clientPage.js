@@ -22,16 +22,20 @@ let navMapper = {
 };//end navMapper
 
 //Versatile Helper Functions
-function createBody() {
+function createBody (button) {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
+    if(button != null)
+    {
+        $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
+    }
+    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
 
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
     $("#userMainContent").append('<div id="buttonsBottom"></div>');
-    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#buttonsBottom").hide();
 };
@@ -42,14 +46,13 @@ function showBlock () {
     setTimeout(function () {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
-        $("#AddButton").show();
         $("#SubmitButton").show();
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("opacity", "1");
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1");
-        $("#AddButton").css("opacity", "1");
+        $("#buyForm").css("opacity", "1");
     }, 500)
 };
 
@@ -63,7 +66,6 @@ function minimizeTable () {
 function expandTable () {
     $("#optionsClient").hide();
     $("#buttonsBottom").hide();
-    $("#DeleteButton").hide();
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
     $("#floor").css("width", "100%");
@@ -72,8 +74,6 @@ function expandTable () {
     $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#SubmitButton").css("opacity", "0");
     $("#ExpandButton").css("opacity", "0");
-    $("#DeleteButton").css("opacity", "0");
-    $("#AddButton").css("opacity", "1");
 };
 
 function showFunction (functionality, endpoint) {
@@ -94,7 +94,6 @@ function showFunction (functionality, endpoint) {
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
-                    console.log(innerStatus);
                     functionality(innerRes);
                 },
                 error: function (innerRes, innerStatus) {
@@ -108,13 +107,6 @@ function showFunction (functionality, endpoint) {
         }
     });
 };// end showFunction
-
-
-//Main Methods
-function showMain () {
-    //Contains any main tab functionality
-    showBuyPrompt();
-}
 
 //Maker Methods
 function makerFunctionality (res) {
@@ -165,7 +157,7 @@ function subscriptionFunctionality (res) {
     $("#subscriptionTable").append('\n</tbody>');
 
     //Body Block content
-    createBody("Cancel");
+    createBody(null);
 
     //Event Listeners
 
@@ -219,7 +211,7 @@ function timeSheetFunctionality (res) {
     $("#sheetsTable").append('\n</tbody>');
 
     //Body Block content
-    createBody();
+    createBody(null);
 
     //Event Listeners
 
@@ -237,17 +229,24 @@ function timeSheetFunctionality (res) {
     });
 }
 
-//Google
-onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+//Main Methods
+function showMain () {
+    //Contains any main tab functionality
+    showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
 
-    $("#updatePayment").click(function () {
+    $("#updatePaymentButton").click(function () {
         openHostedPage('/api/getUpdatePaymentURL');
     })
 
-    $("#revInvoices").click(function () {
+    $("#revInvoicesButton").click(function () {
         openHostedPage('/api/getClientPayInvoicesPage');
     })
+}
+
+//Google
+onSignIn = function (googleUser) {
+    id_token = googleUser.getAuthResponse().id_token;
+    showMain(); //must call here to first generate token
 };
 
 
@@ -286,7 +285,75 @@ function openHostedPage(getPageEndpoint){
 }
 
 //Buy Hours Methods
-function showBuyPrompt () {
+function timeBucketFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"bucketTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#bucketTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Plan ID</th>\n' +
+        '            <th scope="col">Hours Available</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    for(var plan in res.buckets) {
+        let minToHours = (Number.parseFloat(res.buckets[plan]))/60;
+        minToHours = minToHours.toFixed(2);
+            $("#bucketTable").append('\n' +
+                '<tr class="bucketRow">' +
+                '   <td scope="row">' + plan + '</td>' +
+                '   <td>' + minToHours + '</td></tr>'
+            );
+    };
+    $("#bucketTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody(null);
+    $("#userMainContent").prepend("<div id='altTopButtons'></div>");
+    $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"BuyButton\">Buy Hours</button>");
+    $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"updatePaymentButton\">Update Payment</button>");
+    $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
+
+    //Event Listeners
+    //Buy Hours
+    $(".bucketRow").click(function () {
+        selectedRow = $(this);
+        popBuyForm(buyForm);
+    });
+
+    //Buy Hours
+    $("#BuyButton").click(function () {
+        selectedRow = $(this);
+        popBuyForm(buyForm);
+    });
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".bucketRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+
+}
+
+function popBuyForm (form) {
+    minimizeTable();
+    showBlock();
+    form();
+}
+
+function buyForm () {
+    $("#optionsClient").html("<div id='buyForm'></div>");
     $.ajax({
         url: '/api/getAllClients', //"/api/getClientByToken",
         method: "post",
@@ -305,34 +372,69 @@ function showBuyPrompt () {
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
-                    $("#clientText1").html("<h5>Add data into the following fields</h5><br>" +
+                    $("#buyForm").html("<h5>Add data into the following fields</h5><br>" +
                         "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
                         "<label for='buyPlan'> Select a Plan: </label>" +
                         "<select id='buyPlan'>\n</select><br><br>\n" +
-                        "<label for='buyHours'> Enter Value of Hours: </label>" +
+                        "<label for='buyHours'> Enter Number of Hours: </label>" +
                         "<input type='number' id='buyHours' name='buyHours'><br><br>\n");
 
-                        for(var item in planres.buckets) {
-                            $("#buyPlan").append(
-                                `<option id="${item}" value="${item}">${item}</option>`
-                            );
+                    for (var item in planres.buckets) {
+                        $("#buyPlan").append(
+                            `<option id="${item}" value="${item}">${item}</option>`
+                        );
+                    }
+
+                    $("#buyForm").append("<div id='verifyHourEntry'></div>");
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on("click", function (e) {
+                        if ($("#buyHours").val().includes(".") || ($("#buyHours").val().length < 1) || ($("#buyHours").val().includes("-")) || $("#buyHours").val() == "0") {
+                            e.preventDefault();
+                            $("#verifyHourEntry").html("<h6>Invalid entry! Please enter hours again.</h6>");
+                        } else {
+                            let numHours = $("#buyHours").val();
+                            let planSelect = $("#buyPlan").val();
+                            $("#buyForm").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) for your plan ${$("#buyPlan").val()}?</h5>`);
+                            $("#buyForm").append("<div id='selectionYorN'></div>");
+                            $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
+                            $("#selectionYorN").append("<button id='YesBuy' type='button' class='btn btn-default'>Yes</button>");
+                            $("#SubmitButton").css("opacity", "0");
+                            $("#SubmitButton").hide();
+                            $("#buyForm").css("opacity", "1");
+                            $("#YesBuy").css("opacity", "1");
+                            $("#NoBuy").css("opacity", "1");
+
+                            $("#NoBuy").click(function () {
+                                $("#SubmitButton").show();
+                                expandTable();
+                            });
+
+                            $("#YesBuy").click(function () {
+                                $.ajax({
+                                    url: "/api/creditNow",
+                                    method: "post",
+                                    data: {
+                                        auth: id_token,
+                                        customerId: '16CHT7Ryu5EhnPWY',//tokenres.id,
+                                        planId: planSelect,
+                                        numHours: numHours,
+                                    },
+                                    dataType: "json",
+                                    success: function (res, status) {
+                                        $("#buyForm").append("<h5>Successfully purchased " + numHours + " hour(s) for Plan " + planSelect + "!</h5>");
+                                        setTimeout(function () {
+                                            showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
+                                        }, 3000);
+                                    },
+                                    error: function (res, status) {
+                                        $("#userMainContent").html("Buy Credit isn't working!");
+                                    }
+                                });
+                            });
                         }
+                    });
 
-                        $("#clientText1").append("<div id='verifyHourEntry'></div>");
-                        $("#clientText1").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"buyHoursNow\">Buy Hours Now</button>\n");
-
-                        $("#buyHoursNow").on("click", function (e) {
-                            if($("#buyHours").val().includes(".")) {
-                                e.preventDefault();
-                                $("#verifyHourEntry").html("<h6>Invalid entry!</h6>");
-                            }
-                            else {
-                                $("#verifyHourEntry").html("<h6>Successful purchase!</h6>");
-                                //ajax all to api/creditNow
-                            }
-                        })
-
-                        },
+                },
                 error: function (planres, planstatus) {
                     $("#userMainContent").html("Plan isn't working!");
                 }
@@ -350,8 +452,6 @@ $(document).ready(function () {
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
-
-    showMain();
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
@@ -371,10 +471,5 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-
-    //Buy Hours Methods
-    $("#buyHoursNow").on('click', function () {
-
-    })
 
 });//end document ready
