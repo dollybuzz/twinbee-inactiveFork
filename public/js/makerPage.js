@@ -78,12 +78,12 @@ function createBody() {
     $("#optionsClient").css("width", "50%");
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
     $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
+    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#AddButton").css("opacity", "1");
 
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
     $("#userMainContent").append('<div id="buttonsBottom"></div>');
-    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#buttonsBottom").hide();
 };

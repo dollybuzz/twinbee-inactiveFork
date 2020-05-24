@@ -108,7 +108,38 @@ body a:hover {
     background-color: #32444e;
 }
 
-#DeleteButton, #YesDelete {
+#BuyButton {
+    font-size: 1.2em;
+    color: white;
+    background-color: #32444e;
+    opacity: 1;
+}
+
+#updatePaymentButton,
+#revInvoicesButton,
+#YesBuy {
+    font-size: 1.2em;
+    color: white;
+    background-color: #32444e;
+}
+
+#updatePaymentButton:hover,
+#revInvoicesButton:hover,
+#BuyNow:hover,
+#YesBuy:hover {
+    color: white;
+    background-color: #dbb459;
+}
+
+#altTopButtons {
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr;
+    place-items: center;
+}
+
+
+
+#DeleteButton, #YesDelete, #NoBuy {
     color: white;
     background-color: darkred;
 }
@@ -120,7 +151,7 @@ body a:hover {
     background-color: #dbb459;
 }
 
-#DeleteButton:hover, #YesDelete:hover {
+#DeleteButton:hover, #YesDelete:hover, #NoBuy:hover {
     background-color: #ba4141;
 }
 
@@ -346,6 +377,13 @@ th {
     transition: opacity 0.1s ease-in-out;
 }
 
+#buyForm {
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+
 #selectionYorN {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -353,12 +391,12 @@ th {
     padding: 20px;
 }
 
-#YesDelete {
+#YesDelete, #YesBuy {
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
 }
 
-#NoDelete {
+#NoDelete, #NoBuy {
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
 }
@@ -381,44 +419,10 @@ th {
 #makerClock:hover {
     background-color: #32444e;
     color: white;
-
 }
 
 #makerText2 {
     padding-top: 20px;
     opacity: 0;
     transition: opacity 1s ease-in-out;
-}
-
-#updatePayment, #revInvoices {
-    font-size: 1.2em;
-    color: white;
-    background-color: #32444e;
-}
-
-#buyHoursNow {
-    font-size: 1.2em;
-    color: white;
-    background-color: #32444e;
-}
-
-#updatePayment:hover, #revInvoices:hover, #buyHoursNow:hover {
-    color: white;
-    background-color: #dbb459;
-}
-
-#clientTopRow {
-    display: grid;
-    width: 100%;
-    grid-template-columns: 2fr 2fr;
-    padding-top: 20px;
-    vertical-align: center;
-    margin: 0;
-}
-
-#clientText1, #clientButtons {
-    position: relative;
-    text-align: center;
-    padding: 10px;
-    margin: auto;
 }
