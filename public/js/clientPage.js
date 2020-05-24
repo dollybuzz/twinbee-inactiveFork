@@ -106,11 +106,72 @@ function showFunction (functionality, endpoint) {
             console.log(res);
         }
     });
-};// end showFunction
+};
 
 //Maker Methods
 function makerFunctionality (res) {
-    //Create table
+    $.ajax({
+        url: "/api/getRelationshipsByClientId", //returns maker id, use maker id to get maker name
+        method: "post",
+        data: {
+            auth: id_token,
+            id: '16CHT7Ryu5EhnPWY',//tokenres.id,
+        },
+        dataType: "json",
+        success: function (res, status) {
+            //Create table
+            $("#userMainContent").html(
+                "<div id=\"buttonsTop\"></div>\n" +
+                "<div class='row' id='topRow'>\n" +
+                "<div id=\"floor\">\n" +
+                "    <table id=\"makerTable\" class=\"table\">\n" +
+                "    </table>\n" +
+                "</div></div>");
+            $("#makerTable").append('\n' +
+                '        <thead class="thead">\n' +
+                '            <th scope="col">Freedom Maker Name</th>\n' +
+                '            <th scope="col">Email</th>\n' +
+                '            <th scope="col">Occupation</th>\n' +
+                '        </thead><tbody>');
+
+            //Populate table
+            res.forEach(item => {
+                $("#makerTable").append('\n' +
+                    '<tr class="makerRow">' +
+                    '   <td scope="row">' + subscription.id + '</td>' +
+                    '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
+                    '   <td>' + subscription.plan_id + '</td>' +
+                    '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
+                    '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
+                    '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                    '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
+                );
+            });
+
+            $("#subscriptionTable").append('\n</tbody>');
+
+            //Body Block content
+            createBody(null);
+
+            //Expand Table Button
+            $("#ExpandButton").click(function () {
+                expandTable();
+            });
+
+            //Row effect
+            $(".subscriptionRow").mouseenter(function () {
+                $(this).css('transition', 'background-color 0.5s ease');
+                $(this).css('background-color', '#e8ecef');
+            }).mouseleave(function () {
+                $(this).css('background-color', 'white');
+            });
+        },
+        error: function (tokenres, tokenstatus) {
+            $("#userMainContent").html("Token isn't working!");
+        }
+    });
+
+
 }
 
 //Subscription Methods
@@ -134,8 +195,6 @@ function subscriptionFunctionality (res) {
         '            <th scope="col">Next Billing</th>\n' +
         '        </thead><tbody>');
 
-    //get clients to cross reference
-
     //Populate table
     res.forEach(item => {
         let subscription = item.subscription;
@@ -158,8 +217,6 @@ function subscriptionFunctionality (res) {
 
     //Body Block content
     createBody(null);
-
-    //Event Listeners
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -193,7 +250,7 @@ function timeSheetFunctionality (res) {
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
@@ -205,15 +262,13 @@ function timeSheetFunctionality (res) {
             '   <td>' + item.hourlyRate + '</td>'+
             '   <td>' + item.timeIn + '</td>'+
             '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.occupation + '</td></tr>'
+            '   <td>' + item.occupation + '</td></tr>' //change to task
         );
     });
     $("#sheetsTable").append('\n</tbody>');
 
     //Body Block content
     createBody(null);
-
-    //Event Listeners
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -248,7 +303,6 @@ onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
     showMain(); //must call here to first generate token
 };
-
 
 function openHostedPage(getPageEndpoint){
     $.ajax({
@@ -448,7 +502,6 @@ function buyForm () {
 
 
 $(document).ready(function () {
-
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
