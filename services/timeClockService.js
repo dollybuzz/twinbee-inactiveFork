@@ -10,7 +10,7 @@ class TimeClockService {
         return await moment.utc().format('YYYY-MM-DD HH:mm:ss');
     }
 
-    async clockIn(makerId, hourlyRate, clientId, occupation){
+    async clockIn(makerId, hourlyRate, clientId, task){
         let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getTimeSheetsByMakerId`,
@@ -37,7 +37,7 @@ class TimeClockService {
                 'clientId': clientId,
                 timeIn: await this.getCurrentMoment(),
                 timeOut: '0000-00-00 00:00:00',
-                'occupation': occupation,
+                'task': task,
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         });
@@ -113,26 +113,6 @@ class TimeClockService {
         let exactSeconds = moment.duration(moment(end).diff(start)).asMinutes();
         let estimatedMinutes = exactSeconds.toFixed(0);
         return estimatedMinutes;
-    }
-
-    async getRunningTime(makerId){
-        let allSheetsForMaker = await timeSheetService.getSheetsByMaker(makerId);
-        let targetSheet = null;
-        let rightNow =await this.getCurrentMoment();
-        for (var i = 0; i < allSheetsForMaker.length; ++i) {
-            if (allSheetsForMaker[i]['end_time'] === '0000-00-00 00:00:00') {
-                targetSheet = allSheetsForMaker[i];
-                break;
-            }
-        }
-
-        if (!targetSheet){
-            targetSheet = {end_time: rightNow}
-        }
-
-        let exactSeconds = moment.duration(rightNow-moment(targetSheet.start_time)).asSeconds();
-        let estimatedSeconds = exactSeconds.toFixed(0);
-        return estimatedSeconds;
     }
 }
 

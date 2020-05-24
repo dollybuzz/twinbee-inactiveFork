@@ -44,6 +44,16 @@ module.exports = {
      *     "auth": valid auth token,
      *     "id": id of the maker in the relationships
      * }
+     * returns data in the form:
+     * [
+     *   {
+     *    "id":  relationship id,
+     *    "makerId": id of the maker in the relationship,
+     *    "clientId": id of the client in the relationship,
+     *    "planId": id of the plan binding the relationship,
+     *    "occupation": occupation of the maker in the relationship
+     *   },...
+     * ]
      * @param req
      * @param res
      * @returns {Promise<[]>}
@@ -62,6 +72,16 @@ module.exports = {
      *     "auth": valid auth token,
      *     "id": id of the client in the relationships
      * }
+     * Returns data in the form:
+     * [
+     *   {
+     *    "id":  relationship id,
+     *    "makerId": id of the maker in the relationship,
+     *    "clientId": id of the client in the relationship,
+     *    "planId": id of the plan binding the relationship,
+     *    "occupation": occupation of the maker in the relationship
+     *   },...
+     * ]
      * @param req
      * @param res
      * @returns {Promise<[]>}

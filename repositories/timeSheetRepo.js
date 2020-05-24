@@ -5,10 +5,10 @@ class TimeSheetRepository {
     constructor() {
     };
 
-    async createSheet(makerId, clientId, rate, startTime, endTime, occupation) {
-        let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, occupation)' +
+    async createSheet(makerId, clientId, rate, startTime, endTime, task) {
+        let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, task)' +
             ' VALUES (?, ?, ?, ?, ?, ?)';
-        let sqlParams = [makerId, clientId, rate, startTime, endTime, occupation];
+        let sqlParams = [makerId, clientId, rate, startTime, endTime, task];
         let result = await query(sql, sqlParams).catch(e => {
             console.log(e);
             return('error; client or maker might not exist');
@@ -30,7 +30,7 @@ class TimeSheetRepository {
 
     deleteSheet(id) {
         let sql = "UPDATE time_sheet SET start_time = '00:00:00', end_time = '00:00:00', " +
-            "occupation = 'removedByAdmin' WHERE id = ?";
+            "task = 'removedByAdmin' WHERE id = ?";
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
