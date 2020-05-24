@@ -88,7 +88,7 @@ describe('Time Clock Service Test', function () {
                     hourly_rate: 20.00,
                     start_time: '2019-04-24 22:22:22',
                     end_time: '2019-04-24 23:23:23',
-                    occupation: 'worker',
+                    task: 'worker',
                     duration: '1 hour 1 minute',
                     cost: 23.33
                 }])
@@ -122,7 +122,7 @@ describe('Time Clock Service Test', function () {
                     client: 'client',
                     hourly_rate: 20.00,
                     start_time: '2019-04-24 22:22:22',
-                    occupation: 'worker',
+                    task: 'worker',
                     time_sheet_id: 1
                 }]);
 

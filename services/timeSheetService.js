@@ -15,13 +15,13 @@ class TimeSheetService {
      * @param clientId  - client's chargebee id
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
-     * @param occupation- maker's occupation for pay period
+     * @param task- maker's task for pay period
      * @returns {Promise<TimeSheet>}
      */
-    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, occupation) {
+    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task) {
         let id = await timeSheetRepo.createSheet(makerId, clientId,
-            hourlyRate, timeIn, timeOut, occupation).catch(err=>{console.log(err)});
-        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, occupation);
+            hourlyRate, timeIn, timeOut, task).catch(err=>{console.log(err)});
+        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task);
     }
 
     /**
@@ -130,7 +130,7 @@ class TimeSheetService {
 //helper function
 createSheetFromRow = async row => {
     return new TimeSheet(row.id, row.maker_id, row.hourly_rate,
-        row.client_id, row.start_time, row.end_time, row.occupation);
+        row.client_id, row.start_time, row.end_time, row.task);
 };
 
 

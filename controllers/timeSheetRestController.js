@@ -13,7 +13,7 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "occupation": occupation of maker for time period
+     *      "task": task of maker for time period
      * }
      *
      * Looks for data in the body as follows:
@@ -39,7 +39,7 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "occupation": occupation of maker for time period
+     *      "task": task of maker for time period
      * }
      * Looks for values in the body in form:
      * {
@@ -68,7 +68,7 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "occupation": occupation of maker for time period
+     *      "task": task of maker for time period
      * }
      * Looks for values in the body in form:
      * {
@@ -97,7 +97,7 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "occupation": occupation of maker for time period
+     *      "task": task of maker for time period
      * }
      * Looks for values in the body in form:
      * {
@@ -162,7 +162,7 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "occupation": occupation of maker for time period,
+     *      "task": task of maker for time period,
      *     "auth": authentication credentials; either master or token
      * }
      * @param req
@@ -173,7 +173,7 @@ module.exports = {
         console.log("Attempting to create a timesheet");
         console.log(req.body);
         let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
-            req.body.timeIn, req.body.timeOut, req.body.occupation).catch(err=>{console.log(err)});
+            req.body.timeIn, req.body.timeOut, req.body.task).catch(err=>{console.log(err)});
         if (!createdSheet.id){
             res.send(undefined);
         }

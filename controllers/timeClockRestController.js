@@ -5,12 +5,12 @@ module.exports = {
     /**
      * ENDPOINT: /api/clockIn
      * "Clocks in" a given user. Initializes a new timesheet with the provided
-     * client, hourly rate, and occupation. Looks for values in the body in the form:
+     * client, hourly rate, and task. Looks for values in the body in the form:
      * {
      *     "makerId": id of maker to clock in,
      *     "hourlyRate": hourly rate of maker to clock in,
      *     "clientId": id of client the maker is working for,
-     *     "occupation": type of work performed for this period,
+     *     "task": type of work performed for this period,
      *     "auth": authentication credentials; either master or token
      * }
      */
@@ -18,7 +18,7 @@ module.exports = {
         console.log('Attempting to clock in user from REST:');
         console.log(req.body);
         res.send(await timeClockService.clockIn(req.body.makerId, req.body.hourlyRate,
-            req.body.clientId, req.body.occupation));
+            req.body.clientId, req.body.task));
     },
 
     /**

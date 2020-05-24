@@ -9,11 +9,11 @@ const Maker = require('../domain/entity/maker.js');
 const nock = require('nock');
 
 const timeSheetBasic1 = {id: "1", maker_id: "1", client_id: "169yOXRy3SPY9s7n", hourly_rate: "20.00",
-    start_time: '2019-04-24 22:22:22', end_time: '0000-00-00 00:00:00', occupation: ''}
+    start_time: '2019-04-24 22:22:22', end_time: '0000-00-00 00:00:00', task: ''}
 const timeSheetBasic2 = {id: "2", maker_id: "1", client_id: "169yOXRy3SPY9s7n", hourly_rate: "20.00",
-    start_time: '2019-04-23 22:22:22', end_time: '2019-04-23 23:23:23', occupation: ''}
+    start_time: '2019-04-23 22:22:22', end_time: '2019-04-23 23:23:23', task: ''}
 const timeSheetBasic3 = {id: "3", maker_id: "2", client_id: "169yOXRy3SPY9s7n", hourly_rate: "20.00",
-    start_time: '2019-04-22 22:22:22', end_time: '2019-04-22 23:23:23', occupation: ''}
+    start_time: '2019-04-22 22:22:22', end_time: '2019-04-22 23:23:23', task: ''}
 
 const maker1 = new Maker(1, 'first1', 'last1', 'email1');
 const maker2 = new Maker(2, 'first2', 'last2', 'email2');
@@ -111,7 +111,7 @@ describe('Maker Service Test', function () {
                             hourlyRate: '20.00',
                             timeIn: '2019-04-24 22:22:22',
                             timeOut: '0000-00-00 00:00:00',
-                            occupation: ''
+                            task: ''
                         },
                         {
                             id: '2',
@@ -120,7 +120,7 @@ describe('Maker Service Test', function () {
                             hourlyRate: '20.00',
                             timeIn: '2019-04-23 22:22:22',
                             timeOut: '2019-04-23 23:23:23',
-                            occupation: ''
+                            task: ''
                         },
                         {
                             id: '3',
@@ -129,7 +129,7 @@ describe('Maker Service Test', function () {
                             hourlyRate: '20.00',
                             timeIn: '2019-04-22 22:22:22',
                             timeOut: '2019-04-22 23:23:23',
-                            occupation: ''
+                            task: ''
                         },
                 ]
             );
@@ -145,7 +145,7 @@ describe('Maker Service Test', function () {
                     hourlyRate: '20.00',
                     timeIn: '2019-04-24 22:22:22',
                     timeOut: '0000-00-00 00:00:00',
-                    occupation: ''
+                    task: ''
                 },
                 {
                     id: '2',
@@ -154,7 +154,7 @@ describe('Maker Service Test', function () {
                     hourlyRate: '20.00',
                     timeIn: '2019-04-23 22:22:22',
                     timeOut: '2019-04-23 23:23:23',
-                    occupation: ''
+                    task: ''
                 }
             ]
         );
@@ -319,7 +319,7 @@ describe('Maker Service Test', function () {
                         hourlyRate: '20.00',
                         timeIn: '2019-04-24 22:22:22',
                         timeOut: '0000-00-00 00:00:00',
-                        occupation: ''
+                        task: ''
                     },
                     {
                         id: '2',
@@ -328,7 +328,7 @@ describe('Maker Service Test', function () {
                         hourlyRate: '20.00',
                         timeIn: '2019-04-23 22:22:22',
                         timeOut: '2019-04-23 23:23:23',
-                        occupation: ''
+                        task: ''
                     },
                     {
                         id: '3',
@@ -337,7 +337,7 @@ describe('Maker Service Test', function () {
                         hourlyRate: '20.00',
                         timeIn: '2019-04-22 22:22:22',
                         timeOut: '2019-04-22 23:23:23',
-                        occupation: ''
+                        task: ''
                     }
                 ]
             );

@@ -10,7 +10,7 @@ class RelationshipRepository {
 
             let sql = 'INSERT INTO relationship(maker_id, client_id, plan_id, occupation)' +
                 ' VALUES (?, ?, ?, ?)';
-            let sqlParams = [makerId, clientId, planId, occupation];
+            let sqlParams = [makerId, clientId, planId, task];
             query(sql, sqlParams, function (err, result) {
                 if (err) {
                     console.log(err);

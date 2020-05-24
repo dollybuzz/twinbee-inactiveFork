@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `s23q3vq9vq9gral6`.`time_sheet` (
   `hourly_rate` DECIMAL(10,2) NOT NULL,
   `start_time` DATETIME NOT NULL,
   `end_time` DATETIME NOT NULL,
-  `occupation` VARCHAR(45) NULL DEFAULT NULL,
+  `task` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `ID_UNIQUE` (`id` ASC) ,
   INDEX `maker_id_idx` (`maker_id` ASC) ,
