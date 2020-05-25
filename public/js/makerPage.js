@@ -199,11 +199,13 @@ function setClockInFunctionality() {
     $("#makerClock").text("Clock In");
     $("#makerClock").on('mouseenter', function () {
         $("#makerClock").css("background-color", "#32444e");
+
     });
     $("#makerClock").on('mouseleave', function () {
         $("#makerClock").css("background-color", "#dbb459");
     });
     $("#makerClock").on('click', function () {
+        $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
             url: '/api/getAllMakers', //uncomment when ready for live: '/api/getMakerIdByToken',
             method: "post",
@@ -251,11 +253,13 @@ function setClockInFunctionality() {
                                 }
                             },
                             error: function (clockres, status) {
+                                $("#makerClock").html('Clock In')
                                 $("#userMainContent").html("Clock not working!");
                             }
                         });
                     },
                     error: function (relres, status) {
+                        $("#makerClock").html('Clock In')
                         $("#userMainContent").html("Could not get relationships!");
                     }
                 });
@@ -279,6 +283,7 @@ function setClockOutFunctionality() {
         $("#makerClock").css("background-color", "#32444e");
     });
     $("#makerClock").on('click', function () {
+        $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
             url: '/api/getAllMakers', //uncomment when ready for live '/api/getMakerIdByToken',
             method: "post",
@@ -314,11 +319,13 @@ function setClockOutFunctionality() {
                         }
                     },
                     error: function (clockres, status) {
+                        $("#makerClock").html('Clock Out')
                         $("#userMainContent").html("Clock not working!");
                     }
                 });
             },
             error: function (tokenres, status) {
+                $("#makerClock").html('Clock Out')
                 $("#userMainContent").html("Clock not working!");
             }
         });
