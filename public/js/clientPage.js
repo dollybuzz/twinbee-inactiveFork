@@ -218,7 +218,7 @@ function subscriptionFunctionality (res) {
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
+                '   <td>' + subscription.plan_quantity + '</td>' +
                 '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
