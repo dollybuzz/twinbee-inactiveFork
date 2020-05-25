@@ -153,7 +153,7 @@ function timeSheetFunctionality (res) {
         '            <th scope="col">Plan ID</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
@@ -165,7 +165,7 @@ function timeSheetFunctionality (res) {
             '   <td>' + item.hourlyRate + '</td>'+
             '   <td>' + item.timeIn + '</td>'+
             '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.occupation + '</td></tr>'
+            '   <td>' + item.occupation + '</td></tr>' //change to task
         );
     });
     $("#sheetsTable").append('\n</tbody>');

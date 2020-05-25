@@ -1166,7 +1166,7 @@ function timeSheetFunctionality (res) {
         '            <th scope="col">Plan ID</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
@@ -1178,7 +1178,7 @@ function timeSheetFunctionality (res) {
             '   <td>' + item.hourlyRate + '</td>'+
             '   <td>' + item.timeIn + '</td>'+
             '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.occupation + '</td></tr>'
+            '   <td>' + item.occupation + '</td></tr>' //change to task
         );
     });
     $("#sheetsTable").append('\n</tbody>');
@@ -1557,6 +1557,7 @@ function relationshipFunctionality (res) {
                                 '            <th scope="col">Client </th>\n' +
                                 '            <th scope="col">Freedom Maker</th>\n' +
                                 '            <th scope="col">Plan ID</th>\n' +
+                                '            <th scope="col">Occupation</th>\n' +
                                 '        </thead><tbody>');
                             //Populate table
                             res.forEach(item => {
@@ -1565,7 +1566,8 @@ function relationshipFunctionality (res) {
                                     '   <td scope="row">' + item.id +'</td>' +
                                     '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>'+
                                     '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>'+
-                                    '   <td>' + item.planId + '</td>'
+                                    '   <td>' + item.planId + '</td>' +
+                                    '   <td>' + item.occupation + '</td>'
                                 );
                             });
                             $("#relationshipTable").append('\n</tbody>');
