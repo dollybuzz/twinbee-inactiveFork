@@ -313,7 +313,7 @@ function setClockOutFunctionality() {
 
 //Google
 onSignIn = function (googleUser) {
-    //id_token = googleUser.getAuthResponse().id_token;
+    id_token = googleUser.getAuthResponse().id_token;
     setClockInFunctionality();
 
     //Populating drop down selection
