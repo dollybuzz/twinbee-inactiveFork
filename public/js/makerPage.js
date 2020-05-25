@@ -36,7 +36,6 @@ function showFunction (functionality, endpoint) {
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
-                    console.log(innerStatus);
                     functionality(innerRes);
                 },
                 error: function (innerRes, innerStatus) {
@@ -132,7 +131,6 @@ function timeSheetFunctionality (res) {
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
-                    console.log(innerRes);
                     let clientMap = {};
                     for (var i = 0; i < innerRes.length; ++i){
                         clientMap[innerRes[i].id] = innerRes[i];
@@ -212,7 +210,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
        $.ajax({
-           url: '/api/getMakerIdByToken',
+           url: '/api/getAllMakers', //uncomment when ready for live: '/api/getMakerIdByToken',
            method: "post",
            data: {
                auth: id_token,
@@ -285,7 +283,7 @@ function setClockOutFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $.ajax({
-            url: '/api/getMakerIdByToken',
+            url: '/api/getAllMakers', //uncomment when ready for live '/api/getMakerIdByToken',
             method: "post",
             data: {
                 auth: id_token,
@@ -298,7 +296,7 @@ function setClockOutFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        makerId: tokenres.id,
+                        makerId: 4 //uncomment when ready for live tokenres.id,
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -331,54 +329,81 @@ function setClockOutFunctionality() {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+ //   id_token = googleUser.getAuthResponse().id_token;
     setClockInFunctionality();
-
     //Populating drop down selection
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllMakers',//uncomment when ready for live: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
         },
         success: function (tokenres, status) {
+
+
             $.ajax({
-                url: "/api/getRelationshipsByMakerId",
+                url: "/api/getTimeSheetsByMakerId",
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id,
+                    id: 4// switch when ready for live: res.id
                 },
                 dataType: "json",
-                success: function (relres, status) {
-                    let relmap = {};
-
-                    for (var relationship of relres) {
-                        $.ajax({
-                            url: "/api/getClientName",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                relationshipObj: relationship,
-                            },
-                            dataType: "json",
-                            success: function (clientres, status) {
-                                relmap[relationship.id] = relationship;
-                                console.log(clientres);
-                                $("#makerSelectedClient").append(
-                                    `<option value=${clientres.relId}>${clientres.name}</option>`)
-                            },
-                            error: function (clientres, status) {
-                                $("#UserMainContent").html("Could not get clients!");
-                            }
-                        });
+                success: function (innerRes, innerStatus) {
+                    var clockedOut = true;
+                    for (var i = 0; i < innerRes.length; ++i){
+                        let sheet = innerRes[i];
+                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
+                            clockedOut = false;
+                        }
                     }
+                    if (clockedOut){
+                        setClockInFunctionality();
+                    }
+                    else{
+                        setClockOutFunctionality();
+                    }
+                    $.ajax({
+                        url: "/api/getRelationshipsByMakerId",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            id: 4// uncomment when ready for live: tokenres.id,
+                        },
+                        dataType: "json",
+                        success: function (relres, status) {
+                            let relmap = {};
+
+                            for (var relationship of relres) {
+                                $.ajax({
+                                    url: "/api/getClientName",
+                                    method: "post",
+                                    data: {
+                                        auth: id_token,
+                                        relationshipObj: relationship,
+                                    },
+                                    dataType: "json",
+                                    success: function (clientres, status) {
+                                        relmap[relationship.id] = relationship;
+                                        $("#makerSelectedClient").append(
+                                            `<option value=${clientres.relId}>${clientres.name}</option>`)
+                                    },
+                                    error: function (clientres, status) {
+                                        $("#UserMainContent").html("Could not get clients!");
+                                    }
+                                });
+                            }
+                        },
+                        error: function (relres, status) {
+                            $("#UserMainContent").html("Could not get relationships!");
+                        }
+                    });
                 },
-                error: function (relres, status) {
-                    $("#UserMainContent").html("Could not get relationships!");
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
                 }
-            });
+            });// ajax
         },
         error: function (tokenres, status) {
             $("#userMainContent").html("Failed to verify you!");
