@@ -194,7 +194,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
        $.ajax({
-           url: '/api/getMakerIdByToken',
+           url: '/api/getAllMakers', //'/api/getMakerIdByToken',
            method: "post",
            data: {
                auth: id_token,
@@ -211,6 +211,7 @@ function setClockInFunctionality() {
                    },
                    dataType: "json",
                    success: function (relres, status) {
+                       console.log(relres);
                        $.ajax({
                            url: "api/clockIn",
                            method: "post",
@@ -252,7 +253,6 @@ function setClockInFunctionality() {
            }
        });
    });
-
 }
 
 function setClockOutFunctionality() {
@@ -280,7 +280,7 @@ function setClockOutFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        makerId: tokenres.id,
+                        makerId: 4, //tokenres.id,
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -313,24 +313,24 @@ function setClockOutFunctionality() {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+    //id_token = googleUser.getAuthResponse().id_token;
     setClockInFunctionality();
 
     //Populating drop down selection
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllMakers', //'/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
         },
         success: function (tokenres, status) {
             $.ajax({
-                url: "/api/getRelationshipsByMakerId",
+                url:  "/api/getRelationshipsByMakerId",
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id,
+                    id: 4, //tokenres.id,
                 },
                 dataType: "json",
                 success: function (relres, status) {
