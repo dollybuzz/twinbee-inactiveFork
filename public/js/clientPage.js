@@ -309,6 +309,8 @@ function timeSheetFunctionality (res) {
                             '   <td>' + res[item].task + '</td></tr>'
                         );
                     }
+
+                    //remove loading message/gif
                     $("#buttonsTop").children()[0].remove();
                     $("#buttonsTop").children()[0].remove();
                 },
