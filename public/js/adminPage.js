@@ -1273,84 +1273,126 @@ function verifyDeletePlan () {
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#sheetsTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Freedom Maker ID</th>\n' +
-        '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Plan ID</th>\n' +
-        '            <th scope="col">Clock In</th>\n' +
-        '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Task</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    res.forEach(item => {
-        $("#sheetsTable").append('\n' +
-            '<tr class="sheetRow">' +
-            '   <td scope="row">' + item.id +'</td>' +
-            '   <td>' + item.makerId + '</td>'+
-            '   <td>' + item.clientId + '</td>'+
-            '   <td>' + item.hourlyRate + '</td>'+
-            '   <td>' + item.timeIn + '</td>'+
-            '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.task + '</td></tr>'
-        );
-    });
-    $("#sheetsTable").append('\n</tbody>');
 
-    //Body Block content
-    createBody("Delete");
+    $.ajax({
+        url: '/api/getAllMakers',
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (makerres, makerstatus) {
+            $.ajax({
+                url: '/api/getAllClients',
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    let clientMap = {};
+                    for (var i = 0; i < innerRes.length; ++i) {
+                        let client = innerRes[i].customer;
+                        if (client && client.billing_address) {
+                            clientMap[client.id] = client;
+                        }
+                    }
 
-    //Event Listeners
-    //Modify
-    $(".sheetRow").click(function () {
-        selectedRow = $(this);
-        let timeSheetPrompt = `<h5>Please type in the time sheet ID to delete the selected time sheet.</h5>` +
-            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter ID:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n";
-        prePopModForm("/api/getTimeSheet", sheetModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
-        $("#DeleteButton").click(function () {
-            let sheetId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("delete", timeSheetPrompt,"/api/deleteTimeSheet", {
-                auth: id_token,
-                id: sheetId
-            }, deleteSheetSuccess, verifyDeleteSheet);
-        });
-    });
+                    let makerMap = {};
+                    for (var i = 0; i < makerres.length; ++i) {
+                        let maker = makerres[i];
+                            makerMap[maker.id] = maker;
+                    }
 
-    //Add
-    $("#AddButton").click(function () {
-        popAddForm(sheetAddForm);
-        $("#DeleteButton").css("opacity", "0");
-        setTimeout(function(){
-            $("#DeleteButton").hide();
-        }, 500);
-    });
+                    //Create table
+                    $("#userMainContent").html(
+                        "<div id=\"buttonsTop\"></div>\n" +
+                        "<div class='row' id='topRow'>\n" +
+                        "<div id=\"floor\">\n" +
+                        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+                        "    </table>\n" +
+                        "</div></div>");
+                    $("#sheetsTable").append('\n' +
+                        '        <thead class="thead">\n' +
+                        '            <th scope="col">#</th>\n' +
+                        '            <th scope="col">Freedom Maker ID</th>\n' +
+                        '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Plan ID</th>\n' +
+                        '            <th scope="col">Clock In</th>\n' +
+                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Task</th>\n' +
+                        '        </thead><tbody>');
+                    //Populate table
+                    res.forEach(item => {
+                        $("#sheetsTable").append('\n' +
+                            '<tr class="sheetRow">' +
+                            '   <td scope="row">' + item.id + '</td>' +
+                            '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
+                            '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
+                            '   <td>' + item.hourlyRate + '</td>' +
+                            '   <td>' + item.timeIn + '</td>' +
+                            '   <td>' + item.timeOut + '</td>' +
+                            '   <td>' + item.task + '</td></tr>'
+                        );
+                    });
+                    $("#sheetsTable").append('\n</tbody>');
 
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
+                    //Body Block content
+                    createBody("Delete");
 
-    //Row effect
-    $(".sheetRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
+                    //Event Listeners
+                    //Modify
+                    $(".sheetRow").click(function () {
+                        selectedRow = $(this);
+                        let timeSheetPrompt = `<h5>Please type in the time sheet ID to delete the selected time sheet.</h5>` +
+                            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                            "<br><form id='delete'>" +
+                            "<label for='deleteUser'>Enter ID:</label>" +
+                            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+                            "</form>\n";
+                        prePopModForm("/api/getTimeSheet", sheetModForm);
+                        $("#DeleteButton").show();
+                        $("#DeleteButton").css("opacity", "1");
+                        $("#DeleteButton").click(function () {
+                            let sheetId = selectedRow.children()[0].innerHTML;
+                            showDeletePrompt("delete", timeSheetPrompt, "/api/deleteTimeSheet", {
+                                auth: id_token,
+                                id: sheetId
+                            }, deleteSheetSuccess, verifyDeleteSheet);
+                        });
+                    });
+
+                    //Add
+                    $("#AddButton").click(function () {
+                        popAddForm(sheetAddForm);
+                        $("#DeleteButton").css("opacity", "0");
+                        setTimeout(function () {
+                            $("#DeleteButton").hide();
+                        }, 500);
+                    });
+
+                    //Expand Table Button
+                    $("#ExpandButton").click(function () {
+                        expandTable();
+                    });
+
+                    //Row effect
+                    $(".sheetRow").mouseenter(function () {
+                        $(this).css('transition', 'background-color 0.5s ease');
+                        $(this).css('background-color', '#e8ecef');
+                    }).mouseleave(function () {
+                        $(this).css('background-color', 'white');
+                    });
+                },
+                error: function (innerres, innerstatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });
+
+        },
+        error: function (makerres, makerstatus) {
+            $("#userMainContent").html("Something went wrong!");
+        }
     });
 }
 
@@ -1483,10 +1525,10 @@ function sheetAddForm () {
                             updateDescriptionId('/api/getClient', $("#modsheetclientid").val(), $("#modsheetclientdescription"));
                             updateDescriptionId('/api/getMaker', $("#modsheetmakerid").val(), $("#modsheetmakerdescription"));
 
-                            $("#modsheetmakerid").on('change', function () {
+                            $("#modsheetclientid").on('change', function () {
                                 updateDescriptionId('/api/getClient', $("#modsheetclientid").val(), $("#modsheetclientdescription"));
                             });
-                            $("#modsheetclientid").on('change', function () {
+                            $("#modsheetmakerid").on('change', function () {
                                 updateDescriptionId('/api/getMaker', $("#modsheetmakerid").val(), $("#modsheetmakerdescription"));
                             });
 
