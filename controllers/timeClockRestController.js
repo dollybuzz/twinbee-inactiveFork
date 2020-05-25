@@ -17,7 +17,7 @@ module.exports = {
     clockIn: async (req, res) => {
         console.log('Attempting to clock in user from REST:');
         console.log(req.body);
-        res.send(await timeClockService.clockIn(req.body.makerId, req.body.hourlyRate,
+        res.send(await timeClockService.clockIn(req.body.makerId, req.body.task,
             req.body.clientId, req.body.task));
     },
 
