@@ -19,27 +19,9 @@ let navMapper = {
 
 //Versatile Functions
 function showFunction (functionality, endpoint) {
-
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token,
-            id: 4 // some maker in our db
-        },
-        dataType: "json",
-        success: function (res, status) {
-            functionality(res);
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Something went wrong!");
-        }
-    });//end outer ajax
-
-    /*  Uncomment when time for live
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllMakers',// switch when ready for live: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -50,7 +32,7 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: res.id
+                    id: 4// switch when ready for live: res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -67,9 +49,7 @@ function showFunction (functionality, endpoint) {
             console.log(res);
         }
     });
-*/
-
-};// end showFunction
+}// end showFunction
 
 function createBody() {
     //top row
@@ -133,49 +113,87 @@ function clientFunctionality (res){
 
 //Previous Hours Methods
 function timeSheetFunctionality (res) {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#sheetsTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Freedom Maker ID</th>\n' +
-        '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Clock In</th>\n' +
-        '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Task</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    res.forEach(item => {
-        $("#sheetsTable").append('\n' +
-            '<tr class="sheetRow">' +
-            '   <td scope="row">' + item.id +'</td>' +
-            '   <td>' + item.makerId + '</td>'+
-            '   <td>' + item.clientId + '</td>'+
-            '   <td>' + item.timeIn + '</td>'+
-            '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.task + '</td></tr>'
-        );
+
+
+    $.ajax({
+        method: "post",
+        url: '/api/getAllMakers',// switch when ready for live: '/api/getMakerIdByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (tokenres, status) {
+            $.ajax({
+                url: '/api/getClientsForMaker',
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: 4// switch when ready for live: tokenres.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    console.log(innerRes);
+                    let clientMap = {};
+                    for (var i = 0; i < innerRes.length; ++i){
+                        clientMap[innerRes[i].id] = innerRes[i];
+                    }
+
+                    //Create table
+                    $("#userMainContent").html(
+                        "<div id=\"buttonsTop\"></div>\n" +
+                        "<div class='row' id='topRow'>\n" +
+                        "<div id=\"floor\">\n" +
+                        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+                        "    </table>\n" +
+                        "</div></div>");
+                    $("#sheetsTable").append('\n' +
+                        '        <thead class="thead">\n' +
+                        '            <th scope="col">#</th>\n' +
+                        '            <th scope="col">Freedom Maker ID</th>\n' +
+                        '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Clock In</th>\n' +
+                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Task</th>\n' +
+                        '        </thead><tbody>');
+                    //Populate table
+                    for (var item in res){
+                        $("#sheetsTable").append('\n' +
+                            '<tr class="sheetRow">' +
+                            '   <td scope="row">' + res[item].id +'</td>' +
+                            '   <td>' + res[item].makerId + '</td>'+
+                            '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
+                            '   <td>' + res[item].timeIn + '</td>'+
+                            '   <td>' + res[item].timeOut + '</td>'+
+                            '   <td>' + res[item].task + '</td></tr>'
+                        );
+                    }
+                    $("#sheetsTable").append('\n</tbody>');
+
+                    //Body Block content
+                    createBody();
+
+                    //Event Listeners
+
+                    //Row effect
+                    $(".sheetRow").mouseenter(function () {
+                        $(this).css('transition', 'background-color 0.5s ease');
+                        $(this).css('background-color', '#e8ecef');
+                    }).mouseleave(function () {
+                        $(this).css('background-color', 'white');
+                    });
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });// ajax
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
+        }
     });
-    $("#sheetsTable").append('\n</tbody>');
 
-    //Body Block content
-    createBody();
 
-    //Event Listeners
-
-    //Row effect
-    $(".sheetRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
 }
 
 //Main Clock Methods
