@@ -6,10 +6,50 @@ const request = util.promisify(require('request'));
 class TimeClockService {
     constructor(){};
 
+    /**
+     *
+     * @param makerId
+     * @returns {Promise<[TimeSheet]>} all timesheets for the given maker where clock-out == 0000-00-00 00:00:00
+     */
+    async getOnlineSheets(makerId){
+        let result = await request({
+        method: 'POST',
+        uri: `https://www.freedom-makers-hours.com/api/getTimeSheetsByMakerId`,
+        form: {
+            'auth':process.env.TWINBEE_MASTER_AUTH,
+            'id':makerId.toString()
+        }
+    });
+
+        let sheetsForMaker = JSON.parse(result.body);
+        let onlineSheets = [];
+
+        // get online sheets
+        for (var i = 0; i < sheetsForMaker.length; ++i){
+            let currentSheet = sheetsForMaker[i];
+            if (currentSheet.timeIn[0] != "0" && currentSheet.timeOut[0] == "0"){
+                onlineSheets.push(currentSheet);
+            }
+        }
+        return onlineSheets;
+    }
+
+    /**
+     * Returns the current moment/date-time in the Twinbee standard format (YYYY-MM-DD HH:mm:ss)
+     * @returns {Promise<Moment>} for the current instant
+     */
     async getCurrentMoment(){
         return await moment.utc().format('YYYY-MM-DD HH:mm:ss');
     }
 
+    /**
+     * Clocks a given user in with the
+     * @param makerId       - maker to clock in
+     * @param hourlyRate    - chargebee plan id indicating hourly bill rate
+     * @param clientId      - client to be billed for maker hours
+     * @param task          - maker's task for the session
+     * @returns {Promise<boolean>} indicating whether the clock-in was received and processed successfully
+     */
     async clockIn(makerId, hourlyRate, clientId, task){
         let result = await request({
             method: 'POST',
@@ -55,25 +95,8 @@ class TimeClockService {
      * @param makerId   - id of maker to clock out
      */
     async clockOut(makerId){
-        let result = await request({
-            method: 'POST',
-            uri: `https://www.freedom-makers-hours.com/api/getTimeSheetsByMakerId`,
-            form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH,
-                'id':makerId.toString()
-            }
-        });
 
-        let sheetsForMaker = JSON.parse(result.body);
-        let onlineSheets = [];
-
-        // get online sheets
-        for (var i = 0; i < sheetsForMaker.length; ++i){
-            let currentSheet = sheetsForMaker[i];
-            if (currentSheet.timeIn[0] != "0" && currentSheet.timeOut[0] == "0"){
-                onlineSheets.push(currentSheet);
-            }
-        }
+        let onlineSheets = await this.getOnlineSheets(makerId);
 
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i){
@@ -106,9 +129,23 @@ class TimeClockService {
 
             console.log("Update client bucket due do clock-out request sent");
         }
-        return onlineSheets.length > 0;
+
+        console.log("Confirming sheets updated appropriately...");
+
+        onlineSheets = await this.getOnlineSheets(makerId);
+
+        console.log("Remaining online sheets: ");
+        console.log(onlineSheets);
+
+        return onlineSheets.length === 0;
     }
 
+    /**
+     * Returns the number of minutes between two moment objects
+     * @param start - starting moment
+     * @param end   - ending moment
+     * @returns {Promise<string>} string representation of an integer between two moments
+     */
     async getMinutesBetweenMoments(start, end){
         let exactSeconds = moment.duration(moment(end).diff(start)).asMinutes();
         let estimatedMinutes = exactSeconds.toFixed(0);

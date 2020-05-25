@@ -300,6 +300,7 @@ function setClockOutFunctionality() {
                     },
                     dataType: "json",
                     success: function (clockres, status) {
+                        console.log(clockres)
                         if(clockres) {
                             setClockInFunctionality();
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
@@ -412,7 +413,7 @@ onSignIn = function (googleUser) {
 };
 
 $(document).ready(function () {
-
+onSignIn() //remove for live
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
