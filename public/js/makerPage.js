@@ -1,4 +1,3 @@
-//global variable
 let selectedTab = null;
 let id_token = null;
 let currentRelationship = null;
@@ -196,9 +195,7 @@ function timeSheetFunctionality (res) {
 
 //Main Clock Methods
 function setClockInFunctionality() {
-    $("#taskBlock").show();
     $("#taskBlock").css("opacity", "1");
-
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
     $("#makerClock").text("Clock In");
@@ -209,66 +206,68 @@ function setClockInFunctionality() {
         $("#makerClock").css("background-color", "#dbb459");
     });
     $("#makerClock").on('click', function () {
-       $.ajax({
-           url: '/api/getAllMakers', //uncomment when ready for live: '/api/getMakerIdByToken',
-           method: "post",
-           data: {
-               auth: id_token,
-               token: id_token,
-           },
-           dataType: "json",
-           success: function (tokenres, status) {
-               $.ajax({
-                   url: "api/getRelationshipById",
-                   method: "post",
-                   data: {
-                       auth: id_token,
-                       id: $("#makerSelectedClient").val(),
-                   },
-                   dataType: "json",
-                   success: function (relres, status) {
-                       console.log(relres);
-                       $.ajax({
-                           url: "api/clockIn",
-                           method: "post",
-                           data: {
-                               auth: id_token,
-                               makerId: relres.makerId,
-                               hourlyRate: relres.planId,
-                               clientId: relres.clientId,
-                               task: $("#taskEntry").val()
-                           },
-                           dataType: "json",
-                           success: function (clockres, status) {
-                               if(clockres) {
-                                   setClockOutFunctionality();
-                                   $("#makerText2").html("<h5>Successfully clocked in!</h5>");
-                                   $("#makerText2").css("opacity", "1");
+        $.ajax({
+            url: '/api/getAllMakers', //uncomment when ready for live: '/api/getMakerIdByToken',
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+            },
+            dataType: "json",
+            success: function (tokenres, status) {
+                $.ajax({
+                    url: "api/getRelationshipById",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        id: $("#makerSelectedClient").val(),
+                    },
+                    dataType: "json",
+                    success: function (relres, status) {
+                        $.ajax({
+                            url: "api/clockIn",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                makerId: relres.makerId,
+                                hourlyRate: relres.planId,
+                                clientId: relres.clientId,
+                                task: $("#taskEntry").val()
+                            },
+                            dataType: "json",
+                            success: function (clockres, status) {
+                                if(clockres) {
+                                    setClockOutFunctionality();
+                                    $("#makerText2").html("<h5>Successfully clocked in!</h5>");
+                                    $("#makerText2").css("opacity", "1");
+                                    $("#taskBlock").css("opacity", "0");
 
-                                   setTimeout(function () {
-                                       $("#makerText2").css("opacity", "0");
-                                   }, 3000)
+                                    setTimeout(function () {
+                                        $("#makerText2").css("opacity", "0");
+                                        $("#taskBlock").hide();
+                                    }, 3000)
 
-                               }
-                               else {
-                                   $("#makerText2").html("<h5>Could not clock in!</h5>");
-                               }
-                           },
-                           error: function (clockres, status) {
-                               $("#userMainContent").html("Clock not working!");
-                           }
-                       });
-                   },
-                   error: function (relres, status) {
-                       $("#userMainContent").html("Could not get relationships!");
-                   }
-               });
-           },
-           error: function (tokenres, status) {
-               $("#userMainContent").html("Failed to verify you!");
-           }
-       });
-   });
+                                }
+                                else {
+                                    $("#makerText2").html("<h5>Could not clock in!</h5>");
+                                }
+                            },
+                            error: function (clockres, status) {
+                                $("#userMainContent").html("Clock not working!");
+                            }
+                        });
+                    },
+                    error: function (relres, status) {
+                        $("#userMainContent").html("Could not get relationships!");
+                    }
+                });
+            },
+            error: function (tokenres, status) {
+                $("#userMainContent").html("Failed to verify you!");
+            }
+        });
+    });
+
 }
 
 function setClockOutFunctionality() {
@@ -305,11 +304,11 @@ function setClockOutFunctionality() {
                             setClockInFunctionality();
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
-                            $("#taskBlock").css("opacity", "0");
+                            $("#taskBlock").show();
+                            $("#taskBlock").css("opacity", "1");
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
-                                $("#taskBlock").hide();
                             }, 3000)
                         }
                         else {
@@ -330,7 +329,7 @@ function setClockOutFunctionality() {
 
 //Google
 onSignIn = function (googleUser) {
- //   id_token = googleUser.getAuthResponse().id_token;
+    //   id_token = googleUser.getAuthResponse().id_token;
     setClockInFunctionality();
     //Populating drop down selection
     $.ajax({
@@ -344,11 +343,6 @@ onSignIn = function (googleUser) {
 
 
             $.ajax({
-                url:  "/api/getRelationshipsByMakerId",
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: 4, //tokenres.id,
                 url: "/api/getTimeSheetsByMakerId",
                 method: "post",
                 data: {
@@ -418,7 +412,7 @@ onSignIn = function (googleUser) {
 };
 
 $(document).ready(function () {
-onSignIn() //remove for live
+    onSignIn() //remove for live
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
