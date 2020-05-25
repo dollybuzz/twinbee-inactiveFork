@@ -39,6 +39,43 @@ let navMapper = {
 };//end navMapper
 
 //Versatile Functions
+
+
+function updateModSheetClientDescription(){
+    $.ajax({
+        url: "/api/getClient",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: $("#modsheetclientid").val()
+        },
+        dataType: "json",
+        success:function (res, status) {
+            $("#modsheetclientdescription").html(res.id)
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Clients isn't working!");
+        }
+    })
+}
+function updateModSheetMakerDescription() {
+    $.ajax({
+        url: "/api/getMaker",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: $("#modsheetmakerid").val()
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#modsheetmakerdescription").html(res.id);
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Get a freedom maker isn't working!");
+        }
+    });
+}
+
 function isEmail(val){
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val);
 }
@@ -974,7 +1011,6 @@ function subscriptionAddForm () {
                         error: function (clientres, clientstatus) {
                             $("#userMainContent").html("Clients isn't working!");
                         }
-
                     });
 
                     $("#addsubscriptioncustomerid").on('change', function () {
@@ -992,7 +1028,6 @@ function subscriptionAddForm () {
                             error: function (clientres, clientstatus) {
                                 $("#userMainContent").html("Clients isn't working!");
                             }
-
                         })
                     });
 
@@ -1372,32 +1407,106 @@ function sheetAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsheetplanname'>Plan ID:</label>" +
-        `<input type='text' id='modsheetplanname' name='modsheetplanname'>\n<br>\n` +
+        `<select id='modsheetplanname' name='modsheetplanname'></select>\n<br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
-        `<input type='text' id='modsheettimein' name='modsheettimein'>\n<br>\n` +
+        `<input type='text' id='modsheettimein' name='modsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
-        `<input type='text' id='modsheettimeout' name='modsheettimeout'>\n<br>\n` +
+        `<input type='text' id='modsheettimeout' name='modsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheetclientid'>Client ID:</label>" +
-        `<input type='text' id='modsheetclientid' name='modsheetclientid'>\n<br>\n` +
+        `<select id='modsheetclientid' name='modsheetclientid'></select>\n<span id='modsheetclientdescription'></span>\n` +
         "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
-        `<input type='text' id='modsheetmakerid' name='modsheetmakerid'>\n<br>\n` +
+        `<select id='modsheetmakerid' name='modsheetmakerid'></select>\n<span id='modsheetmakerdescription'></span>\n` +
         "<label for='modsheettask'>Freedom Maker Task:</label>" +
         `<input type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
         "</form>\n");
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        addSubmit("/api/createTimeSheet", {
-            auth: id_token,
-            makerId: $("#modsheetmakerid").val(),
-            hourlyRate: $("#modsheetplanname").val() ,
-            clientId: $("#modsheetclientid").val(),
-            timeIn: $("#modsheettimein").val(),
-            timeOut: $("#modsheettimeout").val(),
-            task: $("#modsheettask").val(),
-        }, addSheetSuccess);
+
+
+
+    $.ajax({
+        url: "/api/getAllPlans",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getAllClients",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (clientres, clientstatus) {
+
+                            for(var plan in planres){
+                                plan = planres[plan].plan;
+                                    $('#modsheetplanname').append(
+                                        `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                                    );
+                            }
+                            for(var client in clientres){
+                                client = clientres[client].customer;
+                                $('#modsheetclientid').append(
+                                    `<option id="${client.id}" value="${client.id}">${client.first_name + " " + client.last_name}</option>`
+                                );
+                            }
+                            console.log(makerres)
+                            for(var maker in makerres){
+                                maker = makerres[maker];
+                                $('#modsheetmakerid').append(
+                                    `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName}</option>`
+                                );
+                            }
+                            updateModSheetClientDescription();
+                            updateModSheetMakerDescription();
+
+                            $("#modsheetmakerid").on('change', function () {
+                                updateModSheetMakerDescription();
+                            });
+                            $("#modsheetclientid").on('change', function () {
+                                updateModSheetClientDescription();
+                            });
+
+
+                            //Submit button function
+                            $("#SubmitButton").off("click");
+                            $("#SubmitButton").on('click', function (e) {
+                                addSubmit("/api/createTimeSheet", {
+                                    auth: id_token,
+                                    makerId: $("#modsheetmakerid").val(),
+                                    hourlyRate: $("#modsheetplanname").val() ,
+                                    clientId: $("#modsheetclientid").val(),
+                                    timeIn: $("#modsheettimein").val(),
+                                    timeOut: $("#modsheettimeout").val(),
+                                    task: $("#modsheettask").val(),
+                                }, addSheetSuccess);
+                            });
+                        },
+                        error: function (clientres, clientstatus) {
+                            $("#userMainContent").html("Plans isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Plans isn't working!");
+                }
+            });
+        },
+        error: function (planres, planstatus) {
+            $("#userMainContent").html("Plans isn't working!");
+        }
     });
+
 }
 
 function modSheetSuccess (res, status) {
