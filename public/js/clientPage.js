@@ -293,11 +293,6 @@ function timeSheetFunctionality (res) {
                         let maker = innerRes[i];
                         makerMap[maker.id] = maker;
                     }
-
-                    console.log(res)
-                    console.log(makerMap);
-                    console.log(innerRes);
-
                     for (var item in res) {
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
