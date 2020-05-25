@@ -137,8 +137,6 @@ body a:hover {
     place-items: center;
 }
 
-
-
 #DeleteButton, #YesDelete, #NoBuy {
     color: white;
     background-color: darkred;
@@ -425,4 +423,9 @@ th {
     padding-top: 20px;
     opacity: 0;
     transition: opacity 1s ease-in-out;
+}
+
+#taskBlock {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
