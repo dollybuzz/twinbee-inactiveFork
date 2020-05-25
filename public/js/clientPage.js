@@ -354,7 +354,7 @@ function showMain () {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+  //  id_token = googleUser.getAuthResponse().id_token; Uncomment when ready for live
     showMain(); //must call here to first generate token
 };
 
@@ -557,6 +557,7 @@ function buyForm () {
 
 $(document).ready(function () {
     //Adding logout Button
+    onSignIn();
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
 
