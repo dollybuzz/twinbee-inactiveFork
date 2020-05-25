@@ -1315,8 +1315,8 @@ function timeSheetFunctionality (res) {
                     $("#sheetsTable").append('\n' +
                         '        <thead class="thead">\n' +
                         '            <th scope="col">#</th>\n' +
-                        '            <th scope="col">Freedom Maker ID</th>\n' +
-                        '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Freedom Maker</th>\n' +
+                        '            <th scope="col">Client</th>\n' +
                         '            <th scope="col">Plan ID</th>\n' +
                         '            <th scope="col">Clock In</th>\n' +
                         '            <th scope="col">Clock Out</th>\n' +
