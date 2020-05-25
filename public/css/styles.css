@@ -1,27 +1,27 @@
 header {
     text-align: center;
-    width: 100%;
+    width: inherit;
     height: auto;
     background-color: #e8ecef;
 }
 
 #landingContainer {
     display: grid;
-    width: 100%;
+    width: inherit;
     grid-template-columns: 1fr 3fr 1fr;
     vertical-align: center;
 }
 
 #headContainer {
     display: grid;
-    width: 100%;
+    width: inherit;
     grid-template-columns: 1fr 3fr 1fr;
     vertical-align: center;
 }
 
 body {
     position: relative;
-    width: 100vw;
+    width: 99vw;;
     height: 100vh;
     color: #32444e;
     background-color: white;
@@ -29,14 +29,13 @@ body {
 
 #landingMain {
     background-color: white;
-    width: 100vw;
+    width: 99vw;;
     height: 64vh;
     text-align: center;
     padding-top: 250px;
 }
 
 #userMainContent {
-    width: 100vw;
     height: 64vh;
     overflow-y: auto;
     background-color: white;
@@ -44,7 +43,7 @@ body {
 }
 
 #landingLogo {
-    width: 100%;
+    width: inherit;
     padding: 15px;
 }
 
@@ -54,7 +53,7 @@ nav {
     text-align: center;
     color: white;
     background-color: #32444e;
-    width: 100%;
+    width: inherit;
     height: auto;
     font-size: 1.2em;
     padding: 10px;
@@ -73,7 +72,7 @@ body a:hover {
 }
 
 #footer {
-    width: 100%;
+    width: inherit;
     height: auto;
     position: relative;
     left: 0;
@@ -86,14 +85,14 @@ body a:hover {
 }
 
 #footer a {
-    width: 100%;
+    width: inherit;
     color: white;
     text-decoration: none;
     text-align: center;
 }
 
 #footer a:hover {
-    width: 100%;
+    width: inherit;
     color: #dbb459;
     text-decoration: none;
     text-align: center;
@@ -174,13 +173,13 @@ body a:hover {
 
 #buttonsTop {
     display: block;
-    width: 100%;
+    width: inherit;
     height: 40px;
 }
 
 #buttonsBottom {
     display: block;
-    width: 100%;
+    width: inherit;
     height: 40px;
 }
 
@@ -228,7 +227,7 @@ label {
 .row {
     margin: 0 auto;
     height: auto;
-    width: 100%;
+    width: inherit;
 }
 
 .block {
@@ -282,7 +281,7 @@ label {
 }
 
 #landingTitle {
-    width: 100%;
+    width: inherit;
     height: auto;
     font-size: 1.5em;
     background-color: #32444e;
@@ -294,7 +293,7 @@ label {
 
 #floor {
     display: inline-block;
-    width: 100%;
+    width: inherit;
     max-height: 500px;
     overflow-y: scroll;
 }
