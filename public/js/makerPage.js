@@ -17,6 +17,7 @@ let navMapper = {
     },
 };//end navMapper
 
+//Versatile Functions
 function showFunction (functionality, endpoint) {
 
     $.ajax({
@@ -68,7 +69,6 @@ function showFunction (functionality, endpoint) {
     });
 */
 
-
 };// end showFunction
 
 function createBody() {
@@ -76,18 +76,13 @@ function createBody() {
     $("#topRow").append('\n<div id="optionsClient"></div>');
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
-    $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
-    $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>Delete</button>");
-    $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
-    $("#AddButton").css("opacity", "1");
-
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
     $("#userMainContent").append('<div id="buttonsBottom"></div>');
-    $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#buttonsBottom").hide();
 };
 
+//Client Methods
 function clientFunctionality (res){
     //Create table
     $("#userMainContent").html(
@@ -136,6 +131,7 @@ function clientFunctionality (res){
     });
 }
 
+//Previous Hours Methods
 function timeSheetFunctionality (res) {
     //Create table
     $("#userMainContent").html(
@@ -171,7 +167,6 @@ function timeSheetFunctionality (res) {
     //Body Block content
     createBody();
 
-
     //Event Listeners
 
     //Row effect
@@ -183,7 +178,11 @@ function timeSheetFunctionality (res) {
     });
 }
 
+//Main Clock Methods
 function setClockInFunctionality() {
+    $("#taskBlock").show();
+    $("#taskBlock").css("opacity", "1");
+
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
     $("#makerClock").text("Clock In");
@@ -220,7 +219,7 @@ function setClockInFunctionality() {
                                makerId: relres.makerId,
                                hourlyRate: relres.planId,
                                clientId: relres.clientId,
-                               task: relres.task,
+                               task: $("#taskEntry").val()
                            },
                            dataType: "json",
                            success: function (clockres, status) {
@@ -289,9 +288,11 @@ function setClockOutFunctionality() {
                             setClockInFunctionality();
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
+                            $("#taskBlock").css("opacity", "0");
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
+                                $("#taskBlock").hide();
                             }, 3000)
                         }
                         else {
@@ -312,7 +313,7 @@ function setClockOutFunctionality() {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+    //id_token = googleUser.getAuthResponse().id_token;
     setClockInFunctionality();
 
     //Populating drop down selection
@@ -366,7 +367,6 @@ onSignIn = function (googleUser) {
         }
     });
 };
-
 
 $(document).ready(function () {
 
