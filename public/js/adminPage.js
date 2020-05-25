@@ -800,7 +800,7 @@ function subscriptionFunctionality (res) {
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
+                '   <td>' + subscription.plan_quantity + '</td>' +
                 '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
@@ -923,22 +923,98 @@ function subscriptionAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addsubscriptionplanid'>Plan ID:</label>" +
-        `<input type='text' id='addsubscriptionplanid' name='addsubscriptionplanid'>\n<br>\n` +
+        `<select id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
         "<label for='addsubscriptioncustomerid'>Customer ID:</label>" +
-        `<input type='text' id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'>\n<br>\n` +
+        `<select id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'></select><span id='addsubscrtioncustomerdescription'></span>\n` +
         "<label for='addsubscriptionplanquantity'>Monthly Hours:</label>" +
-        `<input type='text' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
+        `<input type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
         "</form>\n");
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        addSubmit("/api/createSubscription", {
-            auth: id_token,
-            planId: $("#addsubscriptionplanid").val(),
-            customerId: $("#addsubscriptioncustomerid").val() ,
-            planQuantity: $("#addsubscriptionplanquantity").val(),
-        }, addSubscriptionSuccess);
+    $.ajax({
+        url: "/api/getAllPlans",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+
+            $.ajax({
+                url: "/api/getAllClients",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (clientres, clientstatus) {
+                    for(var plan in planres) {
+                        plan = planres[plan].plan;
+                        $('#addsubscriptionplanid').append(
+                            `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                        );
+                    }
+                    for(var client in clientres) {
+                        client = clientres[client].customer;
+                        $('#addsubscriptioncustomerid').append(
+                            `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name}</option>`
+                        );
+                    }
+
+                    $.ajax({
+                        url: "/api/getClient",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            id: $("#addsubscriptioncustomerid").val()
+                        },
+                        dataType: "json",
+                        success:function (res, status) {
+                            $("#addsubscrtioncustomerdescription").html(res.id);
+                        },
+                        error: function (clientres, clientstatus) {
+                            $("#userMainContent").html("Clients isn't working!");
+                        }
+
+                    });
+
+                    $("#addsubscriptioncustomerid").on('change', function () {
+                        $.ajax({
+                            url: "/api/getClient",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: $("#addsubscriptioncustomerid").val()
+                            },
+                            dataType: "json",
+                            success:function (res, status) {
+                                $("#addsubscrtioncustomerdescription").html(res.id)
+                            },
+                            error: function (clientres, clientstatus) {
+                                $("#userMainContent").html("Clients isn't working!");
+                            }
+
+                        })
+                    });
+
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        addSubmit("/api/createSubscription", {
+                            auth: id_token,
+                            planId: $("#addsubscriptionplanid").val(),
+                            customerId: $("#addsubscriptioncustomerid").val() ,
+                            planQuantity: $("#addsubscriptionplanquantity").val(),
+                        }, addSubscriptionSuccess);
+                    });
+                },
+                error: function (clientres, clientstatus) {
+                    $("#userMainContent").html("Clients isn't working!");
+                }
+            });
+        },
+        error: function (planres, makerstatus) {
+            $("#userMainContent").html("Plans isn't working!");
+        }
     });
 }
 
