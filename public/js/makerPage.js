@@ -19,27 +19,9 @@ let navMapper = {
 
 //Versatile Functions
 function showFunction (functionality, endpoint) {
-
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token,
-            id: 4 // some maker in our db
-        },
-        dataType: "json",
-        success: function (res, status) {
-            functionality(res);
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Something went wrong!");
-        }
-    });//end outer ajax
-
-    /*  Uncomment when time for live
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllMakers',// switch when ready for live: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -50,11 +32,10 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: res.id
+                    id: 4// switch when ready for live: res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
-                    console.log(innerStatus);
                     functionality(innerRes);
                 },
                 error: function (innerRes, innerStatus) {
@@ -67,9 +48,7 @@ function showFunction (functionality, endpoint) {
             console.log(res);
         }
     });
-*/
-
-};// end showFunction
+}// end showFunction
 
 function createBody() {
     //top row
@@ -133,49 +112,86 @@ function clientFunctionality (res){
 
 //Previous Hours Methods
 function timeSheetFunctionality (res) {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#sheetsTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Freedom Maker ID</th>\n' +
-        '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Clock In</th>\n' +
-        '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Task</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    res.forEach(item => {
-        $("#sheetsTable").append('\n' +
-            '<tr class="sheetRow">' +
-            '   <td scope="row">' + item.id +'</td>' +
-            '   <td>' + item.makerId + '</td>'+
-            '   <td>' + item.clientId + '</td>'+
-            '   <td>' + item.timeIn + '</td>'+
-            '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.task + '</td></tr>'
-        );
+
+
+    $.ajax({
+        method: "post",
+        url: '/api/getAllMakers',// switch when ready for live: '/api/getMakerIdByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (tokenres, status) {
+            $.ajax({
+                url: '/api/getClientsForMaker',
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: 4// switch when ready for live: tokenres.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    let clientMap = {};
+                    for (var i = 0; i < innerRes.length; ++i){
+                        clientMap[innerRes[i].id] = innerRes[i];
+                    }
+
+                    //Create table
+                    $("#userMainContent").html(
+                        "<div id=\"buttonsTop\"></div>\n" +
+                        "<div class='row' id='topRow'>\n" +
+                        "<div id=\"floor\">\n" +
+                        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+                        "    </table>\n" +
+                        "</div></div>");
+                    $("#sheetsTable").append('\n' +
+                        '        <thead class="thead">\n' +
+                        '            <th scope="col">#</th>\n' +
+                        '            <th scope="col">Freedom Maker ID</th>\n' +
+                        '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Clock In</th>\n' +
+                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Task</th>\n' +
+                        '        </thead><tbody>');
+                    //Populate table
+                    for (var item in res){
+                        $("#sheetsTable").append('\n' +
+                            '<tr class="sheetRow">' +
+                            '   <td scope="row">' + res[item].id +'</td>' +
+                            '   <td>' + res[item].makerId + '</td>'+
+                            '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
+                            '   <td>' + res[item].timeIn + '</td>'+
+                            '   <td>' + res[item].timeOut + '</td>'+
+                            '   <td>' + res[item].task + '</td></tr>'
+                        );
+                    }
+                    $("#sheetsTable").append('\n</tbody>');
+
+                    //Body Block content
+                    createBody();
+
+                    //Event Listeners
+
+                    //Row effect
+                    $(".sheetRow").mouseenter(function () {
+                        $(this).css('transition', 'background-color 0.5s ease');
+                        $(this).css('background-color', '#e8ecef');
+                    }).mouseleave(function () {
+                        $(this).css('background-color', 'white');
+                    });
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });// ajax
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
+        }
     });
-    $("#sheetsTable").append('\n</tbody>');
 
-    //Body Block content
-    createBody();
 
-    //Event Listeners
-
-    //Row effect
-    $(".sheetRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
 }
 
 //Main Clock Methods
@@ -194,7 +210,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
        $.ajax({
-           url: '/api/getAllMakers', //'/api/getMakerIdByToken',
+           url: '/api/getAllMakers', //uncomment when ready for live: '/api/getMakerIdByToken',
            method: "post",
            data: {
                auth: id_token,
@@ -267,7 +283,7 @@ function setClockOutFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $.ajax({
-            url: '/api/getMakerIdByToken',
+            url: '/api/getAllMakers', //uncomment when ready for live '/api/getMakerIdByToken',
             method: "post",
             data: {
                 auth: id_token,
@@ -280,10 +296,11 @@ function setClockOutFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        makerId: 4, //tokenres.id,
+                        makerId: 4 //uncomment when ready for live tokenres.id,
                     },
                     dataType: "json",
                     success: function (clockres, status) {
+                        console.log(clockres)
                         if(clockres) {
                             setClockInFunctionality();
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
@@ -313,54 +330,86 @@ function setClockOutFunctionality() {
 
 //Google
 onSignIn = function (googleUser) {
-    //id_token = googleUser.getAuthResponse().id_token;
+ //   id_token = googleUser.getAuthResponse().id_token;
     setClockInFunctionality();
-
     //Populating drop down selection
     $.ajax({
         method: "post",
-        url: '/api/getAllMakers', //'/api/getMakerIdByToken',
+        url: '/api/getAllMakers',//uncomment when ready for live: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
         },
         success: function (tokenres, status) {
+
+
             $.ajax({
                 url:  "/api/getRelationshipsByMakerId",
                 method: "post",
                 data: {
                     auth: id_token,
                     id: 4, //tokenres.id,
+                url: "/api/getTimeSheetsByMakerId",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: 4// switch when ready for live: res.id
                 },
                 dataType: "json",
-                success: function (relres, status) {
-                    let relmap = {};
-
-                    for (var relationship of relres) {
-                        $.ajax({
-                            url: "/api/getClientName",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                relationshipObj: relationship,
-                            },
-                            dataType: "json",
-                            success: function (clientres, status) {
-                                relmap[relationship.id] = relationship;
-                                console.log(clientres);
-                                $("#makerSelectedClient").append(
-                                    `<option value=${clientres.relId}>${clientres.name}</option>`)
-                            },
-                            error: function (clientres, status) {
-                                $("#UserMainContent").html("Could not get clients!");
-                            }
-                        });
+                success: function (innerRes, innerStatus) {
+                    var clockedOut = true;
+                    for (var i = 0; i < innerRes.length; ++i){
+                        let sheet = innerRes[i];
+                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
+                            clockedOut = false;
+                        }
                     }
+                    if (clockedOut){
+                        setClockInFunctionality();
+                    }
+                    else{
+                        setClockOutFunctionality();
+                    }
+                    $.ajax({
+                        url: "/api/getRelationshipsByMakerId",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            id: 4// uncomment when ready for live: tokenres.id,
+                        },
+                        dataType: "json",
+                        success: function (relres, status) {
+                            let relmap = {};
+
+                            for (var relationship of relres) {
+                                $.ajax({
+                                    url: "/api/getClientName",
+                                    method: "post",
+                                    data: {
+                                        auth: id_token,
+                                        relationshipObj: relationship,
+                                    },
+                                    dataType: "json",
+                                    success: function (clientres, status) {
+                                        relmap[relationship.id] = relationship;
+                                        $("#makerSelectedClient").append(
+                                            `<option value=${clientres.relId}>${clientres.name}</option>`)
+                                    },
+                                    error: function (clientres, status) {
+                                        $("#UserMainContent").html("Could not get clients!");
+                                    }
+                                });
+                            }
+                        },
+                        error: function (relres, status) {
+                            $("#UserMainContent").html("Could not get relationships!");
+                        }
+                    });
                 },
-                error: function (relres, status) {
-                    $("#UserMainContent").html("Could not get relationships!");
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
                 }
-            });
+            });// ajax
         },
         error: function (tokenres, status) {
             $("#userMainContent").html("Failed to verify you!");
@@ -369,7 +418,7 @@ onSignIn = function (googleUser) {
 };
 
 $(document).ready(function () {
-
+onSignIn() //remove for live
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);

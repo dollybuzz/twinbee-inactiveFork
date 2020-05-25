@@ -218,7 +218,7 @@ function subscriptionFunctionality (res) {
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
+                '   <td>' + subscription.plan_quantity + '</td>' +
                 '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
@@ -246,6 +246,9 @@ function subscriptionFunctionality (res) {
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {
+
+
+
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -257,27 +260,66 @@ function timeSheetFunctionality (res) {
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Maker ID</th>\n' +
-        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
-    res.forEach(item => {
-        $("#sheetsTable").append('\n' +
-            '<tr class="sheetRow">' +
-            '   <td scope="row">' + item.id +'</td>' +
-            '   <td>' + item.makerId + '</td>'+
-            '   <td>' + item.clientId + '</td>'+
-            '   <td>' + item.hourlyRate + '</td>'+
-            '   <td>' + item.timeIn + '</td>'+
-            '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.task + '</td></tr>'
-        );
+
+
+    $.ajax({
+        method: "post",
+        url: '/api/getAllMakers', // change when ready for live:'/api/getClientByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (tokenres, status) {
+            $.ajax({
+                url: '/api/getMakersForClient',
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change when ready for live: tokenres.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+
+                    let makerMap = {};
+                    for (var i = 0; i < innerRes.length; ++i) {
+                        let maker = innerRes[i];
+                        makerMap[maker.id] = maker;
+                    }
+
+                    console.log(res)
+                    console.log(makerMap);
+                    console.log(innerRes);
+
+                    for (var item in res) {
+                        $("#sheetsTable").append('\n' +
+                            '<tr class="sheetRow">' +
+                            '   <td scope="row">' + res[item].id + '</td>' +
+                            '   <td>' +makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
+                            '   <td>' + res[item].hourlyRate + '</td>' +
+                            '   <td>' + res[item].timeIn + '</td>' +
+                            '   <td>' + res[item].timeOut + '</td>' +
+                            '   <td>' + res[item].task + '</td></tr>'
+                        );
+                    }
+
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });// ajax
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
+        }
     });
-    $("#sheetsTable").append('\n</tbody>');
 
     //Body Block content
     createBody(null);
@@ -312,7 +354,7 @@ function showMain () {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+  //  id_token = googleUser.getAuthResponse().id_token; Uncomment when ready for live
     showMain(); //must call here to first generate token
 };
 
@@ -515,6 +557,7 @@ function buyForm () {
 
 $(document).ready(function () {
     //Adding logout Button
+    onSignIn();
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
 

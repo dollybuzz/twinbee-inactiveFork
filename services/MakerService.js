@@ -159,10 +159,19 @@ class MakerService {
             let clientOnSheet = sheets[i].clientId;
             if (clientMap[clientOnSheet] && clientMap[clientOnSheet].isPresent
                 && !alreadyOnList[clientOnSheet] && sheets[i].makerId == id){
-                makersClients.push(clientMap[clientOnSheet].object);
+                let client = clientMap[clientOnSheet].object;
+                let censoredClient = {};
+                censoredClient.first_name = client.first_name;
+                censoredClient.last_name = client.last_name;
+                censoredClient.id = client.id;
+                censoredClient.phone = client.phone;
+                censoredClient.email = client.email;
+                makersClients.push(censoredClient);
                 alreadyOnList[clientOnSheet] = true;
             }
         }
+        console.log('List retrieved: ');
+        console.log(makersClients);
         return makersClients;
     }
 

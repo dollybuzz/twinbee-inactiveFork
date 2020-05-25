@@ -39,6 +39,27 @@ let navMapper = {
 };//end navMapper
 
 //Versatile Functions
+
+function updateDescriptionId(endpoint, idSource, targetSpan){
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: {
+            auth: id_token,
+            id: idSource
+        },
+        dataType: "json",
+        success:function (res, status) {
+            targetSpan.html(res.id)
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Clients isn't working!");
+        }
+    })
+
+}
+
+
 function isEmail(val){
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val);
 }
@@ -800,7 +821,7 @@ function subscriptionFunctionality (res) {
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
+                '   <td>' + subscription.plan_quantity + '</td>' +
                 '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
@@ -869,23 +890,51 @@ function subscriptionModForm (res, status) {
         "<label for='modsubscriptionid'>ID:</label>" +
         `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
-        `<input type='text' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${res.plan_id}'>\n<br>\n` +
+        `<select id='modsubscriptionplanname' name='modsubscriptionplanname'></select>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
         `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
         "</form>\n");
+    $.ajax({
+        url: "/api/getAllPlans",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+            for(var plan in planres){
+                plan = planres[plan].plan;
+                if (selectedRow.children()[2].innerHTML == plan.id)
+                    $('#modsubscriptionplanname').append(
+                        `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
+                    );
+                else
+                    $('#modsubscriptionplanname').append(
+                        `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                    );
+            }
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        modSubmit("/api/updateSubscription", {
-            auth: id_token,
-            subscriptionId: $("#modsubscriptionid").val(),
-            planId: $("#modsubscriptionplanname").val(),
-            planQuantity: $("#modsubscriptionplanquantity").val()
-        }, modSubscriptionSuccess);
+
+
+            //Submit button function
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on('click', function (e) {
+                modSubmit("/api/updateSubscription", {
+                    auth: id_token,
+                    subscriptionId: $("#modsubscriptionid").val(),
+                    planId: $("#modsubscriptionplanname").val(),
+                    planQuantity: $("#modsubscriptionplanquantity").val()
+                }, modSubscriptionSuccess);
+            });
+        },
+        error: function (planres, makerstatus) {
+            $("#userMainContent").html("Relationships isn't working!");
+        }
     });
+
+
 }
 
 function subscriptionAddForm () {
@@ -895,22 +944,96 @@ function subscriptionAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addsubscriptionplanid'>Plan ID:</label>" +
-        `<input type='text' id='addsubscriptionplanid' name='addsubscriptionplanid'>\n<br>\n` +
+        `<select id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
         "<label for='addsubscriptioncustomerid'>Customer ID:</label>" +
-        `<input type='text' id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'>\n<br>\n` +
+        `<select id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'></select><span id='addsubscrtioncustomerdescription'></span>\n` +
         "<label for='addsubscriptionplanquantity'>Monthly Hours:</label>" +
-        `<input type='text' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
+        `<input type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
         "</form>\n");
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        addSubmit("/api/createSubscription", {
-            auth: id_token,
-            planId: $("#addsubscriptionplanid").val(),
-            customerId: $("#addsubscriptioncustomerid").val() ,
-            planQuantity: $("#addsubscriptionplanquantity").val(),
-        }, addSubscriptionSuccess);
+    $.ajax({
+        url: "/api/getAllPlans",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+
+            $.ajax({
+                url: "/api/getAllClients",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (clientres, clientstatus) {
+                    for(var plan in planres) {
+                        plan = planres[plan].plan;
+                        $('#addsubscriptionplanid').append(
+                            `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                        );
+                    }
+                    for(var client in clientres) {
+                        client = clientres[client].customer;
+                        $('#addsubscriptioncustomerid').append(
+                            `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name}</option>`
+                        );
+                    }
+
+                    $.ajax({
+                        url: "/api/getClient",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            id: $("#addsubscriptioncustomerid").val()
+                        },
+                        dataType: "json",
+                        success:function (res, status) {
+                            $("#addsubscrtioncustomerdescription").html(res.id);
+                        },
+                        error: function (clientres, clientstatus) {
+                            $("#userMainContent").html("Clients isn't working!");
+                        }
+                    });
+
+                    $("#addsubscriptioncustomerid").on('change', function () {
+                        $.ajax({
+                            url: "/api/getClient",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: $("#addsubscriptioncustomerid").val()
+                            },
+                            dataType: "json",
+                            success:function (res, status) {
+                                $("#addsubscrtioncustomerdescription").html(res.id)
+                            },
+                            error: function (clientres, clientstatus) {
+                                $("#userMainContent").html("Clients isn't working!");
+                            }
+                        })
+                    });
+
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        addSubmit("/api/createSubscription", {
+                            auth: id_token,
+                            planId: $("#addsubscriptionplanid").val(),
+                            customerId: $("#addsubscriptioncustomerid").val() ,
+                            planQuantity: $("#addsubscriptionplanquantity").val(),
+                        }, addSubscriptionSuccess);
+                    });
+                },
+                error: function (clientres, clientstatus) {
+                    $("#userMainContent").html("Clients isn't working!");
+                }
+            });
+        },
+        error: function (planres, makerstatus) {
+            $("#userMainContent").html("Plans isn't working!");
+        }
     });
 }
 
@@ -1150,84 +1273,126 @@ function verifyDeletePlan () {
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#sheetsTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
-        '            <th scope="col">Freedom Maker ID</th>\n' +
-        '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Plan ID</th>\n' +
-        '            <th scope="col">Clock In</th>\n' +
-        '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Task</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    res.forEach(item => {
-        $("#sheetsTable").append('\n' +
-            '<tr class="sheetRow">' +
-            '   <td scope="row">' + item.id +'</td>' +
-            '   <td>' + item.makerId + '</td>'+
-            '   <td>' + item.clientId + '</td>'+
-            '   <td>' + item.hourlyRate + '</td>'+
-            '   <td>' + item.timeIn + '</td>'+
-            '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.task + '</td></tr>'
-        );
-    });
-    $("#sheetsTable").append('\n</tbody>');
 
-    //Body Block content
-    createBody("Delete");
+    $.ajax({
+        url: '/api/getAllMakers',
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (makerres, makerstatus) {
+            $.ajax({
+                url: '/api/getAllClients',
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    let clientMap = {};
+                    for (var i = 0; i < innerRes.length; ++i) {
+                        let client = innerRes[i].customer;
+                        if (client && client.billing_address) {
+                            clientMap[client.id] = client;
+                        }
+                    }
 
-    //Event Listeners
-    //Modify
-    $(".sheetRow").click(function () {
-        selectedRow = $(this);
-        let timeSheetPrompt = `<h5>Please type in the time sheet ID to delete the selected time sheet.</h5>` +
-            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter ID:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n";
-        prePopModForm("/api/getTimeSheet", sheetModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
-        $("#DeleteButton").click(function () {
-            let sheetId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("delete", timeSheetPrompt,"/api/deleteTimeSheet", {
-                auth: id_token,
-                id: sheetId
-            }, deleteSheetSuccess, verifyDeleteSheet);
-        });
-    });
+                    let makerMap = {};
+                    for (var i = 0; i < makerres.length; ++i) {
+                        let maker = makerres[i];
+                            makerMap[maker.id] = maker;
+                    }
 
-    //Add
-    $("#AddButton").click(function () {
-        popAddForm(sheetAddForm);
-        $("#DeleteButton").css("opacity", "0");
-        setTimeout(function(){
-            $("#DeleteButton").hide();
-        }, 500);
-    });
+                    //Create table
+                    $("#userMainContent").html(
+                        "<div id=\"buttonsTop\"></div>\n" +
+                        "<div class='row' id='topRow'>\n" +
+                        "<div id=\"floor\">\n" +
+                        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+                        "    </table>\n" +
+                        "</div></div>");
+                    $("#sheetsTable").append('\n' +
+                        '        <thead class="thead">\n' +
+                        '            <th scope="col">#</th>\n' +
+                        '            <th scope="col">Freedom Maker</th>\n' +
+                        '            <th scope="col">Client</th>\n' +
+                        '            <th scope="col">Plan ID</th>\n' +
+                        '            <th scope="col">Clock In</th>\n' +
+                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Task</th>\n' +
+                        '        </thead><tbody>');
+                    //Populate table
+                    res.forEach(item => {
+                        $("#sheetsTable").append('\n' +
+                            '<tr class="sheetRow">' +
+                            '   <td scope="row">' + item.id + '</td>' +
+                            '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
+                            '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
+                            '   <td>' + item.hourlyRate + '</td>' +
+                            '   <td>' + item.timeIn + '</td>' +
+                            '   <td>' + item.timeOut + '</td>' +
+                            '   <td>' + item.task + '</td></tr>'
+                        );
+                    });
+                    $("#sheetsTable").append('\n</tbody>');
 
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
+                    //Body Block content
+                    createBody("Delete");
 
-    //Row effect
-    $(".sheetRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
+                    //Event Listeners
+                    //Modify
+                    $(".sheetRow").click(function () {
+                        selectedRow = $(this);
+                        let timeSheetPrompt = `<h5>Please type in the time sheet ID to delete the selected time sheet.</h5>` +
+                            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                            "<br><form id='delete'>" +
+                            "<label for='deleteUser'>Enter ID:</label>" +
+                            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+                            "</form>\n";
+                        prePopModForm("/api/getTimeSheet", sheetModForm);
+                        $("#DeleteButton").show();
+                        $("#DeleteButton").css("opacity", "1");
+                        $("#DeleteButton").click(function () {
+                            let sheetId = selectedRow.children()[0].innerHTML;
+                            showDeletePrompt("delete", timeSheetPrompt, "/api/deleteTimeSheet", {
+                                auth: id_token,
+                                id: sheetId
+                            }, deleteSheetSuccess, verifyDeleteSheet);
+                        });
+                    });
+
+                    //Add
+                    $("#AddButton").click(function () {
+                        popAddForm(sheetAddForm);
+                        $("#DeleteButton").css("opacity", "0");
+                        setTimeout(function () {
+                            $("#DeleteButton").hide();
+                        }, 500);
+                    });
+
+                    //Expand Table Button
+                    $("#ExpandButton").click(function () {
+                        expandTable();
+                    });
+
+                    //Row effect
+                    $(".sheetRow").mouseenter(function () {
+                        $(this).css('transition', 'background-color 0.5s ease');
+                        $(this).css('background-color', '#e8ecef');
+                    }).mouseleave(function () {
+                        $(this).css('background-color', 'white');
+                    });
+                },
+                error: function (innerres, innerstatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });
+
+        },
+        error: function (makerres, makerstatus) {
+            $("#userMainContent").html("Something went wrong!");
+        }
     });
 }
 
@@ -1241,24 +1406,54 @@ function sheetModForm(res, status) {
         "<label for='modsheetid'>ID:</label>" +
         `<input type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsheetplanname'>Plan ID:</label>" +
-        `<input type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'>\n<br>\n` +
+        `<select type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<span id='mod'></span>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
         `<input type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
         `<input type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
         "</form>\n");
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        modSubmit("/api/updateTimeSheet", {
-            auth: id_token,
-            id: $("#modsheetid").val(),
-            hourlyRate: $("#modsheetplanname").val(),
-            timeIn: $("#modsheettimein").val() ,
-            timeOut: $("#modsheettimeout").val(),
-        }, modSheetSuccess);
+    $.ajax({
+        url: "/api/getAllPlans",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+            for(var plan in planres){
+                plan = planres[plan].plan;
+
+                if (selectedRow.children()[3].innerHTML == plan.id)
+                    $('#modsheetplanname').append(
+                        `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
+                    );
+                else
+                    $('#modsheetplanname').append(
+                        `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                    );
+            }
+
+            //Submit button function
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on('click', function (e) {
+                modSubmit("/api/updateTimeSheet", {
+                    auth: id_token,
+                    id: $("#modsheetid").val(),
+                    hourlyRate: $("#modsheetplanname").val(),
+                    timeIn: $("#modsheettimein").val() ,
+                    timeOut: $("#modsheettimeout").val(),
+                }, modSheetSuccess);
+            });
+        },
+        error: function (planres, planstatus) {
+            $("#userMainContent").html("Plans isn't working!");
+        }
     });
+
+
+
+
 }
 
 function sheetAddForm () {
@@ -1268,32 +1463,105 @@ function sheetAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsheetplanname'>Plan ID:</label>" +
-        `<input type='text' id='modsheetplanname' name='modsheetplanname'>\n<br>\n` +
+        `<select id='modsheetplanname' name='modsheetplanname'></select>\n<br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
-        `<input type='text' id='modsheettimein' name='modsheettimein'>\n<br>\n` +
+        `<input type='text' id='modsheettimein' name='modsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
-        `<input type='text' id='modsheettimeout' name='modsheettimeout'>\n<br>\n` +
+        `<input type='text' id='modsheettimeout' name='modsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheetclientid'>Client ID:</label>" +
-        `<input type='text' id='modsheetclientid' name='modsheetclientid'>\n<br>\n` +
+        `<select id='modsheetclientid' name='modsheetclientid'></select>\n<span id='modsheetclientdescription'></span>\n` +
         "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
-        `<input type='text' id='modsheetmakerid' name='modsheetmakerid'>\n<br>\n` +
+        `<select id='modsheetmakerid' name='modsheetmakerid'></select>\n<span id='modsheetmakerdescription'></span>\n` +
         "<label for='modsheettask'>Freedom Maker Task:</label>" +
         `<input type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
         "</form>\n");
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        addSubmit("/api/createTimeSheet", {
-            auth: id_token,
-            makerId: $("#modsheetmakerid").val(),
-            hourlyRate: $("#modsheetplanname").val() ,
-            clientId: $("#modsheetclientid").val(),
-            timeIn: $("#modsheettimein").val(),
-            timeOut: $("#modsheettimeout").val(),
-            task: $("#modsheettask").val(),
-        }, addSheetSuccess);
+
+
+
+    $.ajax({
+        url: "/api/getAllPlans",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getAllClients",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (clientres, clientstatus) {
+
+                            for(var plan in planres){
+                                plan = planres[plan].plan;
+                                    $('#modsheetplanname').append(
+                                        `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                                    );
+                            }
+                            for(var client in clientres){
+                                client = clientres[client].customer;
+                                $('#modsheetclientid').append(
+                                    `<option id="${client.id}" value="${client.id}">${client.first_name + " " + client.last_name}</option>`
+                                );
+                            }
+                            for(var maker in makerres){
+                                maker = makerres[maker];
+                                $('#modsheetmakerid').append(
+                                    `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName}</option>`
+                                );
+                            }
+                            updateDescriptionId('/api/getClient', $("#modsheetclientid").val(), $("#modsheetclientdescription"));
+                            updateDescriptionId('/api/getMaker', $("#modsheetmakerid").val(), $("#modsheetmakerdescription"));
+
+                            $("#modsheetclientid").on('change', function () {
+                                updateDescriptionId('/api/getClient', $("#modsheetclientid").val(), $("#modsheetclientdescription"));
+                            });
+                            $("#modsheetmakerid").on('change', function () {
+                                updateDescriptionId('/api/getMaker', $("#modsheetmakerid").val(), $("#modsheetmakerdescription"));
+                            });
+
+
+                            //Submit button function
+                            $("#SubmitButton").off("click");
+                            $("#SubmitButton").on('click', function (e) {
+                                addSubmit("/api/createTimeSheet", {
+                                    auth: id_token,
+                                    makerId: $("#modsheetmakerid").val(),
+                                    hourlyRate: $("#modsheetplanname").val() ,
+                                    clientId: $("#modsheetclientid").val(),
+                                    timeIn: $("#modsheettimein").val(),
+                                    timeOut: $("#modsheettimeout").val(),
+                                    task: $("#modsheettask").val(),
+                                }, addSheetSuccess);
+                            });
+                        },
+                        error: function (clientres, clientstatus) {
+                            $("#userMainContent").html("Plans isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Plans isn't working!");
+                }
+            });
+        },
+        error: function (planres, planstatus) {
+            $("#userMainContent").html("Plans isn't working!");
+        }
     });
+
 }
 
 function modSheetSuccess (res, status) {
