@@ -267,6 +267,7 @@ function timeSheetFunctionality (res) {
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
+    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
 
 
     $.ajax({
@@ -308,7 +309,8 @@ function timeSheetFunctionality (res) {
                             '   <td>' + res[item].task + '</td></tr>'
                         );
                     }
-
+                    $("#buttonsTop").children()[0].remove();
+                    $("#buttonsTop").children()[0].remove();
                 },
                 error: function (innerRes, innerStatus) {
                     $("#userMainContent").html("Something went wrong!");
@@ -563,6 +565,7 @@ $(document).ready(function () {
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
+        $("#buttonsTop").append('Loading...  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
     });

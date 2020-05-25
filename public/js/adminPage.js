@@ -2097,6 +2097,7 @@ $(document).ready(function () {
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
+        $("#buttonsTop").append('Loading...  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
         $(".navItem").css('color', 'white');
