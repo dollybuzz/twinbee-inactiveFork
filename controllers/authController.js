@@ -20,8 +20,8 @@ module.exports = {
 
     authorizeClient: async (req, res, next) =>{
         console.log("Attempting to authorize client...");
-      if (req.isOk || await authService.accessorIsClient()){
-          req.isOk = true;
+      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient()){
+          req[process.env.TWINBEE_IS_OK] = true;
           next();
       }
       else{
@@ -31,8 +31,8 @@ module.exports = {
     },
     authorizeMaker: async(req, res, next) =>{
         console.log("Attempting to authorize maker...");
-        if (req.isOk || await authService.accessorIsMaker(req.body.auth)) {
-            req.isOk = true;
+        if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaker(req.body.auth)) {
+            req[process.env.TWINBEE_IS_OK]  = true;
             next();
         }
         else{
@@ -57,8 +57,8 @@ module.exports = {
     },
     authorizeMaster: async(req, res, next) =>{
         console.log("Attempting to authorize Master...");
-        if (req.isOk || await authService.accessorIsMaster(req.body.auth)) {
-            req.isOk = true;
+        if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaster(req.body.auth)) {
+            req[process.env.TWINBEE_IS_OK]  = true;
             console.log("Passed auth check");
             next();
         }
@@ -72,8 +72,8 @@ module.exports = {
 
       //  throw new Error("Not yet implemented");
 
-        if (req.isOk /* || updated == updater */) {
-            req.isOk = true;
+        if (req[process.env.TWINBEE_IS_OK]  /* || updated == updater */) {
+            req[process.env.TWINBEE_IS_OK]  = true;
             next();
         }
         else{
