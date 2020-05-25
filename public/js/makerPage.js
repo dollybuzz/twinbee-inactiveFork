@@ -111,8 +111,6 @@ function clientFunctionality (res){
 
 //Previous Hours Methods
 function timeSheetFunctionality (res) {
-
-
     $.ajax({
         method: "post",
         url: '/api/getAllMakers',// switch when ready for live: '/api/getMakerIdByToken',
@@ -340,8 +338,6 @@ onSignIn = function (googleUser) {
             token: id_token
         },
         success: function (tokenres, status) {
-
-
             $.ajax({
                 url: "/api/getTimeSheetsByMakerId",
                 method: "post",
@@ -373,9 +369,8 @@ onSignIn = function (googleUser) {
                         },
                         dataType: "json",
                         success: function (relres, status) {
-                            let relmap = {};
-
                             for (var relationship of relres) {
+                                let occ = relationship.occupation;
                                 $.ajax({
                                     url: "/api/getClientName",
                                     method: "post",
@@ -385,9 +380,8 @@ onSignIn = function (googleUser) {
                                     },
                                     dataType: "json",
                                     success: function (clientres, status) {
-                                        relmap[relationship.id] = relationship;
                                         $("#makerSelectedClient").append(
-                                            `<option value=${clientres.relId}>${clientres.name}</option>`)
+                                            `<option value=${clientres.relId}>${clientres.name} - ${occ}</option>`)
                                     },
                                     error: function (clientres, status) {
                                         $("#UserMainContent").html("Could not get clients!");
