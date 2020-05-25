@@ -1178,7 +1178,7 @@ function timeSheetFunctionality (res) {
             '   <td>' + item.hourlyRate + '</td>'+
             '   <td>' + item.timeIn + '</td>'+
             '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.occupation + '</td></tr>' //change to task
+            '   <td>' + item.task + '</td></tr>'
         );
     });
     $("#sheetsTable").append('\n</tbody>');
@@ -1277,8 +1277,8 @@ function sheetAddForm () {
         `<input type='text' id='modsheetclientid' name='modsheetclientid'>\n<br>\n` +
         "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
         `<input type='text' id='modsheetmakerid' name='modsheetmakerid'>\n<br>\n` +
-        "<label for='modsheetoccupation'>Freedom Maker Occupation:</label>" +
-        `<input type='text' id='modsheetoccupation' name='modsheetoccupation'>\n<br>\n` +
+        "<label for='modsheettask'>Freedom Maker Task:</label>" +
+        `<input type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
         "</form>\n");
 
     //Submit button function
@@ -1291,7 +1291,7 @@ function sheetAddForm () {
             clientId: $("#modsheetclientid").val(),
             timeIn: $("#modsheettimein").val(),
             timeOut: $("#modsheettimeout").val(),
-            occupation: $("#modsheetoccupation").val(),
+            task: $("#modsheettask").val(),
         }, addSheetSuccess);
     });
 }
@@ -1320,7 +1320,7 @@ function addSheetSuccess (res, status) {
         '   <td>' + `${res.clientId}` + '</td>' +
         '   <td>' + `${res.timeIn}` + '</td>' +
         '   <td>' + `${res.timeOut}` + '</td>' +
-        '   <td>' + `${res.occupation}` + '</td></tr>'
+        '   <td>' + `${res.task}` + '</td></tr>'
     );
 
     $(`#${res.id}`).mouseenter(function () {

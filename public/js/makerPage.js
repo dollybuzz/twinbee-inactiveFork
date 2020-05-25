@@ -150,7 +150,6 @@ function timeSheetFunctionality (res) {
         '            <th scope="col">#</th>\n' +
         '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Plan ID</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
         '            <th scope="col">Task</th>\n' +
@@ -162,10 +161,9 @@ function timeSheetFunctionality (res) {
             '   <td scope="row">' + item.id +'</td>' +
             '   <td>' + item.makerId + '</td>'+
             '   <td>' + item.clientId + '</td>'+
-            '   <td>' + item.hourlyRate + '</td>'+
             '   <td>' + item.timeIn + '</td>'+
             '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.occupation + '</td></tr>' //change to task
+            '   <td>' + item.task + '</td></tr>'
         );
     });
     $("#sheetsTable").append('\n</tbody>');
@@ -222,7 +220,7 @@ function setClockInFunctionality() {
                                makerId: relres.makerId,
                                hourlyRate: relres.planId,
                                clientId: relres.clientId,
-                               occupation: relres.occupation,
+                               task: relres.task,
                            },
                            dataType: "json",
                            success: function (clockres, status) {

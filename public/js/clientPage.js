@@ -118,7 +118,7 @@ function makerFunctionality (res) {
             id: '16CHT7Ryu5EhnPWY',//tokenres.id,
         },
         dataType: "json",
-        success: function (res, status) {
+        success: function (relres, status) {
             //Create table
             $("#userMainContent").html(
                 "<div id=\"buttonsTop\"></div>\n" +
@@ -134,21 +134,33 @@ function makerFunctionality (res) {
                 '            <th scope="col">Occupation</th>\n' +
                 '        </thead><tbody>');
 
-            //Populate table
-            res.forEach(item => {
-                $("#makerTable").append('\n' +
-                    '<tr class="makerRow">' +
-                    '   <td scope="row">' + subscription.id + '</td>' +
-                    '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
-                    '   <td>' + subscription.plan_id + '</td>' +
-                    '   <td>' + (customer.meta_data == undefined? "no data": (customer.meta_data[item.plan_id] ? customer.meta_data[item.plan_id] : 0)) + '</td>' +
-                    '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
-                    '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                    '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
-                );
-            });
+            for(var item in relres) {
+                console.log(relres[0].occupation);
+                let occ = relres[item].occupation;
+                $.ajax({
+                    url: "/api/getMaker",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        id: relres[item].makerId,//tokenres.id,
+                    },
+                    dataType: "json",
+                    success: function (makerres, makerstatus) {
+                        //Populate table
+                        $("#makerTable").append('\n' +
+                            '<tr class="makerRow">' +
+                            '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
+                            '   <td>' + `${makerres.email}` + '</td>' +
+                            '   <td>' + occ + '</td></tr>'
+                        );
+                    },
+                    error: function (makerres, makerstatus) {
+                        $("#userMainContent").html("Maker isn't working!");
+                    }
+                });
+            };
 
-            $("#subscriptionTable").append('\n</tbody>');
+            $("#makerTable").append('\n</tbody>');
 
             //Body Block content
             createBody(null);
@@ -166,8 +178,8 @@ function makerFunctionality (res) {
                 $(this).css('background-color', 'white');
             });
         },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working!");
+        error: function (relres, relstatus) {
+            $("#userMainContent").html("Relationship isn't working!");
         }
     });
 
@@ -262,7 +274,7 @@ function timeSheetFunctionality (res) {
             '   <td>' + item.hourlyRate + '</td>'+
             '   <td>' + item.timeIn + '</td>'+
             '   <td>' + item.timeOut + '</td>'+
-            '   <td>' + item.occupation + '</td></tr>' //change to task
+            '   <td>' + item.task + '</td></tr>'
         );
     });
     $("#sheetsTable").append('\n</tbody>');
