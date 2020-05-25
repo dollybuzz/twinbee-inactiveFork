@@ -869,23 +869,51 @@ function subscriptionModForm (res, status) {
         "<label for='modsubscriptionid'>ID:</label>" +
         `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
-        `<input type='text' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${res.plan_id}'>\n<br>\n` +
+        `<select id='modsubscriptionplanname' name='modsubscriptionplanname'></select>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
         `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
         "</form>\n");
+    $.ajax({
+        url: "/api/getAllPlans",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+            for(var plan in planres){
+                plan = planres[plan].plan;
+                if (selectedRow.children()[2].innerHTML == plan.id)
+                    $('#modsubscriptionplanname').append(
+                        `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
+                    );
+                else
+                    $('#modsubscriptionplanname').append(
+                        `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                    );
+            }
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        modSubmit("/api/updateSubscription", {
-            auth: id_token,
-            subscriptionId: $("#modsubscriptionid").val(),
-            planId: $("#modsubscriptionplanname").val(),
-            planQuantity: $("#modsubscriptionplanquantity").val()
-        }, modSubscriptionSuccess);
+
+
+            //Submit button function
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on('click', function (e) {
+                modSubmit("/api/updateSubscription", {
+                    auth: id_token,
+                    subscriptionId: $("#modsubscriptionid").val(),
+                    planId: $("#modsubscriptionplanname").val(),
+                    planQuantity: $("#modsubscriptionplanquantity").val()
+                }, modSubscriptionSuccess);
+            });
+        },
+        error: function (planres, makerstatus) {
+            $("#userMainContent").html("Relationships isn't working!");
+        }
     });
+
+
 }
 
 function subscriptionAddForm () {
