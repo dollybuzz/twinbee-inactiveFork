@@ -88,7 +88,7 @@ function showFunction (functionality, endpoint) {
     console.log(id_token)
     $.ajax({
         method: "post",
-        url: '/api/getClientByToken',
+        url: '/api/getAlLClients',// uncomment for live site when ready: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -99,7 +99,7 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: res.id
+                    id: "AzqgmORz6AFeK1Q5w"// uncomment for live site when ready: res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -121,7 +121,7 @@ function showFunction (functionality, endpoint) {
 //Maker Methods
 function makerFunctionality (res) {
     $.ajax({
-        url: "/api/getClientByToken", //returns maker id, use maker id to get maker name
+        url: '/api/getAllClients', // Uncomment when ready for live: "/api/getClientByToken", //returns maker id, use maker id to get maker name
         method: "post",
         data: {
             auth: id_token,
@@ -134,7 +134,7 @@ function makerFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id,
+                    id: "AzqgmORz6AFeK1Q5w" // uncomment for live site when ready: tokenres.id,
                 },
                 dataType: "json",
                 success: function (relres, status) {
@@ -285,7 +285,7 @@ function timeSheetFunctionality (res) {
 
     $.ajax({
         method: "post",
-        url: '/api/getClientByToken',
+        url: '/api/getAlLClients',// uncomment for live site when ready: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -296,7 +296,7 @@ function timeSheetFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id
+                    id: "AzqgmORz6AFeK1Q5w"// uncomment for live site when ready: tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -361,14 +361,14 @@ function showMain () {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+   // id_token = googleUser.getAuthResponse().id_token;
     showMain(); //must call here to first generate token
 };
 
 function openHostedPage(getPageEndpoint){
     $.ajax({
         method: "post",
-        url: '/api/getClientByToken',
+        url: '/api/getAlLClients',// uncomment for live site when ready: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -379,7 +379,7 @@ function openHostedPage(getPageEndpoint){
                 method: "post",
                 data: {
                     auth: id_token,
-                    id:  res.id
+                    id:  "AzqgmORz6AFeK1Q5w"// uncomment for live site when ready: res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -423,7 +423,7 @@ function timeBucketFunctionality (res) {
                 '   <td scope="row">' + plan + '</td>' +
                 '   <td>' + minToHours + '</td></tr>'
             );
-    };
+    }
     $("#bucketTable").append('\n</tbody>');
 
     //Body Block content
@@ -479,7 +479,7 @@ function popBuyForm (form) {
 function buyForm () {
     $("#optionsClient").html("<div id='buyForm'></div>");
     $.ajax({
-        url: "/api/getClientByToken",
+        url: '/api/getAllClients',// uncomment for live site when ready: "/api/getClientByToken",
         method: "post",
         data: {
             auth: id_token,
@@ -492,16 +492,16 @@ function buyForm () {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id,
+                    id: "AzqgmORz6AFeK1Q5w"//uncomment for live site when ready tokenres.id,
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
                     $("#buyForm").html("<h5>Add data into the following fields</h5><br>" +
                         "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
                         "<label for='buyPlan'> Select a Plan: </label>" +
-                        "<select id='buyPlan'>\n</select><br><br>\n" +
+                        "<select class='form-control' id='buyPlan'>\n</select><br><br>\n" +
                         "<label for='buyHours'> Enter Number of Hours: </label>" +
-                        "<input type='number' id='buyHours' name='buyHours'><br><br>\n");
+                        "<input class='form-control' type='number' id='buyHours' name='buyHours'><br><br>\n");
 
                     for (var item in planres.buckets) {
                         $("#buyPlan").append(
