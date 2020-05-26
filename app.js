@@ -80,6 +80,7 @@ app.post("/api/updateClientTimeBucket",
     clientRestController.updateClientTimeBucket);
 app.post("/api/getMaker",
     authController.authorizeAdmin,
+    authController.authorizeClient,
     authController.authorizeMaster,
     makerRestController.getMakerById);
 app.post("/api/createMaker",
