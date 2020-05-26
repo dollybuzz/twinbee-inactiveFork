@@ -359,18 +359,7 @@ function showMain () {
     //Contains any main tab functionality
     showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
 
-    console.log("pre button setup")
-    $("#updatePaymentButton").on('click', function () {
-        console.log("open")
-        openHostedPage('/api/getUpdatePaymentURL');
-        console.log("sesame")
-    })
 
-    $("#revInvoicesButton").on('click', function () {
-        openHostedPage('/api/getClientPayInvoicesPage');
-    })
-
-    console.log("post button setup")
 }
 
 //Google
@@ -448,6 +437,17 @@ function timeBucketFunctionality (res) {
     $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
 
     //Event Listeners
+    $("#updatePaymentButton").on('click', function () {
+        console.log("open")
+        openHostedPage('/api/getUpdatePaymentURL');
+        console.log("sesame")
+    })
+
+    $("#revInvoicesButton").on('click', function () {
+        openHostedPage('/api/getClientPayInvoicesPage');
+    })
+
+
     //Buy Hours
     $(".bucketRow").click(function () {
         selectedRow = $(this);
