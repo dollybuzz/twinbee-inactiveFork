@@ -77,6 +77,8 @@ function expandTable () {
 };
 
 function showFunction (functionality, endpoint) {
+    console.log("Getting ready to verify")
+    console.log(id_token)
     $.ajax({
         method: "post",
         url: '/api/getClientByToken',
@@ -102,6 +104,7 @@ function showFunction (functionality, endpoint) {
             });// ajax
         },
         error: function (res, status) {
+            console.log("...")
             $("#userMainContent").html("Failed to verify you!");
             console.log(res);
         }
