@@ -27,7 +27,7 @@ module.exports = {
       else{
           console.log("Not authorized as client");
           if (next != undefined){
-              next(req, res)
+              next(req, res, next)
           }
           else {
               res.send('nope');
@@ -44,7 +44,7 @@ module.exports = {
         else{
             console.log("Not authorized as maker");
             if (next != undefined){
-                next(req, res)
+                next(req, res, next)
             }
             else {
                 res.send('nope');
@@ -60,13 +60,13 @@ module.exports = {
             req.isOk = true;
             console.log("Passed auth check");
             console.log(authService.accessorIsAdmin(req.body.auth));
-            next();
+            next(req, res, next);
         }
         else{
             console.log("Not authorized as admin");
             if (next != undefined){
                 console.log("Checking next auth...");
-                next(req, res)
+                next(req, res, next)
             }
             else {
                 console.log("All routes failed to authenticate")
@@ -80,7 +80,7 @@ module.exports = {
         if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaster(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK]  = true;
             console.log("Passed auth check");
-            next();
+            next(req, res, next);
         }
         else{
             console.log("Not authorized as Master");
