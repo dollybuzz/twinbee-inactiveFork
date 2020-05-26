@@ -13,9 +13,9 @@ module.exports ={
         };
         let headerLinks = [
             {link: "/client", text: "Main", id:"main"},
-            {link: "", text: "Review Subscriptions", id: "reviewSubscriptions"},
+            {link: "", text: "Review My Subscriptions", id: "reviewSubscriptions"},
             {link: "", text: "My Freedom Makers", id: "manageMakers"},
-            {link: "", text: "Review TimeSheets", id:"reviewTimeSheets"}
+            {link: "", text: "Review Time Sheets", id:"reviewTimeSheets"}
         ]
         let footerLinks = [
             {link: "", text: "Report a problem"},

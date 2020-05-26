@@ -76,6 +76,7 @@ function createBody (button) {
     $("#optionsClient").css("width", "50%");
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
     $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
+    $("#ExpandButton").hide();
     if(button != null)
     {
         $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
@@ -95,6 +96,7 @@ function showBlock () {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
         $("#AddButton").show();
+        $("#ExpandButton").show();
         $("#SubmitButton").show();
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
@@ -126,6 +128,10 @@ function expandTable () {
     $("#ExpandButton").css("opacity", "0");
     $("#DeleteButton").css("opacity", "0");
     $("#AddButton").css("opacity", "1");
+
+    setTimeout(function () {
+        $("#ExpandButton").hide();
+    }, 500);
 }
 
 function showFunction (functionality, endpoint) {
@@ -340,7 +346,7 @@ function clientFunctionality (res){
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">ID</th>\n' +
-        '            <th scope="col">Name</th>\n' +
+        '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
@@ -614,9 +620,8 @@ function makerFunctionality (res){
         "</div></div>");
     $("#makerTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
-        '            <th scope="col">First Name</th>\n' +
-        '            <th scope="col">Last Name</th>\n' +
+        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
     //Populate table
@@ -625,8 +630,7 @@ function makerFunctionality (res){
             $("#makerTable").append('\n' +
                 '<tr class="makerRow">' +
                 '   <td scope="row">' + item.id + '</td>' +
-                '   <td>' + item.firstName + '</td>' +
-                '   <td>' + item.lastName + '</td>' +
+                '   <td>' + item.firstName + " " + item.lastName + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
             );
         };
@@ -800,7 +804,7 @@ function subscriptionFunctionality (res) {
     $("#subscriptionTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">ID</th>\n' +
-        '            <th scope="col">Customer</th>\n' +
+        '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Planned Monthly Hours</th>\n' +
         '            <th scope="col">Scheduled changes</th>\n' +
@@ -1111,7 +1115,7 @@ function planFunctionality (res) {
         "</div></div>");
     $("#planTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Price Per Hour</th>\n' +
         '            <th scope="col">Description</th>\n' +
         '        </thead><tbody>');
@@ -1273,7 +1277,6 @@ function verifyDeletePlan () {
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {
-
     $.ajax({
         url: '/api/getAllMakers',
         method: "post",
@@ -1314,10 +1317,10 @@ function timeSheetFunctionality (res) {
                         "</div></div>");
                     $("#sheetsTable").append('\n' +
                         '        <thead class="thead">\n' +
-                        '            <th scope="col">#</th>\n' +
+                        '            <th scope="col">Time Sheet</th>\n' +
                         '            <th scope="col">Freedom Maker</th>\n' +
                         '            <th scope="col">Client</th>\n' +
-                        '            <th scope="col">Plan ID</th>\n' +
+                        '            <th scope="col">Plan</th>\n' +
                         '            <th scope="col">Clock In</th>\n' +
                         '            <th scope="col">Clock Out</th>\n' +
                         '            <th scope="col">Task</th>\n' +
@@ -1625,20 +1628,22 @@ function creditFunctionality (res) {
         "</div></div>");
     $("#creditTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
-        '            <th scope="col">Plan ID</th>\n' +
-        '            <th scope="col">Minutes</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Available Hours</th>\n' +
         '        </thead><tbody>');
     //Populate table
     res.forEach(customer => {
        for(var item in customer.buckets) {
+           let minToHours = (Number.parseFloat(customer.buckets[item]))/60;
+           minToHours = minToHours.toFixed(2);
            $("#creditTable").append('\n' +
                '<tr class="creditRow">' +
                '   <td scope="row">' + customer.id + '</td>' +
                '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
                '   <td>' + item + '</td>' +
-               '   <td>' + customer.buckets[item] + '</td>'
+               '   <td>' + minToHours + '</td>'
            );
        };
     });
@@ -1821,17 +1826,15 @@ function relationshipFunctionality (res) {
                                 "</div></div>");
                             $("#relationshipTable").append('\n' +
                                 '        <thead class="thead">\n' +
-                                '            <th scope="col">ID</th>\n' +
                                 '            <th scope="col">Client </th>\n' +
                                 '            <th scope="col">Freedom Maker</th>\n' +
-                                '            <th scope="col">Plan ID</th>\n' +
+                                '            <th scope="col">Plan</th>\n' +
                                 '            <th scope="col">Occupation</th>\n' +
                                 '        </thead><tbody>');
                             //Populate table
                             res.forEach(item => {
                                 $("#relationshipTable").append('\n' +
                                     '<tr class="relationshipRow">' +
-                                    '   <td scope="row">' + item.id +'</td>' +
                                     '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>'+
                                     '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>'+
                                     '   <td>' + item.planId + '</td>' +
@@ -2081,19 +2084,14 @@ function verifyDeleteRelationship() {
 //Google
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
-
 };
 
 $(document).ready(function () {
+    showMain();
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
-
-    //table on page tab: Main (this functionality is not included in navItem)
-    //Requires on load document ready instead of event listener method
-    //otherwise it will not load unless clicking on 'Main'
-    showMain();
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {

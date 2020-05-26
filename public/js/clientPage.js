@@ -32,6 +32,7 @@ function createBody (button) {
         $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
     }
     $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
+    $("#ExpandButton").hide();
 
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
@@ -46,6 +47,7 @@ function showBlock () {
     setTimeout(function () {
         $("#optionsClient").show();
         $("#buttonsBottom").show();
+        $("#ExpandButton").show();
         $("#SubmitButton").show();
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
@@ -74,6 +76,11 @@ function expandTable () {
     $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#SubmitButton").css("opacity", "0");
     $("#ExpandButton").css("opacity", "0");
+
+    setTimeout(function () {
+        $("#ExpandButton").hide();
+    }, 500);
+
 };
 
 function showFunction (functionality, endpoint) {
@@ -129,7 +136,7 @@ function makerFunctionality (res) {
                 "</div></div>");
             $("#makerTable").append('\n' +
                 '        <thead class="thead">\n' +
-                '            <th scope="col">Freedom Maker Name</th>\n' +
+                '            <th scope="col">Freedom Maker</th>\n' +
                 '            <th scope="col">Email</th>\n' +
                 '            <th scope="col">Occupation</th>\n' +
                 '        </thead><tbody>');
@@ -198,8 +205,6 @@ function subscriptionFunctionality (res) {
         "</div></div>");
     $("#subscriptionTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">ID</th>\n' +
-        '            <th scope="col">Customer</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Planned Monthly Hours</th>\n' +
         '            <th scope="col">Scheduled changes</th>\n' +
@@ -215,8 +220,6 @@ function subscriptionFunctionality (res) {
         if (item && !subscription.deleted) {
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
-                '   <td scope="row">' + subscription.id + '</td>' +
-                '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
@@ -246,9 +249,6 @@ function subscriptionFunctionality (res) {
 
 //TimeSheet Methods
 function timeSheetFunctionality (res) {
-
-
-
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -259,7 +259,7 @@ function timeSheetFunctionality (res) {
         "</div></div>");
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">#</th>\n' +
+        '            <th scope="col">Time Sheet</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
@@ -403,8 +403,8 @@ function timeBucketFunctionality (res) {
         "</div></div>");
     $("#bucketTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Plan ID</th>\n' +
-        '            <th scope="col">Hours Available</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Available Hours</th>\n' +
         '        </thead><tbody>');
     //Populate table
     for(var plan in res.buckets) {
@@ -555,8 +555,9 @@ function buyForm () {
 
 
 $(document).ready(function () {
+    onSignIn(); //remove for live
+
     //Adding logout Button
-    onSignIn();
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
 
@@ -565,6 +566,10 @@ $(document).ready(function () {
         $("#buttonsTop").append('Loading...  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
+        $(".navItem").css('color', 'white');
+        $(".navItem").css('font-style', 'normal');
+        $(this).css("color", '#dbb459');
+        $(this).css("font-style", 'italic');
     });
 
     $(".navItem").hover(function () {
@@ -573,8 +578,11 @@ $(document).ready(function () {
     });
 
     $(".navItem").on("mouseleave", function() {
-        $(this).css("color", 'white');
-        $(this).css("font-style", 'normal');
+        if (selectedTab!= $(this)[0].id)
+        {
+            $(this).css("color", 'white');
+            $(this).css("font-style", 'normal');
+        }
     });
 
     //shifts the logo

@@ -72,8 +72,7 @@ function clientFunctionality (res){
         "</div></div>");
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">ID</th>\n' +
-        '            <th scope="col">Name</th>\n' +
+        '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
@@ -82,7 +81,6 @@ function clientFunctionality (res){
         if (!item.deleted) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
-                '   <td scope="row">' + item.id + '</td>' +
                 '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
@@ -143,9 +141,7 @@ function timeSheetFunctionality (res) {
                         "</div></div>");
                     $("#sheetsTable").append('\n' +
                         '        <thead class="thead">\n' +
-                        '            <th scope="col">#</th>\n' +
-                        '            <th scope="col">Freedom Maker ID</th>\n' +
-                        '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Client</th>\n' +
                         '            <th scope="col">Clock In</th>\n' +
                         '            <th scope="col">Clock Out</th>\n' +
                         '            <th scope="col">Task</th>\n' +
@@ -154,8 +150,6 @@ function timeSheetFunctionality (res) {
                     for (var item in res){
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
-                            '   <td scope="row">' + res[item].id +'</td>' +
-                            '   <td>' + res[item].makerId + '</td>'+
                             '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
                             '   <td>' + res[item].timeIn + '</td>'+
                             '   <td>' + res[item].timeOut + '</td>'+
@@ -406,7 +400,8 @@ onSignIn = function (googleUser) {
 };
 
 $(document).ready(function () {
-    onSignIn() //remove for live
+    onSignIn(); //remove for live
+
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
@@ -415,6 +410,10 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
+        $(".navItem").css('color', 'white');
+        $(".navItem").css('font-style', 'normal');
+        $(this).css("color", '#dbb459');
+        $(this).css("font-style", 'italic');
     })
 
     $(".navItem").hover(function () {
@@ -423,8 +422,11 @@ $(document).ready(function () {
     });
 
     $(".navItem").on("mouseleave", function() {
-        $(this).css("color", 'white');
-        $(this).css("font-style", 'normal');
+        if (selectedTab!= $(this)[0].id)
+        {
+            $(this).css("color", 'white');
+            $(this).css("font-style", 'normal');
+        }
     });
 
     //shifts the logo
