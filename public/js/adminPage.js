@@ -59,7 +59,6 @@ function updateDescriptionId(endpoint, idSource, targetSpan){
 
 }
 
-
 function isEmail(val){
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val);
 }
@@ -803,8 +802,9 @@ function subscriptionFunctionality (res) {
         "</div></div>");
     $("#subscriptionTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Subscription ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Planned Monthly Hours</th>\n' +
         '            <th scope="col">Scheduled changes</th>\n' +
@@ -824,6 +824,7 @@ function subscriptionFunctionality (res) {
                 '<tr class="subscriptionRow">' +
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
+                '   <td>' + subscription.customer_id + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
@@ -888,11 +889,13 @@ function subscriptionModForm (res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
-        "<label for='modSubscription'>Subscription Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modsubscriptionid'>ID:</label>" +
+        "<label for='empty'></label>" +
+        "<label for='modsubscriptionid'>Subscription:</label>" +
         `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
+        "<label for='modsubscriptionclient'>Client:</label>" +
+        `<input type='text' id='modsubscriptionclient' name='modsubscriptionclient' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
         `<select id='modsubscriptionplanname' name='modsubscriptionplanname'></select>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
@@ -900,6 +903,7 @@ function subscriptionModForm (res, status) {
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
         `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
         "</form>\n");
+
     $.ajax({
         url: "/api/getAllPlans",
         method: "post",
@@ -920,8 +924,6 @@ function subscriptionModForm (res, status) {
                     );
             }
 
-
-
             //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
@@ -938,20 +940,20 @@ function subscriptionModForm (res, status) {
         }
     });
 
-
 }
 
 function subscriptionAddForm () {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
-        "<label for='addSubscription'>Subscription Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='addsubscriptionplanid'>Plan ID:</label>" +
+        "<label for='empty'></label>" +
+        "<label for='addsubscriptioncustomerid'>Client:</label>" +
+        `<select id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'></select>\n` +
+        "<label for='empty'></label>" +
+        "<label for='addsubscriptionplanid'>Plan:</label>" +
         `<select id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
-        "<label for='addsubscriptioncustomerid'>Customer ID:</label>" +
-        `<select id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'></select><span id='addsubscrtioncustomerdescription'></span>\n` +
-        "<label for='addsubscriptionplanquantity'>Monthly Hours:</label>" +
+        "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
         `<input type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
         "</form>\n");
 
@@ -981,43 +983,9 @@ function subscriptionAddForm () {
                     for(var client in clientres) {
                         client = clientres[client].customer;
                         $('#addsubscriptioncustomerid').append(
-                            `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name}</option>`
+                            `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name + ' - ' + client.id}</option>`
                         );
                     }
-
-                    $.ajax({
-                        url: "/api/getClient",
-                        method: "post",
-                        data: {
-                            auth: id_token,
-                            id: $("#addsubscriptioncustomerid").val()
-                        },
-                        dataType: "json",
-                        success:function (res, status) {
-                            $("#addsubscrtioncustomerdescription").html(res.id);
-                        },
-                        error: function (clientres, clientstatus) {
-                            $("#userMainContent").html("Clients isn't working!");
-                        }
-                    });
-
-                    $("#addsubscriptioncustomerid").on('change', function () {
-                        $.ajax({
-                            url: "/api/getClient",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                id: $("#addsubscriptioncustomerid").val()
-                            },
-                            dataType: "json",
-                            success:function (res, status) {
-                                $("#addsubscrtioncustomerdescription").html(res.id)
-                            },
-                            error: function (clientres, clientstatus) {
-                                $("#userMainContent").html("Clients isn't working!");
-                            }
-                        })
-                    });
 
                     //Submit button function
                     $("#SubmitButton").off("click");
