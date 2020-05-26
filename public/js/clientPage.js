@@ -148,7 +148,7 @@ function makerFunctionality (res) {
                         "</div></div>");
                     $("#makerTable").append('\n' +
                         '        <thead class="thead">\n' +
-                        '            <th scope="col">Freedom Maker Name</th>\n' +
+                        '            <th scope="col">Freedom Maker</th>\n' +
                         '            <th scope="col">Email</th>\n' +
                         '            <th scope="col">Occupation</th>\n' +
                         '        </thead><tbody>');

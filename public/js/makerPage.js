@@ -73,6 +73,7 @@ function clientFunctionality (res){
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
@@ -82,6 +83,7 @@ function clientFunctionality (res){
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
                 '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
+                '   <td>' + `${item.customer_id}` + '</td>' +
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
             );
@@ -142,6 +144,7 @@ function timeSheetFunctionality (res) {
                     $("#sheetsTable").append('\n' +
                         '        <thead class="thead">\n' +
                         '            <th scope="col">Client</th>\n' +
+                        '            <th scope="col">Client ID</th>\n' +
                         '            <th scope="col">Clock In</th>\n' +
                         '            <th scope="col">Clock Out</th>\n' +
                         '            <th scope="col">Task</th>\n' +
@@ -151,6 +154,7 @@ function timeSheetFunctionality (res) {
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
                             '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
+                            '   <td>' + clientMap[res[item].clientId].customer_id + '</td>'+
                             '   <td>' + res[item].timeIn + '</td>'+
                             '   <td>' + res[item].timeOut + '</td>'+
                             '   <td>' + res[item].task + '</td></tr>'
