@@ -456,12 +456,68 @@ function clientModForm (res, status) {
         `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
         "<label for='modzip'>Zip:</label>" +
         `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        if (isEmail($("#modemail").val()) && isZip($("#modzip").val())) {
+        let message = "";
+        let valid = true;
+        if (!isEmail($("#modemail").val())){
+            valid = false;
+            message += "Email is not valid!<br>";
+        }
+        if (!isZip($("#modzip").val())){
+            valid = false;
+            message += "Zip is not valid!<br>";
+        }
+        if ($("#modclientfname").val().length === 0){
+            valid = false;
+            message += "A First Name is required!<br>";
+        }
+        if ($("#modclientlname").val().length === 0){
+            valid = false;
+            message += "A Last Name is required!<br>";
+        }
+        if ($("#modphone").val().length === 0){
+            valid = false;
+            message += "A Phone Number is required!<br>";
+        }
+        if ($("#modphone").val().match(/[a-z]|[A-Z]/g)){
+            valid = false;
+            message += "A Phone Number can't have letters!<br>";
+        }
+        if (!$("#modphone").val().match(/[0-9]/g)){
+            valid = false;
+            message += "A Phone Number needs numbers!<br>";
+        }
+        if ($("#modphone").val().length < 10){
+            valid = false;
+            message += "Phone number not long enough!<br>";
+        }
+        if ($("#modbillfname").val().length === 0){
+            valid = false;
+            message += "A Billing Last Name is required!<br>";
+        }
+        if ($("#modbilllname").val().length === 0){
+            valid = false;
+            message += "A Billing First Name is required!<br>";
+        }
+        if ($("#modaddress").val().length === 0){
+            valid = false;
+            message += "A Billing Address is required!<br>";
+        }
+        if ($("#modstate").val().length === 0){
+            valid = false;
+            message += "A State is required!<br>";
+        }
+        if ($("#modcity").val().length === 0){
+            valid = false;
+            message += "A City is required!<br>";
+        }
+
+
+        if (valid) {
             modSubmit("/api/updateClientContact", {
                 auth: id_token,
                 id: $("#modclientid").val(),
@@ -484,11 +540,8 @@ function clientModForm (res, status) {
                 zip: $("#modzip").val()
             }, modClientSuccessBilling);
         }
-        else if (!isEmail($("#modemail").val())){
-            alert("Invalid email!");
-        }
-        else if (!isZip($("#modzip").val())){
-            alert("Invalid zip!");
+        else{
+            $("#errormessage").html(message);
         }
     });
 }
@@ -1231,11 +1284,8 @@ function planAddForm () {
             }, addPlanSuccess);
         }
         else{
-
             $("#errormessage").html(message);
         }
-
-
     });
 }
 
