@@ -25,6 +25,7 @@ module.exports = {
           next(req, res, next);
       }
       else{
+          console.log("Not authorized as client");
           if (next != undefined){
               next(req, res)
           }
@@ -41,6 +42,7 @@ module.exports = {
             next(req, res, next);
         }
         else{
+            console.log("Not authorized as maker");
             if (next != undefined){
                 next(req, res)
             }
@@ -61,6 +63,7 @@ module.exports = {
             next();
         }
         else{
+            console.log("Not authorized as admin");
             if (next != undefined){
                 next(req, res)
             }
@@ -78,6 +81,7 @@ module.exports = {
             next();
         }
         else{
+            console.log("Not authorized as Master");
             if (next != undefined){
                 next(req, res, next)
             }
