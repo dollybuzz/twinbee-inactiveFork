@@ -20,7 +20,7 @@ module.exports = {
 
     authorizeClient: async (req, res, next) =>{
         console.log("Attempting to authorize client...");
-      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient()){
+      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient(req.body.auth)){
           req[process.env.TWINBEE_IS_OK] = true;
           next();
       }
