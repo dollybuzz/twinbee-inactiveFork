@@ -1079,7 +1079,6 @@ function subscriptionModForm (res, status) {
             $("#userMainContent").html("Relationships isn't working!");
         }
     });
-
 }
 
 function subscriptionAddForm () {
@@ -1550,7 +1549,7 @@ function sheetModForm(res, status) {
         `<input type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
         `<input type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1576,13 +1575,31 @@ function sheetModForm(res, status) {
             //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
-                modSubmit("/api/updateTimeSheet", {
-                    auth: id_token,
-                    id: $("#modsheetid").val(),
-                    hourlyRate: $("#modsheetplanname").val(),
-                    timeIn: $("#modsheettimein").val() ,
-                    timeOut: $("#modsheettimeout").val(),
-                }, modSheetSuccess);
+                let message = "";
+                let valid = true;
+                if (!$("#modsheettimeout").val().match(/[2][0-9]{3}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                || $("#modsheettimeout").val().match(/[a-z]+|[A-Z]+/g)){
+                    valid = false;
+                    message += "Bad format on time out!<br>";
+                }
+                if (!$("#modsheettimein").val().match(/[2][0-9]{3}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                    || $("#modsheettimein").val().match(/[a-z]+|[A-Z]+/g)){
+                    valid = false;
+                    message += "Bad format on time in!<br>";
+                }
+
+                if (valid) {
+                    modSubmit("/api/updateTimeSheet", {
+                        auth: id_token,
+                        id: $("#modsheetid").val(),
+                        hourlyRate: $("#modsheetplanname").val(),
+                        timeIn: $("#modsheettimein").val() ,
+                        timeOut: $("#modsheettimeout").val(),
+                    }, modSheetSuccess);
+                }
+                else{
+                    $("#errormessage").html(message);
+                }
             });
         },
         error: function (planres, planstatus) {
