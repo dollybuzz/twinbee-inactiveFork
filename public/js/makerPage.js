@@ -20,7 +20,7 @@ let navMapper = {
 function showFunction (functionality, endpoint) {
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -111,7 +111,7 @@ function clientFunctionality (res){
 function timeSheetFunctionality (res) {
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -201,7 +201,7 @@ function setClockInFunctionality() {
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
-            url: '/api/getMakerIdByToken',
+            url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
             method: "post",
             data: {
                 auth: id_token,
@@ -279,7 +279,7 @@ function setClockOutFunctionality() {
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
-            url: '/api/getMakerIdByToken',
+            url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
             method: "post",
             data: {
                 auth: id_token,
@@ -292,7 +292,7 @@ function setClockOutFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        makerId: tokenres.id,
+                        makerId: 4 //uncomment for live when ready: tokenres.id,
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -333,7 +333,7 @@ onSignIn = function (googleUser) {
     //Populating drop down selection
     $.ajax({
         method: "post",
-        url: '/api/getMakerIdByToken',
+        url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
