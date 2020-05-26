@@ -85,11 +85,9 @@ function expandTable () {
 };
 
 function showFunction (functionality, endpoint) {
-    console.log("Getting ready to verify")
-    console.log(id_token)
     $.ajax({
         method: "post",
-        url: '/api/getAlLClients',// uncomment for live site when ready: '/api/getClientByToken',
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -100,7 +98,7 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "AzqgmORz6AFeK1Q5w"// uncomment for live site when ready: res.id
+                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -112,9 +110,7 @@ function showFunction (functionality, endpoint) {
             });// ajax
         },
         error: function (res, status) {
-            console.log("...")
             $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
         }
     });
 };
@@ -122,7 +118,7 @@ function showFunction (functionality, endpoint) {
 //Maker Methods
 function makerFunctionality (res) {
     $.ajax({
-        url: '/api/getAllClients', // Uncomment when ready for live: "/api/getClientByToken", //returns maker id, use maker id to get maker name
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         method: "post",
         data: {
             auth: id_token,
@@ -135,7 +131,7 @@ function makerFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "AzqgmORz6AFeK1Q5w" // uncomment for live site when ready: tokenres.id,
+                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
                 },
                 dataType: "json",
                 success: function (relres, status) {
@@ -286,7 +282,7 @@ function timeSheetFunctionality (res) {
 
     $.ajax({
         method: "post",
-        url: '/api/getAlLClients',// uncomment for live site when ready: '/api/getClientByToken',
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -297,7 +293,7 @@ function timeSheetFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "AzqgmORz6AFeK1Q5w"// uncomment for live site when ready: tokenres.id
+                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -369,7 +365,7 @@ onSignIn = function (googleUser) {
 function openHostedPage(getPageEndpoint){
     $.ajax({
         method: "post",
-        url: '/api/getAlLClients',// uncomment for live site when ready: '/api/getClientByToken',
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -380,7 +376,7 @@ function openHostedPage(getPageEndpoint){
                 method: "post",
                 data: {
                     auth: id_token,
-                    id:  "AzqgmORz6AFeK1Q5w"// uncomment for live site when ready: res.id
+                    id:  TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -480,7 +476,7 @@ function popBuyForm (form) {
 function buyForm () {
     $("#optionsClient").html("<div id='buyForm'></div>");
     $.ajax({
-        url: '/api/getAllClients',// uncomment for live site when ready: "/api/getClientByToken",
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         method: "post",
         data: {
             auth: id_token,
@@ -493,7 +489,7 @@ function buyForm () {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "AzqgmORz6AFeK1Q5w"//uncomment for live site when ready tokenres.id,
+                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
