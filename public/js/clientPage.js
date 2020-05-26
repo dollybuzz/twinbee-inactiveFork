@@ -2,6 +2,7 @@
 let selectedRow = null;
 let selectedTab = null;
 let id_token = null;
+let TEST_ENVIRONMENT = false;
 
 let navMapper = {
     main: function () {
@@ -572,7 +573,19 @@ function buyForm () {
 
 
 $(document).ready(function () {
-    onSignIn(); //remove for live
+    $.ajax({
+        url: "/api/getEnvironment",
+        method: "get",
+        dataType: "json",
+        success:function (res, status) {
+            TEST_ENVIRONMENT = res;
+            onSignIn();
+        },
+        error: function (clientres, clientstatus) {
+            TEST_ENVIRONMENT = true;
+            onSignIn();
+        }
+    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");

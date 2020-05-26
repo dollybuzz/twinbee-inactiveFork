@@ -1988,7 +1988,7 @@ function creditAddForm() {
                             addSubmit("/api/updateClientTimeBucket", {
                                 auth: id_token,
                                 id: $("#addClientCredit").val(),
-                                planId: $("#addPlanCredit").val(),
+                                planName: $("#addPlanCredit").val(),
                                 minutes: $("#addMinCredit").val()
                             }, addCreditSuccess);
                         }
@@ -2372,7 +2372,6 @@ onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
     showMain();
 };
-
 $(document).ready(function () {
     $.ajax({
         url: "/api/getEnvironment",
@@ -2384,6 +2383,7 @@ $(document).ready(function () {
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
+            onSignIn();
         }
     });
 
