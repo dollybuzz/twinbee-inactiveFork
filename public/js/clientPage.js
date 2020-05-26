@@ -148,8 +148,8 @@ function makerFunctionality (res) {
                         "</div></div>");
                     $("#makerTable").append('\n' +
                         '        <thead class="thead">\n' +
-                        '            <th scope="col">Freedom Maker</th>\n' +
                         '            <th scope="col">Freedom Maker ID</th>\n' +
+                        '            <th scope="col">Freedom Maker</th>\n' +
                         '            <th scope="col">Email</th>\n' +
                         '            <th scope="col">Occupation</th>\n' +
                         '        </thead><tbody>');
@@ -168,8 +168,8 @@ function makerFunctionality (res) {
                                 //Populate table
                                 $("#makerTable").append('\n' +
                                     '<tr class="makerRow">' +
-                                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
                                     '   <td>' + `${makerres.id}` + '</td>' +
+                                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
                                     '   <td>' + `${makerres.email}` + '</td>' +
                                     '   <td>' + occ + '</td></tr>'
                                 );
@@ -273,16 +273,15 @@ function timeSheetFunctionality (res) {
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
-        '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Freedom Maker ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
-    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-
+    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 
     $.ajax({
         method: "post",
@@ -311,8 +310,8 @@ function timeSheetFunctionality (res) {
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
                             '   <td scope="row">' + res[item].id + '</td>' +
-                            '   <td>' + makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
                             '   <td>' + makerMap[res[item].makerId].id + '</td>' +
+                            '   <td>' + makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
                             '   <td>' + res[item].hourlyRate + '</td>' +
                             '   <td>' + res[item].timeIn + '</td>' +
                             '   <td>' + res[item].timeOut + '</td>' +
