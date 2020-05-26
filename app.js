@@ -16,6 +16,7 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
+const as = require('./services/authService.js')
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
@@ -272,6 +273,7 @@ app.post("/api/subscriptionRenewed",
     clientRestController.subscriptionRenewed);
 
 (async function() {
+    console.log(await as.accessorIsAdmin('eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk2MGE3ZThlODM0MWVkNzUyZjEyYjE4NmZhMTI5NzMxZmUwYjA0YzAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE0NDg4NTIzMTQ3MjIzMzc3MTU1IiwiaGQiOiJjc3VtYi5lZHUiLCJlbWFpbCI6ImdyZWJyb3duQGNzdW1iLmVkdSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoidmt3alpwUVNnU00tTWtNcWVkNUtRdyIsIm5hbWUiOiJHcmVnb3J5IEJyb3duIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BT2gxNEdqbC1TdXVhbFJNX2owYzJEdmZvY3pTVVcwZFVQdTFKbURkVnp0dT1zOTYtYyIsImdpdmVuX25hbWUiOiJHcmVnb3J5IiwiZmFtaWx5X25hbWUiOiJCcm93biIsImxvY2FsZSI6ImVuIiwiaWF0IjoxNTkwNDU5NTM5LCJleHAiOjE1OTA0NjMxMzksImp0aSI6IjJjMGQ5MDJjNTA3NmJlNDEwNDE0NTM4MTA5YzBkMGRjN2QyZGJlNjcifQ.BVkbcaf5uDD3PSLBDTxSH72lz9cOFX97-z40lAad0dsGQhJckn8MSnFqR8Qzb19g7r75HlMHXNBc6RGEFPIEloqsLBjFMPKZbrUGsyPr5l6__fqXjO-v-asXndFN9GQri6ky2q2AYerk6bZ9xqHT47AT_iwApvAhmT1y73Hpreee8lPZNo8a7YSQEPvrZ_uhQNxJ78f_49k7k3mikDX-CINXgSdJa7fyhXSmJN20mk0dJWOVEBmER0kySKZMVhcfsLAGnrFxPY-JRihylqhdwKg_zkuNlcziKZHA-ia6PuZdAUC33mlIcMGjPvmfvv533ZSHQeXw6ImI2o0InTd8Ew'))
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
