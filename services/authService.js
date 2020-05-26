@@ -96,6 +96,8 @@ class AuthService {
     }
 
     async getEmailFromToken(token) {
+        console.log("getting email from token:")
+        console.log(token)
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: clientId
