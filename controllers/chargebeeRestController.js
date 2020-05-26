@@ -176,6 +176,33 @@ module.exports = {
     },
 
     /**
+     * /api/retrieveSubscriptionChanges
+     * Retrieves a subscription object by chargebee subscription id. Looks for values in the body
+     * as follows:
+     * {
+     *     "subscriptionId": id of desired subscription,
+     *     "auth": authentication credentials; either master or token
+     * }
+     *
+     * @returns subscription{}
+     */
+    retrieveSubscriptionChanges: async function(req, res){
+        console.log("Attempting to retrieve one subscription's scheduled changes from REST: ");
+        console.log(req.body);
+        let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
+            .catch(e=>console.log(e));
+        res.send(subscription);
+    },
+
+    undoSubscriptionChanges: async function(req, res){
+        console.log(`Attempting to revert scheduled changes for a subscription...`);
+        console.log(req.body);
+        let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
+            .catch(e=>console.log(e));
+        res.send(subscription);
+    },
+
+    /**
      * /api/updateSubscription
      * Updates a subscription with new values. Note that
      * the pricePerHour will override defaults. This can be used

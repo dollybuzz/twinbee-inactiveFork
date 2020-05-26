@@ -144,6 +144,16 @@ app.post("/api/getSubscriptionsByClient",
     //authController.authorizeClient,
     //authController.authorizeMaster,
     chargebeeRestController.getSubscriptionsByClient);
+app.post("/api/retrieveSubscriptionChanges",
+    //authController.authorizeAdmin,
+    //authController.authorizeClient,
+    //authController.authorizeMaster,
+    chargebeeRestController.retrieveSubscriptionChanges);
+app.post("/api/undoSubscriptionChanges",
+    //authController.authorizeAdmin,
+    //authController.authorizeClient,
+    //authController.authorizeMaster,
+    chargebeeRestController.undoSubscriptionChanges);
 app.post("/api/deletePlan",
     //authController.authorizeAdmin,
     //authController.authorizeMaster,

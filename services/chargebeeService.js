@@ -28,6 +28,7 @@ class ChargebeeService {
      * @returns {Promise<[{entry:plan{}}]>}
      */
     getAllPlans(){
+        console.log("Getting all plans...");
         return new Promise((resolve, reject) => {
             chargebee.plan.list({
             }).request(function(error,result) {
@@ -52,6 +53,7 @@ class ChargebeeService {
      * @param planDescription-plan description
      */
     createPlan(planName, invoiceName, pricePerHour, planDescription) {
+        console.log(`Creating plan ${planName} with per hour cost of ${pricePerHour}...`);
         return new Promise((resolve, reject) => {
             let planId = planName.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
             chargebee.plan.create({
@@ -88,6 +90,7 @@ class ChargebeeService {
      * @returns {Promise<plan>}
      */
     retrievePlan(planId) {
+        console.log(`Getting details for plan ${planId}`);
         return new Promise((resolve, reject) => {
             chargebee.plan.retrieve(planId).request(function (error, result) {
                 if (error) {
@@ -113,6 +116,7 @@ class ChargebeeService {
      * @returns {Promise<unknown>}
      */
     updatePlan(planId, newName, planInvoiceName, planPrice) {
+        console.log(`Updating plan ${planId}...`);
         return new Promise((resolve, reject) => {
             chargebee.plan.update(planId, {
                 name: newName,
@@ -137,12 +141,11 @@ class ChargebeeService {
      * @param planId
      */
     deletePlan(planId) {
+        console.log(`Deleting plan ${planId}...`);
         chargebee.plan.delete(planId).request(function (error, result) {
             if (error) {
-                //handle error
                 console.log(error);
             } else {
-                //console.log(result);
                 var plan = result.plan;
             }
         });
@@ -157,6 +160,7 @@ class ChargebeeService {
      * @returns {Promise<entry>}
      */
     getAllSubscriptions(){
+        console.log("Getting all subscriptions...");
         return new Promise((resolve, reject) => {
             chargebee.subscription.list({
             }).request(function(error,result) {
@@ -181,6 +185,7 @@ class ChargebeeService {
      * @param planQuantity- number of hours per month
      */
     createSubscription(planId, customerId, planQuantity) {
+        console.log(`Creating subscription for customer ${customerId} with plan ${planId}...`);
         return new Promise((resolve, reject) => {
             chargebee.subscription.create_for_customer(customerId, {
                 plan_id: planId,
@@ -192,15 +197,10 @@ class ChargebeeService {
                     console.log(error);
                     reject(error);
                 } else {
-                    //console.log(result);
                     var subscription = result.subscription;
-                    var customer = result.customer;
-                    var card = result.card;
-                    var invoice = result.invoice;
-                    var unbilled_charges = result.unbilled_charges;
                     resolve(subscription);
-                    console.log(`Subscription created for customer ${customerId} with` +
-                        `plan ${planId} and initial quantity ${planQuantity}`);
+                    console.log(`Subscription created for customer ${result.customer.id} with` +
+                        `plan ${subscription.plan_id} and initial quantity ${subscription.plan_quantity}`);
                 }
             });
         })
@@ -212,17 +212,60 @@ class ChargebeeService {
      * @returns {Promise<subscription>}
      */
     retrieveSubscription(subscriptionId) {
+        console.log(`Retrieving details for subscription ${subscriptionId}`);
         return new Promise((resolve, reject) => {
-            console.log(subscriptionId)
             chargebee.subscription.retrieve(subscriptionId).request(function(error,result) {
                 if(error){
                     //handle error
                     console.log(error);
                     reject(error);
                 }else{
-                 //   console.log(result);
-                    console.log("Subscription retrieved");
                     var subscription = result.subscription;
+                    console.log(`Subscription ${subscription.id} retrieved`);
+                    resolve(subscription);
+                }
+            });
+        })
+    }
+
+    /**
+     * Revert's planned changes to a subscription.
+     *
+     * @param subscriptionId - subscription to be reverted
+     */
+    cancelScheduledChanges(subscriptionId){
+        return new Promise((resolve, reject) => {
+            console.log(`Cancelling pending changes to subscription ${subscriptionId}...`)
+            chargebee.subscription.remove_scheduled_changes(subscriptionId).request(function(error,result) {
+                if(error){
+                    console.log(error);
+                    reject(error);
+                }else{
+                    var subscription = result.subscription;
+                    console.log(`Changes reverted for subscription ${subscription.id}`)
+                    resolve(subscription);
+                }
+            });
+        })
+    }
+
+    /**
+     * Retrieves a subscription object by chargebee subscription id, including
+     * scheduled changes.
+     *
+     * @param subscriptionId    - id of the subscription to retrieve
+     * @returns {Promise<subscription>}
+     */
+    retrieveSubscriptionWithChanges(subscriptionId){
+        console.log(`Retrieving details for subscription ${subscriptionId} with scheduled changes...`);
+        return new Promise((resolve, reject) => {
+            chargebee.subscription.retrieve_with_scheduled_changes(subscriptionId).request(function(error,result) {
+                if(error){
+                    console.log(error);
+                    reject(error);
+                }else{
+                    var subscription = result.subscription;
+                    console.log(`Subscription ${subscription.id} scheduled changes retrieved`);
                     resolve(subscription);
                 }
             });
@@ -235,15 +278,16 @@ class ChargebeeService {
      * to create "custom" subscriptions. Use caution when doing so.
      * The revised subscription is returned
      *
-     * @param suscriptionId - id of the subscription to modify
+     * @param subscriptionId - id of the subscription to modify
      * @param planId        - id of the new plan to be used
      * @param planQuantity  - number of hours to be used
      * @param pricePerHour  - custom price per hour - DEACTIVATED
      * @returns {Promise<subscription>}
      */
-    updateSubscription(suscriptionId, planId, planQuantity, pricePerHour) {
+    updateSubscription(subscriptionId, planId, planQuantity, pricePerHour) {
+        console.log(`Updating subscription ${subscriptionId}...`)
         return new Promise((resolve, reject) => {
-            chargebee.subscription.update(suscriptionId,{
+            chargebee.subscription.update(subscriptionId,{
                 plan_id : planId,
                 end_of_term : true,
                 plan_quantity: planQuantity,
@@ -254,7 +298,6 @@ class ChargebeeService {
                     console.log(error);
                     reject(error);
                 }else{
-                 //   console.log(result);
                     console.log("Subscription updated.");
                     var subscription = result.subscription;
                     resolve(subscription);
@@ -304,13 +347,9 @@ class ChargebeeService {
                 //handle error
                 console.log(error);
             }else{
-             //   console.log(result);
                 var subscription = result.subscription;
                 var customer = result.customer;
-                var card = result.card;
-                var invoice = result.invoice;
                 var unbilled_charges = result.unbilled_charges;
-                var credit_notes = result.credit_notes;
                 console.log(`Cancellation complete for customer ${customer}, unbilled charges: ${unbilled_charges}`)
             }
         });
