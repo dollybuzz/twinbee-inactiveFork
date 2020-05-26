@@ -25,7 +25,12 @@ module.exports = {
           next();
       }
       else{
-          res.send('nope');
+          if (next != undefined){
+              next(req, res)
+          }
+          else {
+              res.send('nope');
+          }
           //TODO: res.render(accessNotAllowed)
       }
     },
@@ -36,7 +41,12 @@ module.exports = {
             next();
         }
         else{
-            res.send('nope');
+            if (next != undefined){
+                next(req, res)
+            }
+            else {
+                res.send('nope');
+            }
             //TODO: res.render(accessNotAllowed)
         }
     },
@@ -51,7 +61,12 @@ module.exports = {
             next();
         }
         else{
-            res.send('nope');
+            if (next != undefined){
+                next(req, res)
+            }
+            else {
+                res.send('nope');
+            }
             //TODO: res.render(accessNotAllowed)
         }
     },
@@ -63,7 +78,12 @@ module.exports = {
             next();
         }
         else{
-            res.send('nope');
+            if (next != undefined){
+                next(req, res)
+            }
+            else {
+                res.send('nope');
+            }
             //TODO: res.render(accessNotAllowed)
         }
     },
