@@ -102,6 +102,7 @@ app.post("/api/getTimeSheetsByClientId",
     timeSheetRestController.getTimeSheetsByClientId);
 app.post("/api/getTimeSheetsByMakerId",
     authController.authorizeAdmin,
+    authController.authorizeMaker,
     authController.authorizeMaster,
     timeSheetRestController.getTimeSheetsByMakerId);
 app.post("/api/getAllTimeSheets",
@@ -206,11 +207,13 @@ app.post("/api/getClientByToken",
 app.post("/api/getClientsForMaker",
     authController.authorizeAdmin,
     authController.authorizeClient,
+    authController.authorizeMaker,
     authController.authorizeMaster,
     makerRestController.getClientsForMaker);
 app.post("/api/getMakerIdByToken",
     authController.authorizeAdmin,
     authController.authorizeClient,
+    authController.authorizeMaker,
     authController.authorizeMaster,
     makerRestController.getMakerIdByToken);
 app.post("/api/getAllTimeBuckets",
@@ -232,6 +235,7 @@ app.post("/api/createRelationship",
     relationshipRestController.createRelationship);
 app.post("/api/getRelationshipsByMakerId",
     authController.authorizeAdmin,
+    authController.authorizeMaker,
     authController.authorizeMaster,
     relationshipRestController.getRelationshipsByMakerId);
 app.post("/api/getRelationshipsByClientId",
@@ -260,9 +264,9 @@ app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 app.post("/api/getClientName",
     authController.authorizeAdmin,
-    authController.authorizeMaster,
     authController.authorizeClient,
     authController.authorizeMaker,
+    authController.authorizeMaster,
     clientRestController.getClientName);
 app.post("/api/subscriptionRenewed",
     clientRestController.subscriptionRenewed);
