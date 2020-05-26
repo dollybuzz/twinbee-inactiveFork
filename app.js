@@ -96,6 +96,7 @@ app.post("/api/deleteMaker",
     makerRestController.deleteMaker);
 app.post("/api/getTimeSheetsByClientId",
     authController.authorizeAdmin,
+    authController.authorizeClient,
     authController.authorizeMaster,
     timeSheetRestController.getTimeSheetsByClientId);
 app.post("/api/getTimeSheetsByMakerId",
@@ -136,6 +137,7 @@ app.post("/api/updatePlan",
     chargebeeRestController.updatePlan);
 app.post("/api/getSubscriptionsByClient",
     authController.authorizeAdmin,
+    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.getSubscriptionsByClient);
 app.post("/api/deletePlan",
@@ -233,6 +235,7 @@ app.post("/api/getRelationshipsByMakerId",
     relationshipRestController.getRelationshipsByMakerId);
 app.post("/api/getRelationshipsByClientId",
     authController.authorizeAdmin,
+    authController.authorizeClient,
     authController.authorizeMaster,
     relationshipRestController.getRelationshipsByClientId);
 app.post("/api/getRelationshipById",
