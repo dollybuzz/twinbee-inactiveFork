@@ -374,7 +374,7 @@ function clientFunctionality (res){
             `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
             "<label for='deleteUser'>Enter Full Name:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n" ;
 
         prePopModForm("/api/getClient", clientModForm);
@@ -420,15 +420,15 @@ function clientModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modClientid'>Client ID:</label>" +
-        `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modclientfname'>First Name:</label>" +
-        `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
         "<label for='modclientlname'>Last Name:</label>" +
-        `<input type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
         "<label for='modphone'>Phone:</label>" +
-        `<input type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
-        `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
@@ -445,17 +445,17 @@ function clientModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modbillfname'>First Name:</label>" +
-        `<input type='text' id='modbillfname' name='modbillfname' value='${res.billing_address.first_name}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modbillfname' name='modbillfname' value='${res.billing_address.first_name}'>\n<br>\n` +
         "<label for='modbilllname'>Last Name:</label>" +
-        `<input type='text' id='modbilllname' name='modbilllname' value='${res.billing_address.last_name}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modbilllname' name='modbilllname' value='${res.billing_address.last_name}'>\n<br>\n` +
         "<label for='modaddress'>Street:</label>" +
-        `<input type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
         "<label for='modcity'>City:</label>" +
-        `<input type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
         "<label for='modstate'>State:</label>" +
-        `<input type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
         "<label for='modzip'>Zip:</label>" +
-        `<input type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
@@ -554,13 +554,13 @@ function clientAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addclientfname'>First Name:</label>" +
-        `<input type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
         "<label for='addclientlname'>Last Name:</label>" +
-        `<input type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
         "<label for='addphone'>Phone:</label>" +
-        `<input type='text' id='addphone' name='addphone'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
-        `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
@@ -577,17 +577,17 @@ function clientAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addbillingfname'>First Name:</label>" +
-        `<input type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
         "<label for='addbillinglname'>Last Name:</label>" +
-        `<input type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
         "<label for='addaddress'>Street:</label>" +
-        `<input type='text' id='addaddress' name='addaddress'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addaddress' name='addaddress'>\n<br>\n` +
         "<label for='addcity'>City:</label>" +
-        `<input type='text' id='addcity' name='addcity'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addcity' name='addcity'>\n<br>\n` +
         "<label for='addstate'>State:</label>" +
-        `<input type='text' id='addstate' name='addstate'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addstate' name='addstate'>\n<br>\n` +
         "<label for='addzip'>Zip:</label>" +
-        `<input type='text' id='addzip' name='addzip'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addzip' name='addzip'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
@@ -755,7 +755,7 @@ function makerFunctionality (res){
             `<h6>You selected ${selectedRow.children()[1].innerHTML} ${selectedRow.children()[2].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
             "<label for='deleteUser'>Enter Full Name:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
         prePopModForm("/api/getMaker", makerModForm);
@@ -801,13 +801,13 @@ function makerModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modmakerid'>Freedom Maker ID:</label>" +
-        `<input type='text' id='modmakerid' name='modmakerid' value='${res.id}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modmakerid' name='modmakerid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modmakerfname'>First Name:</label>" +
-        `<input type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br>\n` +
         "<label for='modmakerlname'>Last Name:</label>" +
-        `<input type='text' id='modmakerlname' name='modmakerlname' value='${res.lastName}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modmakerlname' name='modmakerlname' value='${res.lastName}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
-        `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
@@ -851,11 +851,11 @@ function makerAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addmakerfname'>First Name:</label>" +
-        `<input type='text' id='addmakerfname' name='addmakerfname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addmakerfname' name='addmakerfname'>\n<br>\n` +
         "<label for='addmakerlname'>Last Name:</label>" +
-        `<input type='text' id='addmakerlname' name='addmakerlname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addmakerlname' name='addmakerlname'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
-        `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
@@ -986,7 +986,7 @@ function subscriptionFunctionality (res) {
             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
             "<label for='deleteUser'>Enter Subscription ID:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
         prePopModForm("/api/retrieveSubscription", subscriptionModForm);
@@ -1033,15 +1033,15 @@ function subscriptionModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsubscriptionid'>Subscription:</label>" +
-        `<input type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsubscriptionclient'>Client:</label>" +
-        `<input type='text' id='modsubscriptionclient' name='modsubscriptionclient' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsubscriptionclient' name='modsubscriptionclient' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
-        `<select id='modsubscriptionplanname' name='modsubscriptionplanname'></select>\n<br>\n` +
+        `<select class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname'></select>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
-        `<input type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
+        `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
-        `<input type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
+        `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
@@ -1107,12 +1107,12 @@ function subscriptionAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addsubscriptioncustomerid'>Client:</label>" +
-        `<select id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'></select>\n` +
+        `<select class='form-control' id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'></select>\n` +
         "<label for='empty'></label>" +
         "<label for='addsubscriptionplanid'>Plan:</label>" +
-        `<select id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
+        `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
-        `<input type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
+        `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
@@ -1286,7 +1286,7 @@ function planFunctionality (res) {
             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
             "<label for='deleteUser'>Enter Plan:</label>" +
-            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
         prePopModForm("/api/retrievePlan", planModForm);
@@ -1333,11 +1333,11 @@ function planModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modplanid'>Plan:</label>" +
-        `<input type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
         "<label for='modplaninvoicename'>Name on Invoice:</label>" +
-        `<input type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br>\n` +
         "<label for='modplanprice'>Price Per Hour ($):</label>" +
-        `<input type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
+        `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
@@ -1377,13 +1377,13 @@ function planAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addplanname'>Plan (no spaces!):</label>" +
-        `<input type='text' id='addplanname' name='addplanname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addplanname' name='addplanname'>\n<br>\n` +
         "<label for='addplaninvoicename'>Name on Invoice:</label>" +
-        `<input type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
         "<label for='addplanprice'>Price Per Hour ($):</label>" +
-        `<input type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
+        `<input class='form-control' type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
         "<label for='addplandescription'>Description:</label>" +
-        `<input type='text' id='addplandescription' name='addplandescription'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addplandescription' name='addplandescription'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
@@ -1538,7 +1538,7 @@ function timeSheetFunctionality (res) {
                             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
                             "<br><form id='delete'>" +
                             "<label for='deleteUser'>Enter Time Sheet ID:</label>" +
-                            `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+                            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
                             "</form>\n";
                         prePopModForm("/api/getTimeSheet", sheetModForm);
                         $("#DeleteButton").show();
@@ -1594,13 +1594,13 @@ function sheetModForm(res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsheetid'>Time Sheet ID:</label>" +
-        `<input type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsheetplanname'>Plan:</label>" +
-        `<select type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<span id='mod'></span>\n` +
+        `<select class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<span id='mod'></span>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
-        `<input type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
-        `<input type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
@@ -1668,17 +1668,17 @@ function sheetAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
-        `<select id='modsheetmakerid' name='modsheetmakerid'></select>\n<br>\n` +
+        `<select class='form-control' id='modsheetmakerid' name='modsheetmakerid'></select>\n<br>\n` +
         "<label for='modsheetclientid'>Client ID:</label>" +
-        `<select id='modsheetclientid' name='modsheetclientid'></select>\n<br>\n` +
+        `<select class='form-control' id='modsheetclientid' name='modsheetclientid'></select>\n<br>\n` +
         "<label for='modsheetplanname'>Plan:</label>" +
-        `<select id='modsheetplanname' name='modsheetplanname'></select>\n<br>\n` +
+        `<select class='form-control' id='modsheetplanname' name='modsheetplanname'></select>\n<br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
-        `<input type='text' id='modsheettimein' name='modsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheettimein' name='modsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
-        `<input type='text' id='modsheettimeout' name='modsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheettask'>Task:</label>" +
-        `<input type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
@@ -1906,7 +1906,7 @@ function creditModForm(res, status) {
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
         `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
-        "<input type='number' id='creditmodminutes' name='creditmodminutes'>");
+        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -1939,11 +1939,11 @@ function creditAddForm() {
                 success: function (planres, planstatus) {
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
                         "<label for='addClientCredit'> Select a Client: </label>" +
-                        "<select id='addClientCredit'>\n</select><br><br>\n" +
+                        "<select class='form-control' id='addClientCredit'>\n</select><br><br>\n" +
                         "<label for='addPlanCredit'> Select a Plan: </label>" +
-                        "<select id='addPlanCredit'>\n</select><br><br>\n" +
+                        "<select class='form-control' id='addPlanCredit'>\n</select><br><br>\n" +
                         "<label for='addMinCredit'> Enter Value of Minutes: </label>" +
-                        "<input type='number' id='addMinCredit' name='addMinCredit'><br><br>\n");
+                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'><br><br>\n");
 
                     for(var item of clientres) {
                         $('#addClientCredit').append(
@@ -2081,7 +2081,7 @@ function relationshipFunctionality (res) {
                                     `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}</h6>` +
                                     "<br><form id='delete'>" +
                                     "<label for='deleteUser'>Enter Relationship ID:</label>" +
-                                    `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
+                                    `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
                                     "</form>\n";
                                 prePopModForm("/api/getRelationshipById", relationshipModForm);
                                 $("#DeleteButton").show();
@@ -2139,9 +2139,9 @@ function relationshipModForm(res, status) {
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
         "<br><label for='modMakerRel'>Please select a Freedom Maker to assign:</label>" +
-        "<select id='modMakerRel'></select>\n" +
+        "<select class='form-control' id='modMakerRel'></select>\n" +
         "<br><br><label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'>\n`);
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'>\n`);
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -2224,13 +2224,13 @@ function relationshipAddForm() {
                             $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
                                 "<h6>Please select a Client, Freedom Maker, and Plan to assign:</h6><br>" +
                                 "<label for='addClientRel'> Select a Client: </label>" +
-                                "<select id='addClientRel'>\n</select><br><br>\n" +
+                                "<select class='form-control' id='addClientRel'>\n</select><br><br>\n" +
                                 "<label for='addMakerRel'> Select a Freedom Maker: </label>" +
-                                "<select id='addMakerRel'>\n</select><br><br>\n" +
+                                "<select class='form-control' id='addMakerRel'>\n</select><br><br>\n" +
                                 "<label for='addPlanRel'> Select a Plan: </label>" +
-                                "<select id='addPlanRel'>\n</select><br><br>\n" +
+                                "<select class='form-control' id='addPlanRel'>\n</select><br><br>\n" +
                                 "<label for='addOccRel'> Enter Freedom Maker Role: </label>" +
-                                "<input type='text' id='addOccRel' name='addOccRel'><br><br>\n");
+                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><br><br>\n");
 
                             for(var item of clientres) {
                                 $('#addClientRel').append(
