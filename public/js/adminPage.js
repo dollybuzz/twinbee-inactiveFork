@@ -2081,6 +2081,7 @@ function verifyDeleteRelationship() {
 //Google
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
+    showMain();
 
 };
 
@@ -2093,7 +2094,6 @@ $(document).ready(function () {
     //table on page tab: Main (this functionality is not included in navItem)
     //Requires on load document ready instead of event listener method
     //otherwise it will not load unless clicking on 'Main'
-    showMain();
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {

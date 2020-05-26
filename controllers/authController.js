@@ -54,8 +54,6 @@ module.exports = {
     },
 
     authorizeAdmin: async(req, res, next) =>{
-        console.log("next is: ")
-        console.log(next);
         console.log("Attempting to authorize admin...");
         console.log(req);
         if (req.isOk || await authService.accessorIsAdmin(req.body.auth)) {
