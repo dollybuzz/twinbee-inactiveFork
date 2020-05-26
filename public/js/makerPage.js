@@ -72,8 +72,8 @@ function clientFunctionality (res){
         "</div></div>");
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
@@ -82,8 +82,8 @@ function clientFunctionality (res){
         if (!item.deleted) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
-                '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
                 '   <td>' + `${item.customer_id}` + '</td>' +
+                '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
             );
@@ -143,8 +143,8 @@ function timeSheetFunctionality (res) {
                         "</div></div>");
                     $("#sheetsTable").append('\n' +
                         '        <thead class="thead">\n' +
-                        '            <th scope="col">Client</th>\n' +
                         '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Client</th>\n' +
                         '            <th scope="col">Clock In</th>\n' +
                         '            <th scope="col">Clock Out</th>\n' +
                         '            <th scope="col">Task</th>\n' +
@@ -153,8 +153,8 @@ function timeSheetFunctionality (res) {
                     for (var item in res){
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
+                            '   <td>' + clientMap[res[item].clientId].id + '</td>'+
                             '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
-                            '   <td>' + clientMap[res[item].clientId].customer_id + '</td>'+
                             '   <td>' + res[item].timeIn + '</td>'+
                             '   <td>' + res[item].timeOut + '</td>'+
                             '   <td>' + res[item].task + '</td></tr>'
@@ -180,9 +180,9 @@ function timeSheetFunctionality (res) {
                 }
             });// ajax
         },
-        error: function (res, status) {
+        error: function (tokenres, status) {
             $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
+            console.log(tokenres);
         }
     });
 
@@ -386,7 +386,7 @@ onSignIn = function (googleUser) {
                                     dataType: "json",
                                     success: function (clientres, status) {
                                         $("#makerSelectedClient").append(
-                                            `<option value=${clientres.relId}>${clientres.name} - ${occ}</option>`)
+                                            `<option value=${clientres.relId}>${clientres.name + " - " + occ}</option>`)
                                     },
                                     error: function (clientres, status) {
                                         $("#UserMainContent").html("Could not get clients!");

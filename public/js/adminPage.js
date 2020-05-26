@@ -344,7 +344,7 @@ function clientFunctionality (res){
         "</div></div>");
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
@@ -370,7 +370,7 @@ function clientFunctionality (res){
     //Modify Client
     $(".clientRow").click(function () {
         selectedRow = $(this);
-        let clientPrompt = `<h5>Please type in the full name to delete the selected user.</h5>` +
+        let clientPrompt = `<h5>Please type in the Full Name to delete the selected user.</h5>` +
             `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
             "<label for='deleteUser'>Enter Full Name:</label>" +
@@ -416,10 +416,10 @@ function clientModForm (res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
-        "<label for='modClient'>Client Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modClientid'>ID:</label>" +
+        "<label for='empty'></label>" +
+        "<label for='modClientid'>Client ID:</label>" +
         `<input type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modclientfname'>First Name:</label>" +
         `<input type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
@@ -619,7 +619,7 @@ function makerFunctionality (res){
         "</div></div>");
     $("#makerTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
@@ -643,7 +643,7 @@ function makerFunctionality (res){
     // Modify
     $(".makerRow").click(function () {
         selectedRow = $(this);
-        let makerPrompt = `<h5>Please type in the full name to delete the selected user.</h5>` +
+        let makerPrompt = `<h5>Please type in the Full Name to delete the selected user.</h5>` +
             `<h6>You selected ${selectedRow.children()[1].innerHTML} ${selectedRow.children()[2].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
             "<label for='deleteUser'>Enter Full Name:</label>" +
@@ -689,10 +689,10 @@ function makerModForm (res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
-        "<label for='modMaker'>Freedom Maker Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modmakerid'>ID:</label>" +
+        "<label for='empty'></label>" +
+        "<label for='modmakerid'>Freedom Maker ID:</label>" +
         `<input type='text' id='modmakerid' name='modmakerid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modmakerfname'>First Name:</label>" +
         `<input type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br>\n` +
@@ -723,7 +723,7 @@ function makerModForm (res, status) {
 function makerAddForm () {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
-        "<label for='addmaker'>Freedom Maker Information</label>" +
+        "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addmakerfname'>First Name:</label>" +
@@ -842,10 +842,10 @@ function subscriptionFunctionality (res) {
     //Modify
     $(".subscriptionRow").click(function () {
         selectedRow = $(this);
-        let subscriptionPrompt = `<h5>Please type in the subscription ID to cancel the selected subscription.</h5>` +
+        let subscriptionPrompt = `<h5>Please type in the Subscription ID to cancel the selected subscription.</h5>` +
             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter ID:</label>" +
+            "<label for='deleteUser'>Enter Subscription ID:</label>" +
             `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
@@ -1109,10 +1109,10 @@ function planFunctionality (res) {
     //Modify
     $(".planRow").click(function () {
         selectedRow = $(this);
-        let planPrompt = `<h5>Please type in the plan id to cancel the selected plan.</h5>` +
+        let planPrompt = `<h5>Please type in the Plan to cancel the selected plan.</h5>` +
             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter ID:</label>" +
+            "<label for='deleteUser'>Enter Plan:</label>" +
             `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
             "</form>\n";
 
@@ -1156,10 +1156,10 @@ function planModForm (res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
-        "<label for='modPlan'>Plan Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modplanid'>ID:</label>" +
+        "<label for='empty'></label>" +
+        "<label for='modplanid'>Plan:</label>" +
         `<input type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
         "<label for='modplaninvoicename'>Name on Invoice:</label>" +
         `<input type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br>\n` +
@@ -1182,16 +1182,16 @@ function planModForm (res, status) {
 function planAddForm () {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
-        "<label for='addPlan'>Plan Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='addplanname'>New Plan ID (no spaces!):</label>" +
+        "<label for='empty'></label>" +
+        "<label for='addplanname'>Plan (no spaces!):</label>" +
         `<input type='text' id='addplanname' name='addplanname'>\n<br>\n` +
         "<label for='addplaninvoicename'>Name on Invoice:</label>" +
         `<input type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
         "<label for='addplanprice'>Price Per Hour ($):</label>" +
         `<input type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
-        "<label for='addplandescription'>Plan Description:</label>" +
+        "<label for='addplandescription'>Description:</label>" +
         `<input type='text' id='addplandescription' name='addplandescription'>\n<br>\n` +
         "</form>\n");
 
@@ -1285,7 +1285,7 @@ function timeSheetFunctionality (res) {
                         "</div></div>");
                     $("#sheetsTable").append('\n' +
                         '        <thead class="thead">\n' +
-                        '            <th scope="col">Time Sheet</th>\n' +
+                        '            <th scope="col">Time Sheet ID</th>\n' +
                         '            <th scope="col">Freedom Maker</th>\n' +
                         '            <th scope="col">Client</th>\n' +
                         '            <th scope="col">Plan</th>\n' +
@@ -1315,10 +1315,10 @@ function timeSheetFunctionality (res) {
                     //Modify
                     $(".sheetRow").click(function () {
                         selectedRow = $(this);
-                        let timeSheetPrompt = `<h5>Please type in the time sheet ID to delete the selected time sheet.</h5>` +
+                        let timeSheetPrompt = `<h5>Please type in the Time Sheet ID to delete the selected time sheet.</h5>` +
                             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
                             "<br><form id='delete'>" +
-                            "<label for='deleteUser'>Enter ID:</label>" +
+                            "<label for='deleteUser'>Enter Time Sheet ID:</label>" +
                             `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
                             "</form>\n";
                         prePopModForm("/api/getTimeSheet", sheetModForm);
@@ -1371,12 +1371,12 @@ function sheetModForm(res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
-        "<label for='modSheet'>Time Sheet Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modsheetid'>ID:</label>" +
+        "<label for='empty'></label>" +
+        "<label for='modsheetid'>Time Sheet ID:</label>" +
         `<input type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
-        "<label for='modsheetplanname'>Plan ID:</label>" +
+        "<label for='modsheetplanname'>Plan:</label>" +
         `<select type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<span id='mod'></span>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
         `<input type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
@@ -1421,34 +1421,27 @@ function sheetModForm(res, status) {
             $("#userMainContent").html("Plans isn't working!");
         }
     });
-
-
-
-
 }
 
 function sheetAddForm () {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
-        "<label for='addSheet'>Time Sheet Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modsheetplanname'>Plan ID:</label>" +
+        "<label for='empty'></label>" +
+        "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
+        `<select id='modsheetmakerid' name='modsheetmakerid'></select>\n<br>\n` +
+        "<label for='modsheetclientid'>Client ID:</label>" +
+        `<select id='modsheetclientid' name='modsheetclientid'></select>\n<br>\n` +
+        "<label for='modsheetplanname'>Plan:</label>" +
         `<select id='modsheetplanname' name='modsheetplanname'></select>\n<br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
         `<input type='text' id='modsheettimein' name='modsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
         `<input type='text' id='modsheettimeout' name='modsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
-        "<label for='modsheetclientid'>Client ID:</label>" +
-        `<select id='modsheetclientid' name='modsheetclientid'></select>\n<span id='modsheetclientdescription'></span>\n` +
-        "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
-        `<select id='modsheetmakerid' name='modsheetmakerid'></select>\n<span id='modsheetmakerdescription'></span>\n` +
-        "<label for='modsheettask'>Freedom Maker Task:</label>" +
+        "<label for='modsheettask'>Task:</label>" +
         `<input type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
         "</form>\n");
-
-
-
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1484,13 +1477,13 @@ function sheetAddForm () {
                             for(var client in clientres){
                                 client = clientres[client].customer;
                                 $('#modsheetclientid').append(
-                                    `<option id="${client.id}" value="${client.id}">${client.first_name + " " + client.last_name}</option>`
+                                    `<option id="${client.id}" value="${client.id}">${client.first_name + " " + client.last_name + " - " + client.id}</option>`
                                 );
                             }
                             for(var maker in makerres){
                                 maker = makerres[maker];
                                 $('#modsheetmakerid').append(
-                                    `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName}</option>`
+                                    `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName + " - " + maker.id}</option>`
                                 );
                             }
                             updateDescriptionId('/api/getClient', $("#modsheetclientid").val(), $("#modsheetclientdescription"));
@@ -1596,7 +1589,7 @@ function creditFunctionality (res) {
         "</div></div>");
     $("#creditTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">ID</th>\n' +
+        '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Available Hours</th>\n' +
@@ -1650,8 +1643,8 @@ function creditFunctionality (res) {
 function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
-        `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for Plan ID: ${selectedRow.children()[2].innerHTML}</h6>` +
+        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+        `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
         "<input type='number' id='creditmodminutes' name='creditmodminutes'>");
 
     //Submit button function
@@ -1684,7 +1677,6 @@ function creditAddForm() {
                 dataType: "json",
                 success: function (planres, planstatus) {
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<h6>Please select a Client and Plan to assign:</h6><br>" +
                         "<label for='addClientCredit'> Select a Client: </label>" +
                         "<select id='addClientCredit'>\n</select><br><br>\n" +
                         "<label for='addPlanCredit'> Select a Plan: </label>" +
@@ -1694,7 +1686,7 @@ function creditAddForm() {
 
                     for(var item of clientres) {
                         $('#addClientCredit').append(
-                            `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name}</option>`
+                            `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
                         );
                     }
                     for(var item of planres) {
@@ -1794,17 +1786,23 @@ function relationshipFunctionality (res) {
                                 "</div></div>");
                             $("#relationshipTable").append('\n' +
                                 '        <thead class="thead">\n' +
+                                '            <th scope="col">Relationship ID</th>\n' +
                                 '            <th scope="col">Client </th>\n' +
+                                '            <th scope="col">Client ID</th>\n' +
                                 '            <th scope="col">Freedom Maker</th>\n' +
+                                '            <th scope="col">Freedom Maker ID</th>\n' +
                                 '            <th scope="col">Plan</th>\n' +
-                                '            <th scope="col">Occupation</th>\n' +
+                                '            <th scope="col">Freedom Maker Role</th>\n' +
                                 '        </thead><tbody>');
                             //Populate table
                             res.forEach(item => {
                                 $("#relationshipTable").append('\n' +
                                     '<tr class="relationshipRow">' +
+                                    '   <td>' + item.id + '</td>' +
                                     '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>'+
+                                    '   <td>' + clientMap[item.clientId].id + '</td>'+
                                     '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>'+
+                                    '   <td>' + makerMap[item.makerId].id + '</td>'+
                                     '   <td>' + item.planId + '</td>' +
                                     '   <td>' + item.occupation + '</td>'
                                 );
@@ -1818,10 +1816,10 @@ function relationshipFunctionality (res) {
                             //Modify
                             $(".relationshipRow").click(function () {
                                 selectedRow = $(this);
-                                let relationshipPrompt = `<h5>Please type in the relationship ID to delete the selected relationship.</h5>` +
-                                    `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                                let relationshipPrompt = `<h5>Please type in the Relationship ID to delete the selected relationship.</h5>` +
+                                    `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}</h6>` +
                                     "<br><form id='delete'>" +
-                                    "<label for='deleteUser'>Enter ID:</label>" +
+                                    "<label for='deleteUser'>Enter Relationship ID:</label>" +
                                     `<input type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
                                     "</form>\n";
                                 prePopModForm("/api/getRelationshipById", relationshipModForm);
@@ -1878,9 +1876,11 @@ function relationshipFunctionality (res) {
 function relationshipModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
-        "<br><h6>Please select a Freedom Maker to assign:</h6>" +
-        "<select id='modMakerRel'>\n</select>\n");
+        `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+        "<br><label for='modMakerRel'>Please select a Freedom Maker to assign:</label>" +
+        "<select id='modMakerRel'></select>\n" +
+        "<br><br><label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
+        `<input type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'>\n`);
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -1902,12 +1902,12 @@ function relationshipModForm(res, status) {
                             for(var item of makerres) {
                                 if(makerId == item.id) {
                                     $('#modMakerRel').append(
-                                        `<option id="${makerId}" value="${makerId}" selected>${makerId} ${item.firstName} ${item.lastName}</option>`
+                                        `<option id="${makerId}" value="${makerId}" selected>${item.firstName} ${item.lastName} - ${makerId}</option>`
                                     );
                                 }
                                 else {
                                     $('#modMakerRel').append(
-                                        `<option id="${item.id}" value="${item.id}">${item.id} ${item.firstName} ${item.lastName}</option>`
+                                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName} - ${item.id}</option>`
                                     );
                                 }
                             };
@@ -1920,7 +1920,7 @@ function relationshipModForm(res, status) {
                                     id: selectedRow.children()[0].innerHTML,
                                     makerId: $("#modMakerRel").val(),
                                     planId: relres.planId,
-                                    occupation: relres.occupation
+                                    occupation: $("#modMakerOcc").val()
                                 }, modRelationshipSuccess);
                             });
                         },
@@ -1968,17 +1968,17 @@ function relationshipAddForm() {
                                 "<select id='addMakerRel'>\n</select><br><br>\n" +
                                 "<label for='addPlanRel'> Select a Plan: </label>" +
                                 "<select id='addPlanRel'>\n</select><br><br>\n" +
-                                "<label for='addOccRel'> Enter an Occupation: </label>" +
+                                "<label for='addOccRel'> Enter Freedom Maker Role: </label>" +
                                 "<input type='text' id='addOccRel' name='addOccRel'><br><br>\n");
 
                             for(var item of clientres) {
                                 $('#addClientRel').append(
-                                    `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name}</option>`
+                                    `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
                                 );
                             }
                             for(var item of makerres) {
                                 $('#addMakerRel').append(
-                                    `<option id="${item.id}" value="${item.id}">${item.id} ${item.firstName} ${item.lastName}</option>`
+                                    `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
                                 );
                             }
                             for(var item of planres) {
