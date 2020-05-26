@@ -97,7 +97,7 @@ function showFunction (functionality, endpoint) {
                     functionality(innerRes);
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
+                    $("#userMainContent").html(`Something went wrong with ${endpoint}`);
                 }
             });// ajax
         },
@@ -324,7 +324,7 @@ function timeSheetFunctionality (res) {
                     $("#buttonsTop").children()[0].remove();
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
+                    $("#userMainContent").html("Something went wrong with getmakers!");
                 }
             });// ajax
         },
