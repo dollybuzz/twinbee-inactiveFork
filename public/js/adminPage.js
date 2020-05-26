@@ -808,12 +808,29 @@ function makerModForm (res, status) {
         `<input type='text' id='modmakerlname' name='modmakerlname' value='${res.lastName}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
         `<input type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        if (isEmail($("#modemail").val())) {
+
+        let message = "";
+        let valid = true;
+        if (!isEmail($("#modemail").val())){
+            valid = false;
+            message += "Email is not valid!<br>";
+        }
+        if ($("#modmakerfname").val().length === 0){
+            valid = false;
+            message += "A First Name is required!<br>";
+        }
+        if ($("#modmakerlname").val().length === 0){
+            valid = false;
+            message += "A Last Name is required!<br>";
+        }
+
+        if (valid) {
+            $("#errormessage").html("");
             modSubmit("/api/updateMaker", {
                 auth: id_token,
                 id: $("#modmakerid").val(),
@@ -822,8 +839,8 @@ function makerModForm (res, status) {
                 email: $("#modemail").val()
             }, modMakerSuccess);
         }
-        else if(isEmail($("#modemail").val())){
-            alert("Email not valid!");
+        else{
+            $("#errormessage").html(message);
         }
     });
 }
