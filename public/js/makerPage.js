@@ -154,7 +154,7 @@ function timeSheetFunctionality (res) {
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
                             '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
-                            '   <td>' + clientMap[res[item].clientId].customer_id + '</td>'+
+                            '   <td>' + clientMap[res[item].clientId].id + '</td>'+
                             '   <td>' + res[item].timeIn + '</td>'+
                             '   <td>' + res[item].timeOut + '</td>'+
                             '   <td>' + res[item].task + '</td></tr>'
@@ -180,9 +180,9 @@ function timeSheetFunctionality (res) {
                 }
             });// ajax
         },
-        error: function (res, status) {
+        error: function (tokenres, status) {
             $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
+            console.log(tokenres);
         }
     });
 
