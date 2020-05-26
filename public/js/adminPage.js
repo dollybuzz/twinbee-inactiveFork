@@ -2051,13 +2051,13 @@ function verifyDeleteRelationship() {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = googleUser.getAuthResponse().id_token;
+  //uncomment for live site when ready  id_token = googleUser.getAuthResponse().id_token;
     showMain();
 
 };
 
 $(document).ready(function () {
-    showMain();
+    onSignIn();
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
