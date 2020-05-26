@@ -1906,17 +1906,31 @@ function creditModForm(res, status) {
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
         `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
-        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>");
+        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
+        "<div><span id='errormessage' style='color:red'></span></div>");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        modSubmit("/api/updateClientTimeBucket", {
-            auth: id_token,
-            id: selectedRow.children()[0].innerHTML,
-            planName: selectedRow.children()[2].innerHTML,
-            minutes: $("#creditmodminutes").val()
-        }, modCreditSuccess);
+        let message = "";
+        let valid = true;
+        if ($("#creditmodminutes").val().length === 0){
+            valid = false;
+            message += "Please enter the number of credits to add or remove!<br>";
+        }
+
+        if (valid) {
+            $("#errormessage").html("");
+            modSubmit("/api/updateClientTimeBucket", {
+                auth: id_token,
+                id: selectedRow.children()[0].innerHTML,
+                planName: selectedRow.children()[2].innerHTML,
+                minutes: $("#creditmodminutes").val()
+            }, modCreditSuccess);
+        }
+        else{
+            $("#errormessage").html(message);
+        }
     });
 }
 
@@ -1943,7 +1957,8 @@ function creditAddForm() {
                         "<label for='addPlanCredit'> Select a Plan: </label>" +
                         "<select class='form-control' id='addPlanCredit'>\n</select><br><br>\n" +
                         "<label for='addMinCredit'> Enter Value of Minutes: </label>" +
-                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'><br><br>\n");
+                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>"+
+                        "<div><span id='errormessage' style='color:red'></span></div>");
 
                     for(var item of clientres) {
                         $('#addClientCredit').append(
@@ -1951,20 +1966,35 @@ function creditAddForm() {
                         );
                     }
                     for(var item of planres) {
-                        $('#addPlanCredit').append(
-                            `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
-                        );
+                        if (item.plan.status != "archived") {
+                            $('#addPlanCredit').append(
+                                `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
+                            );
+                        }
                     }
 
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
-                        addSubmit("/api/updateClientTimeBucket", {
-                            auth: id_token,
-                            id: $("#addClientCredit").val(),
-                            planId: $("#addPlanCredit").val(),
-                            minutes: $("#addMinCredit").val()
-                        }, addCreditSuccess);
+                        let message = "";
+                        let valid = true;
+                        if ($("#addMinCredit").val().length === 0){
+                            valid = false;
+                            message += "Please enter the number of hours !<br>";
+                        }
+
+                        if (valid) {
+                            $("#errormessage").html("");
+                            addSubmit("/api/updateClientTimeBucket", {
+                                auth: id_token,
+                                id: $("#addClientCredit").val(),
+                                planId: $("#addPlanCredit").val(),
+                                minutes: $("#addMinCredit").val()
+                            }, addCreditSuccess);
+                        }
+                        else{
+                            $("#errormessage").html(message);
+                        }
                     });
                 },
                 error: function (planres, planstatus) {
