@@ -22,7 +22,7 @@ module.exports = {
         console.log("Attempting to authorize client...");
       if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient()){
           req[process.env.TWINBEE_IS_OK] = true;
-          next();
+          next(req, res, next);
       }
       else{
           if (next != undefined){
@@ -38,7 +38,7 @@ module.exports = {
         console.log("Attempting to authorize maker...");
         if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaker(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK]  = true;
-            next();
+            next(req, res, next);
         }
         else{
             if (next != undefined){
@@ -79,7 +79,7 @@ module.exports = {
         }
         else{
             if (next != undefined){
-                next(req, res)
+                next(req, res, next)
             }
             else {
                 res.send('nope');
@@ -94,7 +94,7 @@ module.exports = {
 
         if (req[process.env.TWINBEE_IS_OK]  /* || updated == updater */) {
             req[process.env.TWINBEE_IS_OK]  = true;
-            next();
+            next(req, res, next);
         }
         else{
             throw new Error("Not yet implemented");
