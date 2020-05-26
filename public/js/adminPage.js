@@ -1039,9 +1039,9 @@ function subscriptionModForm (res, status) {
         "<label for='modsubscriptionplanname'>Plan:</label>" +
         `<select id='modsubscriptionplanname' name='modsubscriptionplanname'></select>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
-        `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
+        `<input type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
-        `<input type='text' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
+        `<input type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
         "</form>\n");
 
     $.ajax({
