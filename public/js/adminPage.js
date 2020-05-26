@@ -1577,18 +1577,19 @@ function sheetModForm(res, status) {
             $("#SubmitButton").on('click', function (e) {
                 let message = "";
                 let valid = true;
-                if (!$("#modsheettimeout").val().match(/[2][0-9]{3}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                if (!$("#modsheettimeout").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
                 || $("#modsheettimeout").val().match(/[a-z]+|[A-Z]+/g)){
                     valid = false;
                     message += "Bad format on time out!<br>";
                 }
-                if (!$("#modsheettimein").val().match(/[2][0-9]{3}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                if (!$("#modsheettimein").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
                     || $("#modsheettimein").val().match(/[a-z]+|[A-Z]+/g)){
                     valid = false;
                     message += "Bad format on time in!<br>";
                 }
 
                 if (valid) {
+                    $("#errormessage").html("");
                     modSubmit("/api/updateTimeSheet", {
                         auth: id_token,
                         id: $("#modsheetid").val(),
@@ -1626,7 +1627,7 @@ function sheetAddForm () {
         `<input type='text' id='modsheettimeout' name='modsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='modsheettask'>Task:</label>" +
         `<input type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1685,15 +1686,38 @@ function sheetAddForm () {
                             //Submit button function
                             $("#SubmitButton").off("click");
                             $("#SubmitButton").on('click', function (e) {
-                                addSubmit("/api/createTimeSheet", {
-                                    auth: id_token,
-                                    makerId: $("#modsheetmakerid").val(),
-                                    hourlyRate: $("#modsheetplanname").val() ,
-                                    clientId: $("#modsheetclientid").val(),
-                                    timeIn: $("#modsheettimein").val(),
-                                    timeOut: $("#modsheettimeout").val(),
-                                    task: $("#modsheettask").val(),
-                                }, addSheetSuccess);
+                                let message = "";
+                                let valid = true;
+                                if (!$("#modsheettimeout").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                                    || $("#modsheettimeout").val().match(/[a-z]+|[A-Z]+/g)){
+                                    valid = false;
+                                    message += "Bad format on time out!<br>";
+                                }
+                                if (!$("#modsheettimein").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                                    || $("#modsheettimein").val().match(/[a-z]+|[A-Z]+/g)){
+                                    valid = false;
+                                    message += "Bad format on time in!<br>";
+                                }
+                                if ($("#modsheettask").val().length === 0){
+                                    valid = false;
+                                    message += "Task must be added!<br>";
+                                }
+
+                                if (valid) {
+                                    $("#errormessage").html("");
+                                    addSubmit("/api/createTimeSheet", {
+                                        auth: id_token,
+                                        makerId: $("#modsheetmakerid").val(),
+                                        hourlyRate: $("#modsheetplanname").val() ,
+                                        clientId: $("#modsheetclientid").val(),
+                                        timeIn: $("#modsheettimein").val(),
+                                        timeOut: $("#modsheettimeout").val(),
+                                        task: $("#modsheettask").val(),
+                                    }, addSheetSuccess);
+                                }
+                                else{
+                                    $("#errormessage").html(message);
+                                }
                             });
                         },
                         error: function (clientres, clientstatus) {
