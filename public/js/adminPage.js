@@ -2,6 +2,7 @@
 let selectedRow = null;
 let id_token = null;
 let selectedTab = null;
+let TEST_ENVIRONMENT = false;
 
 let navMapper = {
     main: function () {
@@ -56,7 +57,6 @@ function updateDescriptionId(endpoint, idSource, targetSpan){
             $("#userMainContent").html("Clients isn't working!");
         }
     })
-
 }
 
 function isEmail(val){
@@ -2369,13 +2369,23 @@ function verifyDeleteRelationship() {
 
 //Google
 onSignIn = function (googleUser) {
-  //uncomment for live site when ready  id_token = googleUser.getAuthResponse().id_token;
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
     showMain();
-
 };
 
 $(document).ready(function () {
-    onSignIn();
+    $.ajax({
+        url: "/api/getEnvironment",
+        method: "get",
+        dataType: "json",
+        success:function (res, status) {
+            TEST_ENVIRONMENT = res;
+            onSignIn();
+        },
+        error: function (clientres, clientstatus) {
+            TEST_ENVIRONMENT = true;
+        }
+    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
