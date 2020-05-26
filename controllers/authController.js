@@ -65,9 +65,11 @@ module.exports = {
         else{
             console.log("Not authorized as admin");
             if (next != undefined){
+                console.log("Checking next auth...");
                 next(req, res)
             }
             else {
+                console.log("All routes failed to authenticate")
                 res.send('nope');
             }
             //TODO: res.render(accessNotAllowed)
