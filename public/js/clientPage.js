@@ -359,6 +359,7 @@ function showMain () {
     //Contains any main tab functionality
     showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
 
+    console.log("pre button setup")
     $("#updatePaymentButton").click(function () {
         console.log("open")
         openHostedPage('/api/getUpdatePaymentURL');
