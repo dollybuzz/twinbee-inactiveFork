@@ -518,6 +518,7 @@ function clientModForm (res, status) {
 
 
         if (valid) {
+            $("#errormessage").html("");
             modSubmit("/api/updateClientContact", {
                 auth: id_token,
                 id: $("#modclientid").val(),
@@ -585,14 +586,71 @@ function clientAddForm () {
         `<input type='text' id='addcity' name='addcity'>\n<br>\n` +
         "<label for='addstate'>State:</label>" +
         `<input type='text' id='addstate' name='addstate'>\n<br>\n` +
-        "<label for='addemail'>Zip:</label>" +
+        "<label for='addzip'>Zip:</label>" +
         `<input type='text' id='addzip' name='addzip'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        if ( isEmail($("#addemail").val()) && isZip($("#addzip").val())) {
+
+        let message = "";
+        let valid = true;
+        if (!isEmail($("#addemail").val())){
+            valid = false;
+            message += "Email is not valid!<br>";
+        }
+        if (!isZip($("#addzip").val())){
+            valid = false;
+            message += "Zip is not valid!<br>";
+        }
+        if ($("#addclientfname").val().length === 0){
+            valid = false;
+            message += "A First Name is required!<br>";
+        }
+        if ($("#addclientlname").val().length === 0){
+            valid = false;
+            message += "A Last Name is required!<br>";
+        }
+        if ($("#addphone").val().length === 0){
+            valid = false;
+            message += "A Phone Number is required!<br>";
+        }
+        if ($("#addphone").val().match(/[a-z]|[A-Z]/g)){
+            valid = false;
+            message += "A Phone Number can't have letters!<br>";
+        }
+        if (!$("#addphone").val().match(/[0-9]/g)){
+            valid = false;
+            message += "A Phone Number needs numbers!<br>";
+        }
+        if ($("#addphone").val().length < 10){
+            valid = false;
+            message += "Phone number not long enough!<br>";
+        }
+        if ($("#addbillingfname").val().length === 0){
+            valid = false;
+            message += "A Billing Last Name is required!<br>";
+        }
+        if ($("#addbillinglname").val().length === 0){
+            valid = false;
+            message += "A Billing First Name is required!<br>";
+        }
+        if ($("#addaddress").val().length === 0){
+            valid = false;
+            message += "A Billing Address is required!<br>";
+        }
+        if ($("#addstate").val().length === 0){
+            valid = false;
+            message += "A State is required!<br>";
+        }
+        if ($("#addcity").val().length === 0){
+            valid = false;
+            message += "A City is required!<br>";
+        }
+
+        if (valid) {
+            $("#errormessage").html("");
             addSubmit("/api/createClient", {
                 auth: id_token,
                 firstName: $("#addclientfname").val(),
@@ -606,13 +664,10 @@ function clientAddForm () {
                 billingFirst: $("#addbillingfname").val(),
                 billingLast: $("#addbillinglname").val()
             }, addClientSuccess);
-        } else if (!isZip($("#addzip").val())){
-            alert("Invalid zip!");
         }
-        else if (!isEmail($("#addemail").val())){
-            alert("Invalid email!");
+        else{
+            $("#errormessage").html(message);
         }
-
     });
 }
 
