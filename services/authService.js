@@ -69,16 +69,19 @@ class AuthService {
     }
 
     async accessorIsAdmin(creds) {
+        console.log("Is the accessor admin?");
         let adminList = await authRepo.getAdmins().catch(err => {
             console.log(err);
             console.log("Error grabbing admin list");
             return false;
         });
+        console.log("Who's token is this?");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             console.log("Error grabbing email from token");
             return false;
         });
+        console.log("Let's see if you're on the list...");
         for (var i = 0; i < adminList.length; ++i){
             let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
                 console.log(err);
