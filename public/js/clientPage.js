@@ -149,6 +149,7 @@ function makerFunctionality (res) {
                     $("#makerTable").append('\n' +
                         '        <thead class="thead">\n' +
                         '            <th scope="col">Freedom Maker</th>\n' +
+                        '            <th scope="col">Freedom Maker ID</th>\n' +
                         '            <th scope="col">Email</th>\n' +
                         '            <th scope="col">Occupation</th>\n' +
                         '        </thead><tbody>');
@@ -168,6 +169,7 @@ function makerFunctionality (res) {
                                 $("#makerTable").append('\n' +
                                     '<tr class="makerRow">' +
                                     '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
+                                    '   <td>' + `${makerres.id}` + '</td>' +
                                     '   <td>' + `${makerres.email}` + '</td>' +
                                     '   <td>' + occ + '</td></tr>'
                                 );
@@ -272,6 +274,7 @@ function timeSheetFunctionality (res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Clock In</th>\n' +
         '            <th scope="col">Clock Out</th>\n' +
@@ -308,7 +311,8 @@ function timeSheetFunctionality (res) {
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
                             '   <td scope="row">' + res[item].id + '</td>' +
-                            '   <td>' +makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
+                            '   <td>' + makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
+                            '   <td>' + makerMap[res[item].makerId].id + '</td>' +
                             '   <td>' + res[item].hourlyRate + '</td>' +
                             '   <td>' + res[item].timeIn + '</td>' +
                             '   <td>' + res[item].timeOut + '</td>' +
