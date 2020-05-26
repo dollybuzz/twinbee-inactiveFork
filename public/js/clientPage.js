@@ -438,9 +438,7 @@ function timeBucketFunctionality (res) {
 
     //Event Listeners
     $("#updatePaymentButton").on('click', function () {
-        console.log("open")
         openHostedPage('/api/getUpdatePaymentURL');
-        console.log("sesame")
     })
 
     $("#revInvoicesButton").on('click', function () {
