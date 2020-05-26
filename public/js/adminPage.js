@@ -1193,18 +1193,49 @@ function planAddForm () {
         `<input type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
         "<label for='addplandescription'>Description:</label>" +
         `<input type='text' id='addplandescription' name='addplandescription'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        addSubmit("/api/createPlan", {
-            auth: id_token,
-            planName: $("#addplanname").val(),
-            invoiceName: $("#addplaninvoicename").val() ,
-            pricePerHour: Number.parseFloat($("#addplanprice").val()).toFixed(2) * 100,
-            planDescription: $("#addplandescription").val()
-        }, addPlanSuccess);
+        let message = "";
+        let valid = true;
+        if ($("#addplanname").val().match(/\s+/g)){
+            message += "No spaces allowed in plan names (use dashes)!<br>";
+            valid = false;
+        }
+        if ($("#addplanname").val().length === 0){
+            message += "A plan name is mandatory!<br>";
+            valid = false;
+        }
+        if ($("#addplaninvoicename").val().length === 0){
+            message += "Name on invoice cannot be blank!<br>";
+            valid = false;
+        }
+        if ($("#addplanprice").val().length === 0){
+            message += "Price per hour must have a value!<br>"
+            valid = false;
+        }
+        if ($("#addplandescription").val().length === 0){
+            message += "A description is required!<br>"
+            valid = false;
+        }
+        if (valid){
+            $("#errormessage").html("");
+            addSubmit("/api/createPlan", {
+                auth: id_token,
+                planName: $("#addplanname").val(),
+                invoiceName: $("#addplaninvoicename").val() ,
+                pricePerHour: Number.parseFloat($("#addplanprice").val()).toFixed(2) * 100,
+                planDescription: $("#addplandescription").val()
+            }, addPlanSuccess);
+        }
+        else{
+
+            $("#errormessage").html(message);
+        }
+
+
     });
 }
 
