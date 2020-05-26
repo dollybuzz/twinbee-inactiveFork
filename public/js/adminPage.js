@@ -2171,7 +2171,7 @@ function relationshipModForm(res, status) {
         "<br><label for='modMakerRel'>Please select a Freedom Maker to assign:</label>" +
         "<select class='form-control' id='modMakerRel'></select>\n" +
         "<br><br><label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'>\n`);
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span></div>\n`);
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -2206,13 +2206,26 @@ function relationshipModForm(res, status) {
                             //Submit button function
                             $("#SubmitButton").off("click");
                             $("#SubmitButton").on('click', function (e) {
-                                modSubmit("/api/updateRelationship", {
-                                    auth: id_token,
-                                    id: selectedRow.children()[0].innerHTML,
-                                    makerId: $("#modMakerRel").val(),
-                                    planId: relres.planId,
-                                    occupation: $("#modMakerOcc").val()
-                                }, modRelationshipSuccess);
+                                let message = "";
+                                let valid = true;
+                                if ($("#modMakerOcc").val().length === 0){
+                                    valid = false;
+                                    message += "A Role is required!<br>";
+                                }
+
+                                if (valid) {
+                                    $("#errormessage").html("");
+                                    modSubmit("/api/updateRelationship", {
+                                        auth: id_token,
+                                        id: selectedRow.children()[0].innerHTML,
+                                        makerId: $("#modMakerRel").val(),
+                                        planId: relres.planId,
+                                        occupation: $("#modMakerOcc").val()
+                                    }, modRelationshipSuccess);
+                                }
+                                else{
+                                    $("#errormessage").html(message);
+                                }
                             });
                         },
                         error: function (relres, relstatus) {
@@ -2260,7 +2273,7 @@ function relationshipAddForm() {
                                 "<label for='addPlanRel'> Select a Plan: </label>" +
                                 "<select class='form-control' id='addPlanRel'>\n</select><br><br>\n" +
                                 "<label for='addOccRel'> Enter Freedom Maker Role: </label>" +
-                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><br><br>\n");
+                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><div><span id='errormessage' style='color:red'></span></div><br><br>\n");
 
                             for(var item of clientres) {
                                 $('#addClientRel').append(
@@ -2283,13 +2296,25 @@ function relationshipAddForm() {
                             //Submit button function
                             $("#SubmitButton").off("click");
                             $("#SubmitButton").on('click', function (e) {
-                                addSubmit("/api/createRelationship", {
-                                    auth: id_token,
-                                    clientId: $("#addClientRel").val(),
-                                    makerId: $("#addMakerRel").val(),
-                                    planId: $("#addPlanRel").val(),
-                                    occupation: $("#addOccRel").val(),
-                                }, addRelationshipSuccess);
+                                let message = "";
+                                let valid = true;
+                                if ($("#addOccRel").val().length === 0){
+                                    valid = false;
+                                    message += "A Role is required!<br>";
+                                }
+
+                                if (valid) {
+                                    addSubmit("/api/createRelationship", {
+                                        auth: id_token,
+                                        clientId: $("#addClientRel").val(),
+                                        makerId: $("#addMakerRel").val(),
+                                        planId: $("#addPlanRel").val(),
+                                        occupation: $("#addOccRel").val(),
+                                    }, addRelationshipSuccess);
+                                }
+                                else{
+                                    $("#errormessage").html(message);
+                                }
                             });
                         },
                         error: function (planres, planstatus) {
