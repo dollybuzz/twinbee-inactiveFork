@@ -86,12 +86,7 @@ module.exports = {
         }
         else{
             console.log("Not authorized as Master");
-            if (next != undefined){
-                next()
-            }
-            else {
                 res.send('nope');
-            }
             //TODO: res.render(accessNotAllowed)
         }
     },
