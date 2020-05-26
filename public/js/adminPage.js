@@ -1304,17 +1304,35 @@ function planModForm (res, status) {
         `<input type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br>\n` +
         "<label for='modplanprice'>Price Per Hour ($):</label>" +
         `<input type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        modSubmit("/api/updatePlan", {
-            auth: id_token,
-            planId: $("#modplanid").val(),
-            planInvoiceName: $("#modplaninvoicename").val(),
-            planPrice: Number.parseFloat($("#modplanprice").val()).toFixed(2) * 100
-        }, modPlanSuccess);
+        let message = "";
+        let valid = true;
+        if ($("#modplaninvoicename").val().length === 0){
+            valid = false;
+            message += "Invoice description is mandatory!<br>";
+        }
+        if ($("#modplanprice").val().length === 0){
+            valid = false;
+            message += "A Price is mandatory!<br>";
+        }
+
+
+        if (valid) {
+            $("#errormessage").html("");
+            modSubmit("/api/updatePlan", {
+                auth: id_token,
+                planId: $("#modplanid").val(),
+                planInvoiceName: $("#modplaninvoicename").val(),
+                planPrice: Number.parseFloat($("#modplanprice").val()).toFixed(2) * 100
+            }, modPlanSuccess);
+        }
+        else{
+            $("#errormessage").html(message);
+        }
     });
 }
 
