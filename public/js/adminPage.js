@@ -1042,7 +1042,7 @@ function subscriptionModForm (res, status) {
         `<input type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
         `<input type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1054,7 +1054,7 @@ function subscriptionModForm (res, status) {
         success: function (planres, planstatus) {
             for(var plan in planres){
                 plan = planres[plan].plan;
-                if (selectedRow.children()[2].innerHTML == plan.id)
+                if (selectedRow.children()[3].innerHTML == plan.id)
                     $('#modsubscriptionplanname').append(
                         `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
                     );
@@ -1067,12 +1067,31 @@ function subscriptionModForm (res, status) {
             //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
-                modSubmit("/api/updateSubscription", {
-                    auth: id_token,
-                    subscriptionId: $("#modsubscriptionid").val(),
-                    planId: $("#modsubscriptionplanname").val(),
-                    planQuantity: $("#modsubscriptionplanquantity").val()
-                }, modSubscriptionSuccess);
+                let message = "";
+                let valid = true;
+                if ($("#modsubscriptionplanquantity").val().length === 0){
+                    valid = false;
+                    message += "Please indicate the number of monthly hours!<br>";
+                }
+                if ($("#modsubscriptionprice").val().length === 0){
+                    valid = false;
+                    message += "Please indicate the price per hour for this subscription!<br>";
+                }
+
+
+                if (valid) {
+                    $("#errormessage").html("");
+                    modSubmit("/api/updateSubscription", {
+                        auth: id_token,
+                        subscriptionId: $("#modsubscriptionid").val(),
+                        planId: $("#modsubscriptionplanname").val(),
+                        planQuantity: $("#modsubscriptionplanquantity").val()
+                    }, modSubscriptionSuccess);
+                }
+                else{
+                    $("#errormessage").html(message);
+                }
+
             });
         },
         error: function (planres, makerstatus) {
@@ -1094,7 +1113,7 @@ function subscriptionAddForm () {
         `<select id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
         `<input type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1114,10 +1133,12 @@ function subscriptionAddForm () {
                 dataType: "json",
                 success: function (clientres, clientstatus) {
                     for(var plan in planres) {
-                        plan = planres[plan].plan;
-                        $('#addsubscriptionplanid').append(
-                            `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
-                        );
+                            plan = planres[plan].plan;
+                        if (plan.status != 'archived') {
+                            $('#addsubscriptionplanid').append(
+                                `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
+                            );
+                        }
                     }
                     for(var client in clientres) {
                         client = clientres[client].customer;
@@ -1129,12 +1150,25 @@ function subscriptionAddForm () {
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
-                        addSubmit("/api/createSubscription", {
-                            auth: id_token,
-                            planId: $("#addsubscriptionplanid").val(),
-                            customerId: $("#addsubscriptioncustomerid").val() ,
-                            planQuantity: $("#addsubscriptionplanquantity").val(),
-                        }, addSubscriptionSuccess);
+                        let message = "";
+                        let valid = true;
+                        if ($("#addsubscriptionplanquantity").val().length === 0){
+                            valid = false;
+                            message += "Please indicate the number of monthly hours!<br>";
+                        }
+
+                        if (valid) {
+                            $("#errormessage").html("");
+                            addSubmit("/api/createSubscription", {
+                                auth: id_token,
+                                planId: $("#addsubscriptionplanid").val(),
+                                customerId: $("#addsubscriptioncustomerid").val() ,
+                                planQuantity: $("#addsubscriptionplanquantity").val(),
+                            }, addSubscriptionSuccess);
+                        }
+                        else{
+                            $("#errormessage").html(message);
+                        }
                     });
                 },
                 error: function (clientres, clientstatus) {
@@ -2209,9 +2243,11 @@ function relationshipAddForm() {
                                 );
                             }
                             for(var item of planres) {
-                                $('#addPlanRel').append(
-                                    `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
-                                );
+                                if (item.plan.status != 'archived') {
+                                    $('#addPlanRel').append(
+                                        `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
+                                    );
+                                }
                             }
 
                             //Submit button function
