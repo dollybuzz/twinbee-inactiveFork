@@ -360,7 +360,9 @@ function showMain () {
     showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
 
     $("#updatePaymentButton").click(function () {
+        console.log("open")
         openHostedPage('/api/getUpdatePaymentURL');
+        console.log("sesame")
     })
 
     $("#revInvoicesButton").click(function () {
