@@ -22,12 +22,12 @@ module.exports = {
         console.log("Attempting to authorize client...");
       if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient()){
           req[process.env.TWINBEE_IS_OK] = true;
-          next(req, res, next);
+          next();
       }
       else{
           console.log("Not authorized as client");
           if (next != undefined){
-              next(req, res, next)
+              next()
           }
           else {
               res.send('nope');
@@ -39,12 +39,12 @@ module.exports = {
         console.log("Attempting to authorize maker...");
         if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaker(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK]  = true;
-            next(req, res, next);
+            next();
         }
         else{
             console.log("Not authorized as maker");
             if (next != undefined){
-                next(req, res, next)
+                next()
             }
             else {
                 res.send('nope');
@@ -54,19 +54,21 @@ module.exports = {
     },
 
     authorizeAdmin: async(req, res, next) =>{
+        console.log("next is: ")
+        console.log(next);
         console.log("Attempting to authorize admin...");
         console.log(req);
         if (req.isOk || await authService.accessorIsAdmin(req.body.auth)) {
             req.isOk = true;
             console.log("Passed auth check");
             console.log(authService.accessorIsAdmin(req.body.auth));
-            next(req, res, next);
+            next();
         }
         else{
             console.log("Not authorized as admin");
             if (next != undefined){
                 console.log("Checking next auth...");
-                next(req, res, next)
+                next()
             }
             else {
                 console.log("All routes failed to authenticate")
@@ -80,12 +82,12 @@ module.exports = {
         if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaster(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK]  = true;
             console.log("Passed auth check");
-            next(req, res, next);
+            next();
         }
         else{
             console.log("Not authorized as Master");
             if (next != undefined){
-                next(req, res, next)
+                next()
             }
             else {
                 res.send('nope');
