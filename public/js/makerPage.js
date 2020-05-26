@@ -124,7 +124,7 @@ function timeSheetFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id
+                    id: 4//uncomment for live when ready: tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -348,7 +348,7 @@ onSignIn = function (googleUser) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: tokenres.id
+                    id: 4 //uncomment for live when ready tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -370,7 +370,7 @@ onSignIn = function (googleUser) {
                         method: "post",
                         data: {
                             auth: id_token,
-                            id: tokenres.id,
+                            id: 4//uncomment for live when ready: tokenres.id,
                         },
                         dataType: "json",
                         success: function (relres, status) {
