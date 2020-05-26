@@ -221,8 +221,8 @@ app.post("/api/getAllTimeBuckets",
     clientRestController.getAllTimeBuckets);
 app.post("/api/getTimeBucketByClientId",
     authController.authorizeAdmin,
-    authController.authorizeMaster,
     authController.authorizeClient,
+    authController.authorizeMaster,
     clientRestController.getTimeBucketByClientId);
 app.post("/api/getAllRelationships",
     authController.authorizeAdmin,
