@@ -813,7 +813,6 @@ function makerModForm (res, status) {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-
         let message = "";
         let valid = true;
         if (!isEmail($("#modemail").val())){
@@ -857,12 +856,28 @@ function makerAddForm () {
         `<input type='text' id='addmakerlname' name='addmakerlname'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
         `<input type='text' id='addemail' name='addemail'>\n<br>\n` +
-        "</form>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        if (isEmail($("#addemail").val())) {
+        let message = "";
+        let valid = true;
+        if (!isEmail($("#addemail").val())){
+            valid = false;
+            message += "Email is not valid!<br>";
+        }
+        if ($("#addmakerfname").val().length === 0){
+            valid = false;
+            message += "A First Name is required!<br>";
+        }
+        if ($("#addmakerlname").val().length === 0){
+            valid = false;
+            message += "A Last Name is required!<br>";
+        }
+
+        if (valid) {
+            $("#errormessage").html("");
             addSubmit("/api/createMaker", {
                 auth: id_token,
                 id: $("#addmakerid").val(),
@@ -872,7 +887,7 @@ function makerAddForm () {
             }, addMakerSuccess);
         }
         else{
-            alert("Invalid email!");
+            $("#errormessage").html(message);
         }
     });
 }
