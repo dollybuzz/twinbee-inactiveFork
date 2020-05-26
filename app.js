@@ -247,6 +247,7 @@ app.post("/api/getRelationshipsByClientId",
     relationshipRestController.getRelationshipsByClientId);
 app.post("/api/getRelationshipById",
     authController.authorizeAdmin,
+    authController.authorizeMaker,
     authController.authorizeMaster,
     relationshipRestController.getRelationshipById);
 app.post("/api/deleteRelationship",
