@@ -84,9 +84,11 @@ function expandTable () {
 };
 
 function showFunction (functionality, endpoint) {
+    console.log("Getting ready to verify")
+    console.log(id_token)
     $.ajax({
         method: "post",
-        url: '/api/getAllMakers', // change when ready for live:'/api/getClientByToken',
+        url: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -97,18 +99,19 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change when ready for live: res.id
+                    id: res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
                     functionality(innerRes);
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
+                    $("#userMainContent").html(`Something went wrong with ${endpoint}`);
                 }
             });// ajax
         },
         error: function (res, status) {
+            console.log("...")
             $("#userMainContent").html("Failed to verify you!");
             console.log(res);
         }
@@ -118,79 +121,87 @@ function showFunction (functionality, endpoint) {
 //Maker Methods
 function makerFunctionality (res) {
     $.ajax({
-        url: "/api/getRelationshipsByClientId", //returns maker id, use maker id to get maker name
+        url: "/api/getClientByToken", //returns maker id, use maker id to get maker name
         method: "post",
         data: {
             auth: id_token,
-            id: '16CHT7Ryu5EhnPWY',//tokenres.id,
+            token: id_token,
         },
         dataType: "json",
-        success: function (relres, status) {
-            //Create table
-            $("#userMainContent").html(
-                "<div id=\"buttonsTop\"></div>\n" +
-                "<div class='row' id='topRow'>\n" +
-                "<div id=\"floor\">\n" +
-                "    <table id=\"makerTable\" class=\"table\">\n" +
-                "    </table>\n" +
-                "</div></div>");
-            $("#makerTable").append('\n' +
-                '        <thead class="thead">\n' +
-                '            <th scope="col">Freedom Maker</th>\n' +
-                '            <th scope="col">Email</th>\n' +
-                '            <th scope="col">Occupation</th>\n' +
-                '        </thead><tbody>');
-
-            for(var item in relres) {
-                console.log(relres[0].occupation);
-                let occ = relres[item].occupation;
-                $.ajax({
-                    url: "/api/getMaker",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        id: relres[item].makerId,//tokenres.id,
-                    },
-                    dataType: "json",
-                    success: function (makerres, makerstatus) {
-                        //Populate table
-                        $("#makerTable").append('\n' +
-                            '<tr class="makerRow">' +
-                            '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
-                            '   <td>' + `${makerres.email}` + '</td>' +
-                            '   <td>' + occ + '</td></tr>'
-                        );
-                    },
-                    error: function (makerres, makerstatus) {
-                        $("#userMainContent").html("Maker isn't working!");
+        success: function (tokenres, status) {
+            $.ajax({
+                url: "/api/getRelationshipsByClientId", //returns maker id, use maker id to get maker name
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: tokenres.id,
+                },
+                dataType: "json",
+                success: function (relres, status) {
+                    //Create table
+                    $("#userMainContent").html(
+                        "<div id=\"buttonsTop\"></div>\n" +
+                        "<div class='row' id='topRow'>\n" +
+                        "<div id=\"floor\">\n" +
+                        "    <table id=\"makerTable\" class=\"table\">\n" +
+                        "    </table>\n" +
+                        "</div></div>");
+                    $("#makerTable").append('\n' +
+                        '        <thead class="thead">\n' +
+                        '            <th scope="col">Freedom Maker Name</th>\n' +
+                        '            <th scope="col">Email</th>\n' +
+                        '            <th scope="col">Occupation</th>\n' +
+                        '        </thead><tbody>');
+                    for (var item in relres) {
+                        console.log(relres[0].occupation);
+                        let occ = relres[item].occupation;
+                        $.ajax({
+                            url: "/api/getMaker",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: relres[item].makerId,//tokenres.id,
+                            },
+                            dataType: "json",
+                            success: function (makerres, makerstatus) {
+                                //Populate table
+                                $("#makerTable").append('\n' +
+                                    '<tr class="makerRow">' +
+                                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
+                                    '   <td>' + `${makerres.email}` + '</td>' +
+                                    '   <td>' + occ + '</td></tr>'
+                                );
+                            },
+                            error: function (makerres, makerstatus) {
+                                $("#userMainContent").html("Maker isn't working!");
+                            }
+                        });
                     }
-                });
-            };
-
-            $("#makerTable").append('\n</tbody>');
-
-            //Body Block content
-            createBody(null);
-
-            //Expand Table Button
-            $("#ExpandButton").click(function () {
-                expandTable();
-            });
-
-            //Row effect
-            $(".subscriptionRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
+                    ;
+                    $("#makerTable").append('\n</tbody>');
+                    //Body Block content
+                    createBody(null);
+                    //Expand Table Button
+                    $("#ExpandButton").click(function () {
+                        expandTable();
+                    });
+                    //Row effect
+                    $(".subscriptionRow").mouseenter(function () {
+                        $(this).css('transition', 'background-color 0.5s ease');
+                        $(this).css('background-color', '#e8ecef');
+                    }).mouseleave(function () {
+                        $(this).css('background-color', 'white');
+                    });
+                },
+                error: function (relres, relstatus) {
+                    $("#userMainContent").html("Relationship isn't working!");
+                }
             });
         },
-        error: function (relres, relstatus) {
-            $("#userMainContent").html("Relationship isn't working!");
+        error: function (tokenres, tokenstatus) {
+            $("#userMainContent").html("Token isn't working!");
         }
     });
-
-
 }
 
 //Subscription Methods
@@ -272,7 +283,7 @@ function timeSheetFunctionality (res) {
 
     $.ajax({
         method: "post",
-        url: '/api/getAllMakers', // change when ready for live:'/api/getClientByToken',
+        url: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -283,7 +294,7 @@ function timeSheetFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change when ready for live: tokenres.id
+                    id: tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -310,7 +321,7 @@ function timeSheetFunctionality (res) {
                     $("#buttonsTop").children()[0].remove();
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
+                    $("#userMainContent").html("Something went wrong with getmakers!");
                 }
             });// ajax
         },
@@ -342,25 +353,19 @@ function showMain () {
     //Contains any main tab functionality
     showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
 
-    $("#updatePaymentButton").click(function () {
-        openHostedPage('/api/getUpdatePaymentURL');
-    })
 
-    $("#revInvoicesButton").click(function () {
-        openHostedPage('/api/getClientPayInvoicesPage');
-    })
 }
 
 //Google
 onSignIn = function (googleUser) {
-  //  id_token = googleUser.getAuthResponse().id_token; Uncomment when ready for live
+    id_token = googleUser.getAuthResponse().id_token;
     showMain(); //must call here to first generate token
 };
 
 function openHostedPage(getPageEndpoint){
     $.ajax({
         method: "post",
-        url: 'api/getAllMakers', //uncomment when live '/api/getClientByToken',
+        url: '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -371,7 +376,7 @@ function openHostedPage(getPageEndpoint){
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: "16CHT7Ryu5EhnPWY" //Chris Redfield, change to res.id
+                    id:  res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -426,6 +431,15 @@ function timeBucketFunctionality (res) {
     $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
 
     //Event Listeners
+    $("#updatePaymentButton").on('click', function () {
+        openHostedPage('/api/getUpdatePaymentURL');
+    })
+
+    $("#revInvoicesButton").on('click', function () {
+        openHostedPage('/api/getClientPayInvoicesPage');
+    })
+
+
     //Buy Hours
     $(".bucketRow").click(function () {
         selectedRow = $(this);
@@ -462,7 +476,7 @@ function popBuyForm (form) {
 function buyForm () {
     $("#optionsClient").html("<div id='buyForm'></div>");
     $.ajax({
-        url: '/api/getAllClients', //"/api/getClientByToken",
+        url: "/api/getClientByToken",
         method: "post",
         data: {
             auth: id_token,
@@ -475,7 +489,7 @@ function buyForm () {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: '16CHT7Ryu5EhnPWY',//tokenres.id,
+                    id: tokenres.id,
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
@@ -584,8 +598,6 @@ $(document).ready(function () {
             $(this).css("font-style", 'normal');
         }
     });
-
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-
 });//end document ready

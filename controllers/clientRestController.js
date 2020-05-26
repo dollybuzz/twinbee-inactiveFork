@@ -189,7 +189,7 @@ module.exports = {
         console.log("Attempting to update client from REST: ");
         console.log(req.body);
 
-        res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
+        res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes))
             .catch(error => {
                 console.log(error)
             }));

@@ -2052,6 +2052,8 @@ function verifyDeleteRelationship() {
 //Google
 onSignIn = function (googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
+    showMain();
+
 };
 
 $(document).ready(function () {

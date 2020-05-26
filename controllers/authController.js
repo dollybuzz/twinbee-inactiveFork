@@ -20,12 +20,18 @@ module.exports = {
 
     authorizeClient: async (req, res, next) =>{
         console.log("Attempting to authorize client...");
-      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient()){
+      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient(req.body.auth)){
           req[process.env.TWINBEE_IS_OK] = true;
           next();
       }
       else{
-          res.send('nope');
+          console.log("Not authorized as client");
+          if (next != undefined){
+              next()
+          }
+          else {
+              res.send('nope');
+          }
           //TODO: res.render(accessNotAllowed)
       }
     },
@@ -36,22 +42,36 @@ module.exports = {
             next();
         }
         else{
-            res.send('nope');
+            console.log("Not authorized as maker");
+            if (next != undefined){
+                next()
+            }
+            else {
+                res.send('nope');
+            }
             //TODO: res.render(accessNotAllowed)
         }
     },
 
     authorizeAdmin: async(req, res, next) =>{
         console.log("Attempting to authorize admin...");
-        console.log(req);
-        if (req.isOk || await authService.accessorIsAdmin(req.body.auth)) {
-            req.isOk = true;
+        console.log(req.body);
+        if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsAdmin(req.body.auth)) {
+            req[process.env.TWINBEE_IS_OK] = true;
             console.log("Passed auth check");
             console.log(authService.accessorIsAdmin(req.body.auth));
             next();
         }
         else{
-            res.send('nope');
+            console.log("Not authorized as admin");
+            if (next != undefined){
+                console.log("Checking next auth...");
+                next()
+            }
+            else {
+                console.log("All routes failed to authenticate")
+                res.send('nope');
+            }
             //TODO: res.render(accessNotAllowed)
         }
     },
@@ -63,7 +83,8 @@ module.exports = {
             next();
         }
         else{
-            res.send('nope');
+            console.log("Not authorized as Master");
+                res.send('nope');
             //TODO: res.render(accessNotAllowed)
         }
     },
@@ -74,7 +95,7 @@ module.exports = {
 
         if (req[process.env.TWINBEE_IS_OK]  /* || updated == updater */) {
             req[process.env.TWINBEE_IS_OK]  = true;
-            next();
+            next(req, res, next);
         }
         else{
             throw new Error("Not yet implemented");
