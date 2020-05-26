@@ -5,7 +5,7 @@ class RelationshipRepository {
     constructor() {
     };
 
-    createRelationship(makerId, clientId, planId, occupation) {
+    createRelationship(makerId, clientId, planId, task) {
         return new Promise((resolve, reject) => {
 
             let sql = 'INSERT INTO relationship(maker_id, client_id, plan_id, occupation)' +
