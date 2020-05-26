@@ -56,8 +56,8 @@ module.exports = {
     authorizeAdmin: async(req, res, next) =>{
         console.log("Attempting to authorize admin...");
         console.log(req);
-        if (req.process.env.TWINBEE_IS_OK || await authService.accessorIsAdmin(req.body.auth)) {
-            req.process.env.TWINBEE_IS_OK = true;
+        if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsAdmin(req.body.auth)) {
+            req[process.env.TWINBEE_IS_OK] = true;
             console.log("Passed auth check");
             console.log(authService.accessorIsAdmin(req.body.auth));
             next();
