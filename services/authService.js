@@ -82,7 +82,6 @@ class AuthService {
             return false;
         });
         console.log("Let's see if you're on the list...");
-        console.log(email);
         for (var i = 0; i < adminList.length; ++i){
             let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
                 console.log(err);
@@ -90,9 +89,11 @@ class AuthService {
                 return false;
             });
             if (emailsMatch){
+                console.log("Admin match");
                 return true;
             }
         }
+        console.log("No match for admin")
         return false;
     }
 
