@@ -2,6 +2,7 @@ const makerRepo = require('../repositories/makerRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 const Maker = require('../domain/entity/maker.js');
+const emailService = require('./emailService.js');
 
 class MakerService {
     constructor(){};
@@ -14,7 +15,10 @@ class MakerService {
     async getAllMakers(){
         console.log("Getting all makers...");
         let makers = [];
-        let repoResult = await makerRepo.getAllMakers();
+        let repoResult = await makerRepo.getAllMakers().catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         repoResult.forEach(item => {
             let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted);
 
@@ -34,8 +38,14 @@ class MakerService {
      */
     async createNewMaker(firstName, lastName, email){
         console.log("Creating new maker...");
-        await makerRepo.createMaker(firstName, lastName, email).catch(err=>{console.log(err)});
-        let id = await makerRepo.getMakerIdByEmail(email).catch(err=>{console.log(err)});
+        await makerRepo.createMaker(firstName, lastName, email).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        let id = await makerRepo.getMakerIdByEmail(email).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         return new Maker(id[0].id, firstName, lastName, email);
     }
 
@@ -48,7 +58,10 @@ class MakerService {
     async getOnlineMakers() {
         console.log("Getting online makers...");
         let onliners = [];
-        let retrieved = await makerRepo.getOnlineMakers().catch(err=>{console.log(err)});
+        let retrieved = await makerRepo.getOnlineMakers().catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         retrieved.forEach(item => {
             let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email);
             onliners.push(online);
@@ -76,7 +89,10 @@ class MakerService {
      */
     async updateMaker(id, firstName, lastName, email){
         console.log(`Updating maker ${id}...`);
-        await makerRepo.updateMaker(id, firstName, lastName, email).catch(err=>{console.log(err)});
+        await makerRepo.updateMaker(id, firstName, lastName, email).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         return this.getMakerById(id);
     }
 
@@ -103,7 +119,8 @@ class MakerService {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
 
         let sheets = JSON.parse(result.body);
@@ -131,7 +148,8 @@ class MakerService {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
         let clients = JSON.parse(result.body);
         result = await request({
@@ -141,7 +159,8 @@ class MakerService {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
         let sheets = JSON.parse(result.body);
         let clientMap = {};
@@ -183,7 +202,10 @@ class MakerService {
      */
     async getMakerById(id){
         console.log(`Getting maker data for maker ${id}`);
-        let result = await  makerRepo.getMakerById(id).catch(err=>{console.log(err)});
+        let result = await  makerRepo.getMakerById(id).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
 
         if (result[0]) {
             let maker = result[0];

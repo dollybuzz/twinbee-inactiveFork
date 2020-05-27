@@ -4,7 +4,7 @@ const authRepo = require('../repositories/authRepo.js');const {OAuth2Client} = r
 const clientId = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(clientId);
 const compare = util.promisify(require('bcrypt').compare);
-
+const emailService = require('./emailService.js');
 class AuthService {
     constructor() {
     };
@@ -15,8 +15,8 @@ class AuthService {
 
     async accessorIsMaker(creds) {
         let email = await this.getEmailFromToken(creds).catch(err => {
-            console.log("ERROR IN GET EMAIL FROM TOKEN\n\n\n")
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
         let response = await request({
             method: 'POST',
@@ -25,12 +25,9 @@ class AuthService {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log("ERROR IN ACCESSOR IS MAKER REQUEST \n\n\n\n")
             console.log(err)
+            emailService.emailAdmin(err);
         });
-
-        console.log("!!!!!\n\n\n")
-        console.log(response)
 
         let body = response.body;
         let makers = JSON.parse(body);
@@ -46,6 +43,7 @@ class AuthService {
     async accessorIsClient(creds) {
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err)
+            emailService.emailAdmin(err);
         });
         let response = await request({
             method: 'POST',
@@ -55,6 +53,7 @@ class AuthService {
             }
         }).catch(err => {
             console.log(err);
+            emailService.emailAdmin(err);
         });
 
         let body = response.body;
@@ -73,12 +72,14 @@ class AuthService {
         let adminList = await authRepo.getAdmins().catch(err => {
             console.log(err);
             console.log("Error grabbing admin list");
+            emailService.emailAdmin(err);
             return false;
         });
         console.log("Who's token is this?");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             console.log("Error grabbing email from token");
+            emailService.emailAdmin(err);
             return false;
         });
         console.log("Let's see if you're on the list...");
@@ -86,6 +87,7 @@ class AuthService {
             let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
                 console.log(err);
                 console.log("Error bcrypt.comapare'ing adminList[i] to the passed email");
+                emailService.emailAdmin(err);
                 return false;
             });
             if (emailsMatch){
@@ -93,18 +95,19 @@ class AuthService {
                 return true;
             }
         }
-        console.log("No match for admin")
+        console.log("No match for admin");
         return false;
     }
 
     async getEmailFromToken(token) {
-        console.log("getting email from token:")
-        console.log(token)
+        console.log("getting email from token:");
+        console.log(token);
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: clientId
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
         const payload = ticket.getPayload();
         return payload['email'];

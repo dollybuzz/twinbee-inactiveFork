@@ -3,6 +3,7 @@ require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const TimeSheet = require('../domain/entity/timeSheet.js');
+const emailService = require('./emailService.js');
 
 class TimeSheetService {
     constructor(){};
@@ -20,7 +21,10 @@ class TimeSheetService {
      */
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task) {
         let id = await timeSheetRepo.createSheet(makerId, clientId,
-            hourlyRate, timeIn, timeOut, task).catch(err=>{console.log(err)});
+            hourlyRate, timeIn, timeOut, task).catch(err=>{
+                console.log(err);
+                emailService.emailAdmin(err);
+            });
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task);
     }
 
@@ -73,7 +77,10 @@ class TimeSheetService {
         let refinedSheets = [];
         let sheets = await timeSheetRepo.getAllSheets().catch(err=>{console.log(err)});
         for (var i = 0; i < sheets.length; ++i){
-                let refinedSheet = await createSheetFromRow(sheets[i]).catch(err=>{console.log(err)});
+                let refinedSheet = await createSheetFromRow(sheets[i]).catch(err=>{
+                    console.log(err);
+                    emailService.emailAdmin(err);
+                });
             refinedSheets.push(refinedSheet);
         }
         return refinedSheets;
@@ -101,11 +108,16 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByMaker(id){
-        let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err=>{console.log(err)});
+        let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         let makerSheets = [];
         await sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row).catch(err=>{console.log(err)})
-                .catch(error => {console.log(error)});
+            let refinedSheet = await createSheetFromRow(row).catch(err=>{
+                console.log(err);
+                emailService.emailAdmin(err);
+            });
             makerSheets.push(refinedSheet);
         });
         return makerSheets;
@@ -117,10 +129,16 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByClient(id){
-        let sheets = await timeSheetRepo.getSheetsByClient(id).catch(err=>{console.log(err)});
+        let sheets = await timeSheetRepo.getSheetsByClient(id).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         let clientSheets = [];
         await sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row).catch(err=>{console.log(err)});
+            let refinedSheet = await createSheetFromRow(row).catch(err=>{
+                console.log(err);
+                emailService.emailAdmin(err);
+            });
             clientSheets.push(refinedSheet);
         });
         return clientSheets;

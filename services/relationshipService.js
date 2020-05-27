@@ -2,20 +2,27 @@ const relationshipRepo = require('../repositories/relationshipRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 const Relationship = require('../domain/entity/relationship');
+const emailService = require('./emailService.js');
 
 class RelationshipService {
     constructor(){};
 
     async createRelationship(makerId, clientId, planId, occupation){
         console.log("Creating a relationship...");
-        let id = await relationshipRepo.createRelationship(makerId, clientId, planId, occupation);
+        let id = await relationshipRepo.createRelationship(makerId, clientId, planId, occupation).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         return new Relationship(id, makerId, clientId, planId, occupation);
     }
 
     async getAllRelationships(){
         console.log("Getting all relationships...");
         let relationships = [];
-        let repoResult = await relationshipRepo.getAllRelationships();
+        let repoResult = await relationshipRepo.getAllRelationships().catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         repoResult.forEach(item => {
             let newObj = new Relationship(item.id, item.maker_id, item.client_id, item.plan_id, item.occupation);
             relationships.push(newObj);
@@ -25,7 +32,10 @@ class RelationshipService {
 
     async getRelationshipsByMakerId(makerId){
         console.log(`Getting relationship data for maker ${makerId}... `);
-        let result = await relationshipRepo.getRelationshipsByMakerId(makerId).catch(err=>{console.log(err)});
+        let result = await relationshipRepo.getRelationshipsByMakerId(makerId).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         let relationships = [];
         result.forEach(item => {
             let newObj = new Relationship(item.id, item.maker_id, item.client_id, item.plan_id, item.occupation);
@@ -36,7 +46,10 @@ class RelationshipService {
 
     async getRelationshipsByClientId(clientId){
         console.log(`Getting relationship data for client ${clientId}...`);
-        let result = await relationshipRepo.getRelationshipsByClientId(clientId).catch(err=>{console.log(err)});
+        let result = await relationshipRepo.getRelationshipsByClientId(clientId).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         let relationships = [];
         result.forEach(item => {
             let newObj = new Relationship(item.id, item.maker_id, item.client_id, item.plan_id, item.occupation);
@@ -47,7 +60,10 @@ class RelationshipService {
 
     async getRelationshipById(id){
         console.log(`Getting relationship data for relationship ${id}`);
-        let result = await  relationshipRepo.getRelationshipById(id).catch(err=>{console.log(err)});
+        let result = await  relationshipRepo.getRelationshipById(id).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         if (result[0]) {
             let relationship = result[0];
             return new Relationship(relationship.id, relationship.maker_id, relationship.client_id,
@@ -65,7 +81,10 @@ class RelationshipService {
     async updateRelationship(relationshipId, planId, occupation, makerId){
         console.log(`Updating relationship ${relationshipId}...`);
         await relationshipRepo.updateRelationship(relationshipId, planId,
-            occupation, makerId).catch(err=>{console.log(err)});
+            occupation, makerId).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         return this.getRelationshipById(relationshipId);
     }
 }

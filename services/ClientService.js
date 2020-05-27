@@ -15,6 +15,7 @@ let updateClient = (customerId, keyValuePairs)=>{
         if(error){
             //handle error
             console.log(error);
+            emailService.emailAdmin(error);
         }else{
             console.log(`Client ${customerId} updated successfully`)
         }
@@ -57,7 +58,10 @@ class ClientService {
      */
     async updateClientMetadata(clientId, keyValuePairs){
         console.log("Updating client metadata...");
-        let customer = await this.getClientById(clientId);
+        let customer = await this.getClientById(clientId).catch(err=>{
+            emailService.emailAdmin(err);
+            console.log(err)
+        });
         if(!customer.meta_data){
             customer.meta_data = {};
         }
@@ -76,7 +80,10 @@ class ClientService {
      */
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
         console.log("Updating client time bucket...");
-        let client = await this.getClientById(clientId);
+        let client = await this.getClientById(clientId).catch(err=>{
+            emailService.emailAdmin(err);
+            console.log(err)
+        });;
         if(!client.meta_data){
             client.meta_data = {};
         }
@@ -107,7 +114,10 @@ class ClientService {
      */
     async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone){
         console.log(`Updating client ${clientId} contact info...`);
-        let customer = await this.getClientById(clientId);
+        let customer = await this.getClientById(clientId).catch(err=>{
+            emailService.emailAdmin(err);
+            console.log(err)
+        });;
         customer.first_name = newFirstName;
         customer.last_name = newLastName;
         customer.email = newEmail;
@@ -156,7 +166,10 @@ class ClientService {
      * @returns {Promise<[entry]>}
      */
     async getAllClients() {
-        return await clientRepo.getAllClients().catch(err=>{console.log(err)});
+        return await clientRepo.getAllClients().catch(err=>{
+            emailService.emailAdmin(err);
+            console.log(err)
+        });
     }
 
     /**
@@ -179,7 +192,10 @@ class ClientService {
                           billingFirst, billingLast) {
         console.log(`Creating new client with last name ${lastName}...`);
         return await clientRepo.createClient(firstName, lastName, customerEmail, addressStreet,
-            customerCity, customerStateFull, customerZip, phoneNumber, billingFirst, billingLast).catch(err=>{console.log(err)});
+            customerCity, customerStateFull, customerZip, phoneNumber, billingFirst, billingLast).catch(err=>{
+            emailService.emailAdmin(err);
+            console.log(err)
+        });
     }
 
     /**
@@ -189,7 +205,10 @@ class ClientService {
      */
     async getClientById(id) {
         console.log(`Getting data for client ${id}...`);
-        let clientData = await clientRepo.getClientById(id).catch(err=>{console.log(err)});
+        let clientData = await clientRepo.getClientById(id).catch(err=>{
+            emailService.emailAdmin(err);
+            console.log(err)
+        });
         return clientData;
     }
 
@@ -209,7 +228,8 @@ class ClientService {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
 
         let body = response.body;
@@ -235,7 +255,8 @@ class ClientService {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
 
         for (var i = 0; i < subscriptionList.length; ++i){
@@ -249,7 +270,8 @@ class ClientService {
                         'subscriptionId': entry.subscription.id
                     }
                 }).catch(err => {
-                    console.log(err)
+                    console.log(err);
+                     emailService.emailAdmin(err);
                 });
             }
         }
@@ -274,7 +296,8 @@ class ClientService {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
 
         let body = response.body;
@@ -287,7 +310,8 @@ class ClientService {
         }
 
         let sheets = await this.getSheetsByClient(id).catch(err => {
-            console.log(err)
+            console.log(err);
+            emailService.emailAdmin(err);
         });
         for (var i = 0; i < sheets.length; ++i) {
             if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
@@ -299,7 +323,10 @@ class ClientService {
     };
 
     async getAllTimeBuckets(){
-        let clients = await this.getAllClients();
+        let clients = await this.getAllClients().catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         let timeBuckets = [];
         for (var i = 0; i < clients.length; ++i){
             let client = clients[i].customer;
@@ -316,7 +343,10 @@ class ClientService {
     }
 
     async getTimeBucketByClientId(id) {
-        let client = await this.getClientById(id);
+        let client = await this.getClientById(id).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
         if (client.meta_data) {
             let obj = {};
             obj.first_name = client.first_name;
@@ -341,6 +371,7 @@ class ClientService {
                 if(error){
                     //handle error
                     console.log(error);
+                    emailService.emailAdmin(error);
                     reject(error);
                 }else{
                     console.log("Successfully retrieved update payment page");
@@ -381,6 +412,7 @@ class ClientService {
                 if(error){
                     //handle error
                     console.log(error);
+                    emailService.emailAdmin(error);
                     reject(error);
                 }else{
                     var hosted_page = result.hosted_page;
@@ -399,7 +431,8 @@ class ClientService {
      */
     async getClientByEmail(email){
         console.log(`Getting client by email...`);
-       return await clientRepo.getClientByEmail(email).catch(err=>{console.log(err)});
+       return await clientRepo.getClientByEmail(email)
+        emailService.emailAdmin(err);
     }
 }
 
