@@ -290,7 +290,7 @@ app.get("/api/getEnvironment",
     console.log("Hello!")
     console.log("The value is:")
     console.log(process.env.TEST_ENVIRONMENT_FLAG)
-    if (!process.env.TEST_ENVIRONMENT_FLAG == 'test') {
+    if (!process.env.TEST_ENVIRONMENT_FLAG) {
         console.log("sending test")
         es.emailAdmin("Hello!");
     }
