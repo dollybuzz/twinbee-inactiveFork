@@ -287,7 +287,9 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
+    console.log("Hello!")
     if (!process.env.TEST_ENVIRONMENT_FLAG == 'test') {
+        console.log("sending test")
         es.emailAdmin("Hello!");
     }
 })();
