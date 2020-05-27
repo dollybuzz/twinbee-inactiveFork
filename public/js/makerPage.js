@@ -418,7 +418,9 @@ $(document).ready(function () {
         dataType: "json",
         success:function (res, status) {
             TEST_ENVIRONMENT = res;
-            onSignIn();
+            if (TEST_ENVIRONMENT){
+                onSignIn();
+            }
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
