@@ -180,7 +180,7 @@ module.exports = {
      * of minutes (adds or subtracts). Looks for data in the body in the form:
      * {
      *     "id": id of the client to update,
-     *     "planId": id of the client's plan to update,
+     *     "planName": id of the client's plan to update,
      *     "minutes": positive or negative integer of minutes to update with,
      *     "auth": authentication credentials; either master or token
      * }

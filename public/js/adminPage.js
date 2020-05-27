@@ -2,6 +2,7 @@
 let selectedRow = null;
 let id_token = null;
 let selectedTab = null;
+let TEST_ENVIRONMENT = false;
 
 let navMapper = {
     main: function () {
@@ -56,7 +57,6 @@ function updateDescriptionId(endpoint, idSource, targetSpan){
             $("#userMainContent").html("Clients isn't working!");
         }
     })
-
 }
 
 function isEmail(val){
@@ -1905,20 +1905,34 @@ function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-        `<br><h6>Please enter an integer (+/-)<br>to adjust hours for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
-        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>");
+        `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
+        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
+        "<div><span id='errormessage' style='color:red'></span></div>");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
         var hoursToMin = (Number.parseInt($("#creditmodminutes").val())*60);
-        
-        modSubmit("/api/updateClientTimeBucket", {
-            auth: id_token,
-            id: selectedRow.children()[0].innerHTML,
-            planName: selectedRow.children()[2].innerHTML,
-            minutes: hoursToMin,
-        }, modCreditSuccess);
+
+        let message = "";
+        let valid = true;
+        if ($("#creditmodminutes").val().length === 0){
+            valid = false;
+            message += "Please enter the number of credits to add or remove!<br>";
+        }
+
+        if (valid) {
+            $("#errormessage").html("");
+            modSubmit("/api/updateClientTimeBucket", {
+                auth: id_token,
+                id: selectedRow.children()[0].innerHTML,
+                planName: selectedRow.children()[2].innerHTML,
+                minutes: hoursToMin,
+            }, modCreditSuccess);
+        }
+        else{
+            $("#errormessage").html(message);
+        }
     });
 }
 
@@ -1944,8 +1958,9 @@ function creditAddForm() {
                         "<select class='form-control' id='addClientCredit'>\n</select><br><br>\n" +
                         "<label for='addPlanCredit'> Select a Plan: </label>" +
                         "<select class='form-control' id='addPlanCredit'>\n</select><br><br>\n" +
-                        "<label for='addMinCredit'> Enter Hours: </label>" +
-                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'><br><br>\n");
+                        "<label for='addMinCredit'> Enter Value of Minutes: </label>" +
+                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>"+
+                        "<div><span id='errormessage' style='color:red'></span></div>");
 
                     for(var item of clientres) {
                         $('#addClientCredit').append(
@@ -1953,9 +1968,11 @@ function creditAddForm() {
                         );
                     }
                     for(var item of planres) {
-                        $('#addPlanCredit').append(
-                            `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
-                        );
+                        if (item.plan.status != "archived") {
+                            $('#addPlanCredit').append(
+                                `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
+                            );
+                        }
                     }
 
 
@@ -1964,12 +1981,25 @@ function creditAddForm() {
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
                         var hoursToMin = Number.parseInt($("#addMinCredit").val().toString())*60;
-                        addSubmit("/api/updateClientTimeBucket", {
-                            auth: id_token,
-                            id: $("#addClientCredit").val(),
-                            planId: $("#addPlanCredit").val(),
-                            minutes: hoursToMin,
-                        }, addCreditSuccess);
+                        let message = "";
+                        let valid = true;
+                        if ($("#addMinCredit").val().length === 0){
+                            valid = false;
+                            message += "Please enter the number of hours!<br>";
+                        }
+
+                        if (valid) {
+                            $("#errormessage").html("");
+                            addSubmit("/api/updateClientTimeBucket", {
+                                auth: id_token,
+                                id: $("#addClientCredit").val(),
+                                planName: $("#addPlanCredit").val(),
+                                minutes: hoursToMin,
+                            }, addCreditSuccess);
+                        }
+                        else{
+                            $("#errormessage").html(message);
+                        }
                     });
                 },
                 error: function (planres, planstatus) {
@@ -2146,7 +2176,7 @@ function relationshipModForm(res, status) {
         "<br><label for='modMakerRel'>Please select a Freedom Maker to assign:</label>" +
         "<select class='form-control' id='modMakerRel'></select>\n" +
         "<br><br><label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'>\n`);
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span></div>\n`);
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -2181,13 +2211,26 @@ function relationshipModForm(res, status) {
                             //Submit button function
                             $("#SubmitButton").off("click");
                             $("#SubmitButton").on('click', function (e) {
-                                modSubmit("/api/updateRelationship", {
-                                    auth: id_token,
-                                    id: selectedRow.children()[0].innerHTML,
-                                    makerId: $("#modMakerRel").val(),
-                                    planId: relres.planId,
-                                    occupation: $("#modMakerOcc").val()
-                                }, modRelationshipSuccess);
+                                let message = "";
+                                let valid = true;
+                                if ($("#modMakerOcc").val().length === 0){
+                                    valid = false;
+                                    message += "A Role is required!<br>";
+                                }
+
+                                if (valid) {
+                                    $("#errormessage").html("");
+                                    modSubmit("/api/updateRelationship", {
+                                        auth: id_token,
+                                        id: selectedRow.children()[0].innerHTML,
+                                        makerId: $("#modMakerRel").val(),
+                                        planId: relres.planId,
+                                        occupation: $("#modMakerOcc").val()
+                                    }, modRelationshipSuccess);
+                                }
+                                else{
+                                    $("#errormessage").html(message);
+                                }
                             });
                         },
                         error: function (relres, relstatus) {
@@ -2235,7 +2278,7 @@ function relationshipAddForm() {
                                 "<label for='addPlanRel'> Select a Plan: </label>" +
                                 "<select class='form-control' id='addPlanRel'>\n</select><br><br>\n" +
                                 "<label for='addOccRel'> Enter Freedom Maker Role: </label>" +
-                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><br><br>\n");
+                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><div><span id='errormessage' style='color:red'></span></div><br><br>\n");
 
                             for(var item of clientres) {
                                 $('#addClientRel').append(
@@ -2258,13 +2301,25 @@ function relationshipAddForm() {
                             //Submit button function
                             $("#SubmitButton").off("click");
                             $("#SubmitButton").on('click', function (e) {
-                                addSubmit("/api/createRelationship", {
-                                    auth: id_token,
-                                    clientId: $("#addClientRel").val(),
-                                    makerId: $("#addMakerRel").val(),
-                                    planId: $("#addPlanRel").val(),
-                                    occupation: $("#addOccRel").val(),
-                                }, addRelationshipSuccess);
+                                let message = "";
+                                let valid = true;
+                                if ($("#addOccRel").val().length === 0){
+                                    valid = false;
+                                    message += "A Role is required!<br>";
+                                }
+
+                                if (valid) {
+                                    addSubmit("/api/createRelationship", {
+                                        auth: id_token,
+                                        clientId: $("#addClientRel").val(),
+                                        makerId: $("#addMakerRel").val(),
+                                        planId: $("#addPlanRel").val(),
+                                        occupation: $("#addOccRel").val(),
+                                    }, addRelationshipSuccess);
+                                }
+                                else{
+                                    $("#errormessage").html(message);
+                                }
                             });
                         },
                         error: function (planres, planstatus) {
@@ -2319,13 +2374,24 @@ function verifyDeleteRelationship() {
 
 //Google
 onSignIn = function (googleUser) {
-  //uncomment for live site when ready  id_token = googleUser.getAuthResponse().id_token;
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token
+    console.log(id_token)
     showMain();
-
 };
-
 $(document).ready(function () {
-    onSignIn();
+    $.ajax({
+        url: "/api/getEnvironment",
+        method: "get",
+        dataType: "json",
+        success:function (res, status) {
+            TEST_ENVIRONMENT = res;
+            onSignIn();
+        },
+        error: function (clientres, clientstatus) {
+            TEST_ENVIRONMENT = true;
+            onSignIn();
+        }
+    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");

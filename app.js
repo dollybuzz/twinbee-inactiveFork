@@ -283,6 +283,8 @@ app.post("/api/getClientName",
     clientRestController.getClientName);
 app.post("/api/subscriptionRenewed",
     clientRestController.subscriptionRenewed);
+app.get("/api/getEnvironment",
+    (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
 })();
