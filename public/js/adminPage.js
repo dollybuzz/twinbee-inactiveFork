@@ -1905,9 +1905,11 @@ function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-        `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
-        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
-        "<div><span id='errormessage' style='color:red'></span></div>");
+        "<br><br><div class='setGrid'></div>");
+
+    $(".setGrid").append(`<div id="empty"></div><div>Please enter a value (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</div>` +
+        "<div><input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
+        "<span id='errormessage' style='color:red'></span></div>");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -1954,12 +1956,20 @@ function creditAddForm() {
                 dataType: "json",
                 success: function (planres, planstatus) {
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<label for='addClientCredit'> Select a Client: </label>" +
-                        "<select class='form-control' id='addClientCredit'>\n</select><br><br>\n" +
-                        "<label for='addPlanCredit'> Select a Plan: </label>" +
-                        "<select class='form-control' id='addPlanCredit'>\n</select><br><br>\n" +
-                        "<label for='addMinCredit'> Enter Value of Minutes: </label>" +
-                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>"+
+                        "<div class='.setGrid'></div>");
+
+                    $(".setGrid").append("<div id='empty'></div>" +
+                        "<div><label for='addClientCredit'> Select a Client: </label></div>" +
+                        "<div><select class='form-control' id='addClientCredit'>\n</select><br><br></div>\n" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div><label for='addPlanCredit'> Select a Plan: </label></div>" +
+                        "<div><select class='form-control' id='addPlanCredit'>\n</select><br><br></div>\n" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div><label for='addMinCredit'> Enter Value of Minutes: </label></div>" +
+                        "<div><input class='form-control' type='number' id='addMinCredit' name='addMinCredit'></div>"+
+                        "<div id='empty'></div>" +
                         "<div><span id='errormessage' style='color:red'></span></div>");
 
                     for(var item of clientres) {
