@@ -288,6 +288,8 @@ app.get("/api/getEnvironment",
 
 (async function() {
     console.log("Hello!")
+    console.log("The value is:")
+    console.log(process.env.TEST_ENVIRONMENT_FLAG)
     if (!process.env.TEST_ENVIRONMENT_FLAG == 'test') {
         console.log("sending test")
         es.emailAdmin("Hello!");
