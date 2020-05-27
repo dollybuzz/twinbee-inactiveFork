@@ -10,7 +10,8 @@ chargebee.configure({site : "freedom-makers-test",
 
 
 let updateClient = (customerId, keyValuePairs)=>{
-    console.log(`Updating client ${customerId} via chargebee with values: ${keyValuePairs}...`);
+    console.log(`Updating client ${customerId} via chargebee with values:`);
+    console.log(keyValuePairs);
     chargebee.customer.update(customerId, keyValuePairs).request(function(error,result) {
         if(error){
             //handle error
@@ -57,7 +58,8 @@ class ClientService {
      * @param keyValuePairs - key/value pairs to add
      */
     async updateClientMetadata(clientId, keyValuePairs){
-        console.log(`Updating client ${clientId} metadata with data: ${keyValuePairs}...`);
+        console.log(`Updating client ${clientId} metadata with data: `);
+        console.log(keyValuePairs);
         let customer = await this.getClientById(clientId).catch(err=>{
             emailService.emailAdmin(err);
             console.log(err)
