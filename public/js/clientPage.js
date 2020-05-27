@@ -148,7 +148,7 @@ function makerFunctionality (res) {
                         '            <th scope="col">Freedom Maker ID</th>\n' +
                         '            <th scope="col">Freedom Maker</th>\n' +
                         '            <th scope="col">Email</th>\n' +
-                        '            <th scope="col">Occupation</th>\n' +
+                        '            <th scope="col">Role</th>\n' +
                         '        </thead><tbody>');
                     for (var item in relres) {
                         console.log(relres[0].occupation);

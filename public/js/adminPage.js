@@ -372,10 +372,12 @@ function clientFunctionality (res){
         selectedRow = $(this);
         let clientPrompt = `<h5>Please type in the Full Name to delete the selected user.</h5>` +
             `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter Full Name:</label>" +
-            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n" ;
+            "<br><div id='delete'>" +
+            "<div id='empty'></div>" +
+            "<div><label for='deleteUser'>Enter Full Name:</label></div>" +
+            `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+            "<div id='empty'></div>" +
+            "</div>\n" ;
 
         prePopModForm("/api/getClient", clientModForm);
         $("#DeleteButton").show();
@@ -676,16 +678,19 @@ function modClientSuccessContact (res, status) {
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
 
-    //Updating viewable rows in table
-    selectedRow.children()[1].innerHTML = $("#modclientfname").val() + " " + $("#modclientlname").val();
-    selectedRow.children()[2].innerHTML = $("#modphone").val();
-    selectedRow.children()[3].innerHTML = $("#modemail").val();
+    setTimeout(function() {
+        showFunction(clientFunctionality, "/api/getAllClients");
+    }, 1000);
 }
 
 function modClientSuccessBilling (res, status) {
     $("#optionsClient").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+
+    setTimeout(function() {
+        showFunction(clientFunctionality, "/api/getAllClients");
+    }, 1000);
 }
 
 function addClientSuccess (res, status) {
@@ -693,21 +698,16 @@ function addClientSuccess (res, status) {
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added client ${res.id}!</h5>`);
 
-    //Adding new client to table
-    $("#clientTable").append('\n' +
-        `<tr id="${res.id}" class="clientRow">` +
-        '   <td scope="row">' + `${res.id}` + '</td>' +
-        '   <td>' + `${res.first_name} ${res.last_name}` + '</td>' +
-        '   <td>' + `${res.phone}` + '</td>' +
-        '   <td>' + `${res.email}` + '</td></tr>'
-    );
+    setTimeout(function() {
+        showFunction(clientFunctionality, "/api/getAllClients");
+    }, 1000);
 }
 
 function deleteClientSuccess (res, status) {
     $("#verifyEntry").html(`<h6>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h6>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
-    }, 3000);
+    }, 1000);
 }
 
 function verifyDeleteClient () {
@@ -752,11 +752,13 @@ function makerFunctionality (res){
     $(".makerRow").click(function () {
         selectedRow = $(this);
         let makerPrompt = `<h5>Please type in the Full Name to delete the selected user.</h5>` +
-            `<h6>You selected ${selectedRow.children()[1].innerHTML} ${selectedRow.children()[2].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter Full Name:</label>" +
-            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n";
+            `<h6>You selected ${selectedRow.children()[1].innerHTML}<br>ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><div id='delete'>" +
+            "<div id='empty'></div>" +
+            "<div><label for='deleteUser'>Enter Full Name:</label></div>" +
+            `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+            "<div id='empty'></div>" +
+            "</div>\n";
 
         prePopModForm("/api/getMaker", makerModForm);
         $("#DeleteButton").show();
@@ -897,10 +899,9 @@ function modMakerSuccess (res, status) {
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Freedom Maker ${$("#modmakerid").val()}!</h5>`);
 
-    //Updating viewable rows in table
-    selectedRow.children()[1].innerHTML = $("#modmakerfname").val();
-    selectedRow.children()[2].innerHTML = $("#modmakerlname").val();
-    selectedRow.children()[3].innerHTML = $("#modemail").val();
+    setTimeout(function() {
+        showFunction(makerFunctionality, "/api/getAllMakers");
+    }, 1000);
 }
 
 function addMakerSuccess (res, status) {
@@ -908,14 +909,9 @@ function addMakerSuccess (res, status) {
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Freedom Maker ${res.id}!</h5>`);
 
-    //Adding new client to table
-    $("#makerTable").append('\n' +
-        `<tr id="${res.id}" class="makerRow">` +
-        '   <td scope="row">' + `${res.id}` + '</td>' +
-        '   <td>' + res.firstName + '</td>' +
-        '   <td>' +  res.lastName +  '</td>' +
-        '   <td>' + res.email + '</td></tr>'
-    );
+    setTimeout(function() {
+        showFunction(makerFunctionality, "/api/getAllMakers");
+    }, 1000);
 }
 
 function deleteMakerSuccess (res, status) {
@@ -952,8 +948,6 @@ function subscriptionFunctionality (res) {
         '            <th scope="col">Next Billing</th>\n' +
         '        </thead><tbody>');
 
-    //get clients to cross reference
-
     //Populate table
     res.forEach(item => {
         let subscription = item.subscription;
@@ -984,10 +978,12 @@ function subscriptionFunctionality (res) {
         selectedRow = $(this);
         let subscriptionPrompt = `<h5>Please type in the Subscription ID to cancel the selected subscription.</h5>` +
             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter Subscription ID:</label>" +
-            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n";
+            "<br><iv id='delete'>" +
+            "<div id='empty'></div>" +
+            "<div><label for='deleteUser'>Enter Subscription ID:</label></div>" +
+            `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+            "<div id='empty'></div>" +
+            "</div>\n";
 
         prePopModForm("/api/retrieveSubscription", subscriptionModForm);
         $("#DeleteButton").show();
@@ -1187,10 +1183,10 @@ function modSubscriptionSuccess (res, status) {
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated subscription ${$("#modsubscriptionid").val()}!</h5>`);
 
-    //Updating viewable rows in table
-    selectedRow.children()[1].innerHTML = $("#modsubscriptionfname").val() + " " + $("#modsubscriptionlname").val();
-    selectedRow.children()[2].innerHTML = $("#modphone").val();
-    selectedRow.children()[3].innerHTML = $("#modemail").val();
+    setTimeout(function() {
+        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
+    }, 1000);
+
 }
 
 function addSubscriptionSuccess (res, status) {
@@ -1214,17 +1210,9 @@ function addSubscriptionSuccess (res, status) {
             }
             let customer = clientMap[res.customer_id];
 
-            //Adding new subscription to table
-            $("#subscriptionTable").append('\n' +
-                '<tr class="subscriptionRow">' +
-                '   <td scope="row">' + res.id + '</td>' +
-                '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
-                '   <td>' + res.plan_id + '</td>' +
-                '   <td>' + customer.meta_data[res.plan_id] + '</td></tr>' +
-                '   <td>' + `${res.has_scheduled_changes}` + '</td>' +
-                '   <td>' + res.cancelled + '</td>' +
-                '   <td>' + res.next_billing_at + '</td></tr>'
-            );
+            setTimeout(function() {
+                showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
+            }, 1000);
         },
         error: function (res, status) {
             $("#userMainContent").html("Something went wrong!");
@@ -1276,18 +1264,20 @@ function planFunctionality (res) {
     $("#planTable").append('\n</tbody>');
 
     //Body Block content
-    createBody("Cancel");
+    createBody("Delete");
 
     //Event Listeners
     //Modify
     $(".planRow").click(function () {
         selectedRow = $(this);
         let planPrompt = `<h5>Please type in the Plan to cancel the selected plan.</h5>` +
-            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-            "<br><form id='delete'>" +
-            "<label for='deleteUser'>Enter Plan:</label>" +
-            `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-            "</form>\n";
+            `<h6>You selected ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><div id='delete'>" +
+            "<div id='empty'></div>" +
+            "<div><label for='deleteUser'>Enter Plan:</label></div>" +
+            `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+            "<div id='empty'></div>" +
+            "</div>\n";
 
         prePopModForm("/api/retrievePlan", planModForm);
         $("#DeleteButton").show();
@@ -1334,7 +1324,7 @@ function planModForm (res, status) {
         "<label for='empty'></label>" +
         "<label for='modplanid'>Plan:</label>" +
         `<input class='form-control' type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
-        "<label for='modplaninvoicename'>Name on Invoice:</label>" +
+        "<label for='modplaninvoicename'>Invoice Statement Title:</label>" +
         `<input class='form-control' type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br>\n` +
         "<label for='modplanprice'>Price Per Hour ($):</label>" +
         `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
@@ -1378,7 +1368,7 @@ function planAddForm () {
         "<label for='empty'></label>" +
         "<label for='addplanname'>Plan (no spaces):</label>" +
         `<input class='form-control' type='text' id='addplanname' name='addplanname'>\n<br>\n` +
-        "<label for='addplaninvoicename'>Name on Invoice:</label>" +
+        "<label for='addplaninvoicename'>Invoice Statement Title:</label>" +
         `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
         "<label for='addplanprice'>Price Per Hour ($):</label>" +
         `<input class='form-control' type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
@@ -1400,7 +1390,7 @@ function planAddForm () {
             valid = false;
         }
         if ($("#addplaninvoicename").val().length === 0){
-            message += "Name on invoice cannot be blank!<br>";
+            message += "Invoice Statement Title cannot be blank!<br>";
             valid = false;
         }
         if ($("#addplanprice").val().length === 0){
@@ -1432,8 +1422,9 @@ function modPlanSuccess (res, status) {
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated plan ${$("#modplanid").val()}!</h5>`);
 
-    //Updating viewable rows in table
-    selectedRow.children()[1].innerHTML = `$${$("#modplanprice").val()}`;
+    setTimeout(function() {
+        showFunction(planFunctionality, "/api/getAllPlans");
+    }, 1000);
 }
 
 function addPlanSuccess (res, status) {
@@ -1441,13 +1432,9 @@ function addPlanSuccess (res, status) {
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added plan ${res.id}!</h5>`);
 
-    //Adding new plan to table
-    $("#planTable").append('\n' +
-        '<tr class="planRow">' +
-        `   <td scope="row">${res.id}</td>` +
-        `   <td>${res.price}</td>` +
-        `   <td>${res.description}</td></tr>`
-    );
+    setTimeout(function() {
+        showFunction(planFunctionality, "/api/getAllPlans");
+    }, 1000);
 }
 
 function deletePlanSuccess (res, status) {
@@ -1536,10 +1523,12 @@ function timeSheetFunctionality (res) {
                         selectedRow = $(this);
                         let timeSheetPrompt = `<h5>Please type in the Time Sheet ID to delete the selected time sheet.</h5>` +
                             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-                            "<br><form id='delete'>" +
+                            "<br><div id='delete'>" +
+                            "<div id='empty'></div>" +
                             "<label for='deleteUser'>Enter Time Sheet ID:</label>" +
                             `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-                            "</form>\n";
+                            "<div id='empty'></div>" +
+                            "</div>\n";
                         prePopModForm("/api/getTimeSheet", sheetModForm);
                         $("#DeleteButton").show();
                         $("#DeleteButton").css("opacity", "1");
@@ -1794,10 +1783,9 @@ function modSheetSuccess (res, status) {
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated sheet ${$("#modsheetid").val()}!</h5>`);
 
-    //Updating viewable rows in table
-    selectedRow.children()[3].innerHTML = $("#modsheetplanname").val();
-    selectedRow.children()[4].innerHTML = $("#modsheettimein").val();
-    selectedRow.children()[5].innerHTML = $("#modsheettimeout").val();
+    setTimeout(function() {
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    }, 1000);
 }
 
 function addSheetSuccess (res, status) {
@@ -1805,16 +1793,9 @@ function addSheetSuccess (res, status) {
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added sheet ${res.id}!</h5>`);
 
-    //Adding new client to table
-    $("#sheetTable").append('\n' +
-        `<tr id="${res.id}" class="sheetRow">` +
-        '   <td scope="row">' + `${res.id}` + '</td>' +
-        '   <td>' + `${res.makerId}` + '</td>' +
-        '   <td>' + `${res.clientId}` + '</td>' +
-        '   <td>' + `${res.timeIn}` + '</td>' +
-        '   <td>' + `${res.timeOut}` + '</td>' +
-        '   <td>' + `${res.task}` + '</td></tr>'
-    );
+    setTimeout(function() {
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    }, 1000);
 
     $(`#${res.id}`).mouseenter(function () {
         $(this).css('transition', 'background-color 0.5s ease');
@@ -1907,7 +1888,7 @@ function creditModForm(res, status) {
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
         "<br><br><div class='setGrid'></div>");
 
-    $(".setGrid").html(`<div id="empty"></div><div>Please enter a value (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</div>` +
+    $(".setGrid").html(`<div id="empty"></div><div>Please enter a number (+/-)<br>to adjust hours for plan: ${selectedRow.children()[2].innerHTML}</div>` +
         "<div><input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
         "<span id='errormessage' style='color:red'></span></div>");
 
@@ -1971,7 +1952,7 @@ function creditAddForm() {
                         "<div><select class='form-control' id='addPlanCredit'>\n</select><br><br></div>\n" +
                         "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
-                        "<div><label for='addMinCredit'> Enter Value of Minutes: </label></div>" +
+                        "<div><label for='addMinCredit'> Enter Number of Hours: </label></div>" +
                         "<div><input class='form-control' type='number' id='addMinCredit' name='addMinCredit'></div>"+
                         "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
@@ -2033,10 +2014,9 @@ function modCreditSuccess (res, status) {
     $("#modCreditSuccess").html("");
     $("#modCreditSuccess").html(`<br><h5>Successfully updated hours for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
-    //Different from previous methods because of ajax dependency
     setTimeout(function () {
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
-    }, 3000);
+    }, 1000);
 }
 
 function addCreditSuccess (res, status) {
@@ -2044,10 +2024,9 @@ function addCreditSuccess (res, status) {
     $("#addCreditSuccess").html("");
     $("#addCreditSuccess").html(`<br><h5>Successfully added plan for ${res.first_name} ${res.last_name}!</h5>`);
 
-    //Different from previous methods because of ajax dependency
     setTimeout(function () {
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
-    }, 3000);
+    }, 1000);
 }
 
 //Relationship Methods
@@ -2128,11 +2107,13 @@ function relationshipFunctionality (res) {
                             $(".relationshipRow").click(function () {
                                 selectedRow = $(this);
                                 let relationshipPrompt = `<h5>Please type in the Relationship ID to delete the selected relationship.</h5>` +
-                                    `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-                                    "<br><form id='delete'>" +
-                                    "<label for='deleteUser'>Enter Relationship ID:</label>" +
-                                    `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
-                                    "</form>\n";
+                                    `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                                    "<br><div id='delete'>" +
+                                    "<div id='empty'></div>" +
+                                    "<div><label for='deleteUser'>Enter Relationship ID:</label></div>" +
+                                    `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+                                    "<div id='empty'></div>" +
+                                    "</div>\n";
                                 prePopModForm("/api/getRelationshipById", relationshipModForm);
                                 $("#DeleteButton").show();
                                 $("#DeleteButton").css("opacity", "1");
@@ -2295,12 +2276,30 @@ function relationshipAddForm() {
                         success: function (planres, planstatus) {
                             $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
                                 "<h6>Please select a Client, Freedom Maker, and Plan to assign:</h6><br>" +
+                                "<br><div class='setGrid'></div>");
+
+                            $(".setGrid").append("<div id='empty'></div>" +
                                 "<label for='addClientRel'> Select a Client: </label>" +
                                 "<select class='form-control' id='addClientRel'>\n</select><br><br>\n" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
                                 "<label for='addMakerRel'> Select a Freedom Maker: </label>" +
                                 "<select class='form-control' id='addMakerRel'>\n</select><br><br>\n" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
                                 "<label for='addPlanRel'> Select a Plan: </label>" +
                                 "<select class='form-control' id='addPlanRel'>\n</select><br><br>\n" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
+                                "<div id='empty'></div>" +
                                 "<label for='addOccRel'> Enter Freedom Maker Role: </label>" +
                                 "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><div><span id='errormessage' style='color:red'></span></div><br><br>\n");
 
@@ -2367,7 +2366,6 @@ function modRelationshipSuccess (res, status) {
     $("#modRelSuccess").html("");
     $("#modRelSuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
-    //Different from previous methods because of ajax dependency
     setTimeout(function () {
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }, 1000);
@@ -2378,7 +2376,6 @@ function addRelationshipSuccess (res, status) {
     $("#addRelSuccess").html("");
     $("#addRelSuccess").html(`<br><h5>Successfully added Relationship ${res.id}!</h5>`);
 
-    //Different from previous methods because of ajax dependency
     setTimeout(function () {
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }, 1000);

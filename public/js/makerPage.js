@@ -83,7 +83,7 @@ function clientFunctionality (res){
         if (!item.deleted) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
-                '   <td>' + `${item.customer.id}` + '</td>' +
+                '   <td>' + `${item.id}` + '</td>' +
                 '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
