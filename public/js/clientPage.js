@@ -180,7 +180,7 @@ function timeBucketFunctionality (res) {
     //Populate table
     for(var plan in res.buckets) {
         let minToHours = (Number.parseFloat(res.buckets[plan]))/60;
-        minToHours = minToHours.toFixed(2);
+        minToHours = minToHours.toFixed(1);
         $("#bucketTable").append('\n' +
             '<tr class="bucketRow">' +
             '   <td scope="row">' + plan + '</td>' +
@@ -204,7 +204,6 @@ function timeBucketFunctionality (res) {
     $("#revInvoicesButton").on('click', function () {
         openHostedPage('/api/getClientPayInvoicesPage');
     })
-
 
     //Buy Hours
     $(".bucketRow").click(function () {
@@ -261,8 +260,15 @@ function buyForm () {
                 success: function (planres, planstatus) {
                     $("#buyForm").html("<h5>Add data into the following fields</h5><br>" +
                         "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
+                        "<div class='setGrid'></div>");
+                    $(".setGrid").append("<div id='empty'></div>" +
                         "<label for='buyPlan'> Select a Plan: </label>" +
                         "<select class='form-control' id='buyPlan'>\n</select><br><br>\n" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
                         "<label for='buyHours'> Enter Number of Hours: </label>" +
                         "<input class='form-control' type='number' id='buyHours' name='buyHours'><br><br>\n");
 
@@ -311,7 +317,7 @@ function buyForm () {
                                         $("#buyForm").append("<h5>Successfully purchased " + numHours + " hour(s) for Plan " + planSelect + "!</h5>");
                                         setTimeout(function () {
                                             showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
-                                        }, 3000);
+                                        }, 1000);
                                     },
                                     error: function (res, status) {
                                         $("#userMainContent").html("Buy Credit isn't working!");

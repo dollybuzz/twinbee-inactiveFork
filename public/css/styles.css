@@ -227,14 +227,13 @@ label {
 .row {
     margin: 0 auto;
     height: auto;
-    width: inherit;
+    width: auto;
 }
 
 .block {
-    display: inline-block;
-    text-align: center;
-    width: 50%;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    vertical-align: center;
 }
 
 #adminTitle, #clientTitle, #FMTitle {
@@ -398,6 +397,7 @@ th {
 }
 
 #makerBottomRow {
+    padding-top: 60px;
     justify-content: center;
 }
 
