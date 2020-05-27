@@ -1859,7 +1859,7 @@ function creditFunctionality (res) {
     res.forEach(customer => {
        for(var item in customer.buckets) {
            let minToHours = (Number.parseFloat(customer.buckets[item]))/60;
-           minToHours = minToHours.toFixed(2);
+           minToHours = minToHours.toFixed(1);
            $("#creditTable").append('\n' +
                '<tr class="creditRow">' +
                '   <td scope="row">' + customer.id + '</td>' +
@@ -1905,17 +1905,19 @@ function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-        `<br><h6>Please enter an integer (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
+        `<br><h6>Please enter an integer (+/-)<br>to adjust hours for plan: ${selectedRow.children()[2].innerHTML}</h6>` +
         "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
+        var hoursToMin = (Number.parseInt($("#creditmodminutes").val())*60);
+        
         modSubmit("/api/updateClientTimeBucket", {
             auth: id_token,
             id: selectedRow.children()[0].innerHTML,
             planName: selectedRow.children()[2].innerHTML,
-            minutes: $("#creditmodminutes").val()
+            minutes: hoursToMin,
         }, modCreditSuccess);
     });
 }
@@ -1942,7 +1944,7 @@ function creditAddForm() {
                         "<select class='form-control' id='addClientCredit'>\n</select><br><br>\n" +
                         "<label for='addPlanCredit'> Select a Plan: </label>" +
                         "<select class='form-control' id='addPlanCredit'>\n</select><br><br>\n" +
-                        "<label for='addMinCredit'> Enter Value of Minutes: </label>" +
+                        "<label for='addMinCredit'> Enter Hours: </label>" +
                         "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'><br><br>\n");
 
                     for(var item of clientres) {
@@ -1956,14 +1958,17 @@ function creditAddForm() {
                         );
                     }
 
+
+
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
+                        var hoursToMin = Number.parseInt($("#addMinCredit").val().toString())*60;
                         addSubmit("/api/updateClientTimeBucket", {
                             auth: id_token,
                             id: $("#addClientCredit").val(),
                             planId: $("#addPlanCredit").val(),
-                            minutes: $("#addMinCredit").val()
+                            minutes: hoursToMin,
                         }, addCreditSuccess);
                     });
                 },
@@ -1981,7 +1986,7 @@ function creditAddForm() {
 function modCreditSuccess (res, status) {
     $("#optionsClient").append("<div id='modCreditSuccess'></div>");
     $("#modCreditSuccess").html("");
-    $("#modCreditSuccess").html(`<br><h5>Successfully updated minutes for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
+    $("#modCreditSuccess").html(`<br><h5>Successfully updated hours for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
     //Different from previous methods because of ajax dependency
     setTimeout(function () {
@@ -1992,7 +1997,7 @@ function modCreditSuccess (res, status) {
 function addCreditSuccess (res, status) {
     $("#optionsClient").append("<div id='addCreditSuccess'></div>");
     $("#addCreditSuccess").html("");
-    $("#addCreditSuccess").html(`<br><h5>Successfully added new available credit for ${res.id}!</h5>`);
+    $("#addCreditSuccess").html(`<br><h5>Successfully added plan for ${res.first_name} ${res.last_name}!</h5>`);
 
     //Different from previous methods because of ajax dependency
     setTimeout(function () {
