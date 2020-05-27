@@ -32,7 +32,30 @@ const transporter = nodemailer.createTransport({
  */
 exports.sendEmail = options => new Promise((resolve, reject) => {
     console.log(`Sending an email to ${options.to} with subject ${options.subject}`);
-    transporter.sendMail(options, (error) => {
+    transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html:content}, (error) => {
+        if (error) {
+            console.log(error);
+            reject(error);
+        }
+        resolve();
+    });
+});
+
+/**
+ * Sends an email to the admins
+ * @param content
+ * @returns {Promise<>}
+ */
+exports.emailAdmin = content => new Promise((resolve, reject) => {
+    console.log(`Emailing admin!`);
+    transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html:content}, (error) => {
+        if (error) {
+            console.log(error);
+            reject(error);
+        }
+        resolve();
+    });
+    transporter.sendMail({to: process.env.ADMIN_WINBEE}, (error) => {
         if (error) {
             console.log(error);
             reject(error);
