@@ -8,7 +8,7 @@ const adminPageController = require('./adminPageController.js');
 const makerPageController = require('./makerPageController');
 const clientPageController = require('./clientPageController.js');
 const landingPageController = require('./landingPageController.js');
-
+const TEST_ENVIRONMENT = process.env.TWINBEE_ENVIRONMENT_FLAG === 'test';
 
 module.exports = {
 
@@ -18,7 +18,7 @@ module.exports = {
         res.send(email);
     },
 
-    authorizeClient: async (req, res, next) =>{
+    authorizeClient: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async (req, res, next) =>{
         console.log("Attempting to authorize client...");
       if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient(req.body.auth)){
           req[process.env.TWINBEE_IS_OK] = true;
@@ -35,7 +35,7 @@ module.exports = {
           //TODO: res.render(accessNotAllowed)
       }
     },
-    authorizeMaker: async(req, res, next) =>{
+    authorizeMaker: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize maker...");
         if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaker(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK]  = true;
@@ -53,7 +53,7 @@ module.exports = {
         }
     },
 
-    authorizeAdmin: async(req, res, next) =>{
+    authorizeAdmin: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize admin...");
         console.log(req.body);
         if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsAdmin(req.body.auth)) {
@@ -75,7 +75,7 @@ module.exports = {
             //TODO: res.render(accessNotAllowed)
         }
     },
-    authorizeMaster: async(req, res, next) =>{
+    authorizeMaster: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize Master...");
         if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaster(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK]  = true;
@@ -88,7 +88,7 @@ module.exports = {
             //TODO: res.render(accessNotAllowed)
         }
     },
-    authorizeSelfService: async(req, res, next)=>{
+    authorizeSelfService: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next)=>{
         console.log("Attempting to authorize self service...");
 
       //  throw new Error("Not yet implemented");
