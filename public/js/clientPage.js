@@ -358,7 +358,7 @@ function showMain () {
 
 //Google
 onSignIn = function (googleUser) {
-   // id_token = googleUser.getAuthResponse().id_token;
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
     showMain(); //must call here to first generate token
 };
 

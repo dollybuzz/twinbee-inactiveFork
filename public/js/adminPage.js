@@ -2384,8 +2384,8 @@ function verifyDeleteRelationship() {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token
-    console.log(id_token)
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
+    console.log(id_token);
     showMain();
 };
 $(document).ready(function () {
@@ -2395,7 +2395,9 @@ $(document).ready(function () {
         dataType: "json",
         success:function (res, status) {
             TEST_ENVIRONMENT = res;
-            onSignIn();
+            if (TEST_ENVIRONMENT) {
+                onSignIn();
+            }
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;

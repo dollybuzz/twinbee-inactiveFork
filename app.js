@@ -16,7 +16,7 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const authController = require('./controllers///authController.js');
 const app = express();
 const bodyParser = require('body-parser');
-const as = require('./services/authService.js')
+const es = require('./services/emailService.js')
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
@@ -287,6 +287,13 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
+    console.log("Hello!")
+    console.log("The value is:")
+    console.log(process.env.TEST_ENVIRONMENT_FLAG)
+    if (!process.env.TEST_ENVIRONMENT_FLAG) {
+        console.log("sending test")
+        es.emailAdmin("Hello!");
+    }
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
