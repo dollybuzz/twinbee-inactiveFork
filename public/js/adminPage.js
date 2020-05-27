@@ -1376,7 +1376,7 @@ function planAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='addplanname'>Plan (no spaces!):</label>" +
+        "<label for='addplanname'>Plan (no spaces):</label>" +
         `<input class='form-control' type='text' id='addplanname' name='addplanname'>\n<br>\n` +
         "<label for='addplaninvoicename'>Name on Invoice:</label>" +
         `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
@@ -1907,7 +1907,7 @@ function creditModForm(res, status) {
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
         "<br><br><div class='setGrid'></div>");
 
-    $(".setGrid").append(`<div id="empty"></div><div>Please enter a value (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</div>` +
+    $(".setGrid").html(`<div id="empty"></div><div>Please enter a value (+/-)<br>to adjust minutes for plan: ${selectedRow.children()[2].innerHTML}</div>` +
         "<div><input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
         "<span id='errormessage' style='color:red'></span></div>");
 
@@ -1956,9 +1956,13 @@ function creditAddForm() {
                 dataType: "json",
                 success: function (planres, planstatus) {
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<div class='.setGrid'></div>");
+                        "<div class='setGrid'></div>");
 
-                    $(".setGrid").append("<div id='empty'></div>" +
+                    $(".setGrid").html("<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
                         "<div><label for='addClientCredit'> Select a Client: </label></div>" +
                         "<div><select class='form-control' id='addClientCredit'>\n</select><br><br></div>\n" +
                         "<div id='empty'></div>" +
@@ -1969,6 +1973,7 @@ function creditAddForm() {
                         "<div id='empty'></div>" +
                         "<div><label for='addMinCredit'> Enter Value of Minutes: </label></div>" +
                         "<div><input class='form-control' type='number' id='addMinCredit' name='addMinCredit'></div>"+
+                        "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
                         "<div><span id='errormessage' style='color:red'></span></div>");
 
@@ -2183,10 +2188,19 @@ function relationshipModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
-        "<br><label for='modMakerRel'>Please select a Freedom Maker to assign:</label>" +
+        "<br><div class='setGrid'></div>");
+    $(".setGrid").append("<div id='empty'></div>" +
+        "<label for='modMakerRel'>Please assign a Freedom Maker:</label>" +
         "<select class='form-control' id='modMakerRel'></select>\n" +
+        "<div id='empty'></div>" +
+        "<div id='empty'></div>" +
+        "<div id='empty'></div>" +
+        "<div id='empty'></div>" +
+        "<div id='empty'></div>" +
         "<br><br><label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span></div>\n`);
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span></div>\n` +
+        "<div id='empty'></div>" +
+        "<div id='empty'></div>");
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
