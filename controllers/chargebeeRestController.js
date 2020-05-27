@@ -194,6 +194,18 @@ module.exports = {
         res.send(subscription);
     },
 
+    /**
+     * /api/undoSubscriptionChanges
+     * Cancels any pending subscription changes for the given subscription.
+     * Looks for values in the body as follows:
+     * {
+     *     "subscriptionId: id of desired subscription,
+     *     "auth": auth credentials, master or token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
     undoSubscriptionChanges: async function(req, res){
         console.log(`Attempting to revert scheduled changes for a subscription...`);
         console.log(req.body);
