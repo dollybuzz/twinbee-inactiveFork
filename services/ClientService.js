@@ -383,7 +383,7 @@ class ClientService {
     }
 
     async subscriptionRenewed(parsedBody){
-        if (parsedBody.event_type == "subscription_renewed") {
+        if (parsedBody.event_type === "subscription_renewed") {
             console.log("Subscription renewal request received");
             let subscription = parsedBody.content.subscription;
             console.log(`subscription is ${subscription}`);

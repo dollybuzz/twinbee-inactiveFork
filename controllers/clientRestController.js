@@ -321,9 +321,12 @@ module.exports = {
      * @returns {Promise<void>}
      */
     subscriptionRenewed: async (req, res)=>{
+        console.log(`Webhook hit for ${req.boody.event_type}`);
+        if (req.body.eventType === "subscription_renewed"){
         console.log("Client subscription renewed; updating from REST");
         console.log(req.body);
         res.send(await clientService.subscriptionRenewed(req.body));
+        }
     },
 
     /**
