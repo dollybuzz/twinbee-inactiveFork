@@ -2369,7 +2369,8 @@ function verifyDeleteRelationship() {
 
 //Google
 onSignIn = function (googleUser) {
-    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token
+    console.log(id_token)
     showMain();
 };
 $(document).ready(function () {
