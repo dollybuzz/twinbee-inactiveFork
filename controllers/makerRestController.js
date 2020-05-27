@@ -132,6 +132,8 @@ module.exports ={
      * @returns {Promise<maker>}
      */
     getClientsForMaker: async (req, res) =>{
+        console.log("Getting client list for maker from REST");
+        console.log(req.body);
         res.send(await makerService.getClientListForMakerId(req.body.id));
     },
 

@@ -1,6 +1,7 @@
 let selectedTab = null;
 let id_token = null;
 let currentRelationship = null;
+let TEST_ENVIRONMENT = false;
 
 let navMapper = {
     main: function () {
@@ -20,7 +21,7 @@ let navMapper = {
 function showFunction (functionality, endpoint) {
     $.ajax({
         method: "post",
-        url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
+        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -31,7 +32,7 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id:  res.id
+                    id: TEST_ENVIRONMENT ? 4 : res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -113,7 +114,7 @@ function clientFunctionality (res){
 function timeSheetFunctionality (res) {
     $.ajax({
         method: "post",
-        url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
+        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -124,7 +125,7 @@ function timeSheetFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: 4//uncomment for live when ready: tokenres.id
+                    id: TEST_ENVIRONMENT ? 4 : tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -205,7 +206,7 @@ function setClockInFunctionality() {
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
-            url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
+            url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
             method: "post",
             data: {
                 auth: id_token,
@@ -283,7 +284,7 @@ function setClockOutFunctionality() {
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
-            url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
+            url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
             method: "post",
             data: {
                 auth: id_token,
@@ -296,7 +297,7 @@ function setClockOutFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        makerId: 4 //uncomment for live when ready: tokenres.id,
+                        makerId: TEST_ENVIRONMENT ? 4 : tokenres.id
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -337,7 +338,7 @@ onSignIn = function (googleUser) {
     //Populating drop down selection
     $.ajax({
         method: "post",
-        url: '/api/getAllMakers',//uncomment for live when ready: '/api/getMakerIdByToken',
+        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
@@ -348,7 +349,7 @@ onSignIn = function (googleUser) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: 4 //uncomment for live when ready tokenres.id
+                    id: TEST_ENVIRONMENT ? 4 : tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -370,7 +371,7 @@ onSignIn = function (googleUser) {
                         method: "post",
                         data: {
                             auth: id_token,
-                            id: 4//uncomment for live when ready: tokenres.id,
+                            id: TEST_ENVIRONMENT ? 4 : tokenres.id,
                         },
                         dataType: "json",
                         success: function (relres, status) {
@@ -411,7 +412,19 @@ onSignIn = function (googleUser) {
 };
 
 $(document).ready(function () {
-    onSignIn(); //remove for live
+    $.ajax({
+        url: "/api/getEnvironment",
+        method: "get",
+        dataType: "json",
+        success:function (res, status) {
+            TEST_ENVIRONMENT = res;
+            onSignIn();
+        },
+        error: function (clientres, clientstatus) {
+            TEST_ENVIRONMENT = true;
+            onSignIn();
+        }
+    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
