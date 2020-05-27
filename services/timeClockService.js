@@ -2,6 +2,7 @@ const makerRepo = require('../repositories/makerRepo.js');
 const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
+const emailService = require('./emailService.js');
 
 class TimeClockService {
     constructor(){};
@@ -58,6 +59,9 @@ class TimeClockService {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'id':makerId.toString()
             }
+        }).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
         });
         result = JSON.parse(result.body);
         for (var sheet of result){
@@ -96,12 +100,18 @@ class TimeClockService {
      */
     async clockOut(makerId){
 
-        let onlineSheets = await this.getOnlineSheets(makerId);
+        let onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });;
 
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i){
             let currentSheet = onlineSheets[i];
-            let rightNow = await this.getCurrentMoment();
+            let rightNow = await this.getCurrentMoment().catch(err=>{
+                console.log(err);
+                emailService.emailAdmin(err);
+            });
             request({
                 method: 'POST',
                 uri: `https://www.freedom-makers-hours.com/api/updateTimeSheet`,
@@ -115,7 +125,10 @@ class TimeClockService {
             });
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
 
-            let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow);
+            let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow).catch(err=>{
+                console.log(err);
+                emailService.emailAdmin(err);
+            });
             request({
                 method: 'POST',
                 uri: `https://www.freedom-makers-hours.com/api/updateClientTimeBucket`,
@@ -132,7 +145,10 @@ class TimeClockService {
 
         console.log("Confirming sheets updated appropriately...");
 
-        onlineSheets = await this.getOnlineSheets(makerId);
+        onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
+            console.log(err);
+            emailService.emailAdmin(err);
+        });;
 
         console.log("Remaining online sheets: ");
         console.log(onlineSheets);

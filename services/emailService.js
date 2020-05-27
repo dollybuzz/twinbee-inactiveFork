@@ -47,19 +47,24 @@ exports.sendEmail = options => new Promise((resolve, reject) => {
  * @returns {Promise<>}
  */
 exports.emailAdmin = content => new Promise((resolve, reject) => {
-    console.log(`Emailing admin!`);
-    transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html:content}, (error) => {
-        if (error) {
-            console.log(error);
-            reject(error);
-        }
-        resolve();
-    });
-    transporter.sendMail({to: process.env.ADMIN_WINBEE}, (error) => {
-        if (error) {
-            console.log(error);
-            reject(error);
-        }
-        resolve();
-    });
+    if (!process.env.TWINBEE_LIVE) {
+        console.log(`Emailing admin!`);
+        transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html: content}, (error) => {
+            if (error) {
+                console.log(error);
+                reject(error);
+            }
+            resolve();
+        });
+        transporter.sendMail({to: process.env.ADMIN_WINBEE}, (error) => {
+            if (error) {
+                console.log(error);
+                reject(error);
+            }
+            resolve();
+        });
+    }
+    else{
+        console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
+    }
 });
