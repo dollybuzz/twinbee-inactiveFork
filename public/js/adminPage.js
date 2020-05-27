@@ -40,7 +40,6 @@ let navMapper = {
 };//end navMapper
 
 //Versatile Functions
-
 function updateDescriptionId(endpoint, idSource, targetSpan){
     $.ajax({
         url: endpoint,
@@ -330,6 +329,13 @@ function showOnlineMakers () {
             //log, send error report
         }
     });//end ajax
+};
+
+//Google
+onSignIn = function (googleUser) {
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
+    console.log(id_token);
+    showMain();
 };
 
 //Client Methods
@@ -2393,12 +2399,6 @@ function verifyDeleteRelationship() {
     return (deleteUser == (selectedRow.children()[0].innerHTML));
 }
 
-//Google
-onSignIn = function (googleUser) {
-    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
-    console.log(id_token);
-    showMain();
-};
 $(document).ready(function () {
     $.ajax({
         url: "/api/getEnvironment",

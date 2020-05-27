@@ -42,7 +42,6 @@ function createBody (button) {
     $("#buttonsBottom").hide();
 };
 
-
 function showBlock () {
     //show block after table stops moving
     setTimeout(function () {
@@ -115,239 +114,6 @@ function showFunction (functionality, endpoint) {
     });
 };
 
-//Maker Methods
-function makerFunctionality (res) {
-    $.ajax({
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token,
-        },
-        dataType: "json",
-        success: function (tokenres, status) {
-            $.ajax({
-                url: "/api/getRelationshipsByClientId", //returns maker id, use maker id to get maker name
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
-                },
-                dataType: "json",
-                success: function (relres, status) {
-                    //Create table
-                    $("#userMainContent").html(
-                        "<div id=\"buttonsTop\"></div>\n" +
-                        "<div class='row' id='topRow'>\n" +
-                        "<div id=\"floor\">\n" +
-                        "    <table id=\"makerTable\" class=\"table\">\n" +
-                        "    </table>\n" +
-                        "</div></div>");
-                    $("#makerTable").append('\n' +
-                        '        <thead class="thead">\n' +
-                        '            <th scope="col">Freedom Maker ID</th>\n' +
-                        '            <th scope="col">Freedom Maker</th>\n' +
-                        '            <th scope="col">Email</th>\n' +
-                        '            <th scope="col">Role</th>\n' +
-                        '        </thead><tbody>');
-                    for (var item in relres) {
-                        console.log(relres[0].occupation);
-                        let occ = relres[item].occupation;
-                        $.ajax({
-                            url: "/api/getMaker",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                id: relres[item].makerId,//tokenres.id,
-                            },
-                            dataType: "json",
-                            success: function (makerres, makerstatus) {
-                                //Populate table
-                                $("#makerTable").append('\n' +
-                                    '<tr class="makerRow">' +
-                                    '   <td>' + `${makerres.id}` + '</td>' +
-                                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
-                                    '   <td>' + `${makerres.email}` + '</td>' +
-                                    '   <td>' + occ + '</td></tr>'
-                                );
-                            },
-                            error: function (makerres, makerstatus) {
-                                $("#userMainContent").html("Maker isn't working!");
-                            }
-                        });
-                    }
-                    ;
-                    $("#makerTable").append('\n</tbody>');
-                    //Body Block content
-                    createBody(null);
-                    //Expand Table Button
-                    $("#ExpandButton").click(function () {
-                        expandTable();
-                    });
-                    //Row effect
-                    $(".subscriptionRow").mouseenter(function () {
-                        $(this).css('transition', 'background-color 0.5s ease');
-                        $(this).css('background-color', '#e8ecef');
-                    }).mouseleave(function () {
-                        $(this).css('background-color', 'white');
-                    });
-                },
-                error: function (relres, relstatus) {
-                    $("#userMainContent").html("Relationship isn't working!");
-                }
-            });
-        },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working!");
-        }
-    });
-}
-
-//Subscription Methods
-function subscriptionFunctionality (res) {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"subscriptionTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#subscriptionTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Planned Monthly Hours</th>\n' +
-        '            <th scope="col">Scheduled changes</th>\n' +
-        '            <th scope="col">Cancelled</th>\n' +
-        '            <th scope="col">Next Billing</th>\n' +
-        '        </thead><tbody>');
-
-    //Populate table
-    res.forEach(item => {
-        let subscription = item.subscription;
-        let customer = item.customer;
-        item = item.subscription;
-        if (item && !subscription.deleted) {
-            $("#subscriptionTable").append('\n' +
-                '<tr class="subscriptionRow">' +
-                '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + subscription.plan_quantity + '</td>' +
-                '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
-                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
-            );
-        }
-    });
-    $("#subscriptionTable").append('\n</tbody>');
-
-    //Body Block content
-    createBody(null);
-
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
-
-    //Row effect
-    $(".subscriptionRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
-}
-
-//TimeSheet Methods
-function timeSheetFunctionality (res) {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#sheetsTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">Time Sheet ID</th>\n' +
-        '            <th scope="col">Freedom Maker ID</th>\n' +
-        '            <th scope="col">Freedom Maker</th>\n' +
-        '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Clock In</th>\n' +
-        '            <th scope="col">Clock Out</th>\n' +
-        '            <th scope="col">Task</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
-    $.ajax({
-        method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        success: function (tokenres, status) {
-            $.ajax({
-                url: '/api/getMakersForClient',
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
-
-                    let makerMap = {};
-                    for (var i = 0; i < innerRes.length; ++i) {
-                        let maker = innerRes[i];
-                        makerMap[maker.id] = maker;
-                    }
-                    for (var item in res) {
-                        $("#sheetsTable").append('\n' +
-                            '<tr class="sheetRow">' +
-                            '   <td scope="row">' + res[item].id + '</td>' +
-                            '   <td>' + makerMap[res[item].makerId].id + '</td>' +
-                            '   <td>' + makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
-                            '   <td>' + res[item].hourlyRate + '</td>' +
-                            '   <td>' + res[item].timeIn + '</td>' +
-                            '   <td>' + res[item].timeOut + '</td>' +
-                            '   <td>' + res[item].task + '</td></tr>'
-                        );
-                    }
-
-                    //remove loading message/gif
-                    $("#buttonsTop").children()[0].remove();
-                    $("#buttonsTop").children()[0].remove();
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong with getmakers!");
-                }
-            });// ajax
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
-        }
-    });
-
-    //Body Block content
-    createBody(null);
-
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
-
-    //Row effect
-    $(".sheetRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
-}
-
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
@@ -415,11 +181,11 @@ function timeBucketFunctionality (res) {
     for(var plan in res.buckets) {
         let minToHours = (Number.parseFloat(res.buckets[plan]))/60;
         minToHours = minToHours.toFixed(2);
-            $("#bucketTable").append('\n' +
-                '<tr class="bucketRow">' +
-                '   <td scope="row">' + plan + '</td>' +
-                '   <td>' + minToHours + '</td></tr>'
-            );
+        $("#bucketTable").append('\n' +
+            '<tr class="bucketRow">' +
+            '   <td scope="row">' + plan + '</td>' +
+            '   <td>' + minToHours + '</td></tr>'
+        );
     }
     $("#bucketTable").append('\n</tbody>');
 
@@ -564,6 +330,239 @@ function buyForm () {
         error: function (tokenres, tokenstatus) {
             $("#userMainContent").html("Token isn't working!");
         }
+    });
+}
+
+//Subscription Methods
+function subscriptionFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"subscriptionTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#subscriptionTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Planned Monthly Hours</th>\n' +
+        '            <th scope="col">Scheduled changes</th>\n' +
+        '            <th scope="col">Cancelled</th>\n' +
+        '            <th scope="col">Next Billing</th>\n' +
+        '        </thead><tbody>');
+
+    //Populate table
+    res.forEach(item => {
+        let subscription = item.subscription;
+        let customer = item.customer;
+        item = item.subscription;
+        if (item && !subscription.deleted) {
+            $("#subscriptionTable").append('\n' +
+                '<tr class="subscriptionRow">' +
+                '   <td>' + subscription.plan_id + '</td>' +
+                '   <td>' + subscription.plan_quantity + '</td>' +
+                '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
+                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
+            );
+        }
+    });
+    $("#subscriptionTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody(null);
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".subscriptionRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+//Maker Methods
+function makerFunctionality (res) {
+    $.ajax({
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+        },
+        dataType: "json",
+        success: function (tokenres, status) {
+            $.ajax({
+                url: "/api/getRelationshipsByClientId", //returns maker id, use maker id to get maker name
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
+                },
+                dataType: "json",
+                success: function (relres, status) {
+                    //Create table
+                    $("#userMainContent").html(
+                        "<div id=\"buttonsTop\"></div>\n" +
+                        "<div class='row' id='topRow'>\n" +
+                        "<div id=\"floor\">\n" +
+                        "    <table id=\"makerTable\" class=\"table\">\n" +
+                        "    </table>\n" +
+                        "</div></div>");
+                    $("#makerTable").append('\n' +
+                        '        <thead class="thead">\n' +
+                        '            <th scope="col">Freedom Maker ID</th>\n' +
+                        '            <th scope="col">Freedom Maker</th>\n' +
+                        '            <th scope="col">Email</th>\n' +
+                        '            <th scope="col">Role</th>\n' +
+                        '        </thead><tbody>');
+                    for (var item in relres) {
+                        console.log(relres[0].occupation);
+                        let occ = relres[item].occupation;
+                        $.ajax({
+                            url: "/api/getMaker",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: relres[item].makerId,//tokenres.id,
+                            },
+                            dataType: "json",
+                            success: function (makerres, makerstatus) {
+                                //Populate table
+                                $("#makerTable").append('\n' +
+                                    '<tr class="makerRow">' +
+                                    '   <td>' + `${makerres.id}` + '</td>' +
+                                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
+                                    '   <td>' + `${makerres.email}` + '</td>' +
+                                    '   <td>' + occ + '</td></tr>'
+                                );
+                            },
+                            error: function (makerres, makerstatus) {
+                                $("#userMainContent").html("Maker isn't working!");
+                            }
+                        });
+                    }
+                    ;
+                    $("#makerTable").append('\n</tbody>');
+                    //Body Block content
+                    createBody(null);
+                    //Expand Table Button
+                    $("#ExpandButton").click(function () {
+                        expandTable();
+                    });
+                    //Row effect
+                    $(".subscriptionRow").mouseenter(function () {
+                        $(this).css('transition', 'background-color 0.5s ease');
+                        $(this).css('background-color', '#e8ecef');
+                    }).mouseleave(function () {
+                        $(this).css('background-color', 'white');
+                    });
+                },
+                error: function (relres, relstatus) {
+                    $("#userMainContent").html("Relationship isn't working!");
+                }
+            });
+        },
+        error: function (tokenres, tokenstatus) {
+            $("#userMainContent").html("Token isn't working!");
+        }
+    });
+}
+
+//TimeSheet Methods
+function timeSheetFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#sheetsTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Time Sheet ID</th>\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Clock In</th>\n' +
+        '            <th scope="col">Clock Out</th>\n' +
+        '            <th scope="col">Task</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+    $.ajax({
+        method: "post",
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (tokenres, status) {
+            $.ajax({
+                url: '/api/getMakersForClient',
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+
+                    let makerMap = {};
+                    for (var i = 0; i < innerRes.length; ++i) {
+                        let maker = innerRes[i];
+                        makerMap[maker.id] = maker;
+                    }
+                    for (var item in res) {
+                        $("#sheetsTable").append('\n' +
+                            '<tr class="sheetRow">' +
+                            '   <td scope="row">' + res[item].id + '</td>' +
+                            '   <td>' + makerMap[res[item].makerId].id + '</td>' +
+                            '   <td>' + makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
+                            '   <td>' + res[item].hourlyRate + '</td>' +
+                            '   <td>' + res[item].timeIn + '</td>' +
+                            '   <td>' + res[item].timeOut + '</td>' +
+                            '   <td>' + res[item].task + '</td></tr>'
+                        );
+                    }
+
+                    //remove loading message/gif
+                    $("#buttonsTop").children()[0].remove();
+                    $("#buttonsTop").children()[0].remove();
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong with getmakers!");
+                }
+            });// ajax
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(res);
+        }
+    });
+
+    //Body Block content
+    createBody(null);
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".sheetRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
     });
 }
 

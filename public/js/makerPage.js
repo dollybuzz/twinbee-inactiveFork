@@ -61,135 +61,6 @@ function createBody() {
     $("#buttonsBottom").hide();
 };
 
-//Client Methods
-function clientFunctionality (res){
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"clientTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#clientTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Client</th>\n' +
-        '            <th scope="col">Phone</th>\n' +
-        '            <th scope="col">Email</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    res.forEach(item => {
-        if (!item.deleted) {
-            $("#clientTable").append('\n' +
-                '<tr class="clientRow">' +
-                '   <td>' + `${item.id}` + '</td>' +
-                '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
-                '   <td>' + item.phone + '</td>' +
-                '   <td>' + item.email + '</td></tr>'
-            );
-        };
-    });
-    $("#clientTable").append('\n</tbody>');
-
-    //Body Block content
-    createBody();
-
-    //Event Listeners
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
-
-    //Row effect
-    $(".clientRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
-}
-
-//Previous Hours Methods
-function timeSheetFunctionality (res) {
-    $.ajax({
-        method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        success: function (tokenres, status) {
-            $.ajax({
-                url: '/api/getClientsForMaker',
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? 4 : tokenres.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
-                    let clientMap = {};
-                    for (var i = 0; i < innerRes.length; ++i){
-                        clientMap[innerRes[i].id] = innerRes[i];
-                    }
-
-                    //Create table
-                    $("#userMainContent").html(
-                        "<div id=\"buttonsTop\"></div>\n" +
-                        "<div class='row' id='topRow'>\n" +
-                        "<div id=\"floor\">\n" +
-                        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-                        "    </table>\n" +
-                        "</div></div>");
-                    $("#sheetsTable").append('\n' +
-                        '        <thead class="thead">\n' +
-                        '            <th scope="col">Client ID</th>\n' +
-                        '            <th scope="col">Client</th>\n' +
-                        '            <th scope="col">Clock In</th>\n' +
-                        '            <th scope="col">Clock Out</th>\n' +
-                        '            <th scope="col">Task</th>\n' +
-                        '        </thead><tbody>');
-                    //Populate table
-                    for (var item in res){
-                        $("#sheetsTable").append('\n' +
-                            '<tr class="sheetRow">' +
-                            '   <td>' + clientMap[res[item].clientId].id + '</td>'+
-                            '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
-                            '   <td>' + res[item].timeIn + '</td>'+
-                            '   <td>' + res[item].timeOut + '</td>'+
-                            '   <td>' + res[item].task + '</td></tr>'
-                        );
-                    }
-                    $("#sheetsTable").append('\n</tbody>');
-
-                    //Body Block content
-                    createBody();
-
-                    //Event Listeners
-
-                    //Row effect
-                    $(".sheetRow").mouseenter(function () {
-                        $(this).css('transition', 'background-color 0.5s ease');
-                        $(this).css('background-color', '#e8ecef');
-                    }).mouseleave(function () {
-                        $(this).css('background-color', 'white');
-                    });
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
-                }
-            });// ajax
-        },
-        error: function (tokenres, status) {
-            $("#userMainContent").html("Failed to verify you!");
-            console.log(tokenres);
-        }
-    });
-
-
-}
-
 //Main Clock Methods
 function setClockInFunctionality() {
     $("#taskBlock").css("opacity", "1");
@@ -410,6 +281,135 @@ onSignIn = function (googleUser) {
         }
     });
 };
+
+//Previous Hours Methods
+function timeSheetFunctionality (res) {
+    $.ajax({
+        method: "post",
+        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        success: function (tokenres, status) {
+            $.ajax({
+                url: '/api/getClientsForMaker',
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: TEST_ENVIRONMENT ? 4 : tokenres.id
+                },
+                dataType: "json",
+                success: function (innerRes, innerStatus) {
+                    let clientMap = {};
+                    for (var i = 0; i < innerRes.length; ++i){
+                        clientMap[innerRes[i].id] = innerRes[i];
+                    }
+
+                    //Create table
+                    $("#userMainContent").html(
+                        "<div id=\"buttonsTop\"></div>\n" +
+                        "<div class='row' id='topRow'>\n" +
+                        "<div id=\"floor\">\n" +
+                        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+                        "    </table>\n" +
+                        "</div></div>");
+                    $("#sheetsTable").append('\n' +
+                        '        <thead class="thead">\n' +
+                        '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Client</th>\n' +
+                        '            <th scope="col">Clock In</th>\n' +
+                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Task</th>\n' +
+                        '        </thead><tbody>');
+                    //Populate table
+                    for (var item in res){
+                        $("#sheetsTable").append('\n' +
+                            '<tr class="sheetRow">' +
+                            '   <td>' + clientMap[res[item].clientId].id + '</td>'+
+                            '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
+                            '   <td>' + res[item].timeIn + '</td>'+
+                            '   <td>' + res[item].timeOut + '</td>'+
+                            '   <td>' + res[item].task + '</td></tr>'
+                        );
+                    }
+                    $("#sheetsTable").append('\n</tbody>');
+
+                    //Body Block content
+                    createBody();
+
+                    //Event Listeners
+
+                    //Row effect
+                    $(".sheetRow").mouseenter(function () {
+                        $(this).css('transition', 'background-color 0.5s ease');
+                        $(this).css('background-color', '#e8ecef');
+                    }).mouseleave(function () {
+                        $(this).css('background-color', 'white');
+                    });
+                },
+                error: function (innerRes, innerStatus) {
+                    $("#userMainContent").html("Something went wrong!");
+                }
+            });// ajax
+        },
+        error: function (tokenres, status) {
+            $("#userMainContent").html("Failed to verify you!");
+            console.log(tokenres);
+        }
+    });
+
+
+}
+
+//Client Methods
+function clientFunctionality (res){
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"clientTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#clientTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Phone</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        if (!item.deleted) {
+            $("#clientTable").append('\n' +
+                '<tr class="clientRow">' +
+                '   <td>' + `${item.id}` + '</td>' +
+                '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
+                '   <td>' + item.phone + '</td>' +
+                '   <td>' + item.email + '</td></tr>'
+            );
+        };
+    });
+    $("#clientTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody();
+
+    //Event Listeners
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".clientRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
 
 $(document).ready(function () {
     $.ajax({
