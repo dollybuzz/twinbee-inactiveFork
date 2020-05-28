@@ -1304,13 +1304,15 @@ function planFunctionality (res) {
     res.forEach(item => {
         let plan = item.plan;
         item = item.plan;
-        $("#planTable").append('\n' +
-            '<tr class="planRow">' +
-            '   <td scope="row">' + plan.id + '</td>' +
-            '   <td>$' + Number.parseInt(plan.price)/100 + '</td>' +
-            '   <td>' + plan.description + '</td></tr>'
-        );
-
+        if(plan.status != "archived")
+        {
+            $("#planTable").append('\n' +
+                '<tr class="planRow">' +
+                '   <td scope="row">' + plan.id + '</td>' +
+                '   <td>$' + Number.parseInt(plan.price)/100 + '</td>' +
+                '   <td>' + plan.description + '</td></tr>'
+            );
+        }
     });
     $("#planTable").append('\n</tbody>');
 
