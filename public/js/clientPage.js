@@ -4,6 +4,8 @@ let selectedTab = null;
 let id_token = null;
 let TEST_ENVIRONMENT = false;
 let TEST_CUSTOMER = "AzqgmORz6AFeK1Q5w";
+let NAV_MAP_TEXT = "";
+let SELECTED_NAV_MAP = null;
 
 let navMapper = {
     main: function () {
@@ -102,6 +104,7 @@ function showFunction (functionality, endpoint) {
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
                     functionality(innerRes);
+                    SELECTED_NAV_MAP.html(NAV_MAP_TEXT);
                 },
                 error: function (innerRes, innerStatus) {
                     $("#userMainContent").html(`Something went wrong with ${endpoint}`);
@@ -737,9 +740,11 @@ $(document).ready(function () {
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
-        $("#buttonsTop").append('Loading...  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
+        SELECTED_NAV_MAP = $(this);
+        NAV_MAP_TEXT = SELECTED_NAV_MAP.html();
+        SELECTED_NAV_MAP.html(`${NAV_MAP_TEXT}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
         $(".navItem").css('color', 'white');
         $(".navItem").css('font-style', 'normal');
         $(this).css("color", '#dbb459');

@@ -2,6 +2,8 @@ let selectedTab = null;
 let id_token = null;
 let currentRelationship = null;
 let TEST_ENVIRONMENT = false;
+let NAV_MAP_TEXT = "";
+let SELECTED_NAV_MAP = null;
 
 let navMapper = {
     main: function () {
@@ -37,6 +39,7 @@ function showFunction (functionality, endpoint) {
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
                     functionality(innerRes);
+                    SELECTED_NAV_MAP.html(NAV_MAP_TEXT);
                 },
                 error: function (innerRes, innerStatus) {
                     $("#userMainContent").html("Something went wrong!");
@@ -339,10 +342,15 @@ function timeSheetFunctionality (res) {
                         '        </thead><tbody>');
                     //Populate table
                     for (var item in res){
+                        let clientIdentifier = res[item].clientId;
+                        clientIdentifier = clientMap[clientIdentifier] ?
+                            clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
+                            `Deleted client ${clientIdentifier}`;
+
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
-                            '   <td>' + clientMap[res[item].clientId].id + '</td>'+
-                            '   <td>' + clientMap[res[item].clientId].first_name + " " + clientMap[res[item].clientId].last_name + '</td>'+
+                            '   <td>' + res[item].clientId + '</td>'+
+                            '   <td>' + clientIdentifier + '</td>' +
                             '   <td>' + res[item].timeIn + '</td>'+
                             '   <td>' + res[item].timeOut + '</td>'+
                             '   <td>' + res[item].task + '</td></tr>'
@@ -451,6 +459,9 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
+        SELECTED_NAV_MAP = $(this);
+        NAV_MAP_TEXT = SELECTED_NAV_MAP.html();
+        SELECTED_NAV_MAP.html(`${NAV_MAP_TEXT}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
         $(".navItem").css('color', 'white');
         $(".navItem").css('font-style', 'normal');
         $(this).css("color", '#dbb459');
