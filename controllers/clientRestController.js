@@ -196,6 +196,29 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/deleteBucket
+     * Deletes the designated time bucket for the designated client. Looks for
+     * data in the body in the form:
+     * {
+     *     "id": Client id,
+     *     "bucket": time bucket to delete,
+     *     "auth": valid auth creds
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    async deleteClientTimeBucket(req, res){
+        console.log(`Attempting to delete client ${req.body.id} time bucket ${req.body.bucket} from REST: `);
+        console.log(req.body);
+
+        res.send(await clientService.deleteTimeBucket(req.body.id, req.body.bucket)
+            .catch(error => {
+                console.log(error)
+            }));
+    },
+
+    /**
      * ENDPOINT: /api/createClient
      * Creates a chargebee customer object. Once created, the object is sent back.
      * Looks for values in the body in the form:

@@ -306,5 +306,43 @@ module.exports = {
         console.log(`Attempting to get subscriptions for client ${req.body.id} from REST`);
         console.log(req.body);
         res.send(await chargebeeService.getSubscriptionsByClient(req.body.id));
+    },
+
+    /**
+     * ENDPOINT: /api/pauseSubscription
+     *
+     * Pauses a currently active subscription at the end of the billing period. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "id": id of subscription to be paused
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    pauseSubscription: async function(req, res){
+        console.log(`Attempting to pause subscription ${req.body.id} from REST`);
+        console.log(req.body);
+        res.send(await chargebeeService.pauseSubscription(req.body.id));
+    },
+
+    /**
+     * ENDPOINT: /api/resumePausedSubscription
+     *
+     * Immediately resumes a currently paused subscription. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "id": id of subscription to be resumed
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    resumePausedSubscription: async function(req, res){
+        console.log(`Attempting to resume subscription ${req.body.id} from REST`);
+        console.log(req.body);
+        res.send(await chargebeeService.resumePausedSubscription(req.body.id));
     }
 };

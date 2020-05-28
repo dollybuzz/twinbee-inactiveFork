@@ -1307,6 +1307,7 @@ function planFunctionality (res) {
     res.forEach(item => {
         let plan = item.plan;
         item = item.plan;
+        console.log(plan)
         if(plan.status != "archived")
         {
             $("#planTable").append('\n' +

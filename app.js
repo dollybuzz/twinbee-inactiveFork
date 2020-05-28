@@ -269,6 +269,10 @@ app.post("/api/updateRelationship",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     relationshipRestController.updateRelationship);
+app.post("/api/deleteBucket",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.deleteClientTimeBucket);
 app.post("/api/getClientPayInvoicesPage",
     authController.authorizeAdmin,
     authController.authorizeClient,
