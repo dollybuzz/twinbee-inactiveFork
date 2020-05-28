@@ -3,6 +3,7 @@ let selectedRow = null;
 let selectedTab = null;
 let id_token = null;
 let TEST_ENVIRONMENT = false;
+let TEST_CUSTOMER = "AzqgmORz6AFeK1Q5w";
 
 let navMapper = {
     main: function () {
@@ -96,7 +97,7 @@ function showFunction (functionality, endpoint) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : res.id
+                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -140,7 +141,7 @@ function openHostedPage(getPageEndpoint){
                 method: "post",
                 data: {
                     auth: id_token,
-                    id:  TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : res.id
+                    id:  TEST_ENVIRONMENT ? TEST_CUSTOMER : res.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
@@ -253,7 +254,7 @@ function buyForm () {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
+                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
@@ -307,7 +308,7 @@ function buyForm () {
                                     method: "post",
                                     data: {
                                         auth: id_token,
-                                        customerId: '16CHT7Ryu5EhnPWY',//tokenres.id,
+                                        customerId: TEST_CUSTOMER,//tokenres.id,
                                         planId: planSelect,
                                         numHours: numHours,
                                     },
@@ -498,7 +499,7 @@ function makerFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
+                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
                 },
                 dataType: "json",
                 success: function (relres, status) {
@@ -606,7 +607,7 @@ function timeSheetFunctionality (res) {
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: TEST_ENVIRONMENT ? "AzqgmORz6AFeK1Q5w" : tokenres.id
+                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {

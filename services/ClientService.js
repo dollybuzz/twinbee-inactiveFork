@@ -10,7 +10,8 @@ chargebee.configure({site : "freedom-makers-test",
 
 
 let updateClient = (customerId, keyValuePairs)=>{
-    console.log(`Updating client ${customerId}...`);
+    console.log(`Updating client ${customerId} via chargebee with values:`);
+    console.log(keyValuePairs);
     chargebee.customer.update(customerId, keyValuePairs).request(function(error,result) {
         if(error){
             //handle error
@@ -57,7 +58,8 @@ class ClientService {
      * @param keyValuePairs - key/value pairs to add
      */
     async updateClientMetadata(clientId, keyValuePairs){
-        console.log("Updating client metadata...");
+        console.log(`Updating client ${clientId} metadata with data: `);
+        console.log(keyValuePairs);
         let customer = await this.getClientById(clientId).catch(err=>{
             emailService.emailAdmin(err);
             console.log(err)
@@ -79,17 +81,18 @@ class ClientService {
      * @param minuteChange- positive or negative change in minutes
      */
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
-        console.log("Updating client time bucket...");
+        console.log(`Updating client ${clientId} time bucket ${planBucket} with ${minuteChange} minutes...`);
         let client = await this.getClientById(clientId).catch(err=>{
             emailService.emailAdmin(err);
             console.log(err)
-        });;
+        });
         if(!client.meta_data){
+            console.log("Client had no metadata; creating now...");
             client.meta_data = {};
         }
         if (!client.meta_data[planBucket]) {
+            console.log(`Client plan bucket ${planBucket} did not exist, creating now...`);
             client.meta_data[planBucket] = {};
-            console.log(client.meta_data[planBucket]);
             client.meta_data[planBucket] = 0;
         }
         let newMinutes = minuteChange + client.meta_data[planBucket];
@@ -383,7 +386,7 @@ class ClientService {
     }
 
     async subscriptionRenewed(parsedBody){
-        if (parsedBody.event_type == "subscription_renewed") {
+        if (parsedBody.event_type === "subscription_renewed") {
             console.log("Subscription renewal request received");
             let subscription = parsedBody.content.subscription;
             console.log(`subscription is ${subscription}`);

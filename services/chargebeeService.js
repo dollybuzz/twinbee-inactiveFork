@@ -401,7 +401,7 @@ class ChargebeeService {
                     uri: `https://www.freedom-makers-hours.com/api/updateClientTimeBucket`,
                     form: {
                         'id': customerId,
-                        'planId': plan,
+                        'planName': plan,
                         'minutes': minutesString,
                         'auth':process.env.TWINBEE_MASTER_AUTH
                     }
