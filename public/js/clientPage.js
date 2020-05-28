@@ -13,7 +13,7 @@ let navMapper = {
         showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
     },
 
-    reviewSubscriptions: function () {
+    manageSubscriptions: function () {
         showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
     },
 
@@ -53,9 +53,8 @@ function showBlock () {
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("opacity", "1");
         $("#SubmitButton").css("opacity", "1");
-        $("#ExpandButton").css("opacity", "1");
-        $("#buyForm").css("opacity", "1");
-    }, 500)
+        $("#ExpandButton").css("opacity", "1")
+    }, 800)
 };
 
 function minimizeTable () {
@@ -114,12 +113,11 @@ function showFunction (functionality, endpoint) {
     });
 };
 
+
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
     showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
-
-
 }
 
 //Google
@@ -163,6 +161,12 @@ function openHostedPage(getPageEndpoint){
 }
 
 //Buy Hours Methods
+function popBuyForm (form) { //not a versatile method
+    minimizeTable();
+    showBlock();
+    form();
+}
+
 function timeBucketFunctionality (res) {
     //Create table
     $("#userMainContent").html(
@@ -191,16 +195,18 @@ function timeBucketFunctionality (res) {
 
     //Body Block content
     createBody(null);
-    $("#userMainContent").prepend("<div id='altTopButtons'></div>");
-    $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"BuyButton\">Buy Hours</button>");
-    $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"updatePaymentButton\">Update Payment</button>");
-    $("#altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
+    $("#userMainContent").prepend("<div class='altTopButtons'></div>");
+    $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"BuyButton\">Buy Hours</button>");
+    $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"updatePaymentButton\">Update Payment</button>");
+    $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
 
     //Event Listeners
+    //Update Payment
     $("#updatePaymentButton").on('click', function () {
         openHostedPage('/api/getUpdatePaymentURL');
     })
 
+    //Review Invoices
     $("#revInvoicesButton").on('click', function () {
         openHostedPage('/api/getClientPayInvoicesPage');
     })
@@ -232,14 +238,7 @@ function timeBucketFunctionality (res) {
 
 }
 
-function popBuyForm (form) {
-    minimizeTable();
-    showBlock();
-    form();
-}
-
 function buyForm () {
-    $("#optionsClient").html("<div id='buyForm'></div>");
     $.ajax({
         url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         method: "post",
@@ -258,7 +257,7 @@ function buyForm () {
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
-                    $("#buyForm").html("<h5>Add data into the following fields</h5><br>" +
+                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
                         "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
                         "<div class='setGrid'></div>");
                     $(".setGrid").append("<div id='empty'></div>" +
@@ -278,22 +277,22 @@ function buyForm () {
                         );
                     }
 
-                    $("#buyForm").append("<div id='verifyHourEntry'></div>");
+                    $("#optionsClient").append("<div id='verifyHourEntry'></div>");
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on("click", function (e) {
                         if ($("#buyHours").val().includes(".") || ($("#buyHours").val().length < 1) || ($("#buyHours").val().includes("-")) || $("#buyHours").val() == "0") {
                             e.preventDefault();
-                            $("#verifyHourEntry").html("<h6>Invalid entry! Please enter hours again.</h6>");
+                            $("#verifyHourEntry").html("<h6>Invalid entry! Please try again.</h6>");
                         } else {
                             let numHours = $("#buyHours").val();
                             let planSelect = $("#buyPlan").val();
-                            $("#buyForm").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) for your plan ${$("#buyPlan").val()}?</h5>`);
-                            $("#buyForm").append("<div id='selectionYorN'></div>");
+                            $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) for your plan ${$("#buyPlan").val()}?</h5>`);
+                            $("#optionsClient").append("<div id='selectionYorN'></div>");
                             $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
                             $("#selectionYorN").append("<button id='YesBuy' type='button' class='btn btn-default'>Yes</button>");
                             $("#SubmitButton").css("opacity", "0");
                             $("#SubmitButton").hide();
-                            $("#buyForm").css("opacity", "1");
+                            $("#optionsClient").css("opacity", "1");
                             $("#YesBuy").css("opacity", "1");
                             $("#NoBuy").css("opacity", "1");
 
@@ -314,7 +313,7 @@ function buyForm () {
                                     },
                                     dataType: "json",
                                     success: function (res, status) {
-                                        $("#buyForm").append("<h5>Successfully purchased " + numHours + " hour(s) for Plan " + planSelect + "!</h5>");
+                                        $("#optionsClient").append("<h5>Successfully purchased " + numHours + " hour(s) for Plan " + planSelect + "!</h5>");
                                         setTimeout(function () {
                                             showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
                                         }, 1000);
@@ -340,6 +339,26 @@ function buyForm () {
 }
 
 //Subscription Methods
+function prePopModForm (endpoint, modForm) { //not a versatile method
+    minimizeTable();
+    showBlock();
+    let subscriptionId = selectedRow.children()[0].innerHTML;
+    console.log(subscriptionId);
+    $.ajax({
+        url: endpoint,
+        method: "post",
+        data: {
+            auth: id_token,
+            subscriptionId: subscriptionId,
+        },
+        dataType: "json",
+        success: modForm,
+        error: function (res, status) {
+            $("#optionsClient").html("Mod Form is not populating!");
+        }
+    });//end ajax
+}
+
 function subscriptionFunctionality (res) {
     //Create table
     $("#userMainContent").html(
@@ -351,33 +370,42 @@ function subscriptionFunctionality (res) {
         "</div></div>");
     $("#subscriptionTable").append('\n' +
         '        <thead class="thead">\n' +
+        '            <th scope="col">Subscription ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Planned Monthly Hours</th>\n' +
         '            <th scope="col">Scheduled changes</th>\n' +
         '            <th scope="col">Cancelled</th>\n' +
         '            <th scope="col">Next Billing</th>\n' +
+        '            <th scope="col" id="subOptions">Option</th>\n' +
         '        </thead><tbody>');
 
     //Populate table
     res.forEach(item => {
         let subscription = item.subscription;
-        let customer = item.customer;
         item = item.subscription;
         if (item && !subscription.deleted) {
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
+                '   <td>' + subscription.id + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
-            );
+                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td>' +
+                '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
     });
     $("#subscriptionTable").append('\n</tbody>');
 
     //Body Block content
     createBody(null);
+
+    //Event Listeners
+    //Change Subscription
+    $(".subscriptionRow").click(function () {
+        selectedRow = $(this);
+        prePopModForm("/api/retrieveSubscription", subscriptionModForm);
+    });
 
     //Expand Table Button
     $("#ExpandButton").click(function () {
@@ -391,6 +419,67 @@ function subscriptionFunctionality (res) {
     }).mouseleave(function () {
         $(this).css('background-color', 'white');
     });
+}
+
+function subscriptionModForm (res, status) {
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        "<form id='modify'>\n" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modsubscriptionid'>Subscription:</label>" +
+        `<input class='form-control' type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
+        "<label for='modsubscriptionplanname'>Plan:</label>" +
+        `<input class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br>\n` +
+        "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
+        `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+    let monthlyHours = $("#modsubscriptionplanquantity").val();
+
+    $.ajax({
+        url: "/api/updateSubscription",
+        method: "post",
+        data: {
+            auth: id_token,
+            subscriptionId: res.id,
+            planQuantity: res.plan_quantity
+        },
+        dataType: "json",
+        success: function (updateres, planstatus) {
+            $("#SubmitButton").on("click", function (e) {
+                if(monthlyHours.includes(".")) {
+                    e.preventDefault();
+                    $("#errormessage").html("Invalid entry! Please try again.");
+                }
+                else {
+                    $("#optionsClient").html(`<h5>Are you sure you want to change from ${selectedRow.children()[2].innerHTML} to ${$("#modsubscriptionplanquantity").val()} monthly hour(s) for your plan ${selectedRow.children()[1].innerHTML}?</h5>`);
+                    $("#optionsClient").append("<div id='selectionYorN'></div>");
+                    $("#selectionYorN").append("<button id='NoChange' type='button' class='btn btn-default'>No</button>");
+                    $("#selectionYorN").append("<button id='YesChange' type='button' class='btn btn-default'>Yes</button>");
+                    $("#SubmitButton").css("opacity", "0");
+                    $("#SubmitButton").hide();
+                    $("#optionsClient").css("opacity", "1");
+                    $("#YesChange").css("opacity", "1");
+                    $("#NoChange").css("opacity", "1");
+
+                    $("#NoChange").click(function () {
+                        $("#SubmitButton").show();
+                        expandTable();
+                    });
+
+
+
+
+                }
+            });
+        },
+        error: function (updateres, tokenstatus) {
+            $("#userMainContent").html("Change Subscription isn't working!");
+        }
+    });
+
+
 }
 
 //Maker Methods

@@ -524,7 +524,6 @@ function clientModForm (res, status) {
             message += "A City is required!<br>";
         }
 
-
         if (valid) {
             $("#errormessage").html("");
             modSubmit("/api/updateClientContact", {

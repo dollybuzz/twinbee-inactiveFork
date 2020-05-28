@@ -114,9 +114,19 @@ body a:hover {
     opacity: 1;
 }
 
+#ChangeSubButton
+{
+    font-size: 0.8em;
+    color: white;
+    background-color: #32444e;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
 #updatePaymentButton,
 #revInvoicesButton,
-#YesBuy {
+#YesBuy,
+#YesChange {
     font-size: 1.2em;
     color: white;
     background-color: #32444e;
@@ -125,18 +135,23 @@ body a:hover {
 #updatePaymentButton:hover,
 #revInvoicesButton:hover,
 #BuyNow:hover,
-#YesBuy:hover {
+#YesBuy:hover,
+#YesChange:hover {
     color: white;
     background-color: #dbb459;
 }
 
-#altTopButtons {
+.altTopButtons {
     display: grid;
     grid-template-columns: 3fr 3fr 3fr;
     place-items: center;
+    height: 45px;
 }
 
-#DeleteButton, #YesDelete, #NoBuy {
+#DeleteButton,
+#YesDelete,
+#NoBuy,
+#NoChange {
     color: white;
     background-color: darkred;
 }
@@ -148,7 +163,10 @@ body a:hover {
     background-color: #dbb459;
 }
 
-#DeleteButton:hover, #YesDelete:hover, #NoBuy:hover {
+#DeleteButton:hover,
+#YesDelete:hover,
+#NoBuy:hover,
+#NoChange:hover {
     background-color: #ba4141;
 }
 
@@ -372,12 +390,6 @@ th {
     transition: opacity 0.1s ease-in-out;
 }
 
-#buyForm {
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-}
-
 
 #selectionYorN {
     display: grid;
@@ -386,12 +398,12 @@ th {
     padding: 20px;
 }
 
-#YesDelete, #YesBuy {
+#YesDelete, #YesBuy, #YesChange {
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
 }
 
-#NoDelete, #NoBuy {
+#NoDelete, #NoBuy, #NoChange {
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
 }
