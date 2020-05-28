@@ -179,6 +179,7 @@ app.post("/api/cancelSubscription",
     chargebeeRestController.cancelSubscription);
 app.post("/api/retrieveSubscription",
     authController.authorizeAdmin,
+    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.retrieveSubscription);
 app.post("/api/clockIn",
