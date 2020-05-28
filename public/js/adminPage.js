@@ -302,7 +302,8 @@ function showOnlineMakers () {
                 $("#onlineTable").append('\n' +
                     '<tr class="onlineRow">' +
                     '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.firstName + ' ' + item.lastName + '</td>'
+                    '   <td>' + item.firstName + ' ' + item.lastName + '</td>' +
+                    '<td>' + item.email + '</td>'
                 );
             });
             $("#onlineTable").append('\n</tbody>');

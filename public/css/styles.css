@@ -270,6 +270,7 @@ label {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
     vertical-align: center;
+    height: 150px;
 }
 
 #adminTitle, #clientTitle, #FMTitle {
@@ -450,12 +451,15 @@ th {
 #makerText2 {
     padding-top: 20px;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    transition: opacity 0.5s ease-in-out;
 }
 
 #taskBlock {
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+}
+
+#taskEntry {
+    opacity: 0;
 }
 
 .setGrid {

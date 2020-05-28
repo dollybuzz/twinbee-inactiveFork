@@ -63,13 +63,12 @@ function createBody() {
 
 //Main Clock Methods
 function setClockInFunctionality() {
-    $("#taskBlock").css("opacity", "1");
+
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
     $("#makerClock").text("Clock In");
     $("#makerClock").on('mouseenter', function () {
         $("#makerClock").css("background-color", "#32444e");
-
     });
     $("#makerClock").on('mouseleave', function () {
         $("#makerClock").css("background-color", "#dbb459");
@@ -110,11 +109,16 @@ function setClockInFunctionality() {
                                     setClockOutFunctionality();
                                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
                                     $("#makerText2").css("opacity", "1");
+
                                     $("#taskBlock").css("opacity", "0");
+                                    $("#taskEntry").css("opacity", "0");
+                                    $("#taskBlock").css("transition", "opacity 0.5s ease-out");
+                                    $("#taskEntry").css("transition", "opacity 0.5s ease-out");
 
                                     setTimeout(function () {
                                         $("#makerText2").css("opacity", "0");
                                         $("#taskBlock").hide();
+                                        $("#taskEntry").hide();
                                     }, 3000)
 
                                 }
@@ -172,13 +176,17 @@ function setClockOutFunctionality() {
                     },
                     dataType: "json",
                     success: function (clockres, status) {
-                        console.log(clockres)
                         if(clockres) {
                             setClockInFunctionality();
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
+                            $("#taskBlock").css("transition", "opacity 0.5s ease-in");
+                            $("#taskEntry").css("transition", "opacity 0.5s ease-in");
                             $("#taskBlock").show();
                             $("#taskBlock").css("opacity", "1");
+                            $("#taskEntry").show();
+                            $("#taskEntry").val("");
+                            $("#taskEntry").css("opacity", "1");
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
@@ -229,6 +237,13 @@ onSignIn = function (googleUser) {
                         let sheet = innerRes[i];
                         if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
                             clockedOut = false;
+                            $("#taskBlock").css("opacity", "0");
+                            $("#taskEntry").css("opacity", "0");
+
+                            setTimeout(function () {
+                                $("#taskBlock").hide();
+                                $("#taskEntry").hide();
+                            }, 3000)
                         }
                     }
                     if (clockedOut){
