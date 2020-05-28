@@ -155,7 +155,6 @@ function openHostedPage(getPageEndpoint){
         },
         error: function (res, status) {
             $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
         }
     });
 
@@ -344,7 +343,6 @@ function prePopModForm (endpoint, modForm) { //not a versatile method
     minimizeTable();
     showBlock();
     let subscriptionId = selectedRow.children()[0].innerHTML;
-    console.log(subscriptionId);
     $.ajax({
         url: endpoint,
         method: "post",
@@ -437,50 +435,53 @@ function subscriptionModForm (res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     let monthlyHours = $("#modsubscriptionplanquantity").val();
+    let plan = $(selectedRow.children()[1].innerHTML).val();
 
-    $.ajax({
-        url: "/api/updateSubscription",
-        method: "post",
-        data: {
-            auth: id_token,
-            subscriptionId: res.id,
-            planQuantity: res.plan_quantity
-        },
-        dataType: "json",
-        success: function (updateres, planstatus) {
-            $("#SubmitButton").on("click", function (e) {
-                if(monthlyHours.includes(".")) {
-                    e.preventDefault();
-                    $("#errormessage").html("Invalid entry! Please try again.");
-                }
-                else {
-                    $("#optionsClient").html(`<h5>Are you sure you want to change from ${selectedRow.children()[2].innerHTML} to ${$("#modsubscriptionplanquantity").val()} monthly hour(s) for your plan ${selectedRow.children()[1].innerHTML}?</h5>`);
-                    $("#optionsClient").append("<div id='selectionYorN'></div>");
-                    $("#selectionYorN").append("<button id='NoChange' type='button' class='btn btn-default'>No</button>");
-                    $("#selectionYorN").append("<button id='YesChange' type='button' class='btn btn-default'>Yes</button>");
-                    $("#SubmitButton").css("opacity", "0");
-                    $("#SubmitButton").hide();
-                    $("#optionsClient").css("opacity", "1");
-                    $("#YesChange").css("opacity", "1");
-                    $("#NoChange").css("opacity", "1");
+    $("#SubmitButton").on("click", function (e) {
+        let quantity = $("#modsubscriptionplanquantity").val();
+        if (monthlyHours.includes(".")) {
+            e.preventDefault();
+            $("#errormessage").html("Invalid entry! Please try again.");
+        } else {
+            $("#optionsClient").html(`<h5>Are you sure you want to change from ${selectedRow.children()[2].innerHTML} to ${$("#modsubscriptionplanquantity").val()} monthly hour(s) for your plan ${selectedRow.children()[1].innerHTML}?</h5>`);
+            $("#optionsClient").append("<div id='selectionYorN'></div>");
+            $("#selectionYorN").append("<button id='NoChange' type='button' class='btn btn-default'>No</button>");
+            $("#selectionYorN").append("<button id='YesChange' type='button' class='btn btn-default'>Yes</button>");
+            $("#SubmitButton").css("opacity", "0");
+            $("#SubmitButton").hide();
+            $("#optionsClient").css("opacity", "1");
+            $("#YesChange").css("opacity", "1");
+            $("#NoChange").css("opacity", "1");
 
-                    $("#NoChange").click(function () {
-                        $("#SubmitButton").show();
-                        expandTable();
-                    });
-
-
-
-
-                }
+            $("#NoChange").click(function () {
+                $("#SubmitButton").show();
+                expandTable();
             });
-        },
-        error: function (updateres, tokenstatus) {
-            $("#userMainContent").html("Change Subscription isn't working!");
+
+            $("#YesChange").click(function () {
+                $.ajax({
+                    url: "/api/updateSubscription",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        subscriptionId: res.id,
+                        planId: plan,
+                        planQuantity: quantity
+                    },
+                    dataType: "json",
+                    success: function (updateres, status) {
+                        $("#optionsClient").append("<h5>Successfully updated monthly hours for Subscription " + `${updateres.id}` + "!</h5>");
+                        setTimeout(function () {
+                            showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+                        }, 1000);
+                    },
+                    error: function (updateres, status) {
+                        $("#userMainContent").html("Updating Subscription isn't working!");
+                    }
+                });
+            });
         }
     });
-
-
 }
 
 //Maker Methods
@@ -519,7 +520,6 @@ function makerFunctionality (res) {
                         '            <th scope="col">Role</th>\n' +
                         '        </thead><tbody>');
                     for (var item in relres) {
-                        console.log(relres[0].occupation);
                         let occ = relres[item].occupation;
                         $.ajax({
                             url: "/api/getMaker",
@@ -641,7 +641,6 @@ function timeSheetFunctionality (res) {
         },
         error: function (res, status) {
             $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
         }
     });
 

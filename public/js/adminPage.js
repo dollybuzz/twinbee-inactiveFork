@@ -681,7 +681,7 @@ function clientAddForm () {
 function modClientSuccessContact (res, status) {
     $("#optionsClient").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+    $("#modsuccess").html(`<br><h5>Successfully updated Client ${$("#modclientid").val()}!</h5>`);
 
     setTimeout(function() {
         showFunction(clientFunctionality, "/api/getAllClients");
@@ -691,7 +691,7 @@ function modClientSuccessContact (res, status) {
 function modClientSuccessBilling (res, status) {
     $("#optionsClient").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated client ${$("#modclientid").val()}!</h5>`);
+    $("#modsuccess").html(`<br><h5>Successfully updated Client ${$("#modclientid").val()}!</h5>`);
 
     setTimeout(function() {
         showFunction(clientFunctionality, "/api/getAllClients");
@@ -701,7 +701,7 @@ function modClientSuccessBilling (res, status) {
 function addClientSuccess (res, status) {
     $("#optionsClient").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
-    $("#addsuccess").html(`<br><h5>Successfully added client ${res.id}!</h5>`);
+    $("#addsuccess").html(`<br><h5>Successfully added Client ${res.id}!</h5>`);
 
     setTimeout(function() {
         showFunction(clientFunctionality, "/api/getAllClients");
@@ -1186,7 +1186,7 @@ function subscriptionAddForm () {
 function modSubscriptionSuccess (res, status) {
     $("#optionsSubscription").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated subscription ${$("#modsubscriptionid").val()}!</h5>`);
+    $("#modsuccess").html(`<br><h5>Successfully updated Subscription ${$("#modsubscriptionid").val()}!</h5>`);
 
     setTimeout(function() {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
@@ -1197,7 +1197,7 @@ function modSubscriptionSuccess (res, status) {
 function addSubscriptionSuccess (res, status) {
     $("#optionsSubscription").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
-    $("#addsuccess").html(`<br><h5>Successfully added subscription ${res.id}!</h5>`);
+    $("#addsuccess").html(`<br><h5>Successfully added Subscription ${res.id}!</h5>`);
     $.ajax({
         url: '/api/getAllClients',
         method: "post",
@@ -1425,7 +1425,7 @@ function planAddForm () {
 function modPlanSuccess (res, status) {
     $("#optionsClient").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated plan ${$("#modplanid").val()}!</h5>`);
+    $("#modsuccess").html(`<br><h5>Successfully updated Plan ${$("#modplanid").val()}!</h5>`);
 
     setTimeout(function() {
         showFunction(planFunctionality, "/api/getAllPlans");
@@ -1435,7 +1435,7 @@ function modPlanSuccess (res, status) {
 function addPlanSuccess (res, status) {
     $("#optionsClient").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
-    $("#addsuccess").html(`<br><h5>Successfully added plan ${res.id}!</h5>`);
+    $("#addsuccess").html(`<br><h5>Successfully added Plan ${res.id}!</h5>`);
 
     setTimeout(function() {
         showFunction(planFunctionality, "/api/getAllPlans");
@@ -1786,7 +1786,7 @@ function sheetAddForm () {
 function modSheetSuccess (res, status) {
     $("#optionsClient").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated sheet ${$("#modsheetid").val()}!</h5>`);
+    $("#modsuccess").html(`<br><h5>Successfully updated Time Sheet ${$("#modsheetid").val()}!</h5>`);
 
     setTimeout(function() {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
@@ -1796,7 +1796,7 @@ function modSheetSuccess (res, status) {
 function addSheetSuccess (res, status) {
     $("#optionsClient").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
-    $("#addsuccess").html(`<br><h5>Successfully added sheet ${res.id}!</h5>`);
+    $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>`);
 
     setTimeout(function() {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");

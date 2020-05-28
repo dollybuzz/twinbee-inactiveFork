@@ -123,6 +123,12 @@ body a:hover {
     transition: opacity 0.5s ease-in-out;
 }
 
+#ChangeSubButton:hover
+{
+    color: white;
+    background-color: #dbb459;
+}
+
 #updatePaymentButton,
 #revInvoicesButton,
 #YesBuy,
