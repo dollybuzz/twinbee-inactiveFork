@@ -276,11 +276,13 @@ function showMain () {
 
 function showOnlineMakers () {
     //Create table
-    $("#online").html(
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
         "    <table id=\"onlineTable\" class=\"table\">\n" +
         "    </table>\n" +
-        "</div>");
+        "</div></div>");
     $.ajax({
         url: "/api/getOnlineMakers",
         method: "post",
@@ -291,9 +293,8 @@ function showOnlineMakers () {
         success: function (res, status) {
             $("#onlineTable").append('\n' +
                 '        <thead class="thead">\n' +
-                '            <th scope="col">Maker ID</th>\n' +
-                '            <th scope="col">First Name</th>\n' +
-                '            <th scope="col">Last Name</th>\n' +
+                '            <th scope="col">Freedom Maker ID</th>\n' +
+                '            <th scope="col">Freedom Maker</th>\n' +
                 '            <th scope="col">Email</th>\n' +
                 '        </thead><tbody>');
             //Populate table
@@ -301,21 +302,11 @@ function showOnlineMakers () {
                 $("#onlineTable").append('\n' +
                     '<tr class="onlineRow">' +
                     '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.firstName + '</td>'+
-                    '   <td>' + item.lastName + '</td>'+
-                    '   <td>' + item.email + '</td></tr>'
+                    '   <td>' + item.firstName + ' ' + item.lastName + '</td>'
                 );
             });
             $("#onlineTable").append('\n</tbody>');
 
-            //Body Block content
-            $("#adminText1").append('<h6>This is a table of current online makers.</h6>');
-            $("#adminText2").append('<h6>This is a running table of daily/weekly/monthly hours?</h6>');
-
-            //Event Listeners
-            $(".onlineRow").click(function () {
-                let clientId = $(this).children()[0].innerHTML;
-            })
             //Row effect
             $(".onlineRow").mouseenter(function () {
                 $(this).css('transition', 'background-color 0.5s ease');
@@ -325,10 +316,9 @@ function showOnlineMakers () {
             });
         },
         error: function (res, status) {
-            $("#floor").html("Something went wrong!");
-            //log, send error report
+            $("#userMainContent").html("Could not get online Freedom Makers!");
         }
-    });//end ajax
+    });
 };
 
 //Google
