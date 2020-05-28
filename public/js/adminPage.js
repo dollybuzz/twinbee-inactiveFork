@@ -3,6 +3,8 @@ let selectedRow = null;
 let id_token = null;
 let selectedTab = null;
 let TEST_ENVIRONMENT = false;
+let NAV_MAP_TEXT = "";
+let SELECTED_NAV_MAP = null;
 
 let navMapper = {
     main: function () {
@@ -142,6 +144,7 @@ function showFunction (functionality, endpoint) {
         dataType: "json",
         success: function (res, status) {
             functionality(res);
+            SELECTED_NAV_MAP.html(NAV_MAP_TEXT);
         },
         error: function (res, status) {
             $("#userMainContent").html("Something went wrong!");
@@ -1554,11 +1557,16 @@ function timeSheetFunctionality (res) {
                         '        </thead><tbody>');
                     //Populate table
                     res.forEach(item => {
+                        let clientIdentifier = item.clientId;
+                        clientIdentifier = clientMap[clientIdentifier] ?
+                            clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
+                            `Deleted client ${clientIdentifier}`;
+
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
                             '   <td scope="row">' + item.id + '</td>' +
                             '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
-                            '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
+                            '   <td>' + clientIdentifier + '</td>' +
                             '   <td>' + item.hourlyRate + '</td>' +
                             '   <td>' + item.timeIn + '</td>' +
                             '   <td>' + item.timeOut + '</td>' +
@@ -2469,9 +2477,11 @@ $(document).ready(function () {
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
-        $("#buttonsTop").append('Loading...  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
+        SELECTED_NAV_MAP = $(this);
+        NAV_MAP_TEXT = SELECTED_NAV_MAP.html();
+        SELECTED_NAV_MAP.html(`${NAV_MAP_TEXT}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
         $(".navItem").css('color', 'white');
         $(".navItem").css('font-style', 'normal');
         $(this).css("color", '#dbb459');
