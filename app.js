@@ -171,6 +171,7 @@ app.post("/api/createSubscription",
     chargebeeRestController.createSubscription);
 app.post("/api/updateSubscription",
     authController.authorizeAdmin,
+    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.updateSubscription);
 app.post("/api/cancelSubscription",
