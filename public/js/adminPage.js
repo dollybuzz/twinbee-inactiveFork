@@ -948,7 +948,7 @@ function subscriptionFunctionality (res) {
         '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Planned Monthly Hours</th>\n' +
-        '            <th scope="col">Scheduled changes</th>\n' +
+        '            <th scope="col">Pending changes</th>\n' +
         '            <th scope="col">Cancelled</th>\n' +
         '            <th scope="col">Next Billing</th>\n' +
         '        </thead><tbody>');
@@ -958,6 +958,10 @@ function subscriptionFunctionality (res) {
         let subscription = item.subscription;
         let customer = item.customer;
         item = item.subscription;
+        let scheduled = subscription.has_scheduled_changes;
+        let changes = "";
+        (scheduled ? changes="Yes" : changes="No");
+
         if (item && !subscription.deleted) {
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
@@ -966,7 +970,7 @@ function subscriptionFunctionality (res) {
                 '   <td>' + subscription.customer_id + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
-                '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
+                "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
             );

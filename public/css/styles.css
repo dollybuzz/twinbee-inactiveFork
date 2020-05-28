@@ -129,6 +129,18 @@ body a:hover {
     background-color: #dbb459;
 }
 
+#CancelChangeButton {
+    font-size: 0.8em;
+    color: white;
+    background-color: darkred;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#CancelChangeButton:hover {
+    background-color: #ba4141;
+}
+
 #updatePaymentButton,
 #revInvoicesButton,
 #YesBuy,
@@ -450,4 +462,9 @@ th {
     display: grid;
     grid-template-columns: 1fr 2fr 2fr 1fr;
     vertical-align: center;
+}
+
+#pendingChanges {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
 }

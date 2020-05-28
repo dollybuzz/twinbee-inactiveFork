@@ -55,7 +55,7 @@ function showBlock () {
         $("#optionsClient").css("opacity", "1");
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1")
-    }, 800)
+    }, 800);
 };
 
 function minimizeTable () {
@@ -371,8 +371,8 @@ function subscriptionFunctionality (res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Subscription ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Planned Monthly Hours</th>\n' +
-        '            <th scope="col">Scheduled changes</th>\n' +
+        '            <th scope="col">Current Monthly Hours</th>\n' +
+        '            <th scope="col">Pending changes</th>\n' +
         '            <th scope="col">Cancelled</th>\n' +
         '            <th scope="col">Next Billing</th>\n' +
         '            <th scope="col" id="subOptions">Option</th>\n' +
@@ -383,12 +383,16 @@ function subscriptionFunctionality (res) {
         let subscription = item.subscription;
         item = item.subscription;
         if (item && !subscription.deleted) {
+            let scheduled = subscription.has_scheduled_changes;
+            let changes = "";
+            (scheduled ? changes="Yes" : changes="No");
+
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
                 '   <td>' + subscription.id + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
-                '   <td>' + `${subscription.has_scheduled_changes}` + '</td>' +
+                "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
@@ -432,14 +436,14 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>" +
+        "<div id='pendingChanges'></div>");
 
-    let monthlyHours = $("#modsubscriptionplanquantity").val();
     let plan = $(selectedRow.children()[1].innerHTML).val();
 
     $("#SubmitButton").on("click", function (e) {
-        let quantity = $("#modsubscriptionplanquantity").val();
-        if (monthlyHours.includes(".")) {
+        let monthlyHours = $("#modsubscriptionplanquantity").val();
+        if (monthlyHours.includes(".") || monthlyHours == selectedRow.children()[2].innerHTML) {
             e.preventDefault();
             $("#errormessage").html("Invalid entry! Please try again.");
         } else {
@@ -466,7 +470,7 @@ function subscriptionModForm (res, status) {
                         auth: id_token,
                         subscriptionId: res.id,
                         planId: plan,
-                        planQuantity: quantity
+                        planQuantity: monthlyHours
                     },
                     dataType: "json",
                     success: function (updateres, status) {
@@ -482,6 +486,56 @@ function subscriptionModForm (res, status) {
             });
         }
     });
+
+    //Has pending changes
+    if(selectedRow.children()[3].innerHTML == "Yes")
+    {
+        $.ajax({
+            url: "/api/retrieveSubscriptionChanges",
+            method: "post",
+            data: {
+                auth: id_token,
+                subscriptionId: selectedRow.children()[0].innerHTML
+            },
+            dataType: "json",
+            success: function (retres, planstatus) {
+                $("#pendingChanges").css("opacity", "1");
+
+                $("#pendingChanges").append("<hr><p>This plan has the following scheduled change and will take effect on the next " +
+                    "renewed billing cycle.<br>" +
+                    `<br><h6>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h6>` +
+                    "<br>If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
+                    "<div id='cancelChange'></div>" +
+                    "<br>Please know canceling your change request <span style='font-style:italic'>does not cancel your subscription</span>.<br>" +
+                    "Your plan will resume its current monthly hours unless you submit another change request.<br>" +
+                    "<br>If you wish to terminate your subscription, please contact Freedom Makers.</p><hr>");
+
+                $("#CancelChangeButton").on("click", function() {
+                    $.ajax({
+                        url: "/api/undoSubscriptionChanges",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            subscriptionId: selectedRow.children()[0].innerHTML
+                        },
+                        dataType: "json",
+                        success: function (undores, planstatus) {
+                            $("#cancelChange").append("<br><h6>Successfully canceled change request!</h6>");
+                            setTimeout(function () {
+                                showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+                            }, 1000);
+                        },
+                        error: function (undores, tokenstatus) {
+                            $("#userMainContent").html("Unable to cancel change request!");
+                        }
+                    });
+                });
+            },
+            error: function (retres, tokenstatus) {
+                $("#userMainContent").html("Retrieve changes isn't working!");
+            }
+        });
+    }
 }
 
 //Maker Methods
