@@ -1552,11 +1552,16 @@ function timeSheetFunctionality (res) {
                         '        </thead><tbody>');
                     //Populate table
                     res.forEach(item => {
+                        let clientIdentifier = item.clientId;
+                        clientIdentifier = clientMap[clientIdentifier] ?
+                            clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
+                            `Deleted client ${clientIdentifier}`;
+
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
                             '   <td scope="row">' + item.id + '</td>' +
                             '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
-                            '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
+                            '   <td>' + clientIdentifier + '</td>' +
                             '   <td>' + item.hourlyRate + '</td>' +
                             '   <td>' + item.timeIn + '</td>' +
                             '   <td>' + item.timeOut + '</td>' +
