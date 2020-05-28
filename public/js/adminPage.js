@@ -201,9 +201,8 @@ function addSubmit (endpoint, object, successFunction) {
         success: successFunction,
         error: function (res, status) {
             $("#optionsClient").html("Add isn't working!");
-            //log, send error report
         }
-    });//end ajax
+    });
 };
 
 //Delete
@@ -938,7 +937,7 @@ function subscriptionFunctionality (res) {
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Planned Monthly Hours</th>\n' +
+        '            <th scope="col">Current Monthly Hours</th>\n' +
         '            <th scope="col">Pending changes</th>\n' +
         '            <th scope="col">Cancelled</th>\n' +
         '            <th scope="col">Next Billing</th>\n' +
@@ -963,7 +962,7 @@ function subscriptionFunctionality (res) {
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
+                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
             );
         }
     });
@@ -1038,7 +1037,8 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
         `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>" +
+        "<div id='pendingChanges'></div>");
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1065,15 +1065,15 @@ function subscriptionModForm (res, status) {
             $("#SubmitButton").on('click', function (e) {
                 let message = "";
                 let valid = true;
-                if ($("#modsubscriptionplanquantity").val().length === 0){
+                let monthlyHours = $("#modsubscriptionplanquantity").val();
+                if ($("#modsubscriptionplanquantity").val().length === 0 || monthlyHours == selectedRow.children()[4].innerHTML || $("#modsubscriptionplanquantity").val().includes(".")){
                     valid = false;
-                    message += "Please indicate the number of monthly hours!<br>";
+                    message += "Invalid entry! Please try again.<br>";
                 }
                 if ($("#modsubscriptionprice").val().length === 0){
                     valid = false;
                     message += "Please indicate the price per hour for this subscription!<br>";
                 }
-
 
                 if (valid) {
                     $("#errormessage").html("");
@@ -1094,6 +1094,54 @@ function subscriptionModForm (res, status) {
             $("#userMainContent").html("Relationships isn't working!");
         }
     });
+
+    //Has pending changes
+    if(selectedRow.children()[5].innerHTML == "Yes")
+    {
+        $.ajax({
+            url: "/api/retrieveSubscriptionChanges",
+            method: "post",
+            data: {
+                auth: id_token,
+                subscriptionId: selectedRow.children()[0].innerHTML
+            },
+            dataType: "json",
+            success: function (retres, retstatus) {
+                $("#pendingChanges").css("opacity", "1");
+
+                $("#pendingChanges").append("<hr><p>This plan has the following scheduled change and will take effect on the next " +
+                    "renewed billing cycle.<br>" +
+                    `<br><h6>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h6>` +
+                    "<br>If you want to revoke this change,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Revoke</button> to end the change request</span>.<br>" +
+                    "<div id='cancelChange'></div><hr>");
+
+                $("#CancelChangeButton").on("click", function() {
+                    $.ajax({
+                        url: "/api/undoSubscriptionChanges",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            subscriptionId: selectedRow.children()[0].innerHTML
+                        },
+                        dataType: "json",
+                        success: function (undores, undostatus) {
+                            $("#cancelChange").append("<br><h6>Successfully revoked the change request!</h6>");
+                            setTimeout(function () {
+                                showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
+                            }, 1000);
+                        },
+                        error: function (undores, undostatus) {
+                            $("#userMainContent").html("Unable to revoke change request!");
+                        }
+                    });
+                });
+            },
+            error: function (retres, retstatus) {
+                $("#userMainContent").html("Retrieve changes isn't working!");
+            }
+        });
+    }
+
 }
 
 function subscriptionAddForm () {
@@ -1138,9 +1186,12 @@ function subscriptionAddForm () {
                     }
                     for(var client in clientres) {
                         client = clientres[client].customer;
-                        $('#addsubscriptioncustomerid').append(
-                            `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name + ' - ' + client.id}</option>`
-                        );
+                        if(client.card_status == "valid")
+                        {
+                            $('#addsubscriptioncustomerid').append(
+                              `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name + ' - ' + client.id}</option>`
+                            );
+                        }
                     }
 
                     //Submit button function
@@ -1148,9 +1199,9 @@ function subscriptionAddForm () {
                     $("#SubmitButton").on('click', function (e) {
                         let message = "";
                         let valid = true;
-                        if ($("#addsubscriptionplanquantity").val().length === 0){
+                        if ($("#addsubscriptionplanquantity").val().length === 0 || $("#addsubscriptionplanquantity").val().includes(".") || $("#addsubscriptionplanquantity").val() == 0){
                             valid = false;
-                            message += "Please indicate the number of monthly hours!<br>";
+                            message += "Invalid entry! Please try again.<br>";
                         }
 
                         if (valid) {
@@ -1179,7 +1230,7 @@ function subscriptionAddForm () {
 }
 
 function modSubscriptionSuccess (res, status) {
-    $("#optionsSubscription").append("<div id='modsuccess'></div>");
+    $("#optionsClient").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Subscription ${$("#modsubscriptionid").val()}!</h5>`);
 
@@ -1190,7 +1241,7 @@ function modSubscriptionSuccess (res, status) {
 }
 
 function addSubscriptionSuccess (res, status) {
-    $("#optionsSubscription").append("<div id='addsuccess'></div>");
+    $("#optionsClient").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Subscription ${res.id}!</h5>`);
     $.ajax({
@@ -1221,7 +1272,7 @@ function addSubscriptionSuccess (res, status) {
 }
 
 function deleteSubscriptionSuccess (res, status) {
-    $("#verifyEntry").html(`<h6>Successfully deleted Subscription ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<br><h6>Successfully deleted Subscription ${selectedRow.children()[0].innerHTML}!</h6>`);
     setTimeout(function () {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     }, 1000);
@@ -1899,9 +1950,9 @@ function creditModForm(res, status) {
 
         let message = "";
         let valid = true;
-        if ($("#creditmodminutes").val().length === 0){
+        if ($("#creditmodminutes").val().length === 0 || $("#creditmodminutes").val().includes(".") || $("#creditmodminutes").val() == 0){
             valid = false;
-            message += "Please enter the number of credits to add or remove!<br>";
+            message += "Invalid entry! Please try again.<br>";
         }
 
         if (valid) {
@@ -1958,9 +2009,11 @@ function creditAddForm() {
                         "<div id='empty'></div>" +
                         "<div><span id='errormessage' style='color:red'></span></div>");
 
-                    for(var item of clientres) {
+                    for(var client in clientres) {
+                        client = clientres[client].customer;
+                        console.log(client);
                         $('#addClientCredit').append(
-                            `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
+                            `<option id="${client.id}" value="${client.id}">${client.first_name} ${client.last_name} - ${client.id}</option>`
                         );
                     }
                     for(var item of planres) {
@@ -1971,15 +2024,13 @@ function creditAddForm() {
                         }
                     }
 
-
-
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
                         var hoursToMin = Number.parseInt($("#addMinCredit").val().toString())*60;
                         let message = "";
                         let valid = true;
-                        if ($("#addMinCredit").val().length === 0){
+                        if ($("#addMinCredit").val().length === 0 || $("#addMinCredit").val().includes(".") || $("#addMinCredit").val() == 0){
                             valid = false;
                             message += "Please enter the number of hours!<br>";
                         }

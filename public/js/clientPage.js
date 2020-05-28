@@ -394,7 +394,7 @@ function subscriptionFunctionality (res) {
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Cancelled" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td>' +
+                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
     });
@@ -498,7 +498,7 @@ function subscriptionModForm (res, status) {
                 subscriptionId: selectedRow.children()[0].innerHTML
             },
             dataType: "json",
-            success: function (retres, planstatus) {
+            success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
 
                 $("#pendingChanges").append("<hr><p>This plan has the following scheduled change and will take effect on the next " +
@@ -519,19 +519,19 @@ function subscriptionModForm (res, status) {
                             subscriptionId: selectedRow.children()[0].innerHTML
                         },
                         dataType: "json",
-                        success: function (undores, planstatus) {
+                        success: function (undores, undostatus) {
                             $("#cancelChange").append("<br><h6>Successfully canceled change request!</h6>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
                             }, 1000);
                         },
-                        error: function (undores, tokenstatus) {
+                        error: function (undores, undostatus) {
                             $("#userMainContent").html("Unable to cancel change request!");
                         }
                     });
                 });
             },
-            error: function (retres, tokenstatus) {
+            error: function (retres, retstatus) {
                 $("#userMainContent").html("Retrieve changes isn't working!");
             }
         });
