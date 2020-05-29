@@ -140,7 +140,7 @@ app.post("/api/updatePlan",
     chargebeeRestController.updatePlan);
 app.post("/api/getSubscriptionsByClient",
     authController.authorizeAdmin,
-    authController.authorizeClient,
+    authController.clientMatchesSubscription,
     authController.authorizeMaster,
     chargebeeRestController.getSubscriptionsByClient);
 app.post("/api/retrieveSubscriptionChanges",
@@ -269,6 +269,10 @@ app.post("/api/updateRelationship",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     relationshipRestController.updateRelationship);
+app.post("/api/deleteBucket",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.deleteClientTimeBucket);
 app.post("/api/getClientPayInvoicesPage",
     authController.authorizeAdmin,
     authController.authorizeClient,
@@ -284,6 +288,9 @@ app.post("/api/getClientName",
     clientRestController.getClientName);
 app.post("/api/subscriptionRenewed",
     clientRestController.subscriptionRenewed);
+app.post("/api/tokenToEmail",
+    authController.authorizeMaster,
+    authController.tokenToEmail);
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 

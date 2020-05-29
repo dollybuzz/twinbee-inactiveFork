@@ -73,6 +73,24 @@ class ClientService {
         updateClient(clientId, customer)
     }
 
+    async deleteTimeBucket(clientId, planBucket){
+        console.log(`Updating client ${clientId}, deleting time bucket ${planBucket}...`);
+        let client = await this.getClientById(clientId).catch(err=>{
+            emailService.emailAdmin(err);
+            console.log(err)
+        });
+        if(!client.meta_data){
+            console.log("Client had no metadata; creating now...");
+            client.meta_data = {};
+        }
+        if (!client.meta_data[planBucket]) {
+            console.log("That bucket never existed!")
+        }
+        delete client.meta_data[planBucket];
+        updateClient(clientId, client);
+        return client;
+    }
+
     /**
      * Adds or removes minutes to/from a client's given planBucket.
      *

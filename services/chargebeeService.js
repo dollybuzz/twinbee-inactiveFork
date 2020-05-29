@@ -370,6 +370,55 @@ class ChargebeeService {
     }
 
     /**
+     * Pauses a subscription at the end of the current term.
+     *
+     * @param subscription to be paused.
+     * @returns {Promise<>}
+     */
+    async pauseSubscription(subscription){
+        console.log(`Pausing subscription ${subscription}...`);
+        return new Promise(((resolve, reject) => {
+            chargebee.subscription.pause(subscription,{
+                pause_option : "end_of_term"
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    emailService.emailAdmin(error);
+                }else{
+                    var subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        }))
+    }
+
+
+    /**
+     * Immediately resumes a paused subscription at the end of the current term.
+     *
+     * @param subscription to be paused.
+     * @returns {Promise<>}
+     */
+    async resumePausedSubscription(subscription){
+        console.log(`Resuming subscription ${subscription}...`);
+        return new Promise(((resolve, reject) => {
+            chargebee.subscription.resume(subscription,{
+                resume_option : "immediately"
+            }).request(function(error,result) {
+                if(error){
+                    console.log(error);
+                    emailService.emailAdmin(error);
+                    reject(error);
+                }else{
+                    var subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        }))
+    }
+
+    /**
      * Charges a customer's primary payment method to
      * add the given number of hours to the client's given
      * plan.
