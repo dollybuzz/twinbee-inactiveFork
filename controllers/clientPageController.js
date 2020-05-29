@@ -21,10 +21,7 @@ module.exports ={
             {link: "", text: "Report a problem"},
             {link: "", text: "FAQ"}
         ]
-        let user = {
-            text: "Welcome, Client!"
-        };
 
-        res.render("client", {welcome: user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("client", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
 }

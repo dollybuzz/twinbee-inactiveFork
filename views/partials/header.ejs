@@ -2,7 +2,6 @@
 <html lang="en-us">
 <head>
     <meta charset="utf-8">
-    <!-- <meta name="google-signin-client_id" content=""> -->
     <title>Freedom Makers Hours</title>
 
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -35,7 +34,9 @@
             <div id="pageTitle"><%=pageTitle["text"]%></div>
         </div>
         <div id="userOptions">
-            <div id="welcome"><%=welcome["text"]%></div>
+            <div id="welcome">
+                <h5>Welcome, <span id="googleUser"></span>!</h5>
+            </div>
             <div class="g-signin2" data-onsuccess="onSignIn">
             </div>
 

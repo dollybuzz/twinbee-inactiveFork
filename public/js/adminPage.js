@@ -263,7 +263,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
                 }
                 else
                 {
-                    $("#verifyEntry").html("<h6>Invalid entry. Please type in the name again.</h6>");
+                    $("#verifyEntry").html("<span style='color:red'>Invalid entry! Please type in the name again.</span>");
                 }
             });
         });
@@ -327,7 +327,11 @@ function showOnlineMakers () {
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
-    console.log(id_token);
+
+    //let profile = googleUser.getBasicProfile();
+    //let name = profile.getName();
+    //$("#googleUser").html(name);
+
     showMain();
 };
 
@@ -1069,7 +1073,7 @@ function subscriptionModForm (res, status) {
                 let message = "";
                 let valid = true;
                 let monthlyHours = $("#modsubscriptionplanquantity").val();
-                if ($("#modsubscriptionplanquantity").val().length === 0 || monthlyHours == selectedRow.children()[4].innerHTML || $("#modsubscriptionplanquantity").val().includes(".")){
+                if ($("#modsubscriptionplanquantity").val().length === 0 || monthlyHours == selectedRow.children()[4].innerHTML || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0){
                     valid = false;
                     message += "Invalid entry! Please try again.<br>";
                 }
@@ -1160,7 +1164,7 @@ function subscriptionAddForm () {
         `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
         `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+        "</form><br><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1423,7 +1427,7 @@ function planAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='addplanname'>Plan (no spaces):</label>" +
+        "<label for='addplanname'>Plan:</label>" +
         `<input class='form-control' type='text' id='addplanname' name='addplanname'>\n<br>\n` +
         "<label for='addplaninvoicename'>Invoice Statement Title:</label>" +
         `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
@@ -1552,8 +1556,8 @@ function timeSheetFunctionality (res) {
                         '            <th scope="col">Freedom Maker</th>\n' +
                         '            <th scope="col">Client</th>\n' +
                         '            <th scope="col">Plan</th>\n' +
-                        '            <th scope="col">Clock In</th>\n' +
-                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
+                        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
                         '            <th scope="col">Task</th>\n' +
                         '        </thead><tbody>');
                     //Populate table
@@ -1952,7 +1956,7 @@ function creditModForm(res, status) {
 
     $(".setGrid").html(`<div id="empty"></div><div>Please enter a number (+/-)<br>to adjust hours for plan: ${selectedRow.children()[2].innerHTML}</div>` +
         "<div><input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
-        "<span id='errormessage' style='color:red'></span></div>");
+        "<br><span id='errormessage' style='color:red'></span></div>");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -2444,7 +2448,7 @@ function addRelationshipSuccess (res, status) {
 }
 
 function deleteRelationshipSuccess() {
-    $("#verifyEntry").html(`<h6>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<br><h6>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h6>`);
     setTimeout(function () {
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }, 1000);

@@ -20,10 +20,7 @@ module.exports ={
             {link: "", text: "Report a problem"},
             {link: "", text: "FAQ"}
         ];
-        let user = {
-            text: "Welcome, Freedom Maker!"
-        };
 
-        res.render("maker", {welcome: user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("maker", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
 };

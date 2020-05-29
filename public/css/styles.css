@@ -270,7 +270,7 @@ label {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
     vertical-align: center;
-    height: 150px;
+    height: 140px;
 }
 
 #adminTitle, #clientTitle, #FMTitle {
@@ -428,8 +428,10 @@ th {
 }
 
 #makerBottomRow {
-    padding-top: 60px;
     justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    place-items: center;
 }
 
 #makerClock {
@@ -454,14 +456,6 @@ th {
     transition: opacity 0.5s ease-in-out;
 }
 
-#taskBlock {
-    opacity: 0;
-}
-
-#taskEntry {
-    opacity: 0;
-}
-
 .setGrid {
     display: grid;
     grid-template-columns: 1fr 2fr 2fr 1fr;
@@ -471,4 +465,19 @@ th {
 #pendingChanges {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
+}
+
+#taskBlock, #taskEntry, #clientRole, #makerSelectedClient, #clockPrompt {
+    transition: opacity 0.5s ease-in-out;
+}
+
+#clientRole, #taskBlock {
+    height: 60px;
+}
+
+#clockPrompt {
+    height: 60px;
+    justify-content: center;
+    text-align: center;
+    opacity: 0;
 }

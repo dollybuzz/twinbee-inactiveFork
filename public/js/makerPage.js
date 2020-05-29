@@ -1,6 +1,5 @@
 let selectedTab = null;
 let id_token = null;
-let currentRelationship = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
@@ -65,8 +64,55 @@ function createBody() {
 };
 
 //Main Clock Methods
-function setClockInFunctionality() {
+function setCurrentClient () {
+    $.ajax({
+        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+        },
+        dataType: "json",
+        success: function (tokenres, status) {
+            $.ajax({
+                    url: "/api/getRelationshipsByMakerId",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        id: TEST_ENVIRONMENT ? 4 : tokenres.id,
+                    },
+                    dataType: "json",
+                    success: function (relres, status) {
+                        for (var relationship of relres) {
+                            let occ = relationship.occupation;
+                            $.ajax({
+                                url: "/api/getClientName",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                    relationshipObj: relationship,
+                                },
+                                dataType: "json",
+                                success: function (clientres, status) {
+                                },
+                                error: function (clientres, status) {
+                                    $("#UserMainContent").html("Could not get clients!");
+                                }
+                            });
+                        }
+                    },
+                    error: function (relres, status) {
+                        $("#UserMainContent").html("Could not get relationships!");
+                    }
+            });
+        },
+        error: function (tokenres, status) {
+            $("#UserMainContent").html("Could not get token!");
+        }
+    });
+}
 
+function setClockInFunctionality() {
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
     $("#makerClock").text("Clock In");
@@ -108,10 +154,15 @@ function setClockInFunctionality() {
                             },
                             dataType: "json",
                             success: function (clockres, status) {
+                                setCurrentClient();
                                 if(clockres) {
                                     setClockOutFunctionality();
                                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
                                     $("#makerText2").css("opacity", "1");
+
+
+                                    $("#clockPrompt").html("<h5>Time is running . . .</h5>");
+                                    $("#clockPrompt").css("opacity", "1");
 
                                     $("#taskBlock").css("opacity", "0");
                                     $("#taskEntry").css("opacity", "0");
@@ -122,7 +173,11 @@ function setClockInFunctionality() {
                                         $("#makerText2").css("opacity", "0");
                                         $("#taskBlock").hide();
                                         $("#taskEntry").hide();
-                                    }, 3000)
+                                    }, 3000);
+
+                                    setTimeout(function () {
+                                        $("#makerText2").html("");
+                                    }, 6000);
 
                                 }
                                 else {
@@ -150,6 +205,15 @@ function setClockInFunctionality() {
 }
 
 function setClockOutFunctionality() {
+    $("#clientRole").css("opacity", "0");
+    $("#makerSelectedClient").css("opacity", "0");
+    $("#clockPrompt").css("opacity", "1");
+
+    setTimeout(function () {
+        $("#clientRole").hide();
+        $("#makerSelectedClient").hide();
+    }, 3000);
+
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#32444e");
     $("#makerClock").text("Clock Out");
@@ -181,6 +245,7 @@ function setClockOutFunctionality() {
                     success: function (clockres, status) {
                         if(clockres) {
                             setClockInFunctionality();
+                            $("#clockPrompt").css("opacity", "0");
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
                             $("#taskBlock").css("transition", "opacity 0.5s ease-in");
@@ -190,10 +255,21 @@ function setClockOutFunctionality() {
                             $("#taskEntry").show();
                             $("#taskEntry").val("");
                             $("#taskEntry").css("opacity", "1");
+                            $("#clientRole").show();
+                            $("#clientRole").css("opacity", "1");
+                            $("#makerSelectedClient").css("opacity", "1");
+                            $("#makerSelectedClient").show();
+                            $("#clientRole").show();
+                            $("#makerSelectedClient").show();
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
-                            }, 3000)
+                            }, 3000);
+
+                            setTimeout(function () {
+                                $("#makerText2").html("");
+                                $("#clockPrompt").html("");
+                            }, 6000);
                         }
                         else {
                             $("#makerText2").html("<h5>Could not clock out!</h5>");
@@ -216,6 +292,11 @@ function setClockOutFunctionality() {
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
+
+    //let profile = googleUser.getBasicProfile();
+    //let name = profile.getName();
+    //$("#googleUser").html(name);
+
     setClockInFunctionality();
     //Populating drop down selection
     $.ajax({
@@ -234,19 +315,39 @@ onSignIn = function (googleUser) {
                     id: TEST_ENVIRONMENT ? 4 : tokenres.id
                 },
                 dataType: "json",
+
+                //Managing user navigation away
                 success: function (innerRes, innerStatus) {
                     var clockedOut = true;
                     for (var i = 0; i < innerRes.length; ++i){
                         let sheet = innerRes[i];
-                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
+                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0"){
+                            clockedOut = false;
+                            $("#taskBlock").css("opacity", "1");
+                            $("#taskEntry").css("opacity", "1");
+                        }
+                        else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
                             clockedOut = false;
                             $("#taskBlock").css("opacity", "0");
                             $("#taskEntry").css("opacity", "0");
+                            $("#clientRole").css("opacity", "0");
+                            $("#clockPrompt").css("opacity", "1");
+                            $("#makerSelectedClient").css("opacity", "0");
+                            $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
 
                             setTimeout(function () {
                                 $("#taskBlock").hide();
                                 $("#taskEntry").hide();
+                                $("#clientRole").hide();
+                                $("#makerSelectedClient").hide();
                             }, 3000)
+                        }
+                        else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
+                            clockedOut = true;
+                            $("#taskBlock").css("opacity", "1");
+                            $("#taskEntry").css("opacity", "1");
+                            $("#clientRole").css("opacity", "1");
+                            $("#makerSelectedClient").css("opacity", "1");
                         }
                     }
                     if (clockedOut){
@@ -276,7 +377,7 @@ onSignIn = function (googleUser) {
                                     dataType: "json",
                                     success: function (clientres, status) {
                                         $("#makerSelectedClient").append(
-                                            `<option value=${clientres.relId}>${clientres.name + " - " + occ}</option>`)
+                                            `<option id=${clientres.relId} value=${clientres.relId}>${clientres.name + " - " + occ}</option>`);
                                     },
                                     error: function (clientres, status) {
                                         $("#UserMainContent").html("Could not get clients!");
@@ -336,8 +437,8 @@ function timeSheetFunctionality (res) {
                         '        <thead class="thead">\n' +
                         '            <th scope="col">Client ID</th>\n' +
                         '            <th scope="col">Client</th>\n' +
-                        '            <th scope="col">Clock In</th>\n' +
-                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
+                        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
                         '            <th scope="col">Task</th>\n' +
                         '        </thead><tbody>');
                     //Populate table
@@ -381,7 +482,6 @@ function timeSheetFunctionality (res) {
             console.log(tokenres);
         }
     });
-
 
 }
 
