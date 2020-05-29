@@ -2470,7 +2470,7 @@ $(document).ready(function () {
                 onSignIn();
             }
             else
-                (onSignIn(GOOGLE_USER)
+                (onSignIn(GOOGLE_USER))
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
