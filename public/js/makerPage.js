@@ -1,6 +1,4 @@
 let selectedTab = null;
-let selectedClient = null;
-let selectedRole = null;
 let id_token = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
@@ -96,8 +94,6 @@ function setCurrentClient () {
                                 },
                                 dataType: "json",
                                 success: function (clientres, status) {
-                                    selectedClient = clientres.name;
-                                    selectedRole = relres.occupation;
                                 },
                                 error: function (clientres, status) {
                                     $("#UserMainContent").html("Could not get clients!");
@@ -117,7 +113,6 @@ function setCurrentClient () {
 }
 
 function setClockInFunctionality() {
-
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
     $("#makerClock").text("Clock In");
@@ -165,6 +160,10 @@ function setClockInFunctionality() {
                                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
                                     $("#makerText2").css("opacity", "1");
 
+
+                                    $("#clockPrompt").html("<h5>Time is running . . .</h5>");
+                                    $("#clockPrompt").css("opacity", "1");
+
                                     $("#taskBlock").css("opacity", "0");
                                     $("#taskEntry").css("opacity", "0");
                                     $("#taskBlock").css("transition", "opacity 0.5s ease-out");
@@ -174,7 +173,11 @@ function setClockInFunctionality() {
                                         $("#makerText2").css("opacity", "0");
                                         $("#taskBlock").hide();
                                         $("#taskEntry").hide();
-                                        }, 3000)
+                                    }, 3000);
+
+                                    setTimeout(function () {
+                                        $("#makerText2").html("");
+                                    }, 6000);
 
                                 }
                                 else {
@@ -202,6 +205,15 @@ function setClockInFunctionality() {
 }
 
 function setClockOutFunctionality() {
+    $("#clientRole").css("opacity", "0");
+    $("#makerSelectedClient").css("opacity", "0");
+    $("#clockPrompt").css("opacity", "1");
+
+    setTimeout(function () {
+        $("#clientRole").hide();
+        $("#makerSelectedClient").hide();
+    }, 3000);
+
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#32444e");
     $("#makerClock").text("Clock Out");
@@ -233,6 +245,7 @@ function setClockOutFunctionality() {
                     success: function (clockres, status) {
                         if(clockres) {
                             setClockInFunctionality();
+                            $("#clockPrompt").css("opacity", "0");
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
                             $("#taskBlock").css("transition", "opacity 0.5s ease-in");
@@ -242,10 +255,21 @@ function setClockOutFunctionality() {
                             $("#taskEntry").show();
                             $("#taskEntry").val("");
                             $("#taskEntry").css("opacity", "1");
+                            $("#clientRole").show();
+                            $("#clientRole").css("opacity", "1");
+                            $("#makerSelectedClient").css("opacity", "1");
+                            $("#makerSelectedClient").show();
+                            $("#clientRole").show();
+                            $("#makerSelectedClient").show();
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
-                            }, 3000)
+                            }, 3000);
+
+                            setTimeout(function () {
+                                $("#makerText2").html("");
+                                $("#clockPrompt").html("");
+                            }, 6000);
                         }
                         else {
                             $("#makerText2").html("<h5>Could not clock out!</h5>");
@@ -269,9 +293,9 @@ function setClockOutFunctionality() {
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
-    let profile = googleUser.getBasicProfile();
-    let name = profile.getName();
-    $("#googleUser").html(name);
+    //let profile = googleUser.getBasicProfile();
+    //let name = profile.getName();
+    //$("#googleUser").html(name);
 
     setClockInFunctionality();
     //Populating drop down selection
@@ -291,6 +315,8 @@ onSignIn = function (googleUser) {
                     id: TEST_ENVIRONMENT ? 4 : tokenres.id
                 },
                 dataType: "json",
+
+                //Managing user navigation away
                 success: function (innerRes, innerStatus) {
                     var clockedOut = true;
                     for (var i = 0; i < innerRes.length; ++i){
@@ -304,18 +330,24 @@ onSignIn = function (googleUser) {
                             clockedOut = false;
                             $("#taskBlock").css("opacity", "0");
                             $("#taskEntry").css("opacity", "0");
+                            $("#clientRole").css("opacity", "0");
+                            $("#clockPrompt").css("opacity", "1");
+                            $("#makerSelectedClient").css("opacity", "0");
+                            $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
 
                             setTimeout(function () {
                                 $("#taskBlock").hide();
                                 $("#taskEntry").hide();
-                                $("#clientRole").html("<h6>You are clocked in for your selection:</h6>");
-                                $("#makerSelectedClient").html(selectedClient + " as " + selectedRole);
+                                $("#clientRole").hide();
+                                $("#makerSelectedClient").hide();
                             }, 3000)
                         }
                         else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
                             clockedOut = true;
                             $("#taskBlock").css("opacity", "1");
                             $("#taskEntry").css("opacity", "1");
+                            $("#clientRole").css("opacity", "1");
+                            $("#makerSelectedClient").css("opacity", "1");
                         }
                     }
                     if (clockedOut){
@@ -405,8 +437,8 @@ function timeSheetFunctionality (res) {
                         '        <thead class="thead">\n' +
                         '            <th scope="col">Client ID</th>\n' +
                         '            <th scope="col">Client</th>\n' +
-                        '            <th scope="col">Clock In</th>\n' +
-                        '            <th scope="col">Clock Out</th>\n' +
+                        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
+                        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
                         '            <th scope="col">Task</th>\n' +
                         '        </thead><tbody>');
                     //Populate table

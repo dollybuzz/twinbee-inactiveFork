@@ -25,12 +25,14 @@
             <div id="taskBlock"><br><h6>Please enter in a task:</h6></div>
             <div><br><input class="form-control" type="text" id="taskEntry" name="taskEntry"></div>
         </div>
+        <div id='clockPrompt'></div>
         <br>
     <div class="row" id="makerBottomRow">
-        <div>
-            <button type="button" class="btn btn-select btn-circle btn-xl" id="makerClock">Clock In</button>
-            <br><div id="makerText2"></div>
-        </div>
+        <div id="empty"></div>
+        <div id="clockButton"><button type="button" class="btn btn-select btn-circle btn-xl" id="makerClock">Clock In</button></div>
+        <div id="empty"></div>
+        <div id="empty"></div>
+        <div id="makerText2"></div>
     </div>
 </div>
 <%- include('partials/footer.ejs') -%>
