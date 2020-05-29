@@ -201,7 +201,7 @@ module.exports = {
      * data in the body in the form:
      * {
      *     "id": Client id,
-     *     "bucket": time bucket to delete,
+     *     "bucket": plan name of time bucket to delete,
      *     "auth": valid auth creds
      * }
      * @param req

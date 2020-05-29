@@ -263,7 +263,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
                 }
                 else
                 {
-                    $("#verifyEntry").html("<span style='color:red'>Invalid entry! Please type in the name again.</span>");
+                    $("#verifyEntry").html("<span style='color:red'>Invalid entry! Please try again.</span>");
                 }
             });
         });
@@ -1919,14 +1919,32 @@ function creditFunctionality (res) {
     $("#creditTable").append('\n</tbody>');
 
     //Body Block content
-    createBody(null);
+    createBody("Delete");
 
     //Event Listeners
     //Modify
     $(".creditRow").click(function () {
         selectedRow = $(this);
+        let creditPrompt = `<h5>Please type in the Client ID to delete the selected credit.</h5>` +
+            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><div id='delete'>" +
+            "<div id='empty'></div>" +
+            "<div><label for='deleteUser'>Enter Client ID:</label></div>" +
+            `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+            "<div id='empty'></div>" +
+            "</div>\n";;
         prePopModForm("/api/getAllTimeBuckets", creditModForm);
-        //No delete feature
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let clientId = selectedRow.children()[0].innerHTML;
+            let planId = selectedRow.children()[2].innerHTML;
+            showDeletePrompt("delete", creditPrompt,"/api/deleteBucket", {
+                auth: id_token,
+                id: clientId,
+                bucket: planId,
+            }, deleteCreditSuccess, verifyDeleteCredit);
+        });
     });
 
     //Add
@@ -1951,10 +1969,10 @@ function creditFunctionality (res) {
 function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
         "<br><br><div class='setGrid'></div>");
 
-    $(".setGrid").html(`<div id="empty"></div><div>Please enter a number (+/-)<br>to adjust hours for plan: ${selectedRow.children()[2].innerHTML}</div>` +
+    $(".setGrid").html(`<div id="empty"></div><div>Enter a number (+/-) to adjust hours:</div>` +
         "<div><input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
         "<br><span id='errormessage' style='color:red'></span></div>");
 
@@ -2094,6 +2112,21 @@ function addCreditSuccess (res, status) {
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     }, 1000);
 }
+
+function deleteCreditSuccess (res, status) {
+    $("#verifyEntry").html(`<br><h5>Successfully deleted credit for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
+
+    setTimeout(function () {
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
+    }, 1000);
+}
+
+function verifyDeleteCredit() {
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == selectedRow.children()[0].innerHTML);
+
+}
+
 
 //Relationship Methods
 function relationshipFunctionality (res) {
