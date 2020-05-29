@@ -66,6 +66,56 @@ function createBody() {
 };
 
 //Main Clock Methods
+function setCurrentClient () {
+    $.ajax({
+        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+        },
+        dataType: "json",
+        success: function (tokenres, status) {
+            $.ajax({
+                    url: "/api/getRelationshipsByMakerId",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        id: TEST_ENVIRONMENT ? 4 : tokenres.id,
+                    },
+                    dataType: "json",
+                    success: function (relres, status) {
+                        for (var relationship of relres) {
+                            let occ = relationship.occupation;
+                            $.ajax({
+                                url: "/api/getClientName",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                    relationshipObj: relationship,
+                                },
+                                dataType: "json",
+                                success: function (clientres, status) {
+                                    selectedClient = clientres.name;
+                                    selectedRole = relres.occupation;
+                                },
+                                error: function (clientres, status) {
+                                    $("#UserMainContent").html("Could not get clients!");
+                                }
+                            });
+                        }
+                    },
+                    error: function (relres, status) {
+                        $("#UserMainContent").html("Could not get relationships!");
+                    }
+            });
+        },
+        error: function (tokenres, status) {
+            $("#UserMainContent").html("Could not get token!");
+        }
+    });
+}
+
 function setClockInFunctionality() {
 
     $("#makerClock").off("click");
@@ -79,7 +129,6 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        selectedClient = $("#makerSelectedClient").val().innerHTML;
         $.ajax({
             url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
             method: "post",
@@ -94,7 +143,7 @@ function setClockInFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        id: selectedClient,
+                        id: $("#makerSelectedClient").val(),
                     },
                     dataType: "json",
                     success: function (relres, status) {
@@ -110,6 +159,7 @@ function setClockInFunctionality() {
                             },
                             dataType: "json",
                             success: function (clockres, status) {
+                                setCurrentClient();
                                 if(clockres) {
                                     setClockOutFunctionality();
                                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
@@ -124,7 +174,7 @@ function setClockInFunctionality() {
                                         $("#makerText2").css("opacity", "0");
                                         $("#taskBlock").hide();
                                         $("#taskEntry").hide();
-                                    }, 3000)
+                                        }, 3000)
 
                                 }
                                 else {
@@ -187,8 +237,6 @@ function setClockOutFunctionality() {
                             $("#makerText2").css("opacity", "1");
                             $("#taskBlock").css("transition", "opacity 0.5s ease-in");
                             $("#taskEntry").css("transition", "opacity 0.5s ease-in");
-                            $("#clientRole").css("transition", "opacity 0.5s ease-in");
-                            $("#makerSelectedClient").css("transition", "opacity 0.5s ease-in");
                             $("#taskBlock").show();
                             $("#taskBlock").css("opacity", "1");
                             $("#taskEntry").show();
@@ -261,7 +309,7 @@ onSignIn = function (googleUser) {
                                 $("#taskBlock").hide();
                                 $("#taskEntry").hide();
                                 $("#clientRole").html("<h6>You are clocked in for your selection:</h6>");
-                                $("#makerSelectedClient").html(selectedClient);
+                                $("#makerSelectedClient").html(selectedClient + " as " + selectedRole);
                             }, 3000)
                         }
                         else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
@@ -297,7 +345,7 @@ onSignIn = function (googleUser) {
                                     dataType: "json",
                                     success: function (clientres, status) {
                                         $("#makerSelectedClient").append(
-                                            `<option value=${clientres.relId}>${clientres.name + " - " + occ}</option>`);
+                                            `<option id=${clientres.relId} value=${clientres.relId}>${clientres.name + " - " + occ}</option>`);
                                     },
                                     error: function (clientres, status) {
                                         $("#UserMainContent").html("Could not get clients!");
