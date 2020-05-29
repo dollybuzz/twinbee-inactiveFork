@@ -368,7 +368,7 @@ module.exports = {
         console.log(req.body);
         console.log(`Webhook hit for ${req.body.event_type}`);
         console.log(clientService.webHookBucketUpdate);
-        let possible = clientService.webHookPap[req.body.event_type];
+        let possible = clientService.webhookMap[req.body.event_type];
         if (possible) {
             res.send(await possible(req.body));
         }
