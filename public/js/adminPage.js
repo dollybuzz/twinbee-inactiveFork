@@ -327,7 +327,11 @@ function showOnlineMakers () {
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
-    console.log(id_token);
+
+    let profile = googleUser.getBasicProfile();
+    let name = profile.getName();
+    $("#googleUser").html(name);
+
     showMain();
 };
 

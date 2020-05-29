@@ -1,10 +1,8 @@
 let selectedTab = null;
 let id_token = null;
-let currentRelationship = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
-let name = null;
 
 let navMapper = {
     main: function () {
@@ -218,9 +216,8 @@ function setClockOutFunctionality() {
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
-    var profile = googleUser.getBasicProfile();
-    name = profile.getName();
-
+    let profile = googleUser.getBasicProfile();
+    let name = profile.getName();
     $("#googleUser").html(name);
 
     setClockInFunctionality();

@@ -127,7 +127,12 @@ function showMain () {
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
-    showMain(); //must call here to first generate token
+
+    let profile = googleUser.getBasicProfile();
+    let name = profile.getName();
+    $("#googleUser").html(name);
+
+    showMain();
 };
 
 function openHostedPage(getPageEndpoint){
