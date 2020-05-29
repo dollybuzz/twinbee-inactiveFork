@@ -367,6 +367,7 @@ module.exports = {
     webHookHit: async (req, res)=>{
         console.log(req.body);
         console.log(`Webhook hit for ${req.body.event_type}`);
+        console.log(clientService.webHookBucketUpdate);
         res.send(await clientService.webhookMap[req.body.event_type](req.body) || "Unsupported Event");
     },
 
