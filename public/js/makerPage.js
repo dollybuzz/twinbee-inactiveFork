@@ -79,8 +79,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        selectedClient = $("#makerSelectedClient").val().split(" - ");
-        console.log(selectedClient);
+        selectedClient = $("#makerSelectedClient").val();
         $.ajax({
             url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
             method: "post",
@@ -263,8 +262,8 @@ onSignIn = function (googleUser) {
                                 $("#taskEntry").hide();
                                 $("#clientRole").css("opacity", "1");
                                 $("#makerSelect").css("opacity", "1");
-                                $("#clientRole").html("Currently Clocked in for:");
-                                $("#makerSelect").html(selectedClient + " as " + selectedRole);
+                                $("#clientRole").html("You are clocked in for your selection:");
+                                $("#makerSelect").html(selectedClient);
                             }, 3000)
                         }
                         else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
