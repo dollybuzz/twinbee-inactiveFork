@@ -465,6 +465,6 @@ th {
     transition: opacity 0.2s ease-in-out;
 }
 
-#taskBlock, #taskEntry, #clientRole, #makerSelect {
+#taskBlock, #taskEntry, #clientRole, #makerSelectedClient {
     transition: opacity 0.5s ease-in-out;
 }

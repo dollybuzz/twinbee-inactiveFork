@@ -79,7 +79,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        selectedClient = $("#makerSelectedClient").val();
+        selectedClient = $("#makerSelectedClient").val().innerHTML;
         $.ajax({
             url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
             method: "post",
@@ -187,6 +187,8 @@ function setClockOutFunctionality() {
                             $("#makerText2").css("opacity", "1");
                             $("#taskBlock").css("transition", "opacity 0.5s ease-in");
                             $("#taskEntry").css("transition", "opacity 0.5s ease-in");
+                            $("#clientRole").css("transition", "opacity 0.5s ease-in");
+                            $("#makerSelectedClient").css("transition", "opacity 0.5s ease-in");
                             $("#taskBlock").show();
                             $("#taskBlock").css("opacity", "1");
                             $("#taskEntry").show();
@@ -254,16 +256,12 @@ onSignIn = function (googleUser) {
                             clockedOut = false;
                             $("#taskBlock").css("opacity", "0");
                             $("#taskEntry").css("opacity", "0");
-                            $("#clientRole").css("opacity", "0");
-                            $("#makerSelect").css("opacity", "0");
 
                             setTimeout(function () {
                                 $("#taskBlock").hide();
                                 $("#taskEntry").hide();
-                                $("#clientRole").css("opacity", "1");
-                                $("#makerSelect").css("opacity", "1");
-                                $("#clientRole").html("You are clocked in for your selection:");
-                                $("#makerSelect").html(selectedClient);
+                                $("#clientRole").html("<h6>You are clocked in for your selection:</h6>");
+                                $("#makerSelectedClient").html(selectedClient);
                             }, 3000)
                         }
                         else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
