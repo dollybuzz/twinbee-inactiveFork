@@ -32,6 +32,7 @@ class ChargebeeService {
         console.log("Getting all plans...");
         return new Promise((resolve, reject) => {
             chargebee.plan.list({
+                limit:100
             }).request(function(error,result) {
                 if(error){
                     //handle error
@@ -169,6 +170,8 @@ class ChargebeeService {
         console.log("Getting all subscriptions...");
         return new Promise((resolve, reject) => {
             chargebee.subscription.list({
+                limit:100,
+                include_deleted: true
             }).request(function(error,result) {
                 if(error){
                     //handle error

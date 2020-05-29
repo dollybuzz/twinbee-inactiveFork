@@ -49,6 +49,10 @@ class ClientService {
      * is to be used as a singleton.
      */
     constructor() {
+        this.webhookMap = {
+            "subscription_renewed": this.subscriptionRenewed,
+            "subscription_created": this.subscriptionCreated
+        }
     };
 
     /**
@@ -57,29 +61,29 @@ class ClientService {
      * @param clientId  - client to update
      * @param keyValuePairs - key/value pairs to add
      */
-    async updateClientMetadata(clientId, keyValuePairs){
+    async updateClientMetadata(clientId, keyValuePairs) {
         console.log(`Updating client ${clientId} metadata with data: `);
         console.log(keyValuePairs);
-        let customer = await this.getClientById(clientId).catch(err=>{
+        let customer = await this.getClientById(clientId).catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
         });
-        if(!customer.meta_data){
+        if (!customer.meta_data) {
             customer.meta_data = {};
         }
-        for (var key in keyValuePairs){
+        for (var key in keyValuePairs) {
             customer.meta_data[key] = keyValuePairs[key];
         }
         updateClient(clientId, customer)
     }
 
-    async deleteTimeBucket(clientId, planBucket){
+    async deleteTimeBucket(clientId, planBucket) {
         console.log(`Updating client ${clientId}, deleting time bucket ${planBucket}...`);
-        let client = await this.getClientById(clientId).catch(err=>{
+        let client = await this.getClientById(clientId).catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
         });
-        if(!client.meta_data){
+        if (!client.meta_data) {
             console.log("Client had no metadata; creating now...");
             client.meta_data = {};
         }
@@ -100,11 +104,11 @@ class ClientService {
      */
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
         console.log(`Updating client ${clientId} time bucket ${planBucket} with ${minuteChange} minutes...`);
-        let client = await this.getClientById(clientId).catch(err=>{
+        let client = await this.getClientById(clientId).catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
         });
-        if(!client.meta_data){
+        if (!client.meta_data) {
             console.log("Client had no metadata; creating now...");
             client.meta_data = {};
         }
@@ -116,7 +120,7 @@ class ClientService {
         let newMinutes = minuteChange + client.meta_data[planBucket];
         let planMinutes = {};
         planMinutes[planBucket] = newMinutes;
-        if (newMinutes < 0){
+        if (newMinutes < 0) {
             notifyClientOutOfCredits(client.email);
         }
         this.updateClientMetadata(clientId, planMinutes);
@@ -133,12 +137,13 @@ class ClientService {
      * @param newEmail  - new email of client
      * @returns {Promise<void>}
      */
-    async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone){
+    async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone) {
         console.log(`Updating client ${clientId} contact info...`);
-        let customer = await this.getClientById(clientId).catch(err=>{
+        let customer = await this.getClientById(clientId).catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
-        });;
+        });
+        ;
         customer.first_name = newFirstName;
         customer.last_name = newLastName;
         customer.email = newEmail;
@@ -157,22 +162,22 @@ class ClientService {
      * @param newState      - new state for billing
      * @param newZip        - new zip for billing
      */
-    updateClientBilling(clientId, newFirstName, newLastName, newAddress, newCity, newState, newZip){
+    updateClientBilling(clientId, newFirstName, newLastName, newAddress, newCity, newState, newZip) {
         console.log(`Updating ${clientId} billing info...`);
-        chargebee.customer.update_billing_info(clientId,{
-            billing_address : {
-                first_name : newFirstName,
-                last_name : newLastName,
-                line1 : newAddress,
-                city : newCity,
-                state : newState,
-                zip : newZip,
-                country : "US"
+        chargebee.customer.update_billing_info(clientId, {
+            billing_address: {
+                first_name: newFirstName,
+                last_name: newLastName,
+                line1: newAddress,
+                city: newCity,
+                state: newState,
+                zip: newZip,
+                country: "US"
             }
-        }).request(function(error,result) {
-            if(error){
+        }).request(function (error, result) {
+            if (error) {
                 console.log(error);
-            }else{
+            } else {
                 console.log(`Client ${clientId} billing updated successfully`);
             }
         });
@@ -187,7 +192,7 @@ class ClientService {
      * @returns {Promise<[entry]>}
      */
     async getAllClients() {
-        return await clientRepo.getAllClients().catch(err=>{
+        return await clientRepo.getAllClients().catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
         });
@@ -213,7 +218,7 @@ class ClientService {
                           billingFirst, billingLast) {
         console.log(`Creating new client with last name ${lastName}...`);
         return await clientRepo.createClient(firstName, lastName, customerEmail, addressStreet,
-            customerCity, customerStateFull, customerZip, phoneNumber, billingFirst, billingLast).catch(err=>{
+            customerCity, customerStateFull, customerZip, phoneNumber, billingFirst, billingLast).catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
         });
@@ -226,7 +231,7 @@ class ClientService {
      */
     async getClientById(id) {
         console.log(`Getting data for client ${id}...`);
-        let clientData = await clientRepo.getClientById(id).catch(err=>{
+        let clientData = await clientRepo.getClientById(id).catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
         });
@@ -246,7 +251,7 @@ class ClientService {
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllTimesheets`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err);
@@ -267,37 +272,37 @@ class ClientService {
      * Removes a client from the database. TODO: remove from chargebee
      * @param chargebeeId    - Id of client to be removed
      */
-    async deleteClientById(chargebeeId){
+    async deleteClientById(chargebeeId) {
         console.log("Deleting client...");
         let subscriptionList = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllSubscriptions`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
         });
 
-        for (var i = 0; i < subscriptionList.length; ++i){
+        for (var i = 0; i < subscriptionList.length; ++i) {
             let entry = subscriptionList[i];
-            if (entry.customer.id == chargebeeId){
-                 await request({
+            if (entry.customer.id == chargebeeId) {
+                await request({
                     method: 'POST',
                     uri: `https://www.freedom-makers-hours.com/api/cancelSubscription`,
                     form: {
-                        'auth':process.env.TWINBEE_MASTER_AUTH,
+                        'auth': process.env.TWINBEE_MASTER_AUTH,
                         'subscriptionId': entry.subscription.id
                     }
                 }).catch(err => {
                     console.log(err);
-                     emailService.emailAdmin(err);
+                    emailService.emailAdmin(err);
                 });
             }
         }
         clientRepo.deleteClient(chargebeeId);
-        await this.updateClientMetadata(chargebeeId, {"deleted":"true"});
+        await this.updateClientMetadata(chargebeeId, {"deleted": "true"});
     }
 
     /**
@@ -314,7 +319,7 @@ class ClientService {
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err);
@@ -343,15 +348,15 @@ class ClientService {
         return clientMakers;
     };
 
-    async getAllTimeBuckets(){
-        let clients = await this.getAllClients().catch(err=>{
+    async getAllTimeBuckets() {
+        let clients = await this.getAllClients().catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
         });
         let timeBuckets = [];
-        for (var i = 0; i < clients.length; ++i){
+        for (var i = 0; i < clients.length; ++i) {
             let client = clients[i].customer;
-            if (client.meta_data){
+            if (client.meta_data) {
                 let obj = {};
                 obj.first_name = client.first_name;
                 obj.last_name = client.last_name;
@@ -364,7 +369,7 @@ class ClientService {
     }
 
     async getTimeBucketByClientId(id) {
-        let client = await this.getClientById(id).catch(err=>{
+        let client = await this.getClientById(id).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
         });
@@ -378,23 +383,23 @@ class ClientService {
         }
     }
 
-    async getUpdatePaymentPage(clientId){
+    async getUpdatePaymentPage(clientId) {
         console.log(`Getting update payment page for client ${clientId}...`);
         return new Promise((resolve, reject) => {
             chargebee.hosted_page.manage_payment_sources({
-                card : {
-                    gateway_account_id : process.env.GATEWAY_ACCOUNT_ID
+                card: {
+                    gateway_account_id: process.env.GATEWAY_ACCOUNT_ID
                 },
-                customer : {
-                    id : clientId
+                customer: {
+                    id: clientId
                 }
-            }).request(function(error,result) {
-                if(error){
+            }).request(function (error, result) {
+                if (error) {
                     //handle error
                     console.log(error);
                     emailService.emailAdmin(error);
                     reject(error);
-                }else{
+                } else {
                     console.log("Successfully retrieved update payment page");
                     var hosted_page = result.hosted_page;
                     resolve(hosted_page);
@@ -403,39 +408,51 @@ class ClientService {
         });
     }
 
-    async subscriptionRenewed(parsedBody){
-        if (parsedBody.event_type === "subscription_renewed") {
-            console.log("Subscription renewal request received");
-            let subscription = parsedBody.content.subscription;
-            console.log(`subscription is ${subscription}`);
-            let customerId = subscription.customer_id;
-            let minutes = subscription.plan_quantity * 60;
-            let planId = subscription.plan_id;
-            if (await eventRepo.createEvent(parsedBody.id)) {
-                console.log("New event, updating minutes");
-                return await this.updateClientRemainingMinutes(customerId, planId, minutes);
-            }
-            else{
-                console.log(`Duplicate subscription blocked: ${parsedBody}`);
-                return false;
-            }
+    async webHookBucketUpdate(parsedBody) {
+        let subscription = parsedBody.content.subscription;
+        console.log(`subscription is ${subscription}`);
+        let customerId = subscription.customer_id;
+        let minutes = subscription.plan_quantity * 60;
+        let planId = subscription.plan_id;
+        if (await eventRepo.createEvent(parsedBody.id)) {
+            console.log("New event, updating minutes");
+            return await this.updateClientRemainingMinutes(customerId, planId, minutes);
+        } else {
+            console.log(`Duplicate subscription blocked: ${parsedBody}`);
+            return false;
         }
     }
 
-    async getOutstandingPaymentsPage(clientId){
+
+    async subscriptionRenewed(parsedBody) {
+        if (parsedBody.event_type === "subscription_renewed") {
+            console.log("Subscription renewal request received");
+            console.log(this.webHookBucketUpdate);
+            return await new ClientService().webHookBucketUpdate(parsedBody);
+        }
+    }
+
+    async subscriptionCreated(parsedBody) {
+        if (parsedBody.event_type === "subscription_created") {
+            console.log("Subscription creation request received")
+            return await new ClientService().webHookBucketUpdate(parsedBody);
+        }
+    }
+
+    async getOutstandingPaymentsPage(clientId) {
         console.log(`Getting outstanding payments page for client ${clientId}...`);
         return new Promise((resolve, reject) => {
             chargebee.hosted_page.collect_now({
-                customer : {
-                    id : clientId
+                customer: {
+                    id: clientId
                 }
-            }).request(function(error,result) {
-                if(error){
+            }).request(function (error, result) {
+                if (error) {
                     //handle error
                     console.log(error);
                     emailService.emailAdmin(error);
                     reject(error);
-                }else{
+                } else {
                     var hosted_page = result.hosted_page;
                     resolve(hosted_page);
                 }
@@ -450,9 +467,9 @@ class ClientService {
      * @returns {Promise<>} that should resolve to a chargebee "Customer" object. Throws a notifying
      *                      error if none is found.
      */
-    async getClientByEmail(email){
+    async getClientByEmail(email) {
         console.log(`Getting client by email...`);
-       return await clientRepo.getClientByEmail(email)
+        return await clientRepo.getClientByEmail(email)
         emailService.emailAdmin(err);
     }
 }

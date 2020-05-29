@@ -286,8 +286,8 @@ app.post("/api/getClientName",
     authController.authorizeClient,
     authController.authorizeMaster,
     clientRestController.getClientName);
-app.post("/api/subscriptionRenewed",
-    clientRestController.subscriptionRenewed);
+app.post("/api/clientWebHookHit",
+    clientRestController.webHookHit);
 app.post("/api/tokenToEmail",
     authController.authorizeMaster,
     authController.tokenToEmail);
