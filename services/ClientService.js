@@ -51,7 +51,7 @@ class ClientService {
     constructor() {
         this.webhookMap = {
             "subscription_renewed": this.subscriptionRenewed,
-            "subscription_started": this.subscriptionStarted
+            "subscription_created": this.subscriptionCreated
         }
     };
 
@@ -415,10 +415,10 @@ class ClientService {
         }
     }
 
-    async subscriptionStarted(parsedBody){
+    async subscriptionCreated(parsedBody){
 
-        if (parsedBody.event_type === "subscription_renewed") {
-            console.log("Subscription renewal request received");
+        if (parsedBody.event_type === "subscription_created") {
+            console.log("Subscription creation request received");
             this.webHookBucketUpdate(parsedBody);
         }
     }
