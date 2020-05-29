@@ -23,6 +23,22 @@ let updateClient = (customerId, keyValuePairs)=>{
     });
 };
 
+let webHookBucketUpdate = async parsedBody =>{
+    let subscription = parsedBody.content.subscription;
+    console.log(`subscription is ${subscription}`);
+    let customerId = subscription.customer_id;
+    let minutes = subscription.plan_quantity * 60;
+    let planId = subscription.plan_id;
+    if (await eventRepo.createEvent(parsedBody.id)) {
+        console.log("New event, updating minutes");
+        return await this.updateClientRemainingMinutes(customerId, planId, minutes);
+    }
+    else{
+        console.log(`Duplicate subscription blocked: ${parsedBody}`);
+        return false;
+    }
+}
+
 let notifyClientOutOfCredits = email=>{
     emailService.sendEmail(
         {
@@ -411,7 +427,7 @@ class ClientService {
         console.log("map hit");
         if (parsedBody.event_type === "subscription_renewed") {
             console.log("Subscription renewal request received");
-            this.webHookBucketUpdate(parsedBody);
+            webHookBucketUpdate(parsedBody);
         }
     }
 
@@ -419,25 +435,11 @@ class ClientService {
 
         if (parsedBody.event_type === "subscription_created") {
             console.log("Subscription creation request received");
-            this.webHookBucketUpdate(parsedBody);
+            webHookBucketUpdate(parsedBody);
         }
     }
 
-    async webHookBucketUpdate(parsedBody){
-        let subscription = parsedBody.content.subscription;
-        console.log(`subscription is ${subscription}`);
-        let customerId = subscription.customer_id;
-        let minutes = subscription.plan_quantity * 60;
-        let planId = subscription.plan_id;
-        if (await eventRepo.createEvent(parsedBody.id)) {
-            console.log("New event, updating minutes");
-            return await this.updateClientRemainingMinutes(customerId, planId, minutes);
-        }
-        else{
-            console.log(`Duplicate subscription blocked: ${parsedBody}`);
-            return false;
-        }
-    }
+
 
     async getOutstandingPaymentsPage(clientId){
         console.log(`Getting outstanding payments page for client ${clientId}...`);
