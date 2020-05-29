@@ -21,7 +21,7 @@ module.exports = {
 
     clientMatchesSubscription: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async (req, res, next) =>{
         console.log("Attempting to authorize client on subscription is requester...");
-        let email = await authService.getEmailFromToken(req.body.token);
+        let email = await authService.getEmailFromToken(req.body.auth);
         let client = await clientService.getClientByEmail(email);
 
         if (req[process.env.TWINBEE_IS_OK] ||
