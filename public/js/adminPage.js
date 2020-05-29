@@ -2467,12 +2467,12 @@ $(document).ready(function () {
         success:function (res, status) {
             TEST_ENVIRONMENT = res;
             if (TEST_ENVIRONMENT) {
-                onSignIn();
+                onSignIn(GOOGLE_USER);
             }
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
-            onSignIn();
+            onSignIn(GOOGLE_USER);
         }
     });
 
