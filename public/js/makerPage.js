@@ -1,4 +1,5 @@
 let selectedTab = null;
+let selectedClient = null;
 let id_token = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
@@ -77,6 +78,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+        selectedClient = $("#makerSelectedClient").val();
         $.ajax({
             url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
             method: "post",
@@ -91,7 +93,7 @@ function setClockInFunctionality() {
                     method: "post",
                     data: {
                         auth: id_token,
-                        id: $("#makerSelectedClient").val(),
+                        id: selectedClient,
                     },
                     dataType: "json",
                     success: function (relres, status) {
@@ -251,10 +253,16 @@ onSignIn = function (googleUser) {
                             clockedOut = false;
                             $("#taskBlock").css("opacity", "0");
                             $("#taskEntry").css("opacity", "0");
+                            $("#clientRole").css("opacity", "0");
+                            $("#makerSelect").css("opacity", "0");
 
                             setTimeout(function () {
                                 $("#taskBlock").hide();
                                 $("#taskEntry").hide();
+                                $("#clientRole").css("opacity", "1");
+                                $("#makerSelect").css("opacity", "1");
+                                $("#clientRole").html("Currently Clocked in for:");
+                                $("#makerSelect").html(selectedClient);
                             }, 3000)
                         }
                         else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
