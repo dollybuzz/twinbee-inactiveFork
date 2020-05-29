@@ -4,6 +4,7 @@ let currentRelationship = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
+let name = null;
 
 let navMapper = {
     main: function () {
@@ -216,6 +217,12 @@ function setClockOutFunctionality() {
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
+
+    var profile = googleUser.getBasicProfile();
+    name = profile.getName();
+
+    $("#googleUser").html(name);
+
     setClockInFunctionality();
     //Populating drop down selection
     $.ajax({
@@ -238,7 +245,12 @@ onSignIn = function (googleUser) {
                     var clockedOut = true;
                     for (var i = 0; i < innerRes.length; ++i){
                         let sheet = innerRes[i];
-                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
+                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0"){
+                            clockedOut = false;
+                            $("#taskBlock").css("opacity", "1");
+                            $("#taskEntry").css("opacity", "1");
+                        }
+                        else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
                             clockedOut = false;
                             $("#taskBlock").css("opacity", "0");
                             $("#taskEntry").css("opacity", "0");
@@ -247,6 +259,11 @@ onSignIn = function (googleUser) {
                                 $("#taskBlock").hide();
                                 $("#taskEntry").hide();
                             }, 3000)
+                        }
+                        else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
+                            clockedOut = true;
+                            $("#taskBlock").css("opacity", "1");
+                            $("#taskEntry").css("opacity", "1");
                         }
                     }
                     if (clockedOut){
@@ -276,7 +293,7 @@ onSignIn = function (googleUser) {
                                     dataType: "json",
                                     success: function (clientres, status) {
                                         $("#makerSelectedClient").append(
-                                            `<option value=${clientres.relId}>${clientres.name + " - " + occ}</option>`)
+                                            `<option value=${clientres.relId}>${clientres.name + " - " + occ}</option>`);
                                     },
                                     error: function (clientres, status) {
                                         $("#UserMainContent").html("Could not get clients!");
@@ -381,7 +398,6 @@ function timeSheetFunctionality (res) {
             console.log(tokenres);
         }
     });
-
 
 }
 

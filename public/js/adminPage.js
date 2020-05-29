@@ -2443,7 +2443,7 @@ function addRelationshipSuccess (res, status) {
 }
 
 function deleteRelationshipSuccess() {
-    $("#verifyEntry").html(`<h6>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<br><h6>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h6>`);
     setTimeout(function () {
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }, 1000);

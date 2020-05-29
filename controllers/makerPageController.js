@@ -21,7 +21,7 @@ module.exports ={
             {link: "", text: "FAQ"}
         ];
         let user = {
-            text: "Welcome, Freedom Maker!"
+            text: "Welcome, <span id='googleUser'><span>!"
         };
 
         res.render("maker", {welcome: user, siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});

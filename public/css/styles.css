@@ -454,14 +454,6 @@ th {
     transition: opacity 0.5s ease-in-out;
 }
 
-#taskBlock {
-    opacity: 0;
-}
-
-#taskEntry {
-    opacity: 0;
-}
-
 .setGrid {
     display: grid;
     grid-template-columns: 1fr 2fr 2fr 1fr;
