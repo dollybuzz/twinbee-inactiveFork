@@ -352,6 +352,27 @@ module.exports = {
         }
     },
 
+
+
+    /**
+     * ENDPOINT: /api/clientWebHookHit
+     *
+     * Updates client bucket on subscription start.
+     * For use with chargebee webhook, not to be independently called.
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    webHookHit: async (req, res)=>{
+        console.log(`Webhook hit for ${req.body.event_type}`);
+        if (req.body.event_type == "subscription_renewed"){
+            console.log("Client subscription renewed; updating from REST");
+            console.log(req.body);
+            res.send(await clientService.webhookMap[req.body.event_type] || "Unsupported Event");
+        }
+    },
+
     /**
      * ENDPOINT: /api/getUpdatePaymentURL
      * {
