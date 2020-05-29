@@ -79,7 +79,7 @@ function setClockInFunctionality() {
     });
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        selectedClient = $("#makerSelectedClient").val().toString().split(" - ");
+        selectedClient = $("#makerSelectedClient").val().split(" - ");
         console.log(selectedClient);
         $.ajax({
             url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
