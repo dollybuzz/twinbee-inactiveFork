@@ -365,12 +365,9 @@ module.exports = {
      * @returns {Promise<void>}
      */
     webHookHit: async (req, res)=>{
+        console.log(req.body);
         console.log(`Webhook hit for ${req.body.event_type}`);
-        if (req.body.event_type == "subscription_renewed"){
-            console.log("Client subscription renewed; updating from REST");
-            console.log(req.body);
-            res.send(await clientService.webhookMap[req.body.event_type] || "Unsupported Event");
-        }
+        res.send(await clientService.webhookMap[req.body.event_type] || "Unsupported Event");
     },
 
     /**
