@@ -1438,6 +1438,7 @@ function timeSheetFunctionality (res) {
                         '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
                         '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
                         '            <th scope="col">Task</th>\n' +
+                        '            <th scope="col">Detail</th>\n' +
                         '        </thead><tbody>');
                     //Populate table
                     res.forEach(item => {
@@ -1454,7 +1455,8 @@ function timeSheetFunctionality (res) {
                             '   <td>' + item.hourlyRate + '</td>' +
                             '   <td>' + item.timeIn + '</td>' +
                             '   <td>' + item.timeOut + '</td>' +
-                            '   <td>' + item.task + '</td></tr>'
+                            '   <td>' + item.task + '</td>' +
+                            '   <td>' + item.adminNote + '</td></tr>'
                         );
                     });
                     $("#sheetsTable").append('\n</tbody>');
@@ -1482,7 +1484,8 @@ function timeSheetFunctionality (res) {
                             let sheetId = selectedRow.children()[0].innerHTML;
                             showDeletePrompt("clear", timeSheetPrompt, "/api/clearTimeSheet", {
                                 auth: id_token,
-                                id: sheetId
+                                id: sheetId,
+                                detail: $("#modsheetdetail").val()
                             }, clearSheetSuccess, verifyClearSheet);
                         });
                     });
@@ -1536,6 +1539,10 @@ function sheetModForm(res, status) {
         `<input class='form-control' type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
         `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
+        "<label for='modsheettask'>Task:</label>" +
+        `<input class='form-control' type='text' id='modsheettask' name='modsheettask' value='${res.task}'>\n<br>\n` +
+        "<label for='modsheetdetail'>Detail:</label>" +
+        `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
 
@@ -1584,6 +1591,8 @@ function sheetModForm(res, status) {
                         hourlyRate: $("#modsheetplanname").val(),
                         timeIn: $("#modsheettimein").val() ,
                         timeOut: $("#modsheettimeout").val(),
+                        task: $("#modsheettask").val(),
+                        detail: $("#modsheetdetail").val()
                     }, modSheetSuccess);
                 }
                 else{
@@ -1603,18 +1612,20 @@ function sheetAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='modsheetmakerid'>Freedom Maker ID:</label>" +
-        `<select class='form-control' id='modsheetmakerid' name='modsheetmakerid'></select>\n<br>\n` +
-        "<label for='modsheetclientid'>Client ID:</label>" +
-        `<select class='form-control' id='modsheetclientid' name='modsheetclientid'></select>\n<br>\n` +
-        "<label for='modsheetplanname'>Plan:</label>" +
-        `<select class='form-control' id='modsheetplanname' name='modsheetplanname'></select>\n<br>\n` +
-        "<label for='modsheettimein'>Time In:</label>" +
-        `<input class='form-control' type='text' id='modsheettimein' name='modsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
-        "<label for='modsheettimeout'>Time Out:</label>" +
-        `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
-        "<label for='modsheettask'>Task:</label>" +
-        `<input class='form-control' type='text' id='modsheettask' name='modsheettask'>\n<br>\n` +
+        "<label for='addsheetmakerid'>Freedom Maker ID:</label>" +
+        `<select class='form-control' id='addsheetmakerid' name='addsheetmakerid'></select>\n<br>\n` +
+        "<label for='addsheetclientid'>Client ID:</label>" +
+        `<select class='form-control' id='addsheetclientid' name='addsheetclientid'></select>\n<br>\n` +
+        "<label for='addsheetplanname'>Plan:</label>" +
+        `<select class='form-control' id='addsheetplanname' name='addsheetplanname'></select>\n<br>\n` +
+        "<label for='addsheettimein'>Time In:</label>" +
+        `<input class='form-control' type='text' id='addsheettimein' name='addsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
+        "<label for='addsheettimeout'>Time Out:</label>" +
+        `<input class='form-control' type='text' id='addsheettimeout' name='addsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
+        "<label for='addsheettask'>Task:</label>" +
+        `<input class='form-control' type='text' id='addsheettask' name='addsheettask'>\n<br>\n` +
+        "<label for='addsheetdetail'>Detail:</label>" +
+        `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail' value='${res.adminNote}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
@@ -1644,30 +1655,30 @@ function sheetAddForm () {
 
                             for(var plan in planres){
                                 plan = planres[plan].plan;
-                                    $('#modsheetplanname').append(
+                                    $('#addsheetplanname').append(
                                         `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
                                     );
                             }
                             for(var client in clientres){
                                 client = clientres[client].customer;
-                                $('#modsheetclientid').append(
+                                $('#addsheetclientid').append(
                                     `<option id="${client.id}" value="${client.id}">${client.first_name + " " + client.last_name + " - " + client.id}</option>`
                                 );
                             }
                             for(var maker in makerres){
                                 maker = makerres[maker];
-                                $('#modsheetmakerid').append(
+                                $('#addsheetmakerid').append(
                                     `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName + " - " + maker.id}</option>`
                                 );
                             }
-                            updateDescriptionId('/api/getClient', $("#modsheetclientid").val(), $("#modsheetclientdescription"));
-                            updateDescriptionId('/api/getMaker', $("#modsheetmakerid").val(), $("#modsheetmakerdescription"));
+                            updateDescriptionId('/api/getClient', $("#addsheetclientid").val(), $("#addsheetclientdescription"));
+                            updateDescriptionId('/api/getMaker', $("#addsheetmakerid").val(), $("#addsheetmakerdescription"));
 
-                            $("#modsheetclientid").on('change', function () {
-                                updateDescriptionId('/api/getClient', $("#modsheetclientid").val(), $("#modsheetclientdescription"));
+                            $("#addsheetclientid").on('change', function () {
+                                updateDescriptionId('/api/getClient', $("#addsheetclientid").val(), $("#addsheetclientdescription"));
                             });
-                            $("#modsheetmakerid").on('change', function () {
-                                updateDescriptionId('/api/getMaker', $("#modsheetmakerid").val(), $("#modsheetmakerdescription"));
+                            $("#addsheetmakerid").on('change', function () {
+                                updateDescriptionId('/api/getMaker', $("#addsheetmakerid").val(), $("#addsheetmakerdescription"));
                             });
 
 
@@ -1676,17 +1687,17 @@ function sheetAddForm () {
                             $("#SubmitButton").on('click', function (e) {
                                 let message = "";
                                 let valid = true;
-                                if (!$("#modsheettimeout").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
-                                    || $("#modsheettimeout").val().match(/[a-z]+|[A-Z]+/g)){
+                                if (!$("#addsheettimeout").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                                    || $("#addsheettimeout").val().match(/[a-z]+|[A-Z]+/g)){
                                     valid = false;
                                     message += "Bad format on time out!<br>";
                                 }
-                                if (!$("#modsheettimein").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
-                                    || $("#modsheettimein").val().match(/[a-z]+|[A-Z]+/g)){
+                                if (!$("#addsheettimein").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
+                                    || $("#addsheettimein").val().match(/[a-z]+|[A-Z]+/g)){
                                     valid = false;
                                     message += "Bad format on time in!<br>";
                                 }
-                                if ($("#modsheettask").val().length === 0){
+                                if ($("#addsheettask").val().length === 0){
                                     valid = false;
                                     message += "Task must be added!<br>";
                                 }
@@ -1695,12 +1706,13 @@ function sheetAddForm () {
                                     $("#errormessage").html("");
                                     addSubmit("/api/createTimeSheet", {
                                         auth: id_token,
-                                        makerId: $("#modsheetmakerid").val(),
-                                        hourlyRate: $("#modsheetplanname").val() ,
-                                        clientId: $("#modsheetclientid").val(),
-                                        timeIn: $("#modsheettimein").val(),
-                                        timeOut: $("#modsheettimeout").val(),
-                                        task: $("#modsheettask").val(),
+                                        makerId: $("#addsheetmakerid").val(),
+                                        hourlyRate: $("#addsheetplanname").val() ,
+                                        clientId: $("#addsheetclientid").val(),
+                                        timeIn: $("#addsheettimein").val(),
+                                        timeOut: $("#addsheettimeout").val(),
+                                        task: $("#addsheettask").val(),
+                                        detail: $("#addsheetdetail").val()
                                     }, addSheetSuccess);
                                 }
                                 else{

@@ -17,15 +17,17 @@ class TimeSheetService {
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
      * @param task- maker's task for pay period
+     * @param detail    - entry for admin note on add
      * @returns {Promise<TimeSheet>}
      */
-    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task) {
+    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail) {
+        detail = `Added by admin: ${detail}`;
         let id = await timeSheetRepo.createSheet(makerId, clientId,
-            hourlyRate, timeIn, timeOut, task).catch(err=>{
+            hourlyRate, timeIn, timeOut, task, detail).catch(err=>{
                 console.log(err);
                 emailService.emailAdmin(err);
             });
-        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task);
+        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, detail);
     }
 
     /**
@@ -36,19 +38,22 @@ class TimeSheetService {
      * @param hourlyRate- associated plan rate, e.g, 'freedom-makers-32'
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
+     * @param task      - entry for maker task
+     * @param detail    - entry for admin note on mod change
      */
-    updateTimesheet(id, hourlyRate, timeIn, timeOut){
-        timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut);
+    updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail){
+        detail = `Modified by admin: ${detail}`;
+        timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut,  task, detail);
     }
 
     /**
      * Clears a timesheet and replaces 'task' with a reason for clearing
      * @param id    id of sheet to be cleared
-     * @param message   reason for clearing
+     * @param detail   reason for clearing
      */
-    clearTimeSheet(id, message){
-        message = `Cleared by admin: ${message}`;
-        return timeSheetRepo.clearSheet(id, message);
+    clearTimeSheet(id, detail){
+        detail = `Cleared by admin: ${detail}`;
+        return timeSheetRepo.clearSheet(id, detail);
     }
 
     /**

@@ -125,6 +125,7 @@ module.exports = {
      *     "timeIn": new clock-in time,
      *     "timeOut": new clock-out time,
      *     "auth": authentication credentials; either master or token
+     *     "detail" : entry for admin note on mod change
      * }
      *
      * @returns {Promise<void>}
@@ -133,7 +134,7 @@ module.exports = {
         console.log("Attempting to update timesheet by id from REST");
         console.log(req.body);
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
-            req.body.timeIn, req.body.timeOut);
+            req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail);
         res.send({});
     },
 
@@ -143,13 +144,13 @@ module.exports = {
      * {
      *     "id": id of timesheet to be marked for deletion,
      *     "auth": authentication credentials; either master or token,
-     *     "reason": reason for timesheet alteration as a string
+     *     "detail": reason for timesheet alteration as a string
      * }
      */
     clearTimeSheet: (req, res) => {
         console.log("Attempting to delete timesheet from REST");
         console.log(req.body);
-        timeSheetService.clearTimeSheet(req.body.id, req.body.reason);
+        timeSheetService.clearTimeSheet(req.body.id, req.body.detail);
         res.send({});
     },
 
@@ -164,7 +165,8 @@ module.exports = {
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "task": task of maker for time period,
-     *     "auth": authentication credentials; either master or token
+     *      "auth": authentication credentials; either master or token
+     *      "detail": entry for admin note on add
      * }
      * @param req
      * @param res
@@ -174,7 +176,7 @@ module.exports = {
         console.log("Attempting to create a timesheet");
         console.log(req.body);
         let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
-            req.body.timeIn, req.body.timeOut, req.body.task).catch(err=>{console.log(err)});
+            req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail).catch(err=>{console.log(err)});
         if (!createdSheet.id){
             res.send(undefined);
         }

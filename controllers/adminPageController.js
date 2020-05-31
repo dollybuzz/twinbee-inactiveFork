@@ -12,13 +12,13 @@ module.exports ={
         };
         let headerLinks = [
             {link: "/admin", text: "Main", id:"main"},
-            {link: "", text: "Manage Plans", id: "managePlans"},
             {link: "", text: "Manage Clients", id:"manageClients"},
-            {link: "", text: "Manage Subscriptions", id: "manageSubscriptions"},
-            {link: "", text: "Manage Available Credit", id: "manageCredit"},
             {link: "", text: "Manage Freedom Makers", id: "manageMakers"},
+            {link: "", text: "Manage Plans", id: "managePlans"},
+            {link: "", text: "Manage Subscriptions", id: "manageSubscriptions"},
+            {link: "", text: "Manage Relationships", id:"manageRelationships"},
+            {link: "", text: "Manage Available Credit", id: "manageCredit"},
             {link: "", text: "Review TimeSheets", id:"reviewTimeSheets"},
-            {link: "", text: "Manage Relationships", id:"manageRelationships"}
         ];
         let footerLinks = [
             {link: "", text: "Report a problem", id: "reportProblem"}

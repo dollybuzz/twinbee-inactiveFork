@@ -5,10 +5,10 @@ class TimeSheetRepository {
     constructor() {
     };
 
-    async createSheet(makerId, clientId, rate, startTime, endTime, task) {
-        let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, task)' +
-            ' VALUES (?, ?, ?, ?, ?, ?)';
-        let sqlParams = [makerId, clientId, rate, startTime, endTime, task];
+    async createSheet(makerId, clientId, rate, startTime, endTime, task, adminNote) {
+        let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, task, admin_note)' +
+            ' VALUES (?, ?, ?, ?, ?, ?, ?)';
+        let sqlParams = [makerId, clientId, rate, startTime, endTime, task, adminNote];
         let result = await query(sql, sqlParams).catch(e => {
             console.log(e);
             return('error; client or maker might not exist');
@@ -17,9 +17,9 @@ class TimeSheetRepository {
         return result.insertId;
     }
 
-    updateSheet(id, rate, startTime, endTime) {
-        let sql = 'UPDATE time_sheet SET hourly_rate = ?, start_time = ?, end_time = ? WHERE id = ?';
-        let sqlParams = [rate, startTime, endTime, id];
+    updateSheet(id, rate, startTime, endTime, task, adminNote) {
+        let sql = 'UPDATE time_sheet SET hourly_rate = ?, start_time = ?, end_time = ?, task = ?, admin_note = ? WHERE id = ?';
+        let sqlParams = [rate, startTime, endTime, task, adminNote, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         });
@@ -28,10 +28,10 @@ class TimeSheetRepository {
 
 
 
-    clearSheet(id, message) {
+    clearSheet(id, adminNote) {
         let sql = "UPDATE time_sheet SET start_time = '00:00:00', end_time = '00:00:00', " +
             "admin_note = ? WHERE id = ?";
-        let sqlParams = [message, id];
+        let sqlParams = [adminNote, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         });
