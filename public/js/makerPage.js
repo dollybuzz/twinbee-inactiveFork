@@ -435,7 +435,7 @@ function timeSheetFunctionality (res) {
                         "</div></div>");
                     $("#sheetsTable").append('\n' +
                         '        <thead class="thead">\n' +
-                        '            <th scope="col">Client ID</th>\n' +
+                        '            <th scope="col">Timesheet ID</th>\n' +
                         '            <th scope="col">Client</th>\n' +
                         '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
                         '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
@@ -450,7 +450,7 @@ function timeSheetFunctionality (res) {
 
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
-                            '   <td>' + res[item].clientId + '</td>'+
+                            '   <td>' + res[item].id + '</td>'+
                             '   <td>' + clientIdentifier + '</td>' +
                             '   <td>' + res[item].timeIn + '</td>'+
                             '   <td>' + res[item].timeOut + '</td>'+
@@ -497,7 +497,6 @@ function clientFunctionality (res){
         "</div></div>");
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
@@ -507,7 +506,6 @@ function clientFunctionality (res){
         if (!item.deleted) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
-                '   <td>' + `${item.id}` + '</td>' +
                 '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'

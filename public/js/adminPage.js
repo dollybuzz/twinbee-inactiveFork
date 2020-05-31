@@ -434,34 +434,7 @@ function clientModForm (res, status) {
         `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='modbilling'>Billing Address</label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='modbillfname'>First Name:</label>" +
-        `<input class='form-control' type='text' id='modbillfname' name='modbillfname' value='${res.billing_address.first_name}'>\n<br>\n` +
-        "<label for='modbilllname'>Last Name:</label>" +
-        `<input class='form-control' type='text' id='modbilllname' name='modbilllname' value='${res.billing_address.last_name}'>\n<br>\n` +
-        "<label for='modaddress'>Street:</label>" +
-        `<input class='form-control' type='text' id='modaddress' name='modaddress' value='${res.billing_address.line1}'>\n<br>\n` +
-        "<label for='modcity'>City:</label>" +
-        `<input class='form-control' type='text' id='modcity' name='modcity' value='${res.billing_address.city}'>\n<br>\n` +
-        "<label for='modstate'>State:</label>" +
-        `<input class='form-control' type='text' id='modstate' name='modstate' value='${res.billing_address.state}'>\n<br>\n` +
-        "<label for='modzip'>Zip:</label>" +
-        `<input class='form-control' type='text' id='modzip' name='modzip' value='${res.billing_address.zip}'>\n<br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+       "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -498,27 +471,7 @@ function clientModForm (res, status) {
         }
         if ($("#modphone").val().length < 10){
             valid = false;
-            message += "Phone number not long enough!<br>";
-        }
-        if ($("#modbillfname").val().length === 0){
-            valid = false;
-            message += "A Billing Last Name is required!<br>";
-        }
-        if ($("#modbilllname").val().length === 0){
-            valid = false;
-            message += "A Billing First Name is required!<br>";
-        }
-        if ($("#modaddress").val().length === 0){
-            valid = false;
-            message += "A Billing Address is required!<br>";
-        }
-        if ($("#modstate").val().length === 0){
-            valid = false;
-            message += "A State is required!<br>";
-        }
-        if ($("#modcity").val().length === 0){
-            valid = false;
-            message += "A City is required!<br>";
+            message += "Phone Number not long enough!<br>";
         }
 
         if (valid) {
@@ -531,19 +484,6 @@ function clientModForm (res, status) {
                 phone: $("#modphone").val(),
                 email: $("#modemail").val()
             }, modClientSuccessContact);
-
-            modSubmit("/api/updateClientBilling", {
-                auth: id_token,
-                id: $("#modclientid").val(),
-                firstName: $("#modbillfname").val(),
-                lastName: $("#modbilllname").val(),
-                phone: $("#modphone").val(),
-                email: $("#modemail").val(),
-                street: $("#modaddress").val(),
-                city: $("#modcity").val(),
-                state: $("#modstate").val(),
-                zip: $("#modzip").val()
-            }, modClientSuccessBilling);
         }
         else{
             $("#errormessage").html(message);
@@ -565,33 +505,6 @@ function clientAddForm () {
         `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
         `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='addbilling'>Billing Address</label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='addbillingfname'>First Name:</label>" +
-        `<input class='form-control' type='text' id='addbillingfname' name='addbillingfname'>\n<br>\n` +
-        "<label for='addbillinglname'>Last Name:</label>" +
-        `<input class='form-control' type='text' id='addbillinglname' name='addbillinglname'>\n<br>\n` +
-        "<label for='addaddress'>Street:</label>" +
-        `<input class='form-control' type='text' id='addaddress' name='addaddress'>\n<br>\n` +
-        "<label for='addcity'>City:</label>" +
-        `<input class='form-control' type='text' id='addcity' name='addcity'>\n<br>\n` +
-        "<label for='addstate'>State:</label>" +
-        `<input class='form-control' type='text' id='addstate' name='addstate'>\n<br>\n` +
-        "<label for='addzip'>Zip:</label>" +
-        `<input class='form-control' type='text' id='addzip' name='addzip'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
@@ -632,26 +545,6 @@ function clientAddForm () {
             valid = false;
             message += "Phone number not long enough!<br>";
         }
-        if ($("#addbillingfname").val().length === 0){
-            valid = false;
-            message += "A Billing Last Name is required!<br>";
-        }
-        if ($("#addbillinglname").val().length === 0){
-            valid = false;
-            message += "A Billing First Name is required!<br>";
-        }
-        if ($("#addaddress").val().length === 0){
-            valid = false;
-            message += "A Billing Address is required!<br>";
-        }
-        if ($("#addstate").val().length === 0){
-            valid = false;
-            message += "A State is required!<br>";
-        }
-        if ($("#addcity").val().length === 0){
-            valid = false;
-            message += "A City is required!<br>";
-        }
 
         if (valid) {
             $("#errormessage").html("");
@@ -662,11 +555,6 @@ function clientAddForm () {
                 phone: $("#addphone").val(),
                 email: $("#addemail").val(),
                 street: $("#addaddress").val(),
-                city: $("#addcity").val(),
-                state: $("#addstate").val(),
-                zip: $("#addzip").val(),
-                billingFirst: $("#addbillingfname").val(),
-                billingLast: $("#addbillinglname").val()
             }, addClientSuccess);
         }
         else{
@@ -676,16 +564,6 @@ function clientAddForm () {
 }
 
 function modClientSuccessContact (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
-    $("#modsuccess").html(`<br><h5>Successfully updated Client ${$("#modclientid").val()}!</h5>`);
-
-    setTimeout(function() {
-        showFunction(clientFunctionality, "/api/getAllClients");
-    }, 1000);
-}
-
-function modClientSuccessBilling (res, status) {
     $("#optionsClient").append("<div id='modsuccess'></div>");
     $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Client ${$("#modclientid").val()}!</h5>`);
@@ -1581,13 +1459,13 @@ function timeSheetFunctionality (res) {
                     $("#sheetsTable").append('\n</tbody>');
 
                     //Body Block content
-                    createBody("Delete");
+                    createBody("Clear");
 
                     //Event Listeners
                     //Modify
                     $(".sheetRow").click(function () {
                         selectedRow = $(this);
-                        let timeSheetPrompt = `<h5>Please type in the Time Sheet ID to delete the selected time sheet.</h5>` +
+                        let timeSheetPrompt = `<h5>Please type in the Time Sheet ID to clear the selected time sheet.</h5>` +
                             `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
                             "<br><div id='delete'>" +
                             "<div id='empty'></div>" +
@@ -1874,7 +1752,7 @@ function addSheetSuccess (res, status) {
 }
 
 function deleteSheetSuccess (res, status) {
-    $("#verifyEntry").html(`<h6>Successfully cleared sheet ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     }, 1000);
