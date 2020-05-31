@@ -42,11 +42,12 @@ class TimeSheetService {
     }
 
     /**
-     * Marks a sheet for deletion
-     *
-     * @param id    - id of the sheet to be deleted
+     * Clears a timesheet and replaces 'task' with a reason for clearing
+     * @param id    id of sheet to be cleared
+     * @param message   reason for clearing
      */
     clearTimeSheet(id, message){
+        message = `Cleared by admin: ${message}`;
         return timeSheetRepo.clearSheet(id, message);
     }
 
