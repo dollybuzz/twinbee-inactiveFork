@@ -411,5 +411,25 @@ module.exports = {
         console.log(req.body);
         let page = await clientService.getOutstandingPaymentsPage(req.body.id);
         res.send({url: page.url});
-    }
+    },
+
+    /**
+     * May have to redo to account for relationship and authentication security
+     * ENDPOINT: /api/getTimeBucket
+     * {
+     *      "auth": valid auth token,
+     *     "id": client's chargebee id,
+     *     "planName": plan id of time bucket
+     *
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getTimeBucket: async (req, res) =>{
+        console.log("Attempting to get a timebucket for client");
+        console.log(req.body);
+        res.send(await clientService.getTimeBucket(req.body.id, req.body.planName));
+}
 };

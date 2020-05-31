@@ -128,9 +128,9 @@ function showMain () {
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
-    let profile = googleUser.getBasicProfile();
-    let name = profile.getName();
-    $("#googleUser").html(name);
+    let profile = TEST_ENVIRONMENT ? null : profile.getBasicProfile();
+    let name = TEST_ENVIRONMENT ? null : profile.getName();
+    $("#googleUser").html(TEST_ENVIRONMENT ? name : "test");
 
     showMain();
 };
@@ -530,7 +530,7 @@ function subscriptionModForm (res, status) {
                         },
                         dataType: "json",
                         success: function (undores, undostatus) {
-                            $("#cancelChange").append("<br><h6>Successfully canceled change request!</h6>");
+                            $("#cancelChange").append("<br><h5>Successfully canceled change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
                             }, 1000);

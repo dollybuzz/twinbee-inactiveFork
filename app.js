@@ -291,6 +291,11 @@ app.post("/api/clientWebHookHit",
 app.post("/api/tokenToEmail",
     authController.authorizeMaster,
     authController.tokenToEmail);
+app.post("/api/getTimeBucket",
+    authController.authorizeClient,
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.getTimeBucket);
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 

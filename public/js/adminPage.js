@@ -328,9 +328,9 @@ function showOnlineMakers () {
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
-    let profile = googleUser.getBasicProfile();
-    let name = profile.getName();
-    $("#googleUser").html(name);
+    let profile = TEST_ENVIRONMENT ? null : profile.getBasicProfile();
+    let name = TEST_ENVIRONMENT ? null : profile.getName();
+    $("#googleUser").html(TEST_ENVIRONMENT ? name : "test");
 
     showMain();
 };
@@ -584,7 +584,7 @@ function addClientSuccess (res, status) {
 }
 
 function deleteClientSuccess (res, status) {
-    $("#verifyEntry").html(`<h6>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1000);
@@ -795,7 +795,7 @@ function addMakerSuccess (res, status) {
 }
 
 function deleteMakerSuccess (res, status) {
-    $("#verifyEntry").html(`<h6>Successfully deleted Freedom Maker ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<h5>Successfully deleted Freedom Maker ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
     }, 1000);
@@ -1010,7 +1010,7 @@ function subscriptionModForm (res, status) {
                         },
                         dataType: "json",
                         success: function (undores, undostatus) {
-                            $("#cancelChange").append("<br><h6>Successfully revoked the change request!</h6>");
+                            $("#cancelChange").append("<br><h5>Successfully revoked the change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
                             }, 1000);
@@ -1158,7 +1158,7 @@ function addSubscriptionSuccess (res, status) {
 }
 
 function deleteSubscriptionSuccess (res, status) {
-    $("#verifyEntry").html(`<br><h6>Successfully deleted Subscription ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Subscription ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     }, 1000);
@@ -1378,7 +1378,7 @@ function addPlanSuccess (res, status) {
 }
 
 function deletePlanSuccess (res, status) {
-    $("#verifyEntry").html(`<h6>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<h5>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(planFunctionality, "/api/getAllPlans");
     }, 1000);
@@ -2364,7 +2364,7 @@ function addRelationshipSuccess (res, status) {
 }
 
 function deleteRelationshipSuccess() {
-    $("#verifyEntry").html(`<br><h6>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h6>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }, 1000);

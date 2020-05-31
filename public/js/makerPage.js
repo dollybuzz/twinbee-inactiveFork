@@ -64,54 +64,6 @@ function createBody() {
 };
 
 //Main Clock Methods
-function setCurrentClient () {
-    $.ajax({
-        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token,
-        },
-        dataType: "json",
-        success: function (tokenres, status) {
-            $.ajax({
-                    url: "/api/getRelationshipsByMakerId",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        id: TEST_ENVIRONMENT ? 4 : tokenres.id,
-                    },
-                    dataType: "json",
-                    success: function (relres, status) {
-                        for (var relationship of relres) {
-                            let occ = relationship.occupation;
-                            $.ajax({
-                                url: "/api/getClientName",
-                                method: "post",
-                                data: {
-                                    auth: id_token,
-                                    relationshipObj: relationship,
-                                },
-                                dataType: "json",
-                                success: function (clientres, status) {
-                                },
-                                error: function (clientres, status) {
-                                    $("#UserMainContent").html("Could not get clients!");
-                                }
-                            });
-                        }
-                    },
-                    error: function (relres, status) {
-                        $("#UserMainContent").html("Could not get relationships!");
-                    }
-            });
-        },
-        error: function (tokenres, status) {
-            $("#UserMainContent").html("Could not get token!");
-        }
-    });
-}
-
 function setClockInFunctionality() {
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
@@ -122,6 +74,62 @@ function setClockInFunctionality() {
     $("#makerClock").on('mouseleave', function () {
         $("#makerClock").css("background-color", "#dbb459");
     });
+
+    $("#makerSelectedClient").on('change', function() {
+        $.ajax({
+            method: "post",
+            url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
+            data: {
+                auth: id_token,
+                token: id_token
+            },
+            success: function (tokenres, tokenstatus) {
+                $.ajax({
+                    method: "post",
+                    url: "/api/getRelationshipsByMakerId",
+                    data: {
+                        auth: id_token,
+                        id: TEST_ENVIRONMENT? 4: tokenres.id
+                    },
+                    success: function (relres, relstatus) {
+                        console.log(relres);
+                        for(var item of relres)
+                        {
+                            if(item.id == $("#makerSelectedClient").val())
+                            {
+                                $.ajax({
+                                    url: "/api/getTimeBucket",
+                                    method: "post",
+                                    data: {
+                                        auth: id_token,
+                                        id: item.clientId,
+                                        planName: item.planId
+                                    },
+                                    dataType: "json",
+                                    success: function (bucketres, bucketstatus) {
+                                        let minToHours = ((bucketres.minutes)/60).toFixed(1);
+                                        $("#availcredit").html(minToHours + " hours");
+                                    },
+                                    error: function (bucketres, bucketstatus) {
+                                        $("#userMainContent").html("Token isn't working!");
+                                    }
+                                });
+                            }
+                        }
+
+                    },
+                    error: function (relres, relstatus) {
+                        $("#userMainContent").html("Relationship isn't working!");
+                    }
+                });
+            },
+            error: function (tokenres, tokenstatus) {
+                $("#userMainContent").html("Token isn't working!");
+            }
+        });
+    });
+
+
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
@@ -154,10 +162,9 @@ function setClockInFunctionality() {
                             },
                             dataType: "json",
                             success: function (clockres, status) {
-                                setCurrentClient();
                                 if(clockres) {
                                     setClockOutFunctionality();
-                                    $("#makerText2").html("<h5>Successfully clocked in!</h5>");
+                                    $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
                                     $("#makerText2").css("opacity", "1");
 
 
@@ -181,7 +188,7 @@ function setClockInFunctionality() {
 
                                 }
                                 else {
-                                    $("#makerText2").html("<h5>Could not clock in!</h5>");
+                                    $("#makerText2").html("<br><h5>Could not clock in!</h5>");
                                 }
                             },
                             error: function (clockres, status) {
@@ -246,7 +253,7 @@ function setClockOutFunctionality() {
                         if(clockres) {
                             setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
-                            $("#makerText2").html("<h5>Successfully clocked out!</h5>");
+                            $("#makerText2").html("<br><h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
                             $("#taskBlock").css("transition", "opacity 0.5s ease-in");
                             $("#taskEntry").css("transition", "opacity 0.5s ease-in");
@@ -272,7 +279,7 @@ function setClockOutFunctionality() {
                             }, 6000);
                         }
                         else {
-                            $("#makerText2").html("<h5>Could not clock out!</h5>");
+                            $("#makerText2").html("<br><h5>Could not clock out!</h5>");
                         }
                     },
                     error: function (clockres, status) {
@@ -293,9 +300,9 @@ function setClockOutFunctionality() {
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
-    let profile = googleUser.getBasicProfile();
-    let name = profile.getName();
-    $("#googleUser").html(name);
+    let profile = TEST_ENVIRONMENT ? null : profile.getBasicProfile();
+    let name = TEST_ENVIRONMENT ? null : profile.getName();
+    $("#googleUser").html(TEST_ENVIRONMENT ? name : "test");
 
     setClockInFunctionality();
     //Populating drop down selection

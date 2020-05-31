@@ -47,7 +47,7 @@ exports.sendEmail = options => new Promise((resolve, reject) => {
  * @returns {Promise<>}
  */
 exports.emailAdmin = content => new Promise((resolve, reject) => {
-    if (!process.env.TWINBEE_LIVE) {
+    if (process.env.TWINBEE_LIVE) {
         console.log(`Emailing admin!`);
         transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html: content}, (error) => {
             if (error) {

@@ -472,6 +472,13 @@ class ClientService {
         return await clientRepo.getClientByEmail(email)
         emailService.emailAdmin(err);
     }
+
+    async getTimeBucket(clientId, planId) {
+        console.log(`Getting available credit for ${clientId}'s time bucket`);
+        let bucketObj = await this.getTimeBucketByClientId(clientId);
+        return {minutes: bucketObj.buckets[planId]};
+    }
+
 }
 
 module.exports = new ClientService();

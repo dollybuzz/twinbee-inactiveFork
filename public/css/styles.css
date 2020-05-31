@@ -270,6 +270,7 @@ label {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
     vertical-align: center;
+    text-align: center;
     height: 140px;
 }
 
@@ -472,7 +473,7 @@ th {
 }
 
 #clientRole, #taskBlock {
-    height: 60px;
+    height: 80px;
 }
 
 #clockPrompt {
