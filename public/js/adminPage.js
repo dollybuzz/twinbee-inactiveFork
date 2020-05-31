@@ -1042,7 +1042,8 @@ function subscriptionAddForm () {
         `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
         `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
-        "</form><br><div><span id='errormessage' style='color:red'></span></div>\n");
+        "</form><br><div><span id='errormessage' style='color:red'></span></div>\n" +
+        "<hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1084,7 +1085,7 @@ function subscriptionAddForm () {
                     $("#SubmitButton").on('click', function (e) {
                         let message = "";
                         let valid = true;
-                        if ($("#addsubscriptionplanquantity").val().length === 0 || $("#addsubscriptionplanquantity").val().includes(".") || $("#addsubscriptionplanquantity").val() == 0){
+                        if ($("#addsubscriptionplanquantity").val().length === 0 || $("#addsubscriptionplanquantity").val().includes(".") || $("#addsubscriptionplanquantity").val() == 0 || $("#addsubscriptionplanquantity").val().includes("-")) {
                             valid = false;
                             message += "Invalid entry! Please try again.<br>";
                         }
@@ -1472,16 +1473,17 @@ function timeSheetFunctionality (res) {
                             "<label for='deleteUser'>Enter Time Sheet ID:</label>" +
                             `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
                             "<div id='empty'></div>" +
-                            "</div>\n";
+                            "</div>\n" +
+                            "<hr><p>Note: First please calculate the running time to credit back to the associated client.</p>";
                         prePopModForm("/api/getTimeSheet", sheetModForm);
                         $("#DeleteButton").show();
                         $("#DeleteButton").css("opacity", "1");
                         $("#DeleteButton").click(function () {
                             let sheetId = selectedRow.children()[0].innerHTML;
-                            showDeletePrompt("delete", timeSheetPrompt, "/api/deleteTimeSheet", {
+                            showDeletePrompt("clear", timeSheetPrompt, "/api/clearTimeSheet", {
                                 auth: id_token,
                                 id: sheetId
-                            }, deleteSheetSuccess, verifyDeleteSheet);
+                            }, clearSheetSuccess, verifyClearSheet);
                         });
                     });
 
@@ -1535,6 +1537,7 @@ function sheetModForm(res, status) {
         "<label for='modsheettimeout'>Time Out:</label>" +
         `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
 
     $.ajax({
         url: "/api/getAllPlans",
@@ -1735,11 +1738,12 @@ function modSheetSuccess (res, status) {
 function addSheetSuccess (res, status) {
     $("#optionsClient").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
-    $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>`);
+    $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>` +
+        "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.</p>");
 
     setTimeout(function() {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
-    }, 1000);
+    }, 3000);
 
     $(`#${res.id}`).mouseenter(function () {
         $(this).css('transition', 'background-color 0.5s ease');
@@ -1751,14 +1755,15 @@ function addSheetSuccess (res, status) {
     });
 }
 
-function deleteSheetSuccess (res, status) {
-    $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>`);
+function clearSheetSuccess (res, status) {
+    $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>` +
+    "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.</p>");
     setTimeout(function () {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
-    }, 1000);
+    }, 3000);
 }
 
-function verifyDeleteSheet () {
+function verifyClearSheet () {
     let deleteId = $("#deleteUser").val();
     return (deleteId == selectedRow.children()[0].innerHTML);
 }

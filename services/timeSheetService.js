@@ -46,8 +46,8 @@ class TimeSheetService {
      *
      * @param id    - id of the sheet to be deleted
      */
-    deleteTimeSheet(id){
-        return timeSheetRepo.deleteSheet(id);
+    clearTimeSheet(id){
+        return timeSheetRepo.clearSheet(id);
     }
 
     /**

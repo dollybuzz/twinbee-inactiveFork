@@ -28,14 +28,14 @@ class TimeSheetRepository {
 
 
 
-    deleteSheet(id) {
+    clearSheet(id) {
         let sql = "UPDATE time_sheet SET start_time = '00:00:00', end_time = '00:00:00', " +
-            "task = 'removedByAdmin' WHERE id = ?";
+            "task = 'clearedByAdmin' WHERE id = ?";
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         });
-        console.log(`Sheet ${id} deleted`)
+        console.log(`Sheet ${id} cleared`)
     }
 
 

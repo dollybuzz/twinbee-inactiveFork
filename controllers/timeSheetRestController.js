@@ -138,17 +138,17 @@ module.exports = {
     },
 
     /**
-     * ENDPOINT: /api/deleteTimeSheet
+     * ENDPOINT: /api/clearTimeSheet
      * Marks a timesheet for deletion. Looks for values in the body in the form:
      * {
      *     "id": id of timesheet to be marked for deletion,
      *     "auth": authentication credentials; either master or token
      * }
      */
-    deleteTimeSheet: (req, res) => {
+    clearTimeSheet: (req, res) => {
         console.log("Attempting to delete timesheet from REST");
         console.log(req.body);
-        timeSheetService.deleteTimeSheet(req.body.id);
+        timeSheetService.clearTimeSheet(req.body.id);
         res.send({});
     },
 

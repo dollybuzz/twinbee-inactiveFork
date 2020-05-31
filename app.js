@@ -114,10 +114,10 @@ app.post("/api/updateTimeSheet",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     timeSheetRestController.updateTimeSheetsById);
-app.post("/api/deleteTimeSheet",
+app.post("/api/clearTimeSheet",
     authController.authorizeAdmin,
     authController.authorizeMaster,
-    timeSheetRestController.deleteTimeSheet);
+    timeSheetRestController.clearTimeSheet);
 app.post("/api/createTimeSheet",
     authController.authorizeAdmin,
     authController.authorizeMaster,
