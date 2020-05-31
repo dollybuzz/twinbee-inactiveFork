@@ -30,7 +30,7 @@ class TimeSheetRepository {
 
     clearSheet(id, message) {
         let sql = "UPDATE time_sheet SET start_time = '00:00:00', end_time = '00:00:00', " +
-            "task = ? WHERE id = ?";
+            "admin_note = ? WHERE id = ?";
         let sqlParams = [message, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;

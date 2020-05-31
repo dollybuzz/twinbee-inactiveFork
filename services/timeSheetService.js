@@ -149,7 +149,7 @@ class TimeSheetService {
 //helper function
 createSheetFromRow = async row => {
     return new TimeSheet(row.id, row.maker_id, row.hourly_rate,
-        row.client_id, row.start_time, row.end_time, row.task);
+        row.client_id, row.start_time, row.end_time, row.task, row.admin_note);
 };
 
 
