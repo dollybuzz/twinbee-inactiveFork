@@ -2399,9 +2399,10 @@ $(document).ready(function () {
                 console.log("Test environment active!");
                 onSignIn();
             }
-            else
-                console.log("Welcome to Freedom Makers Hours!")
-                (onSignIn(GOOGLE_USER))
+            else {
+                console.log("Welcome to Freedom Makers Hours!");
+                onSignIn(GOOGLE_USER);
+            }
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
@@ -2441,5 +2442,4 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-
 })
