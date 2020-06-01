@@ -326,6 +326,7 @@ function showOnlineMakers () {
 
 //Google
 onSignIn = function (googleUser) {
+    console.log(googleUser);
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
     let profile = TEST_ENVIRONMENT ? null : profile.getBasicProfile();
@@ -2395,9 +2396,11 @@ $(document).ready(function () {
         success:function (res, status) {
             TEST_ENVIRONMENT = res;
             if (TEST_ENVIRONMENT) {
+                console.log("Test environment active!");
                 onSignIn();
             }
             else
+                console.log("Welcome to Freedom Makers Hours!")
                 (onSignIn(GOOGLE_USER))
         },
         error: function (clientres, clientstatus) {
