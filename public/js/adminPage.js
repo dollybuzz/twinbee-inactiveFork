@@ -1821,11 +1821,11 @@ function creditFunctionality (res) {
     //Modify
     $(".creditRow").click(function () {
         selectedRow = $(this);
-        let creditPrompt = `<h5>Please type in the Client ID to delete the selected credit.</h5>` +
-            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
+        let creditPrompt = `<h5>Please type in the Plan to delete the selected credit.</h5>` +
+            `<h6>You selected Plan: ${selectedRow.children()[2].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
             "<br><div id='delete'>" +
             "<div id='empty'></div>" +
-            "<div><label for='deleteUser'>Enter Client ID:</label></div>" +
+            "<div><label for='deleteUser'>Enter Plan:</label></div>" +
             `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
             "<div id='empty'></div>" +
             "</div>\n";;
@@ -2019,7 +2019,7 @@ function deleteCreditSuccess (res, status) {
 
 function verifyDeleteCredit() {
     let deleteUser = $("#deleteUser").val();
-    return (deleteUser == selectedRow.children()[0].innerHTML);
+    return (deleteUser == selectedRow.children()[2].innerHTML);
 
 }
 
