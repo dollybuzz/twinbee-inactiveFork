@@ -258,6 +258,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
                         success:successFunction,
                         error: function (res, status) {
                             $("#optionsClient").html("Delete user not working!");
+                            $("#optionsClient").html("Delete user not working!");
                         }
                     });//end ajax
                 }
@@ -585,10 +586,10 @@ function addClientSuccess (res, status) {
 }
 
 function deleteClientSuccess (res, status) {
-    $("#verifyEntry").html(`<h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
-    }, 1000);
+    }, 3000);
 }
 
 function verifyDeleteClient () {
@@ -796,15 +797,15 @@ function addMakerSuccess (res, status) {
 }
 
 function deleteMakerSuccess (res, status) {
-    $("#verifyEntry").html(`<h5>Successfully deleted Freedom Maker ${selectedRow.children()[0].innerHTML}!</h5>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Freedom Maker ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
-    }, 1000);
+    }, 3000);
 }
 
 function verifyDeleteMaker () {
     let deleteUser = $("#deleteUser").val();
-    return (deleteUser == (selectedRow.children()[1].innerHTML + " " + selectedRow.children()[2].innerHTML));
+    return (deleteUser == (selectedRow.children()[1].innerHTML));
 }
 
 //Subscription Methods
@@ -1212,7 +1213,7 @@ function planFunctionality (res) {
     $(".planRow").click(function () {
         selectedRow = $(this);
         let planPrompt = `<h5>Please type in the Plan to cancel the selected plan.</h5>` +
-            `<h6>You selected ${selectedRow.children()[0].innerHTML}</h6>` +
+            `<h6>You selected Plan: ${selectedRow.children()[0].innerHTML}</h6>` +
             "<br><div id='delete'>" +
             "<div id='empty'></div>" +
             "<div><label for='deleteUser'>Enter Plan:</label></div>" +
@@ -1822,7 +1823,7 @@ function creditFunctionality (res) {
     $(".creditRow").click(function () {
         selectedRow = $(this);
         let creditPrompt = `<h5>Please type in the Client ID to delete the selected credit.</h5>` +
-            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+            `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
             "<br><div id='delete'>" +
             "<div id='empty'></div>" +
             "<div><label for='deleteUser'>Enter Client ID:</label></div>" +
@@ -2054,6 +2055,7 @@ function relationshipFunctionality (res) {
                             let clientMap = {};
                             let makerMap = {};
                             for(item of clientres) {
+                                console.log(item);
                                 if(item.customer.first_name)
                                 {
                                     clientMap[item.customer.id] = item.customer;
