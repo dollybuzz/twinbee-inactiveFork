@@ -300,9 +300,9 @@ function setClockOutFunctionality() {
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
-    let profile = TEST_ENVIRONMENT ? null : profile.getBasicProfile();
+    let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
     let name = TEST_ENVIRONMENT ? null : profile.getName();
-    $("#googleUser").html(TEST_ENVIRONMENT ? name : "test");
+    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
 
     setClockInFunctionality();
     //Populating drop down selection

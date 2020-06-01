@@ -327,12 +327,11 @@ function showOnlineMakers () {
 
 //Google
 onSignIn = function (googleUser) {
-    console.log(googleUser);
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
-    let profile = TEST_ENVIRONMENT ? null : profile.getBasicProfile();
+    let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
     let name = TEST_ENVIRONMENT ? null : profile.getName();
-    $("#googleUser").html(TEST_ENVIRONMENT ? name : "test");
+    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
 
     showMain();
 };
@@ -2398,17 +2397,12 @@ $(document).ready(function () {
         success:function (res, status) {
             TEST_ENVIRONMENT = res;
             if (TEST_ENVIRONMENT) {
-                console.log("Test environment active!");
                 onSignIn();
-            }
-            else {
-                console.log("Welcome to Freedom Makers Hours!");
-                onSignIn(GOOGLE_USER);
             }
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
-            onSignIn(GOOGLE_USER);
+            onSignIn();
         }
     });
 
@@ -2444,4 +2438,5 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
+
 })
