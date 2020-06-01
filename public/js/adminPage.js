@@ -326,6 +326,7 @@ function showOnlineMakers () {
 
 //Google
 onSignIn = function (googleUser) {
+    console.log("onsignin");
     console.log(googleUser);
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
