@@ -491,7 +491,6 @@ function clientModForm (res, status) {
 function clientAddForm () {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
-        "<label for='addClient'>Client Information</label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addclientfname'>First Name:</label>" +
@@ -513,10 +512,6 @@ function clientAddForm () {
         if (!isEmail($("#addemail").val())){
             valid = false;
             message += "Email is not valid!<br>";
-        }
-        if (!isZip($("#addzip").val())){
-            valid = false;
-            message += "Zip is not valid!<br>";
         }
         if ($("#addclientfname").val().length === 0){
             valid = false;
