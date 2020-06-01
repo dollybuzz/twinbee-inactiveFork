@@ -326,7 +326,6 @@ function showOnlineMakers () {
 
 //Google
 onSignIn = function (googleUser) {
-    console.log("onsignin");
     console.log(googleUser);
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
@@ -2400,14 +2399,12 @@ $(document).ready(function () {
                 console.log("Test environment active!");
                 onSignIn();
             }
-            else {
-                console.log("Welcome to Freedom Makers Hours!");
-                onSignIn(GOOGLE_USER);
-            }
+            else
+                console.log("Welcome to Freedom Makers Hours!")
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
-            onSignIn(GOOGLE_USER);
+            onSignIn();
         }
     });
 
@@ -2443,4 +2440,5 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
+
 })
