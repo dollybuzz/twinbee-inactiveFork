@@ -446,10 +446,6 @@ function clientModForm (res, status) {
             valid = false;
             message += "Email is not valid!<br>";
         }
-        if (!isZip($("#modzip").val())){
-            valid = false;
-            message += "Zip is not valid!<br>";
-        }
         if ($("#modclientfname").val().length === 0){
             valid = false;
             message += "A First Name is required!<br>";
