@@ -66,7 +66,7 @@ class ClientService {
      */
     async paymentSourceAdded(webhookData){
         let customerPaymentCombo = webhookData.content;
-        let customerName = `${customerPaymentCombo.customer.first_name} ${customerPaymentCombo.customer.first_name}`;
+        let customerName = `${customerPaymentCombo.customer.first_name} ${customerPaymentCombo.customer.last_name}`;
         let paymentType = customerPaymentCombo.payment_source.type;
         await emailService.emailFMAdmin("Payment source added!",
             `${customerName} added a new ${paymentType} for payments!`)
