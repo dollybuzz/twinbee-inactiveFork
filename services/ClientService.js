@@ -51,9 +51,29 @@ class ClientService {
     constructor() {
         this.webhookMap = {
             "subscription_renewed": this.subscriptionRenewed,
-            "subscription_created": this.subscriptionCreated
+            "subscription_created": this.subscriptionCreated,
+            "payment_source_added": this.paymentSourceAdded
         }
     };
+
+    /**
+     * Sends an email alert to the Freedom Makers admin
+     * with details of a customer and paymentSource.
+     * To be called on "payment source added" event.
+     *
+     * @param customerPaymentCombo - object containing a chargebee customer and payment_source
+     * @returns {Promise<void>}
+     */
+    async paymentSourceAdded(customerPaymentCombo){
+        let customerName = `${customerPaymentCombo.customer.first_name} ${customerPaymentCombo.customer.first_name}`;
+        let paymentType = customerPaymentCombo.payment_source.type;
+        await emailService.emailFMAdmin("Payment source added!",
+            `${customerName} added a new ${paymentType} for payments!`)
+            .catch(error => {
+                console.log(error);
+                emailService.emailAdmin(error);
+            });
+    }
 
     /**
      * adds the keyValuePairs to the customer's metadata
