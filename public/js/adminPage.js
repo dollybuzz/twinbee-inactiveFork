@@ -493,6 +493,7 @@ function clientAddForm () {
         "<form id='add'>\n" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='addclientfname'>First Name:</label>" +
         `<input class='form-control' type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
         "<label for='addclientlname'>Last Name:</label>" +
