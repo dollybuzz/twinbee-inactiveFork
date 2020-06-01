@@ -100,11 +100,59 @@ class MakerService {
      * Deletes a maker by their id
      * @param id    - maker to be deleted
      */
-    deleteMaker(id){
+    async deleteMaker(id){
         console.log(`Deleting maker ${id}...`);
+        await this.deleteAllRelationships(id);
         makerRepo.deleteMaker(id);
     }
 
+
+    /**
+     * Retrieves all relationships for a maker
+     * @param makerId  -   maker whose relationships are to be retrieved
+     * @returns {Promise<[Relationship]>}
+     */
+    async getRelationshipsForMaker(makerId){
+        console.log(`Checking for relationships related to ${makerId}...`);
+        let relationshipList = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        return JSON.parse(relationshipList.body);
+    }
+
+    /**
+     * Deletes all relationships associated with a maker
+     *
+     * @param maker  - maker whose relationships are to be deleted
+     * @returns {Promise<void>}
+     */
+    async deleteAllRelationships(maker){
+        console.log(`Attempting to delete relationships for ${maker}`);
+        let relationshipList = await this.getRelationshipsForMaker(maker);
+        console.log(relationshipList);
+        for await (var relationship of relationshipList){
+            console.log(relationship);
+            if (relationship.makerId == maker){
+                console.log("Relationship found.");
+                request({
+                    method: 'POST',
+                    uri: `https://www.freedom-makers-hours.com/api/deleteRelationship`,
+                    form: {
+                        'auth': process.env.TWINBEE_MASTER_AUTH,
+                        'id': relationship.id
+                    }
+                });
+            }
+        }
+    }
+    
     /**
      * Retrieves all time sheets for a given maker.
      * @param id    - id of the desired maker
