@@ -330,7 +330,7 @@ onSignIn = function (googleUser) {
 
     let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
     let name = TEST_ENVIRONMENT ? null : profile.getName();
-    $("#googleUser").html(TEST_ENVIRONMENT ? name : "test");
+    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
 
     showMain();
 };
@@ -2397,12 +2397,10 @@ $(document).ready(function () {
             if (TEST_ENVIRONMENT) {
                 onSignIn();
             }
-            else
-                (onSignIn(GOOGLE_USER))
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
-            onSignIn(GOOGLE_USER);
+            onSignIn();
         }
     });
 
