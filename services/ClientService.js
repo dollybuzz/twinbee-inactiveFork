@@ -62,7 +62,7 @@ class ClientService {
      * To be called on "payment source added" event.
      *
      * @param customerPaymentCombo - object containing a chargebee customer and payment_source
-     * @returns {Promise<void>}
+     * @returns {Promise<>}
      */
     async paymentSourceAdded(customerPaymentCombo){
         let customerName = `${customerPaymentCombo.customer.first_name} ${customerPaymentCombo.customer.first_name}`;
@@ -72,7 +72,9 @@ class ClientService {
             .catch(error => {
                 console.log(error);
                 emailService.emailAdmin(error);
+                return false;
             });
+        return "Successfully notified admin";
     }
 
     /**
