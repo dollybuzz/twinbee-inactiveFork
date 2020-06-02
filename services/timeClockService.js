@@ -103,7 +103,7 @@ class TimeClockService {
         let onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
             emailService.emailAdmin(err);
-        });;
+        });
 
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i){
@@ -120,6 +120,8 @@ class TimeClockService {
                     hourlyRate: currentSheet.hourlyRate,
                     timeIn: currentSheet.timeIn,
                     timeOut: rightNow,
+                    task: currentSheet.task,
+                    adminNote: currentSheet.adminNote,
                     'auth':process.env.TWINBEE_MASTER_AUTH
                 }
             });
