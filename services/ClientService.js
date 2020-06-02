@@ -166,7 +166,6 @@ class ClientService {
             emailService.emailAdmin(err);
             console.log(err)
         });
-        ;
         customer.first_name = newFirstName;
         customer.last_name = newLastName;
         customer.email = newEmail;
@@ -261,7 +260,6 @@ class ClientService {
         return clientData;
     }
 
-
     /**
      * Retrieves time all time sheets for a given client.
      * @param id    - id of the desired client
@@ -296,21 +294,34 @@ class ClientService {
      * @param chargebeeId    - Id of client to be removed
      */
     async deleteClientById(chargebeeId) {
-        console.log("Deleting client...");
-        let subscriptionList = await request({
-            method: 'POST',
-            uri: `https://www.freedom-makers-hours.com/api/getAllSubscriptions`,
-            form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
-            }
-        }).catch(err => {
-            console.log(err);
-            emailService.emailAdmin(err);
-        });
+        console.log(`Deleting client ${chargebeeId}...`);
+        await this.deleteAllSubscriptions(chargebeeId)
+            .catch(error => {
+                console.log(error);
+                emailService.emailAdmin(error);
+            });
+        console.log(`Deleting client ${chargebeeId}...`);
+        await this.deleteAllRelationships(chargebeeId)
+            .catch(error => {
+                console.log(error);
+                emailService.emailAdmin(error);
+            });
+        clientRepo.deleteClient(chargebeeId);
+        await this.updateClientMetadata(chargebeeId, {"deleted": "true"});
+    }
 
+    /**
+     * Cancels all subscriptions associated with a client;
+     *
+     * @param clientId  - client for which to cancel subscriptions
+     * @returns {Promise<>}
+     */
+    async deleteAllSubscriptions(clientId){
+        console.log(`Deleting all subscriptions for ${clientId}`);
+        let subscriptionList = await this.getSubscriptionsForClient(clientId);
         for (var i = 0; i < subscriptionList.length; ++i) {
             let entry = subscriptionList[i];
-            if (entry.customer.id == chargebeeId) {
+            if (entry.customer.id === clientId) {
                 await request({
                     method: 'POST',
                     uri: `https://www.freedom-makers-hours.com/api/cancelSubscription`,
@@ -324,8 +335,71 @@ class ClientService {
                 });
             }
         }
-        clientRepo.deleteClient(chargebeeId);
-        await this.updateClientMetadata(chargebeeId, {"deleted": "true"});
+    }
+
+    /**
+     * Retrieves all subscriptions for a client
+     * @param clientId  -   client for which to retrieve subscriptions for
+     * @returns {Promise<[subscription]>}
+     */
+    async getSubscriptionsForClient(clientId){
+        console.log(`Getting all subscriptions for ${clientId}`);
+        return await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllSubscriptions`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+    }
+
+    /**
+     * Retrieves all relationships for a client
+     * @param clientId  -   client whose relationships are to be retrieved
+     * @returns {Promise<[Relationship]>}
+     */
+    async getRelationshipsForClient(clientId){
+        console.log(`Checking for relationships related to ${clientId}...`);
+        let relationshipList = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        console.log(relationshipList);
+        return relationshipList;
+    }
+
+    /**
+     * Deletes all relationships associated with a client
+     *
+     * @param clientId  - client whose relationships are to be deleted
+     * @returns {Promise<void>}
+     */
+    async deleteAllRelationships(clientId){
+        console.log(`Attempting to delete relationships for ${clientId}`);
+        let relationshipList = await this.getRelationshipsForClient(clientId);
+        relationshipList = JSON.parse(relationshipList.body);
+        for await (var relationship of relationshipList){
+            if (relationship.clientId === clientId){
+                console.log("Relationship found.");
+                request({
+                    method: 'POST',
+                    uri: `https://www.freedom-makers-hours.com/api/deleteRelationship`,
+                    form: {
+                        'auth': process.env.TWINBEE_MASTER_AUTH,
+                        'id': relationship.id
+                    }
+                });
+            }
+        }
     }
 
     /**
