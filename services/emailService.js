@@ -42,11 +42,12 @@ exports.sendEmail = options => new Promise((resolve, reject) => {
 });
 
 /**
- * Sends an email to the admins
+ * Sends an email to the admins - DISABLED
  * @param content
  * @returns {Promise<>}
  */
 exports.emailAdmin = content => new Promise((resolve, reject) => {
+    /*
     if (process.env.TWINBEE_LIVE) {
         setTimeout(()=>{
             console.log(`Emailing admin!`);
@@ -77,6 +78,8 @@ exports.emailAdmin = content => new Promise((resolve, reject) => {
     else{
         console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
     }
+
+     */
 });
 
 /**
