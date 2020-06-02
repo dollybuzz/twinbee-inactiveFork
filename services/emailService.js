@@ -62,7 +62,7 @@ exports.emailAdmin = content => new Promise((resolve, reject) => {
         setTimeout(()=>{
             setTimeout(()=>{
                 console.log(`Emailing admin!`);
-                transporter.sendMail({to: process.env.ADMIN_WINBEE}, (error) => {
+                transporter.sendMail({to: process.env.ADMIN_WINBEE, subject: "TwinBee Alert!", html: content}, (error) => {
                     if (error) {
                         console.log("Error emailing admin! Catastrophic failure!");
                         console.log(error);
@@ -96,7 +96,6 @@ exports.emailFMAdmin = (subject, content) => new Promise((resolve, reject) => {
                 resolve();
             });
         }, 3000);
-
     }
     else{
         console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
