@@ -428,11 +428,11 @@ function clientModForm (res, status) {
         "<label for='modClientid'>Client ID:</label>" +
         `<input class='form-control' type='text' id='modclientid' name='modclientid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modclientfname'>First Name:</label>" +
-        `<input class='form-control' type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br><br>\n` +
         "<label for='modclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
         "<label for='modphone'>Phone:</label>" +
-        `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br><br>\n` +
         "<label for='modemail'>Email:</label>" +
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
@@ -497,11 +497,11 @@ function clientAddForm () {
         "<label for='addclientfname'>First Name:</label>" +
         `<input class='form-control' type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
         "<label for='addclientlname'>Last Name:</label>" +
-        `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br><br>\n` +
         "<label for='addphone'>Phone:</label>" +
         `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
-        `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
