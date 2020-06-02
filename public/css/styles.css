@@ -462,7 +462,8 @@ th {
     transition: opacity 0.2s ease-in-out;
 }
 
-#taskBlock, #taskEntry, #clientRole, #makerSelectedClient, #clockPrompt {
+#taskBlock, #taskEntry, #clientRole, #makerSelectedClient,
+#clockPrompt, #clientCredit, #availcredit {
     transition: opacity 0.5s ease-in-out;
 }
 

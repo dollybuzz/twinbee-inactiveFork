@@ -92,7 +92,6 @@ function setClockInFunctionality() {
                         id: TEST_ENVIRONMENT? 4: tokenres.id
                     },
                     success: function (relres, relstatus) {
-                        console.log(relres);
                         for(var item of relres)
                         {
                             if(item.id == $("#makerSelectedClient").val())
@@ -215,10 +214,13 @@ function setClockOutFunctionality() {
     $("#clientRole").css("opacity", "0");
     $("#makerSelectedClient").css("opacity", "0");
     $("#clockPrompt").css("opacity", "1");
+    $("#clientCredit").css("opacity", "0");
+    $("#availcredit").css("opacity", "0");
 
     setTimeout(function () {
         $("#clientRole").hide();
-        $("#makerSelectedClient").hide();
+        $("#clientCredit").hide();
+        $("#availcredit").hide();
     }, 3000);
 
     $("#makerClock").off("click");
@@ -265,9 +267,11 @@ function setClockOutFunctionality() {
                             $("#clientRole").show();
                             $("#clientRole").css("opacity", "1");
                             $("#makerSelectedClient").css("opacity", "1");
-                            $("#makerSelectedClient").show();
+                            $("#clientCredit").css("opacity", "1");
+                            $("#availcredit").css("opacity", "1");
+                            $("#clientCredit").show();
                             $("#clientRole").show();
-                            $("#makerSelectedClient").show();
+                            $("#availcredit").show();
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
@@ -340,13 +344,15 @@ onSignIn = function (googleUser) {
                             $("#clientRole").css("opacity", "0");
                             $("#clockPrompt").css("opacity", "1");
                             $("#makerSelectedClient").css("opacity", "0");
+                            $("#clientCredit").css("opacity", "0");
+                            $("#availcredit").css("opacity", "0");
                             $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
 
                             setTimeout(function () {
                                 $("#taskBlock").hide();
                                 $("#taskEntry").hide();
                                 $("#clientRole").hide();
-                                $("#makerSelectedClient").hide();
+                                $("#availcredit").hide();
                             }, 3000)
                         }
                         else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
@@ -354,6 +360,8 @@ onSignIn = function (googleUser) {
                             $("#taskBlock").css("opacity", "1");
                             $("#taskEntry").css("opacity", "1");
                             $("#clientRole").css("opacity", "1");
+                            $("#availcredit").css("opacity", "1");
+                            $("#clientCredit").css("opacity", "1");
                             $("#makerSelectedClient").css("opacity", "1");
                         }
                     }
@@ -450,6 +458,7 @@ function timeSheetFunctionality (res) {
                         '        </thead><tbody>');
                     //Populate table
                     for (var item in res){
+                        console.log(res[item]);
                         let clientIdentifier = res[item].clientId;
                         clientIdentifier = clientMap[clientIdentifier] ?
                             clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
@@ -486,7 +495,6 @@ function timeSheetFunctionality (res) {
         },
         error: function (tokenres, status) {
             $("#userMainContent").html("Failed to verify you!");
-            console.log(tokenres);
         }
     });
 
