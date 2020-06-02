@@ -144,7 +144,7 @@ function showFunction (functionality, endpoint) {
         dataType: "json",
         success: function (res, status) {
             functionality(res);
-            SELECTED_NAV_MAP.html(NAV_MAP_TEXT);
+            $(".spinner-border").remove();
         },
         error: function (res, status) {
             $("#userMainContent").html("Something went wrong!");
