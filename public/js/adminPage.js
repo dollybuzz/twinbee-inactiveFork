@@ -1474,17 +1474,19 @@ function timeSheetFunctionality (res) {
                         $("#DeleteButton").show();
                         $("#DeleteButton").css("opacity", "1");
                         $("#DeleteButton").click(function () {
-                            if($("#modsheetdetail").val() == "null")
+                            if($("#modsheetdetail").val() == "null" || $("#modsheetdetail").val() == "" || $("#modsheetdetail").val() == "undefined")
                             {
                                 $("#errormessage").html("");
                                 $("#errormessage").html("Requires a detail to clear!");
                             }
-                            let sheetId = selectedRow.children()[0].innerHTML;
-                            showDeletePrompt("clear", timeSheetPrompt, "/api/clearTimeSheet", {
-                                auth: id_token,
-                                id: sheetId,
-                                detail: $("#modsheetdetail").val()
-                            }, clearSheetSuccess, verifyClearSheet);
+                            else {
+                                let sheetId = selectedRow.children()[0].innerHTML;
+                                showDeletePrompt("clear", timeSheetPrompt, "/api/clearTimeSheet", {
+                                    auth: id_token,
+                                    id: sheetId,
+                                    detail: $("#modsheetdetail").val()
+                                }, clearSheetSuccess, verifyClearSheet);
+                            }
                         });
                     });
 
@@ -2298,9 +2300,12 @@ function relationshipAddForm() {
                                 );
                             }
                             for(var item of makerres) {
-                                $('#addMakerRel').append(
-                                    `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
-                                );
+                                if(!item.deleted)
+                                {
+                                    $('#addMakerRel').append(
+                                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                    );
+                                }
                             }
                             for(var item of planres) {
                                 if (item.plan.status != 'archived') {
