@@ -84,7 +84,6 @@ class ChargebeeService {
                 }
             });
         });
-
     }
 
     /**
@@ -299,7 +298,7 @@ class ChargebeeService {
      * @returns {Promise<subscription>}
      */
     updateSubscription(subscriptionId, planId, planQuantity, pricePerHour) {
-        console.log(`Updating subscription ${subscriptionId}...`)
+        console.log(`Updating subscription ${subscriptionId}...`);
         return new Promise((resolve, reject) => {
             chargebee.subscription.update(subscriptionId,{
                 plan_id : planId,

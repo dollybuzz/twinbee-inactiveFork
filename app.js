@@ -16,7 +16,7 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
-const mserv = require('./services/MakerService.js')
+const es = require('./services/emailService.js');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
@@ -301,7 +301,7 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
-    mserv.deleteAllRelationships()
+    es.emailAdmin("asdf")
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
