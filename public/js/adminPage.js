@@ -1870,7 +1870,7 @@ function creditModForm(res, status) {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        var hoursToMin = (Number.parseInt($("#creditmodminutes").val())*60);
+        var hoursToMin = (Number.parseFloat($("#creditmodminutes").val())*60);
 
         let message = "";
         let valid = true;

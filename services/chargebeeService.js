@@ -305,7 +305,7 @@ class ChargebeeService {
                 plan_id : planId,
                 end_of_term : true,
                 plan_quantity: planQuantity,
-            //    plan_unit_price: pricePerHour
+                plan_unit_price: pricePerHour * 100
             }).request(function(error,result) {
                 if(error){
                     //handle error
