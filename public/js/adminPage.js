@@ -944,7 +944,7 @@ function subscriptionModForm (res, status) {
                 let message = "";
                 let valid = true;
                 let monthlyHours = $("#modsubscriptionplanquantity").val();
-                if ($("#modsubscriptionplanquantity").val().length === 0 || monthlyHours == selectedRow.children()[4].innerHTML || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0 ){
+                if ($("#modsubscriptionplanquantity").val().length === 0 || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0 ){
                     valid = false;
                     message += "Invalid entry! Please try again. This<br>";
                 }
@@ -1874,7 +1874,7 @@ function creditModForm(res, status) {
 
         let message = "";
         let valid = true;
-        if ($("#creditmodminutes").val().length === 0 || $("#creditmodminutes").val().includes(".") || $("#creditmodminutes").val() == 0){
+        if ($("#creditmodminutes").val().length === 0 || $("#creditmodminutes").val() == 0){
             valid = false;
             message += "Invalid entry! Please try again.<br>";
         }
