@@ -1861,9 +1861,9 @@ function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
-        "<br><br><div class='setGrid'></div>");
+        "<br><br><form id='modify'></form>");
 
-    $(".setGrid").html(`<div id="empty"></div><div>Enter a number (+/-) to adjust hours:</div>` +
+    $("#modify").html(`<div id="empty"></div><div>Enter a number (+/-) to adjust hours:</div>` +
         "<div><input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
         "<br><span id='errormessage' style='color:red'></span></div>");
 
@@ -2160,19 +2160,12 @@ function relationshipModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
-        "<br><div class='setGrid'></div>");
-    $(".setGrid").append("<div id='empty'></div>" +
-        "<label for='modMakerRel'>Please assign a Freedom Maker:</label>" +
-        "<select class='form-control' id='modMakerRel'></select>\n" +
-        "<div id='empty'></div>" +
-        "<div id='empty'></div>" +
-        "<div id='empty'></div>" +
-        "<div id='empty'></div>" +
-        "<div id='empty'></div>" +
-        "<br><br><label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span></div>\n` +
-        "<div id='empty'></div>" +
-        "<div id='empty'></div>");
+        "<br><form id='modify'>" +
+        "<label for='modMakerRel'>Select a Freedom Maker:</label>" +
+        "<select class='form-control' id='modMakerRel'></select>\n<br><br>" +
+        "<label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
+        "<div id='empty'></div></form>");
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -2266,33 +2259,18 @@ function relationshipAddForm() {
                         dataType: "json",
                         success: function (planres, planstatus) {
                             $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                                "<h6>Please select a Client, Freedom Maker, and Plan to assign:</h6><br>" +
-                                "<br><div class='setGrid'></div>");
-
-                            $(".setGrid").append("<div id='empty'></div>" +
-                                "<label for='addClientRel'> Select a Client: </label>" +
-                                "<select class='form-control' id='addClientRel'>\n</select><br><br>\n" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<label for='addMakerRel'> Select a Freedom Maker: </label>" +
-                                "<select class='form-control' id='addMakerRel'>\n</select><br><br>\n" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<label for='addPlanRel'> Select a Plan: </label>" +
-                                "<select class='form-control' id='addPlanRel'>\n</select><br><br>\n" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<div id='empty'></div>" +
-                                "<label for='addOccRel'> Enter Freedom Maker Role: </label>" +
-                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><div><span id='errormessage' style='color:red'></span></div><br><br>\n");
+                                "<form id='add'>\n" +
+                                "<label for='empty'></label>" +
+                                "<label for='empty'></label>" +
+                                "<label for='empty'></label>" +
+                                "<label for='addClientRel'> Select a Client:</label>" +
+                                "<select class='form-control' id='addClientRel'>\n</select>\n<br><br>" +
+                                "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
+                                "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
+                                "<label for='addPlanRel'> Select a Plan:</label>" +
+                                "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
+                                "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
+                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><div><span id='errormessage' style='color:red'></span></div>\n");
 
                             for(var item of clientres) {
                                 $('#addClientRel').append(
