@@ -908,11 +908,11 @@ function subscriptionModForm (res, status) {
         "<label for='modsubscriptionid'>Subscription:</label>" +
         `<input class='form-control' type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsubscriptionclient'>Client:</label>" +
-        `<input class='form-control' type='text' id='modsubscriptionclient' name='modsubscriptionclient' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsubscriptionclient' name='modsubscriptionclient' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br><br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
         `<select class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname'></select>\n<br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
-        `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
+        `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br><br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
         `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>" +
@@ -1032,7 +1032,7 @@ function subscriptionAddForm () {
         `<select class='form-control' id='addsubscriptioncustomerid' name='addsubscriptioncustomerid'></select>\n` +
         "<label for='empty'></label>" +
         "<label for='addsubscriptionplanid'>Plan:</label>" +
-        `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select>\n<br>\n` +
+        `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select><br><br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
         `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>\n" +
@@ -1767,7 +1767,7 @@ function addSheetSuccess (res, status) {
 function clearSheetSuccess (res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>` +
     "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.<br>" +
-    "<br>Note: The table will reflect your changes once the request has completed.</p><hr>");
+    "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
 }
 
@@ -1920,11 +1920,11 @@ function creditAddForm() {
                         "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
                         "<div><label for='addClientCredit'> Select a Client: </label></div>" +
-                        "<div><select class='form-control' id='addClientCredit'>\n</select><br><br></div>\n" +
+                        "<div><select class='form-control' id='addClientCredit'>\n</select></div>\n" +
                         "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
                         "<div><label for='addPlanCredit'> Select a Plan: </label></div>" +
-                        "<div><select class='form-control' id='addPlanCredit'>\n</select><br><br></div>\n" +
+                        "<div><select class='form-control' id='addPlanCredit'>\n</select></div>\n" +
                         "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
                         "<div><label for='addMinCredit'> Enter Number of Hours: </label></div>" +
