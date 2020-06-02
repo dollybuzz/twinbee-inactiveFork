@@ -267,17 +267,11 @@ function buyForm () {
                 success: function (planres, planstatus) {
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
                         "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
-                        "<div class='setGrid'></div>");
-                    $(".setGrid").append("<div id='empty'></div>" +
+                        "<form id='add'>" +
                         "<label for='buyPlan'> Select a Plan: </label>" +
-                        "<select class='form-control' id='buyPlan'>\n</select><br><br>\n" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
+                        "<select class='form-control' id='buyPlan'></select>\n<br><br>\n" +
                         "<label for='buyHours'> Enter Number of Hours: </label>" +
-                        "<input class='form-control' type='number' id='buyHours' name='buyHours'><br><br>\n");
+                        "<input class='form-control' type='number' id='buyHours' name='buyHours'></form>\n<br>\n");
 
                     for (var item in planres.buckets) {
                         $("#buyPlan").append(
@@ -443,7 +437,7 @@ function subscriptionModForm (res, status) {
         "<label for='modsubscriptionid'>Subscription:</label>" +
         `<input class='form-control' type='text' id='modsubscriptionid' name='modsubscriptionid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsubscriptionplanname'>Plan:</label>" +
-        `<input class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br>\n` +
+        `<input class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br><br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>" +
@@ -518,7 +512,7 @@ function subscriptionModForm (res, status) {
                     "<div id='cancelChange'></div>" +
                     "<br>Please know canceling your change request <span style='font-style:italic'>does not cancel your subscription</span>.<br>" +
                     "Your plan will resume its current monthly hours unless you submit another change request.<br>" +
-                    "<br>If you wish to terminate your subscription, please contact Freedom Makers.</p><hr>");
+                    "<br>If you wish to terminate your subscription, please contact Freedom Makers.</p>");
 
                 $("#CancelChangeButton").on("click", function() {
                     $.ajax({

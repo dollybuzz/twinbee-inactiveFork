@@ -987,11 +987,11 @@ function subscriptionModForm (res, status) {
             success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
 
-                $("#pendingChanges").append("<hr><p>This plan has the following scheduled change and will take effect on the next " +
+                $("#pendingChanges").html("<hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
                     `<br><h6>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h6>` +
                     "<br>If you want to revoke this change,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Revoke</button> to end the change request</span>.<br>" +
-                    "<div id='cancelChange'></div><hr>");
+                    "<div id='cancelChange'></div>");
 
                 $("#CancelChangeButton").on("click", function() {
                     $.ajax({
@@ -1752,7 +1752,7 @@ function addSheetSuccess (res, status) {
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>` +
         "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.<br>" +
-        "<br>Note: The table will reflect your changes once the request has completed.</p><hr>");
+        "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
     $(`#${res.id}`).mouseenter(function () {
         $(this).css('transition', 'background-color 0.5s ease');
