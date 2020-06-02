@@ -1534,16 +1534,16 @@ function sheetModForm(res, status) {
         "<label for='modsheetid'>Time Sheet ID:</label>" +
         `<input class='form-control' type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsheetplanname'>Plan:</label>" +
-        `<select class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<span id='mod'></span>\n` +
+        `<select class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<br><br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
         `<input class='form-control' type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
-        `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br><br>\n` +
         "<label for='modsheettask'>Task:</label>" +
         `<input class='form-control' type='text' id='modsheettask' name='modsheettask' value='${res.task}'>\n<br>\n` +
         "<label for='modsheetdetail'>Detail:</label>" +
-        `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n<br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+        `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n<br><br>\n` +
+        "</form><div><span id='errormessage' style='color:red'></span></div>");
 
 
     $.ajax({
@@ -1613,19 +1613,19 @@ function sheetAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addsheetmakerid'>Freedom Maker ID:</label>" +
-        `<select class='form-control' id='addsheetmakerid' name='addsheetmakerid'></select>\n<br>\n` +
+        `<select class='form-control' id='addsheetmakerid' name='addsheetmakerid'></select>\n<br><br>\n` +
         "<label for='addsheetclientid'>Client ID:</label>" +
         `<select class='form-control' id='addsheetclientid' name='addsheetclientid'></select>\n<br>\n` +
         "<label for='addsheetplanname'>Plan:</label>" +
-        `<select class='form-control' id='addsheetplanname' name='addsheetplanname'></select>\n<br>\n` +
+        `<select class='form-control' id='addsheetplanname' name='addsheetplanname'></select>\n<br><br>\n` +
         "<label for='addsheettimein'>Time In:</label>" +
         `<input class='form-control' type='text' id='addsheettimein' name='addsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
         "<label for='addsheettimeout'>Time Out:</label>" +
-        `<input class='form-control' type='text' id='addsheettimeout' name='addsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addsheettimeout' name='addsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br><br>\n` +
         "<label for='addsheettask'>Task:</label>" +
         `<input class='form-control' type='text' id='addsheettask' name='addsheettask'>\n<br>\n` +
         "<label for='addsheetdetail'>Detail:</label>" +
-        `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
@@ -1861,11 +1861,10 @@ function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
-        "<br><br><form id='modify'></form>");
-
-    $("#modify").html(`<div id="empty"></div><div>Enter a number (+/-) to adjust hours:</div>` +
-        "<div><input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
-        "<br><span id='errormessage' style='color:red'></span></div>");
+        "<br><br><form id='modify'>" +
+        `<div>Enter a number (+/-) to adjust hours:</div>` +
+        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
+        "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -1912,26 +1911,17 @@ function creditAddForm() {
                 dataType: "json",
                 success: function (planres, planstatus) {
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<div class='setGrid'></div>");
-
-                    $(".setGrid").html("<div id='empty'></div>" +
+                        "<form id='add'>" +
                         "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
                         "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div><label for='addClientCredit'> Select a Client: </label></div>" +
-                        "<div><select class='form-control' id='addClientCredit'>\n</select></div>\n" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div><label for='addPlanCredit'> Select a Plan: </label></div>" +
-                        "<div><select class='form-control' id='addPlanCredit'>\n</select></div>\n" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div><label for='addMinCredit'> Enter Number of Hours: </label></div>" +
-                        "<div><input class='form-control' type='number' id='addMinCredit' name='addMinCredit'></div>"+
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div><span id='errormessage' style='color:red'></span></div>");
+                        "<label for='addClientCredit'> Select a Client: </label>" +
+                        "<select class='form-control' id='addClientCredit'>\n</select>\n<br>\n" +
+                        "<label for='addPlanCredit'> Select a Plan: </label>" +
+                        "<select class='form-control' id='addPlanCredit'>\n</select>\n<br><br>\n" +
+                        "<label for='addMinCredit'> Enter Number of Hours: </label>" +
+                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br>"+
+                        "</form><div><span id='errormessage' style='color:red'></span></div>");
 
                     for(var client in clientres) {
                         client = clientres[client].customer;
@@ -2270,7 +2260,8 @@ function relationshipAddForm() {
                                 "<label for='addPlanRel'> Select a Plan:</label>" +
                                 "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
                                 "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
-                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'><div><span id='errormessage' style='color:red'></span></div>\n");
+                                "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
+                                "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
                             for(var item of clientres) {
                                 $('#addClientRel').append(
