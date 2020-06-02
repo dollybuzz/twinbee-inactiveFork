@@ -944,9 +944,9 @@ function subscriptionModForm (res, status) {
                 let message = "";
                 let valid = true;
                 let monthlyHours = $("#modsubscriptionplanquantity").val();
-                if ($("#modsubscriptionplanquantity").val().length === 0 || monthlyHours == selectedRow.children()[4].innerHTML || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0){
+                if ($("#modsubscriptionplanquantity").val().length === 0 || monthlyHours == selectedRow.children()[4].innerHTML || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0 ){
                     valid = false;
-                    message += "Invalid entry! Please try again.<br>";
+                    message += "Invalid entry! Please try again. This<br>";
                 }
                 if ($("#modsubscriptionprice").val().length === 0){
                     valid = false;
@@ -959,7 +959,8 @@ function subscriptionModForm (res, status) {
                         auth: id_token,
                         subscriptionId: $("#modsubscriptionid").val(),
                         planId: $("#modsubscriptionplanname").val(),
-                        planQuantity: $("#modsubscriptionplanquantity").val()
+                        planQuantity: $("#modsubscriptionplanquantity").val(),
+                        pricePerHour: $("#modsubscriptionprice").val()
                     }, modSubscriptionSuccess);
                 }
                 else{

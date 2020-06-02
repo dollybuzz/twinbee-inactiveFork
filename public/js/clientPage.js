@@ -647,7 +647,6 @@ function timeSheetFunctionality (res) {
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
         '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
-        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
