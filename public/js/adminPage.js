@@ -1258,7 +1258,7 @@ function planModForm (res, status) {
         "<label for='modplanid'>Plan:</label>" +
         `<input class='form-control' type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
         "<label for='modplaninvoicename'>Invoice Statement Title:</label>" +
-        `<input class='form-control' type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br><br>\n` +
         "<label for='modplanprice'>Price Per Hour ($):</label>" +
         `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
@@ -1302,11 +1302,11 @@ function planAddForm () {
         "<label for='addplanname'>Plan:</label>" +
         `<input class='form-control' type='text' id='addplanname' name='addplanname'>\n<br>\n` +
         "<label for='addplaninvoicename'>Invoice Statement Title:</label>" +
-        `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br><br>\n` +
         "<label for='addplanprice'>Price Per Hour ($):</label>" +
         `<input class='form-control' type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
         "<label for='addplandescription'>Description:</label>" +
-        `<input class='form-control' type='text' id='addplandescription' name='addplandescription'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addplandescription' name='addplandescription'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     //Submit button function
