@@ -946,7 +946,7 @@ function subscriptionModForm (res, status) {
                 let monthlyHours = $("#modsubscriptionplanquantity").val();
                 if ($("#modsubscriptionplanquantity").val().length === 0 || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0 ){
                     valid = false;
-                    message += "Invalid entry! Please try again. This<br>";
+                    message += "Invalid entry! Please try again.<br>";
                 }
                 if ($("#modsubscriptionprice").val().length === 0){
                     valid = false;
@@ -1666,11 +1666,17 @@ function sheetAddForm () {
                                     `<option id="${client.id}" value="${client.id}">${client.first_name + " " + client.last_name + " - " + client.id}</option>`
                                 );
                             }
+
                             for(var maker in makerres){
-                                maker = makerres[maker];
-                                $('#addsheetmakerid').append(
-                                    `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName + " - " + maker.id}</option>`
-                                );
+
+                                    maker = makerres[maker];
+                                    console.log(maker.deleted);
+                                    if(!maker.deleted)
+                                    {
+                                        $('#addsheetmakerid').append(
+                                        `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName + " - " + maker.id}</option>`
+                                    );}
+
                             }
                             updateDescriptionId('/api/getClient', $("#addsheetclientid").val(), $("#addsheetclientdescription"));
                             updateDescriptionId('/api/getMaker', $("#addsheetmakerid").val(), $("#addsheetmakerdescription"));
