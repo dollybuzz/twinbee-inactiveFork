@@ -51,6 +51,7 @@ exports.emailAdmin = content => new Promise((resolve, reject) => {
         console.log(`Emailing admin!`);
         transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html: content}, (error) => {
             if (error) {
+                console.log("Error emailing admin! Catastrophic failure!");
                 console.log(error);
                 reject(error);
             }
@@ -58,6 +59,7 @@ exports.emailAdmin = content => new Promise((resolve, reject) => {
         });
         transporter.sendMail({to: process.env.ADMIN_WINBEE}, (error) => {
             if (error) {
+                console.log("Error emailing admin! Catastrophic failure!");
                 console.log(error);
                 reject(error);
             }
