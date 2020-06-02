@@ -580,7 +580,7 @@ function deleteClientSuccess (res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
-    }, 3000);
+    }, 1000);
 }
 
 function verifyDeleteClient () {
@@ -791,7 +791,7 @@ function deleteMakerSuccess (res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted Freedom Maker ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
-    }, 3000);
+    }, 1000);
 }
 
 function verifyDeleteMaker () {
@@ -1371,7 +1371,7 @@ function addPlanSuccess (res, status) {
 }
 
 function deletePlanSuccess (res, status) {
-    $("#verifyEntry").html(`<h5>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h5>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(planFunctionality, "/api/getAllPlans");
     }, 1000);
@@ -1474,6 +1474,11 @@ function timeSheetFunctionality (res) {
                         $("#DeleteButton").show();
                         $("#DeleteButton").css("opacity", "1");
                         $("#DeleteButton").click(function () {
+                            if($("#modsheetdetail").val() == "null")
+                            {
+                                $("#errormessage").html("");
+                                $("#errormessage").html("Requires a detail to clear!");
+                            }
                             let sheetId = selectedRow.children()[0].innerHTML;
                             showDeletePrompt("clear", timeSheetPrompt, "/api/clearTimeSheet", {
                                 auth: id_token,
@@ -1618,7 +1623,7 @@ function sheetAddForm () {
         "<label for='addsheettask'>Task:</label>" +
         `<input class='form-control' type='text' id='addsheettask' name='addsheettask'>\n<br>\n` +
         "<label for='addsheetdetail'>Detail:</label>" +
-        `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail' value='${res.adminNote}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $.ajax({
@@ -1744,11 +1749,8 @@ function addSheetSuccess (res, status) {
     $("#optionsClient").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>` +
-        "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.</p>");
-
-    setTimeout(function() {
-        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
-    }, 3000);
+        "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.<br>" +
+        "<br>Note: The table will reflect your changes once the request has completed.</p><hr>");
 
     $(`#${res.id}`).mouseenter(function () {
         $(this).css('transition', 'background-color 0.5s ease');
@@ -1762,10 +1764,9 @@ function addSheetSuccess (res, status) {
 
 function clearSheetSuccess (res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>` +
-    "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.</p>");
-    setTimeout(function () {
-        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
-    }, 3000);
+    "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.<br>" +
+    "<br>Note: The table will reflect your changes once the request has completed.</p><hr>");
+
 }
 
 function verifyClearSheet () {
