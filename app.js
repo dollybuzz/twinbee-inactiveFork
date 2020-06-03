@@ -294,6 +294,7 @@ app.post("/api/tokenToEmail",
     authController.tokenToEmail);
 app.post("/api/getTimeBucket",
     authController.authorizeClient,
+    authController.authorizeMaker,
     authController.authorizeAdmin,
     authController.authorizeMaster,
     clientRestController.getTimeBucket);
