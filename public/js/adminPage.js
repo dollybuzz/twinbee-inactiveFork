@@ -1440,6 +1440,14 @@ function timeSheetFunctionality (res) {
                         clientIdentifier = clientMap[clientIdentifier] ?
                             clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
                             `Deleted Client, ID: ${clientIdentifier}`;
+                        let message = null;
+                        if(item.adminNote == null)
+                        {
+                            message = "";
+                        }
+                        else {
+                            message = item.adminNote;
+                        }
 
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
@@ -1450,8 +1458,7 @@ function timeSheetFunctionality (res) {
                             '   <td>' + item.timeIn + '</td>' +
                             '   <td>' + item.timeOut + '</td>' +
                             '   <td>' + item.task + '</td>' +
-                            '   <td>' + item.adminNote + '</td></tr>'
-                        );
+                            '   <td>' + message + '</td></tr>');
                     });
                     $("#sheetsTable").append('\n</tbody>');
 
@@ -1475,7 +1482,7 @@ function timeSheetFunctionality (res) {
                         $("#DeleteButton").show();
                         $("#DeleteButton").css("opacity", "1");
                         $("#DeleteButton").click(function () {
-                            if($("#modsheetdetail").val() == "null" || $("#modsheetdetail").val() == "" || $("#modsheetdetail").val() == "undefined")
+                            if($("#modsheetdetail").val() == "" || $("#modsheetdetail").val() == "undefined")
                             {
                                 $("#errormessage").html("");
                                 $("#errormessage").html("Requires a detail to clear!");
@@ -1546,6 +1553,10 @@ function sheetModForm(res, status) {
         `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
+    if($("#modsheetdetail").val() == "null")
+    {
+        $("#modsheetdetail").val("");
+    }
 
     $.ajax({
         url: "/api/getAllPlans",
