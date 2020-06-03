@@ -1544,9 +1544,11 @@ function sheetModForm(res, status) {
         "<label for='modsheetplanname'>Plan:</label>" +
         `<select class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<br><br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
-        `<input class='form-control' type='text' id='modsheettimein' name='modsheettimein' value='${res.timeIn}'>\n<br>\n` +
+        `<input class='form-control' type='date' id='modsheettimeindate' name='modsheettimeindate' value='${res.timeIn}'>`+
+        `<input class='form-control' type='time' id='modsheettimeintime' name='modsheettimeintime' value='${res.timeIn}'>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
-        `<input class='form-control' type='text' id='modsheettimeout' name='modsheettimeout' value='${res.timeOut}'>\n<br><br>\n` +
+        `<input class='form-control' type='date' id='modsheettimeoutdate' name='modsheettimeoutdate' value='${res.timeOut}'>` +
+        `<input class='form-control' type='time' id='modsheettimeouttime' name='modsheettimeouttime' value='${res.timeOut}'>\n` +
         "<label for='modsheettask'>Task:</label>" +
         `<input class='form-control' type='text' id='modsheettask' name='modsheettask' value='${res.task}'>\n<br>\n` +
         "<label for='modsheetdetail'>Detail:</label>" +
@@ -1584,15 +1586,18 @@ function sheetModForm(res, status) {
             $("#SubmitButton").on('click', function (e) {
                 let message = "";
                 let valid = true;
-                if (!$("#modsheettimeout").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
-                || $("#modsheettimeout").val().match(/[a-z]+|[A-Z]+/g)){
+                if ($("#modsheettask").val().length == 0){
                     valid = false;
-                    message += "Bad format on time out!<br>";
+                    message += "Please add a task!<br>";
                 }
-                if (!$("#modsheettimein").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
-                    || $("#modsheettimein").val().match(/[a-z]+|[A-Z]+/g)){
+                if ($("#modsheetdetail").val() == ""){
                     valid = false;
-                    message += "Bad format on time in!<br>";
+                    message += "Please add a reason for editing!<br>";
+                }
+                if ($("#modsheettimeintime").val() == "" || $("#modsheettimeindate").val() == "" ||
+                    $("#modsheettimeouttime").val() == "" || $("#modsheettimeoutdate").val() == ""){
+                    valid = false;
+                    message += "Please correct the dates and times!<br>";
                 }
 
                 if (valid) {
@@ -1601,8 +1606,8 @@ function sheetModForm(res, status) {
                         auth: id_token,
                         id: $("#modsheetid").val(),
                         hourlyRate: $("#modsheetplanname").val(),
-                        timeIn: $("#modsheettimein").val() ,
-                        timeOut: $("#modsheettimeout").val(),
+                        timeIn: `${$("#modsheettimeindate").val()} ${$("#modsheettimeintime").val()}:00` ,
+                        timeOut: `${$("#modsheettimeoutdate").val()} ${$("#modsheettimeouttime").val()}:00` ,
                         task: $("#modsheettask").val(),
                         detail: $("#modsheetdetail").val()
                     }, modSheetSuccess);
