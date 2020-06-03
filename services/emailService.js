@@ -21,18 +21,40 @@ const transporter = nodemailer.createTransport({
 });
 
 /**
- * Sends an email to the target email.
+ * Sends an email to the designated email with designated subject
+ * and html content
  *
- * @param options object in the form:{
- *     to: "email@tosend.to",
- *     subject: "Subject for email",
- *     html: Html body for email to be sent
- * }
- * @returns {Promise<>}
+ * @param toEmail   - email to send to
+ * @param subject   - subject of email
+ * @param content   - content
+ * @returns {Promise<unknown>}
  */
-exports.sendEmail = options => new Promise((resolve, reject) => {
-    console.log(`Sending an email to ${options.to} with subject ${options.subject}`);
-    transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html:content}, (error) => {
+exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject) => {
+    console.log(`Sending an email to ${toEmail} with subject ${subject}`);
+    transporter.sendMail({to: toEmail, subject: subject, html:content}, (error) => {
+        if (error) {
+            console.log(error);
+            reject(error);
+        }
+        resolve();
+    });
+});
+/**
+ * Sends a welcome email with a link to the live website to the designated
+ * email address
+ *
+ * @param toEmail   - email to send to
+ * @returns {Promise<unknown>}
+ */
+exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
+    let subject = "Welcome to Freedom Makers!";
+    let content = "<h1>Welcome!</h1><br>" +
+        "<Your account is ready! Sign in at our " +
+        "<a href='https://www.freedom-makers-hours.com'>Freedom Makers Portal</a> to get started!" +
+        "<br><br>" +
+        "This email was sent to notify you of your account's successful setup.  No unsubscribe necessary.";
+    console.log(`Sending an email to ${toEmail} with subject ${subject}`);
+    transporter.sendMail({to: toEmail, subject: subject, html:content}, (error) => {
         if (error) {
             console.log(error);
             reject(error);

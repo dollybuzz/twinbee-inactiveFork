@@ -2,7 +2,8 @@ const {query} = require('./repoMaster');
 const request = require('request');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
-    api_key : process.env.CHARGEBEE_TEST_API})
+    api_key : process.env.CHARGEBEE_TEST_API});
+const emailService = require('../services/emailService.js');
 
 class ClientRepository {
     constructor() {
@@ -36,6 +37,7 @@ class ClientRepository {
                         }
                     });
                     console.log("Customer added to DB");
+                    emailService.sendWelcome(customerEmail);
                     resolve(customer);
                 }
             });

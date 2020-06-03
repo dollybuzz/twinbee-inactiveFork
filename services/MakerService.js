@@ -46,6 +46,7 @@ class MakerService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+        emailService.sendWelcome(email);
         return new Maker(id[0].id, firstName, lastName, email);
     }
 
