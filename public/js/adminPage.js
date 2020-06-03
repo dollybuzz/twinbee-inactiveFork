@@ -355,7 +355,7 @@ function clientFunctionality (res){
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
-        if (item.customer.billing_address && !item.customer.deleted) {
+        if (item.customer && !item.customer.deleted) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
                 '   <td scope="row">' + item.customer.id + '</td>' +
