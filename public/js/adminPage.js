@@ -144,7 +144,7 @@ function showFunction (functionality, endpoint) {
         dataType: "json",
         success: function (res, status) {
             functionality(res);
-            SELECTED_NAV_MAP.html(NAV_MAP_TEXT);
+            $(".spinner-border").remove();
         },
         error: function (res, status) {
             $("#userMainContent").html("Something went wrong!");
@@ -1876,7 +1876,7 @@ function creditModForm(res, status) {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        var hoursToMin = (Number.parseInt($("#creditmodminutes").val())*60);
+        var hoursToMin = (Number.parseFloat($("#creditmodminutes").val())*60);
 
         let message = "";
         let valid = true;

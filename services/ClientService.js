@@ -158,9 +158,10 @@ class ClientService {
      * @param newLastName   - new last name of client
      * @param newPhone   - new phone number of client
      * @param newEmail  - new email of client
+     * @param company   - new client company name
      * @returns {Promise<void>}
      */
-    async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone) {
+    async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone, company) {
         console.log(`Updating client ${clientId} contact info...`);
         let customer = await this.getClientById(clientId).catch(err => {
             emailService.emailAdmin(err);
@@ -170,6 +171,7 @@ class ClientService {
         customer.last_name = newLastName;
         customer.email = newEmail;
         customer.phone = newPhone;
+        customer.company = company;
         updateClient(clientId, customer)
     }
 
@@ -226,21 +228,13 @@ class ClientService {
      * @param firstName     - customer first name
      * @param lastName      - customer last name
      * @param customerEmail - customer email
-     * @param addressStreet - customer streed address
-     * @param customerCity  - customer city
      * @param phoneNumber  - customer phone
-     * @param customerStateFull - customer state typed fully
-     * @param customerZip   - customer zip code
-     * @param billingFirst  - customer billing address
-     * @param billingLast   - customer billing address
+     * @param company       - client's company name
      * @returns {Promise<chargebee customer object>}
      */
-    async createNewClient(firstName, lastName, customerEmail, addressStreet,
-                          customerCity, customerStateFull, customerZip, phoneNumber,
-                          billingFirst, billingLast) {
+    async createNewClient(firstName, lastName, customerEmail, phoneNumber, company) {
         console.log(`Creating new client with last name ${lastName}...`);
-        return await clientRepo.createClient(firstName, lastName, customerEmail, addressStreet,
-            customerCity, customerStateFull, customerZip, phoneNumber, billingFirst, billingLast).catch(err => {
+        return await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(err => {
             emailService.emailAdmin(err);
             console.log(err)
         });
