@@ -110,7 +110,7 @@ function setClockInFunctionality() {
                                         $("#availcredit").html(minToHours + " hours");
                                     },
                                     error: function (bucketres, bucketstatus) {
-                                        $("#userMainContent").html("Token isn't working!");
+                                        $("#userMainContent").html("Bucket isn't working!");
                                     }
                                 });
                             }
