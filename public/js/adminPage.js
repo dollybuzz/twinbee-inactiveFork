@@ -1439,7 +1439,7 @@ function timeSheetFunctionality (res) {
                         let clientIdentifier = item.clientId;
                         clientIdentifier = clientMap[clientIdentifier] ?
                             clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
-                            `Deleted client ${clientIdentifier}`;
+                            `Deleted Client, ID: ${clientIdentifier}`;
 
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
