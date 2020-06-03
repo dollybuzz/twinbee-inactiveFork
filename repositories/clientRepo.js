@@ -8,27 +8,18 @@ class ClientRepository {
     constructor() {
     };
 
-    createClient(firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber,
-                 billingFirst, billingLast) {
+    createClient(firstName, lastName, customerEmail, phoneNumber, company) {
         return new Promise((resolve, reject) => {
             chargebee.customer.create({
                 first_name : firstName,
                 last_name : lastName,
+                company: company,
                 email : customerEmail,
                 phone: phoneNumber,
-                billing_address : {
-                    first_name : billingFirst,
-                    last_name : billingLast,
-                    line1 : addressStreet,
-                    city : customerCity,
-                    state : customerStateFull,
-                    zip : customerZip,
-                    country : "US"
-                }
             }).request(function(error,result) {
                 if(error){
                     //TODO handle error... email us?
-                    //console.log(error);
+                    console.log(error);
                     reject(error);
                 }else{
                     var customer = result.customer;
@@ -51,42 +42,34 @@ class ClientRepository {
         })
     }
 
-    updateClient(clientId, firstName, lastName, customerEmail, addressStreet, customerCity, customerStateFull, customerZip, phoneNumber) {
-        chargebee.customer.update(clientId,{
-            first_name : firstName,
-            last_name : lastName,
-            phone : phoneNumber
-        }).request(function(error,result) {
-            if(error){
-                //TODO handle error
-                console.log(`Failed to update ${clientId}`);
-                console.log(error);
-            }else{
-                var customer = result.customer;
-                console.log(`Updated ${customer.id}`);
-            }
-        });
-
-        chargebee.customer.update_billing_info("16CHLFRxyBHonCsd",{
-            billing_address : {
+    updateClient(clientId, firstName, lastName, customerEmail, phoneNumber, company) {
+        return new Promise((resolve, reject) => {
+            chargebee.customer.update(clientId,{
                 first_name : firstName,
                 last_name : lastName,
-                line1 : addressStreet,
-                city : customerCity,
-                state : customerStateFull,
-                zip : customerZip,
-                country : "US"
-            }
-        }).request(function(error,result) {
-            if(error){
-                //TODO handle error
-                console.log(`Failed to update ${clientId} billing info`)
-                console.log(error);
-            }else{
-                var customer = result.customer;
-                console.log(`Updated ${customer.id} billing info`)
-            }
-        });
+                phone : phoneNumber,
+                company: company
+            }).request(function(error,result) {
+                if(error){
+                    //TODO handle error
+                    console.log(`Failed to update ${clientId}`);
+                    console.log(error);
+                }else{
+                    var customer = result.customer;
+
+                    let sql = 'UPDATE client SET email = ? WHERE chargebee_id = ?';
+                    let sqlParams = [customerEmail, customer.id];
+                    query(sql, sqlParams, function (err, result) {
+                        if (err) {
+                            reject(err);
+                            throw err;
+                        }
+                        console.log(`Updated ${customer.id}`);
+                        resolve(customer);
+                    });
+                }
+            });
+        })
     }
 
     deleteClient(chargebeeId) {

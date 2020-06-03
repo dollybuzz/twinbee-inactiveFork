@@ -84,13 +84,15 @@ module.exports = {
      *     "lastName": new last name,
      *     "email": new email,
      *     "phone": new phone,
+     *     "company": new company name
      *     "auth": authentication credentials; either master or token
      * }
      */
     updateClientContact: (req, res) => {
         console.log("Attempting to update client contact info from REST: ");
         console.log(req.body);
-        clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName, req.body.email, req.body.phone);
+        clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName,
+            req.body.email, req.body.phone, req.body.company);
         res.send({});
     },
 
@@ -139,9 +141,9 @@ module.exports = {
      * @param res
      */
     async getAllTimeBuckets(req, res) {
-      console.log("Attempting to get all time buckets from REST");
-      console.log(req.body);
-      res.send(await clientService.getAllTimeBuckets());
+        console.log("Attempting to get all time buckets from REST");
+        console.log(req.body);
+        res.send(await clientService.getAllTimeBuckets());
     },
 
 
@@ -208,7 +210,7 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    async deleteClientTimeBucket(req, res){
+    async deleteClientTimeBucket(req, res) {
         console.log(`Attempting to delete client ${req.body.id} time bucket ${req.body.bucket} from REST: `);
         console.log(req.body);
 
@@ -226,13 +228,8 @@ module.exports = {
      *     "firstName": customer's first name,
      *     "lastName": customer's last name,
      *     "email": customer's email,
-     *     "address": customer's street address,
      *     "phone": customer's phone,
-     *     "city": customer's city,
-     *     "state": customer's state,
-     *     "zip": customer's zip,
-     *     "billingFirst": customer's billing first name,
-     *     "billingLast": customer's billing last name,
+     *     "company": client's company name
      *     "auth": authentication credentials; either master or token
      * }
      * @returns customer{}
@@ -241,8 +238,7 @@ module.exports = {
         console.log("Attempting to create a client from REST: ");
         console.log(req.body);
         let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
-            req.body.email, req.body.address, req.body.city, req.body.state, req.body.zip,
-            req.body.phone, req.body.billingFirst, req.body.billingLast)
+            req.body.email, req.body.phone, req.body.company)
             .catch(err => {
                 console.log(err)
             });
@@ -343,15 +339,14 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    subscriptionRenewed: async (req, res)=>{
+    subscriptionRenewed: async (req, res) => {
         console.log(`Webhook hit for ${req.body.event_type}`);
-        if (req.body.event_type == "subscription_renewed"){
-        console.log("Client subscription renewed; updating from REST");
-        console.log(req.body);
-        res.send(await clientService.subscriptionRenewed(req.body));
+        if (req.body.event_type == "subscription_renewed") {
+            console.log("Client subscription renewed; updating from REST");
+            console.log(req.body);
+            res.send(await clientService.subscriptionRenewed(req.body));
         }
     },
-
 
 
     /**
@@ -364,15 +359,14 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    webHookHit: async (req, res)=>{
+    webHookHit: async (req, res) => {
         console.log(req.body);
         console.log(`Webhook hit for ${req.body.event_type}`);
         console.log(clientService.webHookBucketUpdate);
         let possible = clientService.webhookMap[req.body.event_type];
         if (possible) {
             res.send(await possible(req.body));
-        }
-        else{
+        } else {
             res.send("Unsupported Event");
         }
     },
@@ -406,7 +400,7 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getClientPayInvoicesPage: async (req, res) =>{
+    getClientPayInvoicesPage: async (req, res) => {
         console.log("Attempting to get a hosted page for client pay invoices from REST");
         console.log(req.body);
         let page = await clientService.getOutstandingPaymentsPage(req.body.id);
@@ -427,9 +421,9 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getTimeBucket: async (req, res) =>{
+    getTimeBucket: async (req, res) => {
         console.log("Attempting to get a timebucket for client");
         console.log(req.body);
         res.send(await clientService.getTimeBucket(req.body.id, req.body.planName));
-}
+    }
 };
