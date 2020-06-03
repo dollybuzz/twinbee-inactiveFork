@@ -96,6 +96,24 @@ module.exports = {
     },
 
     /**
+     * Retrieves a specific bucket for the authenticated client. Looks for data in the body in the form:
+     * {
+     *     "token": requester's token,
+     *     "bucket": plan id for the requested bucket
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyTimeBucket: async(req, res)=>{
+      console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
+      console.log(req.body);
+      let email = await authService.getEmailFromToken(req.body.token);
+      let client = await clientService.getClientByEmail(email);
+      res.send(await clientService.getTimeBucket("AzqgmORz6AFeK1Q5w", "freedom-makers-32"));
+    },
+
+    /**
      * reverts subscription changes for the requesting client. Looks for data in the body in the
      * form:
      * {
