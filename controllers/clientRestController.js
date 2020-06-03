@@ -33,11 +33,48 @@ module.exports = {
      * @returns {Promise<void>}
      */
     getMyTimeSheets: async(req, res)=>{
-        console.log(`Maker with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
         console.log(req.body);
         let email = await authService.getEmailFromToken(req.body.token);
         let client = await clientService.getClientByEmail(email);
         res.send(await clientService.getSheetsByClient(client.id));
+    },
+
+    /**
+     * Retrieves subscriptions for the requesting client. Looks for data in the body in the
+     * form:
+     * {
+     *     "token": requester's google token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMySubscriptions: async(req, res)=>{
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their subscriptions from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
+        res.send(await clientService.getSubscriptionsForClient(client.id));
+    },
+
+    /**
+     * Retrieves subscription changes for the requesting client. Looks for data in the body in the
+     * form:
+     * {
+     *     "token": requester's google token,
+     *     "subscriptionId": id of the subscription to view
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMySubscriptionChanges: async(req, res)=>{
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their changes to subscription ${req.body.subscriptionId} from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
+        res.send(await clientService.getSubscriptionChanges(client.id, req.body.subscriptionId));
     },
 
     /**

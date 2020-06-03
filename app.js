@@ -307,6 +307,12 @@ app.post("/api/getMyTimeSheetsMaker",
 app.post("/api/getMyTimeSheetsClient",
     authController.authorizeClient,
     clientRestController.getMyTimeSheets);
+app.post("/api/getMySubscriptions",
+    authController.authorizeClient,
+    clientRestController.getMySubscriptions);
+app.post("/api/getMySubscriptionChanges",
+    authController.authorizeClient,
+    clientRestController.getMySubscriptionChanges);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

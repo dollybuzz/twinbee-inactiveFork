@@ -372,6 +372,30 @@ class ClientService {
     }
 
     /**
+     * Retrieves changes to the given subscription for the given customer.
+     * Also ensures that the clientId is present in the subscription with id subscriptionId
+     *
+     * @param clientId  - client that wants to check subscription details
+     * @param subscriptionId - subscription to be checked
+     * @returns {Promise<boolean>}
+     */
+    async getSubscriptionChanges(clientId, subscriptionId){
+        let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/retrieveSubscriptionChanges`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'subscriptionId': subscriptionId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        let subscription = JSON.parse(result.body);
+        return subscription.customer_id === clientId ? subscription : false;
+    }
+
+    /**
      * Retrieves all relationships for a client
      * @param clientId  -   client whose relationships are to be retrieved
      * @returns {Promise<[Relationship]>}
