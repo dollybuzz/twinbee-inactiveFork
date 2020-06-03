@@ -396,6 +396,35 @@ class ClientService {
     }
 
     /**
+     * Reverts changes to the subscription indicated if the client passed is
+     * present on the subscription with id subscriptionId
+     *
+     * @param clientId  - ClientId that must be present on the subscription with id subscriptionId
+     * @param subscriptionId    - subscription to revert
+     * @returns {Promise<boolean|any>}
+     */
+    async undoMySubscriptionChanges(clientId, subscriptionId){
+        if (this.getSubscriptionChanges(clientId, subscriptionId)){
+            let result = await request({
+                method: 'POST',
+                uri: `https://www.freedom-makers-hours.com/api/undoSubscriptionChanges`,
+                form: {
+                    'auth': process.env.TWINBEE_MASTER_AUTH,
+                    'subscriptionId': subscriptionId
+                }
+            }).catch(err => {
+                console.log(err);
+                emailService.emailAdmin(err);
+            });
+            console.log(result);
+            return result.body && result.body.length > 0;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
      * Retrieves all relationships for a client
      * @param clientId  -   client whose relationships are to be retrieved
      * @returns {Promise<[Relationship]>}

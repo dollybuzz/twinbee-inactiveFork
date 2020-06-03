@@ -78,6 +78,25 @@ module.exports = {
     },
 
     /**
+     * reverts subscription changes for the requesting client. Looks for data in the body in the
+     * form:
+     * {
+     *     "token": requester's google token,
+     *     "subscriptionId": id of the subscription to revert
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    undoMySubscriptionChanges: async(req, res)=>{
+        console.log(`Client with token...\n${req.body.token}\n...is requesting to revert their changes to subscription ${req.body.subscriptionId} from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
+        res.send(await clientService.getSubscriptionChanges(client.id, req.body.subscriptionId));
+    },
+
+    /**
      * ENDPOINT: /api/getClientName
      * Retrieves a client with only name and id exposed. Looks for
      * values in the body in the form:

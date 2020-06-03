@@ -313,6 +313,9 @@ app.post("/api/getMySubscriptions",
 app.post("/api/getMySubscriptionChanges",
     authController.authorizeClient,
     clientRestController.getMySubscriptionChanges);
+app.post("/api/undoMySubscriptionChanges",
+    authController.authorizeClient,
+    clientRestController.undoMySubscriptionChanges);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
