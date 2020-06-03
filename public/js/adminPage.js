@@ -1339,7 +1339,7 @@ function planAddForm () {
             $("#errormessage").html("");
             addSubmit("/api/createPlan", {
                 auth: id_token,
-                planName: $("#addplanname").val(),
+                planId: $("#addplanname").val(),
                 invoiceName: $("#addplaninvoicename").val() ,
                 pricePerHour: Number.parseFloat($("#addplanprice").val()).toFixed(2) * 100,
                 planDescription: $("#addplandescription").val()
@@ -1890,7 +1890,7 @@ function creditModForm(res, status) {
             modSubmit("/api/updateClientTimeBucket", {
                 auth: id_token,
                 id: selectedRow.children()[0].innerHTML,
-                planName: selectedRow.children()[2].innerHTML,
+                planId: selectedRow.children()[2].innerHTML,
                 minutes: hoursToMin,
             }, modCreditSuccess);
         }
@@ -1961,7 +1961,7 @@ function creditAddForm() {
                             addSubmit("/api/updateClientTimeBucket", {
                                 auth: id_token,
                                 id: $("#addClientCredit").val(),
-                                planName: $("#addPlanCredit").val(),
+                                planId: $("#addPlanCredit").val(),
                                 minutes: hoursToMin,
                             }, addCreditSuccess);
                         }

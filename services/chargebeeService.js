@@ -50,18 +50,18 @@ class ChargebeeService {
     /**
      * Creates a new plan in the {TEST} environment.
      *
-     * @param planName      - desired name of the plan
+     * @param planId      - desired name of the plan
      * @param invoiceName   - desired name of the plan as displayed on an invoice
      * @param pricePerHour  - cost of each purchased hour
      * @param planDescription-plan description
      */
-    createPlan(planName, invoiceName, pricePerHour, planDescription) {
-        console.log(`Creating plan ${planName} with per hour cost of ${pricePerHour}...`);
+    createPlan(planId, invoiceName, pricePerHour, planDescription) {
+        console.log(`Creating plan ${planId} with per hour cost of ${pricePerHour}...`);
         return new Promise((resolve, reject) => {
-            let planId = planName.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
+            let planId = planId.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
             chargebee.plan.create({
                 id: planId,
-                name: planName,
+                name: planId,
                 invoice_name: invoiceName,
                 description: planDescription,
                 price: pricePerHour,
@@ -77,7 +77,7 @@ class ChargebeeService {
                     console.log(error);
                     reject(error);
                 } else {
-                    console.log(`Plan ${planName} created. Rate: $${pricePerHour} per `+
+                    console.log(`Plan ${planId} created. Rate: $${pricePerHour} per `+
                         `hour. Description: ${planDescription}`);
                     var plan = result.plan;
                     resolve(plan);
@@ -452,7 +452,7 @@ class ChargebeeService {
                     uri: `https://www.freedom-makers-hours.com/api/updateClientTimeBucket`,
                     form: {
                         'id': customerId,
-                        'planName': plan,
+                        'planId': plan,
                         'minutes': minutesString,
                         'auth':process.env.TWINBEE_MASTER_AUTH
                     }

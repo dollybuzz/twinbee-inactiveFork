@@ -102,7 +102,7 @@ function setClockInFunctionality() {
                                     data: {
                                         auth: id_token,
                                         id: item.clientId,
-                                        planName: item.planId
+                                        planId: item.planId
                                     },
                                     dataType: "json",
                                     success: function (bucketres, bucketstatus) {
