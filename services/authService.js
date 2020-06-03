@@ -85,9 +85,14 @@ class AuthService {
         console.log("Let's see if you're on the list...");
         for (var i = 0; i < adminList.length; ++i){
             let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
-                console.log(err);
+                if (err.toString().includes("data and hash must be strings")){
+                    console.log(`Bcrypt threw 'data and hash must be strings' with data: ${creds} `)
+                }
+                else{
+                    console.log(err);
+                    emailService.emailAdmin(err);
+                }
                 console.log("Error bcrypt.comapare'ing adminList[i] to the passed email");
-                emailService.emailAdmin(err);
                 return false;
             });
             if (emailsMatch){
