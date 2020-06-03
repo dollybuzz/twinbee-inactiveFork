@@ -131,9 +131,9 @@ module.exports = {
      *      "id": customer's chargebee id
      *      "buckets":
      *              {
-     *                  "planName1": minutes left in plan 1,
-     *                  "planName2": minutes left in plan 2,
-     *                  "planName3": minutes left in plan 3,...
+     *                  "planId1": minutes left in plan 1,
+     *                  "planId2": minutes left in plan 2,
+     *                  "planId3": minutes left in plan 3,...
      *              }
      *  },...
      * ]
@@ -162,9 +162,9 @@ module.exports = {
      *      "id": customer's chargebee id
      *      "buckets":
      *              {
-     *                  "planName1": minutes left in plan 1,
-     *                  "planName2": minutes left in plan 2,
-     *                  "planName3": minutes left in plan 3,...
+     *                  "planId1": minutes left in plan 1,
+     *                  "planId2": minutes left in plan 2,
+     *                  "planId3": minutes left in plan 3,...
      *              }
      *  }
      * @param req
@@ -182,7 +182,7 @@ module.exports = {
      * of minutes (adds or subtracts). Looks for data in the body in the form:
      * {
      *     "id": id of the client to update,
-     *     "planName": id of the client's plan to update,
+     *     "planId": id of the client's plan to update,
      *     "minutes": positive or negative integer of minutes to update with,
      *     "auth": authentication credentials; either master or token
      * }
@@ -191,7 +191,7 @@ module.exports = {
         console.log("Attempting to update client from REST: ");
         console.log(req.body);
 
-        res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planName, parseInt(req.body.minutes))
+        res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
             .catch(error => {
                 console.log(error)
             }));
@@ -413,7 +413,7 @@ module.exports = {
      * {
      *      "auth": valid auth token,
      *     "id": client's chargebee id,
-     *     "planName": plan id of time bucket
+     *     "planId": plan id of time bucket
      *
      * }
      *
@@ -424,6 +424,6 @@ module.exports = {
     getTimeBucket: async (req, res) => {
         console.log("Attempting to get a timebucket for client");
         console.log(req.body);
-        res.send(await clientService.getTimeBucket(req.body.id, req.body.planName));
+        res.send(await clientService.getTimeBucket(req.body.id, req.body.planId));
     }
 };

@@ -36,7 +36,7 @@ module.exports = {
      * ENDPOINT: /api/createPlan
      * Creates a new plan in the {TEST} environment. looks for values in the body as follows:
      * {
-     *     "planName": name of plan,
+     *     "planId": name of plan,
      *     "invoiceName": name as it should appear on an invoice,
      *     "pricePerHour": integer price per hour in cents,
      *     "planDescription": general description of plan,
@@ -46,7 +46,7 @@ module.exports = {
     createPlan: async function(req, res){
         console.log("Attempting to create a plan from REST: ");
         console.log(req.body);
-        res.send(await chargebeeService.createPlan(req.body.planName, req.body.invoiceName,
+        res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
             req.body.pricePerHour, req.body.planDescription));
     },
 

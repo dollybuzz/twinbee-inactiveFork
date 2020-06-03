@@ -140,7 +140,7 @@ Endpoint: '/api/createPlan'</br>
       Creates a new plan in the current chargebee environment. looks for values in the body as follows:
 ```
       {
-          "planName": name of plan,
+          "planId": name of plan,
           "invoiceName": name as it should appear on an invoice,
           "pricePerHour": integer price per hour in cents,
           "planDescription": general description of plan,
@@ -152,7 +152,7 @@ Sample input:
 ```
 
 {
-      "planName": "freedom-makers-32",
+      "planId": "freedom-makers-32",
       "invoiceName": "Freedom Makers $32/hour plan",
       "pricePerHour": "3200",
       "planDescription": "At $32 per hour, this plan is an excellent value for your business",
@@ -967,7 +967,7 @@ Endpoint: '/api/updateClientTimeBucket'</br>
 ```
      {
          "id": id of the client to update,
-         "planName": name of the client's plan to update,
+         "planId": name of the client's plan to update,
          "minutes": positive or negative integer of minutes to update with,
          "auth": authentication credentials; either master or token
      }
