@@ -74,7 +74,25 @@ module.exports = {
         console.log(req.body);
         let email = await authService.getEmailFromToken(req.body.token);
         let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getSubscriptionChanges(client.id, req.body.subscriptionId));
+        res.send(await clientService.getMySubscriptionChanges(client.id, req.body.subscriptionId));
+    },
+
+    /**
+     * Retrieves a single subscription for a customer. Looks for data in the body in the form:
+     * {
+     *     "token": requester's token,
+     *     "subscriptionId": id of desired subscription
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    retrieveMySubscription: async(req, res)=>{
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their subscription ${req.body.subscriptionId} from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
+        res.send(await clientService.getMySubscription(client.id, req.body.subscriptionId));
     },
 
     /**
@@ -93,7 +111,7 @@ module.exports = {
         console.log(req.body);
         let email = await authService.getEmailFromToken(req.body.token);
         let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getSubscriptionChanges(client.id, req.body.subscriptionId));
+        res.send(await clientService.undoMySubscriptionChanges(client.id, req.body.subscriptionId));
     },
 
     /**

@@ -372,6 +372,37 @@ class ClientService {
     }
 
     /**
+     * Retrieves a suscription if the given clientId matches the subscription's subscriber,
+     * otherwise false.
+     *
+     * @param clientId  - requesting client for verification
+     * @param subscriptionId    - requested subscription
+     * @returns {Promise<boolean|any>}
+     */
+    async getMySubscription(clientId, subscriptionId){
+        console.log(`Getting subscription ${subscriptionId} for client ${clientId}`);
+        let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/retrieveSubscription`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                "subscriptionId": subscriptionId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+
+        let subscription = JSON.parse(result.body);
+
+        if (subscription && subscription.customer_id !== clientId){
+            console.log("Requester did not match subscriber");
+            return false;
+        }
+        return subscription;
+    }
+
+    /**
      * Retrieves changes to the given subscription for the given customer.
      * Also ensures that the clientId is present in the subscription with id subscriptionId
      *
@@ -379,7 +410,7 @@ class ClientService {
      * @param subscriptionId - subscription to be checked
      * @returns {Promise<boolean>}
      */
-    async getSubscriptionChanges(clientId, subscriptionId){
+    async getMySubscriptionChanges(clientId, subscriptionId){
         let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/retrieveSubscriptionChanges`,
