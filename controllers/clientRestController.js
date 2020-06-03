@@ -23,6 +23,24 @@ module.exports = {
     },
 
     /**
+     * Retrieves timesheets for the requesting client. Looks for data in the body in the
+     * form:
+     * {
+     *     "token": requester's google token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyTimeSheets: async(req, res)=>{
+        console.log(`Maker with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
+        res.send(await clientService.getSheetsByClient(client.id));
+    },
+
+    /**
      * ENDPOINT: /api/getClientName
      * Retrieves a client with only name and id exposed. Looks for
      * values in the body in the form:

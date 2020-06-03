@@ -264,9 +264,10 @@ class ClientService {
         let clientSheets = [];
         let response = await request({
             method: 'POST',
-            uri: `https://www.freedom-makers-hours.com/api/getAllTimesheets`,
+            uri: `https://www.freedom-makers-hours.com/api/getTimeSheetsByClientId`,
             form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'id':id
             }
         }).catch(err => {
             console.log(err);
@@ -275,16 +276,36 @@ class ClientService {
 
         let body = response.body;
         let sheets = JSON.parse(body);
-        for (var i = 0; i < sheets.length; ++i) {
-            if (sheets[i].clientId === id) {
-                clientSheets.push(sheets[i]);
+
+        let makerResponse =  await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+
+        let makerMap = {};
+        let makers = JSON.parse(makerResponse.body);
+        for (var maker of makers){
+            makerMap[maker.id] = maker;
+        }
+
+        for (var sheet of sheets) {
+            if (sheet.clientId === id) {
+                let maker = makerMap[sheet.makerId];
+                sheet.makerName = maker.firstName + " " + maker.lastName;
+                clientSheets.push(sheet);
             }
         }
         return clientSheets;
     }
 
     /**
-     * Removes a client from the database. TODO: remove from chargebee
+     * Removes a client from the database.
      * @param chargebeeId    - Id of client to be removed
      */
     async deleteClientById(chargebeeId) {

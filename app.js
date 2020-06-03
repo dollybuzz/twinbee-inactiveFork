@@ -19,6 +19,7 @@ const bodyParser = require('body-parser');
 const makerService = require('./services/MakerService.js')
 const es = require('./services/emailService.js');
 const mr = require('./repositories/makerRepo.js')
+const cs = require('./services/ClientService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
@@ -299,14 +300,19 @@ app.post("/api/getTimeBucket",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     clientRestController.getTimeBucket);
+
 app.post("/api/getMyTimeSheetsMaker",
     authController.authorizeMaker,
     makerRestController.getMyTimeSheets);
+app.post("/api/getMyTimeSheetsClient",
+    authController.authorizeClient,
+    clientRestController.getMyTimeSheets);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
+    console.log(await cs.getSheetsByClient('AzqgkTS0s2Txlk3e'));
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
