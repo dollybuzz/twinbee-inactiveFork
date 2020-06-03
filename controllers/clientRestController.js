@@ -110,7 +110,7 @@ module.exports = {
       console.log(req.body);
       let email = await authService.getEmailFromToken(req.body.token);
       let client = await clientService.getClientByEmail(email);
-      res.send(await clientService.getTimeBucket("AzqgmORz6AFeK1Q5w", "freedom-makers-32"));
+      res.send(await clientService.getTimeBucket(client.id, req.body.bucket));
     },
 
     /**
