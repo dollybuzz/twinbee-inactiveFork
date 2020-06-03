@@ -163,9 +163,10 @@ class MakerService {
         console.log(`Getting sheets for maker ${id}...`);
         let result =  await request({
             method: 'POST',
-            uri: `https://www.freedom-makers-hours.com/api/getAllTimeSheets`,
+            uri: `https://www.freedom-makers-hours.com/api/getTimeSheetsByMakerId`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'id':id
             }
         }).catch(err => {
             console.log(err);
@@ -173,13 +174,22 @@ class MakerService {
         });
 
         let sheets = JSON.parse(result.body);
-        let makerSheets = [];
-        for (var i = 0; i < sheets.length; ++i){
-            if (sheets[i].makerId == id){
-                makerSheets.push(sheets[i]);
-            }
+        for (var sheet of sheets){
+            let res =  await request({
+                method: 'POST',
+                uri: `https://www.freedom-makers-hours.com/api/getClient`,
+                form: {
+                    'auth':process.env.TWINBEE_MASTER_AUTH,
+                    'id':sheet.clientId
+                }
+            }).catch(err => {
+                console.log(err);
+                emailService.emailAdmin(err);
+            });
+            let client = JSON.parse(res.body);
+            sheet.clientName = client.first_name + " " + client.last_name;
         }
-        return makerSheets;
+        return sheets;
     }
 
     /**

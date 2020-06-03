@@ -91,6 +91,7 @@ module.exports ={
         res.send(result);
     },
 
+
     /**
      * ENDPOINT: /api/getMakerIdByToken
      * Retrieves a maker by their database id. Looks for data in the body in the form:
@@ -117,6 +118,8 @@ module.exports ={
         res.send(result[0]);
     },
 
+
+
     /**
      * ENDPOINT: /api/getClientsForMaker
      * Updates an existing maker with new values. Looks for data in the body in the form:
@@ -135,6 +138,25 @@ module.exports ={
         console.log("Getting client list for maker from REST");
         console.log(req.body);
         res.send(await makerService.getClientListForMakerId(req.body.id));
+    },
+
+
+    /**
+     * Retrieves timesheets for the requesting maker. Looks for data in the body in the
+     * form:
+     * {
+     *     "token": requester's google token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyTimeSheets: async(req, res)=>{
+        console.log(`Maker with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let id = await makerService.getMakerIdByEmail(email);
+        res.send(await makerService.getSheetsByMaker(id));
     },
 
     /**
