@@ -18,7 +18,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const makerService = require('./services/MakerService.js')
 const es = require('./services/emailService.js');
-
+const mr = require('./repositories/makerRepo.js')
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
