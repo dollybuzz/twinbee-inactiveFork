@@ -49,8 +49,8 @@ exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject)
 exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
     let subject = "Welcome to Freedom Makers!";
     let content = "<h1>Welcome!</h1><br>" +
-        "<Your account is ready! Sign in at our " +
-        "<a href='https://www.freedom-makers-hours.com'>Freedom Makers Portal</a> to get started!" +
+        "<p>Your account is ready! Sign in at our " +
+        "<a href='https://www.freedom-makers-hours.com'>Freedom Makers Portal</a> to get started!</p>" +
         "<br><br>" +
         "This email was sent to notify you of your account's successful setup.  No unsubscribe necessary.";
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
