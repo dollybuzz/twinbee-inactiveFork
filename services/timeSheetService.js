@@ -42,7 +42,9 @@ class TimeSheetService {
      * @param detail    - entry for admin note on mod change
      */
     updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail){
-        detail = `Modified by admin: ${detail}`;
+        if (detail) {
+            detail = `Modified by admin: ${detail}`;
+        }
         timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut,  task, detail);
     }
 
