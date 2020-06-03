@@ -1636,9 +1636,11 @@ function sheetAddForm () {
         "<label for='addsheetplanname'>Plan:</label>" +
         `<select class='form-control' id='addsheetplanname' name='addsheetplanname'></select>\n<br><br>\n` +
         "<label for='addsheettimein'>Time In:</label>" +
-        `<input class='form-control' type='text' id='addsheettimein' name='addsheettimein' value='YYYY-MM-DD 00:00:00'>\n<br>\n` +
+        `<input class='form-control' type='date' id='addsheettimeindate' name='addsheettimeindate' >` +
+        `<input class='form-control' type='time' id='addsheettimeintime' name='addsheettimeintime' >\n` +
         "<label for='addsheettimeout'>Time Out:</label>" +
-        `<input class='form-control' type='text' id='addsheettimeout' name='addsheettimeout' value='YYYY-MM-DD 00:00:00'>\n<br><br>\n` +
+        `<input class='form-control' type='date' id='addsheettimeoutdate' name='addsheettimeoutdate' >` +
+        `<input class='form-control' type='time' id='addsheettimeouttime' name='addsheettimeouttime' >` +
         "<label for='addsheettask'>Task:</label>" +
         `<input class='form-control' type='text' id='addsheettask' name='addsheettask'>\n<br>\n` +
         "<label for='addsheetdetail'>Detail:</label>" +
@@ -1710,19 +1712,18 @@ function sheetAddForm () {
                             $("#SubmitButton").on('click', function (e) {
                                 let message = "";
                                 let valid = true;
-                                if (!$("#addsheettimeout").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
-                                    || $("#addsheettimeout").val().match(/[a-z]+|[A-Z]+/g)){
+                                if ($("#addsheettimeintime").val() == "" || $("#addsheettimeindate").val() == "" ||
+                                    $("#addsheettimeouttime").val() == "" || $("#addsheettimeoutdate").val() == ""){
                                     valid = false;
-                                    message += "Bad format on time out!<br>";
-                                }
-                                if (!$("#addsheettimein").val().match(/[0-9]{4}-(([0][1-9])|([1][0-2]))-([0-3][0-9])\s[0-2][0-9]:[0-5][0-9]:[0-9][0-9]+/g)
-                                    || $("#addsheettimein").val().match(/[a-z]+|[A-Z]+/g)){
-                                    valid = false;
-                                    message += "Bad format on time in!<br>";
+                                    message += "Please correct the dates and times!<br>";
                                 }
                                 if ($("#addsheettask").val().length === 0){
                                     valid = false;
                                     message += "Task must be added!<br>";
+                                }
+                                if ($("#addsheetdetail").val().length === 0){
+                                    valid = false;
+                                    message += "Please enter a reason for adding!<br>";
                                 }
 
                                 if (valid) {
@@ -1732,8 +1733,8 @@ function sheetAddForm () {
                                         makerId: $("#addsheetmakerid").val(),
                                         hourlyRate: $("#addsheetplanname").val() ,
                                         clientId: $("#addsheetclientid").val(),
-                                        timeIn: $("#addsheettimein").val(),
-                                        timeOut: $("#addsheettimeout").val(),
+                                        timeIn: `${$("#addsheettimeindate").val()} ${$("#addsheettimeintime").val()}:00`,
+                                        timeOut: `${$("#addsheettimeoutdate").val()} ${$("#addsheettimeouttime").val()}:00`,
                                         task: $("#addsheettask").val(),
                                         detail: $("#addsheetdetail").val()
                                     }, addSheetSuccess);
