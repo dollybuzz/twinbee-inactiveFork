@@ -38,7 +38,7 @@ function showFunction (functionality, endpoint) {
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
                     functionality(innerRes);
-                    SELECTED_NAV_MAP.html(NAV_MAP_TEXT);
+                    $(".spinner-border").remove();
                 },
                 error: function (innerRes, innerStatus) {
                     $("#userMainContent").html("Something went wrong!");
