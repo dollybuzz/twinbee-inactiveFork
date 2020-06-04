@@ -436,7 +436,7 @@ class ChargebeeService {
         let calculatedPrice = Math.floor(pricePerHour * Number.parseFloat(numHours));
         let minutesString = (numHours * 60).toString();
         let hours = Math.floor(numHours);
-        let minutes = Math.floor(numHours%60);
+        let minutes = Math.floor(Number.parseInt(minutesString)%60);
         let message = "";
         if (hours > 0) {
             message += `${hours} hour(s) `;
@@ -445,7 +445,6 @@ class ChargebeeService {
             message += `${minutes} minute(s) `;
         }
 
-        console.log(calculatedPrice);
         chargebee.invoice.charge({
             customer_id : customerId,
             amount : calculatedPrice.toString(),
