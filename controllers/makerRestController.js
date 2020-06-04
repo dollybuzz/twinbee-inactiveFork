@@ -46,11 +46,31 @@ module.exports ={
      * @returns {Promise<void>}
      */
     getMyRelationshipBucket: async (req, res) => {
-      console.log(`Attempting to get time bucket for relationship ${req.body.relationshipId} from REST`);
-      console.log(req.body);
-      let email = authService.getEmailFromToken(req.body.token);
-      let id = makerService.getMakerIdByEmail(email);
-      res.send(await makerService.getMyRelationshipBucket(id, req.body.relationshipId));
+        console.log(`Attempting to get time bucket for relationship ${req.body.relationshipId} from REST`);
+        console.log(req.body);
+        let email = authService.getEmailFromToken(req.body.token);
+        let id = makerService.getMakerIdByEmail(email);
+        res.send(await makerService.getMyRelationshipBucket(id, req.body.relationshipId));
+    },
+
+    /**
+     * Retrieves the designated relationship associated with the requester.
+     * Looks for values in the body in the form:
+     * {
+     *     "token": requester's token,
+     *     "relationshipId": id of the desired relationship
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyRelationship: async (req, res) =>{
+        console.log(`Attempting to get "my" relationship for maker` +
+            ` with token...\n${req.body.token}\n...with relationship id ${req.body.relationshipId} from REST`);
+        console.log(req.body);
+        let email = authService.getEmailFromToken(req.body.token);
+        let id = makerService.getMakerIdByEmail(email);
+        res.send(await makerService.getMyRelationship(id, req.body.relationshipId));
     },
 
     /**

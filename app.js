@@ -307,6 +307,9 @@ app.post("/api/getMyTimeSheetsMaker",
 app.post("/api/getMyRelationshipBucket",
     authController.authorizeMaker,
     makerRestController.getMyRelationshipBucket);
+app.post("/api/getMyRelationship",
+    authController.authorizeMaker,
+    makerRestController.getMyRelationship);
 app.post("/api/getMyTimeSheetsClient",
     authController.authorizeClient,
     clientRestController.getMyTimeSheets);

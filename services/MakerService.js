@@ -192,6 +192,39 @@ class MakerService {
         return sheets;
     }
 
+    async getMyRelationship(makerId, relationshipId){
+        let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getRelationshipById`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'id': relationshipId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        let relationship = JSON.parse(result.body);
+        if (relationship.makerId !== makerId){
+            return false;
+        }
+
+        result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getClientName`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'relationshipObj': relationship
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        let client = JSON.parse(result.body);
+        relationship.clientName = client.name;
+        return relationship;
+    }
+
     async getMyRelationshipBucket(makerId, relationshipId){
 
         let result = await request({
