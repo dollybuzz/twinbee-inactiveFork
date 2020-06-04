@@ -433,10 +433,10 @@ class ChargebeeService {
     async chargeCustomerNow(plan, numHours, customerId){
         let planObj = await this.retrievePlan(plan);
         let pricePerHour = Number.parseFloat(planObj.price);
-        let calculatedPrice = pricePerHour * Number.parseFloat(numHours);
+        let calculatedPrice = Math.floor(pricePerHour * Number.parseFloat(numHours));
         let minutesString = (numHours * 60).toString();
         let hours = Math.floor(numHours);
-        let minutes = numHours%60;
+        let minutes = Math.floor(numHours%60);
         let message = "";
         if (hours > 0) {
             message += `${hours} hour(s) `;
@@ -444,7 +444,8 @@ class ChargebeeService {
         if (minutes > 0){
             message += `${minutes} minute(s) `;
         }
-        
+
+        console.log(calculatedPrice);
         chargebee.invoice.charge({
             customer_id : customerId,
             amount : calculatedPrice.toString(),

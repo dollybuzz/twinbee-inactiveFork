@@ -284,23 +284,47 @@ function buyForm () {
                     $("#optionsClient").append("<div id='verifyHourEntry'></div>");
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on("click", function (e) {
-                        if (($("#buyHours").val().includes("-")) || ($("#buyHours").val().includes(".")) || ($("#buyMin").val().includes("-")) || ($("#buyMin").val().includes("."))) {
-                            e.preventDefault();
-                            $("#verifyHourEntry").html("<span style='color:red'>Invalid entry! Please try again.</span>");
+                        let valid = true;
+                        let message = "";
+                        if ($("#buyHours").val() == "" && $("#buyMin").val() == ""){
+                            valid = false;
+                            message += "Please enter an amount to purchase!<br>"
+                        }
+                        if ($("#buyHours").val().includes("-")){
+                            valid = false;
+                            message += "Hours must be positive!<br>"
+                        }
+                        if ($("#buyHours").val().includes(".")){
+                            valid = false;
+                            message += "No decimals in hours please!<br>";
+                        }
+
+                        if ($("#buyMin").val().includes("-")){
+                            valid = false;
+                            message += "Minutes must be positive!<br>";
+                        }
+                        if ($("#buyMin").val().includes(".")){
+                            valid = false;
+                            message += "No decimals in minutes please!<br>"
+                        }
+
+                        if (!valid) {
+                            $("#verifyHourEntry").html(`<span style='color:red'>${message}</span>`);
                         } else {
-                            let numHours = $("#buyHours").val()*60;
-                            let numMin = $("#buyMin").val();
-                            let hoursPlusMin = numHours + numMin;
-                            let planSelect = $("#buyPlan").val();
 
                             if($("#buyHours").val() == "")
                             {
-                                numHours = 0;
+                                $("#buyHours").val(0);
                             }
                             if($("#buyMin").val() == "")
                             {
-                                numMin = 0;
+                                $("#buyMin").val(0);
                             }
+                            let numHours = $("#buyHours").val();
+                            let numMin = $("#buyMin").val();
+                            let timeInMinutes = numHours * 60 + numMin;
+                            let planSelect = $("#buyPlan").val();
+
                             $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) and ${$("#buyMin").val()} minute(s) for your plan ${$("#buyPlan").val()}?</h5>`);
                             $("#optionsClient").append("<div id='selectionYorN'></div>");
                             $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
@@ -315,6 +339,13 @@ function buyForm () {
                                 $("#SubmitButton").show();
                                 expandTable();
                             });
+                            let message = "";
+                            if (numHours > 0){
+                                message += `${numHours} hour(s) `;
+                            }
+                            if (numMin > 0){
+                                message += `${numMin} minute(s) `;
+                            }
 
                             $("#YesBuy").click(function () {
                                 $.ajax({
@@ -324,11 +355,11 @@ function buyForm () {
                                         auth: id_token,
                                         customerId: TEST_CUSTOMER,//tokenres.id,
                                         planId: planSelect,
-                                        numHours: hoursPlusMin,
+                                        numHours: timeInMinutes/60
                                     },
                                     dataType: "json",
                                     success: function (res, status) {
-                                        $("#optionsClient").append("<br><h5>Successfully purchased " + numHours + " hour(s) for Plan " + planSelect + "!</h5>" +
+                                        $("#optionsClient").append("<br><h5>Successfully purchased " + message + " for Plan " + planSelect + "!</h5>" +
                                             "<br><h6>Note: Due to processing, delays may occur. Please contact Freedom Makers<br>if your purchase does not reflect " +
                                             "in your account after 5 minutes.</h6>");
                                         setTimeout(function () {
