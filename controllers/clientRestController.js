@@ -26,7 +26,8 @@ module.exports = {
      * Retrieves timesheets for the requesting client. Looks for data in the body in the
      * form:
      * {
-     *     "token": requester's google token
+     *     "token": requester's google token,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -44,7 +45,8 @@ module.exports = {
      * Retrieves subscriptions for the requesting client. Looks for data in the body in the
      * form:
      * {
-     *     "token": requester's google token
+     *     "token": requester's google token,
+     *     "auth": valid authentication
      * }
      * Returns values as follows:
      * [
@@ -77,7 +79,8 @@ module.exports = {
      * form:
      * {
      *     "token": requester's google token,
-     *     "subscriptionId": id of the subscription to view
+     *     "subscriptionId": id of the subscription to view,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -96,7 +99,8 @@ module.exports = {
      * Retrieves a single subscription for a customer. Looks for data in the body in the form:
      * {
      *     "token": requester's token,
-     *     "subscriptionId": id of desired subscription
+     *     "subscriptionId": id of desired subscription,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -115,7 +119,8 @@ module.exports = {
      * Retrieves a specific bucket for the authenticated client. Looks for data in the body in the form:
      * {
      *     "token": requester's token,
-     *     "bucket": plan id for the requested bucket
+     *     "bucket": plan id for the requested bucket,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -135,7 +140,8 @@ module.exports = {
      * form:
      * {
      *     "token": requester's google token,
-     *     "subscriptionId": id of the subscription to revert
+     *     "subscriptionId": id of the subscription to revert,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -521,7 +527,8 @@ module.exports = {
      * retrieves the url for the requester's update payment page.
      * looks for values in the body in the form:
      * {
-     *     "token": requester's token
+     *     "token": requester's token,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -530,8 +537,8 @@ module.exports = {
     getMyUpdatePaymentPage: async (req, res) =>{
       console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
       console.log(req.body);
-      let email = authService.getEmailFromToken(req.body.token);
-      let client = clientService.getClientByEmail(email);
+      let email =await authService.getEmailFromToken(req.body.token);
+      let client = await clientService.getClientByEmail(email);
       res.send(await clientService.getUpdatePaymentPage(client.id));
     },
 
@@ -559,6 +566,7 @@ module.exports = {
      * Looks for values in the body in the form:
      * {
      *     "token": requester's token,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -567,8 +575,8 @@ module.exports = {
     getMyPayInvoicesPage: async (req, res) => {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let client = clientService.getClientByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
         let page = await clientService.getOutstandingPaymentsPage(client.id);
         res.send({url: page.url});
     },
@@ -576,7 +584,8 @@ module.exports = {
     /**
      * Retrieves all relationships for the requester. Looks for data in the body in the form:
      * {
-     *      "token": requester's token
+     *      "token": requester's token,
+     *     "auth": valid authentication
      * }
      * returns values in the form:
      * {
@@ -600,9 +609,33 @@ module.exports = {
     getAllMyRelationships: async (req, res) =>{
         console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let client = clientService.getClientByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
         res.send(await clientService.getAllMyRelationships(client.id));
+    },
+
+    /**
+     * ENDPOINT: /api/chargeMeNow
+     * Charges the requester based on their purchase options
+     * looks for values in the body in the form:
+     * {
+     *     "token": requester's token,
+     *     "planId": plan to base costs from,
+     *     "numHours": number of hours to base costs from,
+     *     "auth": valid authentication
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    chargeMeNow: async (req, res) =>{
+      console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
+      console.log(req.body);
+      let email = await authService.getEmailFromToken(req.body.token);
+      let client = await clientService.getClientByEmail(email);
+      console.log(client)
+      res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id));
     },
 
     /**
