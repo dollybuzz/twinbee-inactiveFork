@@ -530,8 +530,8 @@ module.exports = {
     getMyUpdatePaymentPage: async (req, res) =>{
       console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
       console.log(req.body);
-      let email = authService.getEmailFromToken(req.body.token);
-      let client = clientService.getClientByEmail(email);
+      let email =await authService.getEmailFromToken(req.body.token);
+      let client = await clientService.getClientByEmail(email);
       res.send(await clientService.getUpdatePaymentPage(client.id));
     },
 
@@ -567,8 +567,8 @@ module.exports = {
     getMyPayInvoicesPage: async (req, res) => {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let client = clientService.getClientByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
         let page = await clientService.getOutstandingPaymentsPage(client.id);
         res.send({url: page.url});
     },
@@ -600,9 +600,18 @@ module.exports = {
     getAllMyRelationships: async (req, res) =>{
         console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let client = clientService.getClientByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
         res.send(await clientService.getAllMyRelationships(client.id));
+    },
+
+    chargeMeNow: async (req, res) =>{
+      console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
+      console.log(req.body);
+      let email = await authService.getEmailFromToken(req.body.token);
+      let client = await clientService.getClientByEmail(email);
+      console.log(client)
+      res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id));
     },
 
     /**

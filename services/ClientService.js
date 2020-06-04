@@ -625,6 +625,24 @@ class ClientService {
         }
     }
 
+    async chargeMeNow(planId, numHours, customerId){
+        console.log(customerId)
+        let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/creditNow`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'planId':planId,
+                'numHours': numHours,
+                'customerId': customerId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+            return false;
+        });
+        return true;
+    }
 
     async subscriptionRenewed(parsedBody) {
         if (parsedBody.event_type === "subscription_renewed") {
