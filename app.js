@@ -322,6 +322,9 @@ app.post("/api/undoMySubscriptionChanges",
 app.post("/api/retrieveMySubscription",
     authController.authorizeClient,
     clientRestController.retrieveMySubscription);
+app.post("/api/getMyPayInvoicesPage",
+    authController.authorizeClient,
+    clientRestController.getMyPayInvoicesPage);
 app.post("/api/getMyTimeBucket",
     authController.authorizeClient,
     clientRestController.getMyTimeBucket);

@@ -535,6 +535,26 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getMyPayInvoicesPage
+     * Retrieves a link to chargebee's "pay invoices" page for a requesting client.
+     * Looks for values in the body in the form:
+     * {
+     *     "token": requester's token,
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyPayInvoicesPage: async (req, res) => {
+        console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
+        console.log(body);
+        let email = authService.getEmailFromToken(req.body.token);
+        let id = clientService.getClientByEmail(email);
+        let page = await clientService.getOutstandingPaymentsPage(id);
+        res.send({url: page.url});
+    },
+
+    /**
      * May have to redo to account for relationship and authentication security
      * ENDPOINT: /api/getTimeBucket
      * {
