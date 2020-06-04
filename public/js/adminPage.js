@@ -1779,14 +1779,21 @@ function creditFunctionality (res) {
     //Populate table
     res.forEach(customer => {
        for(var item in customer.buckets) {
-           let minToHours = (Number.parseFloat(customer.buckets[item]))/60;
-           minToHours = minToHours.toFixed(1);
+           let hours = Math.floor((Number.parseFloat(customer.buckets[item]))/60);
+           let minutes = (customer.buckets[item])%60;
+           let message = "";
+           if (hours >= 0) {
+               message += ` ${hours} hours `;
+           }
+           if (minutes >= 0) {
+               message += ` ${minutes} minutes `;
+           }
            $("#creditTable").append('\n' +
                '<tr class="creditRow">' +
                '   <td scope="row">' + customer.id + '</td>' +
                '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
                '   <td>' + item + '</td>' +
-               '   <td>' + minToHours + '</td>'
+               `   <td>${message}</td>`
            );
        };
     });
@@ -1846,17 +1853,20 @@ function creditModForm(res, status) {
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
         "<br><br><form id='modify'>" +
         `<div>Enter a number (+/-) to adjust hours:</div>` +
+        "<input class='form-control' type='number' id='creditmodhours' name='creditmodhours'>"+
+        `<br><br><div>Enter a number (+/-) to adjust minutes:</div>` +
         "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        var hoursToMin = (Number.parseFloat($("#creditmodminutes").val())*60);
-
+        var hours = (Number.parseFloat($("#creditmodhours").val())*60);
+        var minutes = $("#creditmodminutes").val();
+        var hoursPlusMin = hours + min;
         let message = "";
         let valid = true;
-        if ($("#creditmodminutes").val().length === 0 || $("#creditmodminutes").val() == 0){
+        if ($("#creditmodhours").val().length === 0 || $("#creditmodhours").val() == 0 || $("#creditmodhours").val().includes(".") || $("#creditmodminutes").val().length === 0 || $("#creditmodminutes").val() == 0 || $("#creditmodminutes").val().includes(".") ){
             valid = false;
             message += "Invalid entry! Please try again.<br>";
         }
@@ -1867,7 +1877,7 @@ function creditModForm(res, status) {
                 auth: id_token,
                 id: selectedRow.children()[0].innerHTML,
                 planId: selectedRow.children()[2].innerHTML,
-                minutes: hoursToMin,
+                minutes: hoursPlusMin,
             }, modCreditSuccess);
         }
         else{
