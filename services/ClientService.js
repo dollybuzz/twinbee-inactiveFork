@@ -575,14 +575,18 @@ class ClientService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+        let obj = {};
+        obj.first_name = client.first_name;
+        obj.last_name = client.last_name;
+        obj.id = client.id;
+
         if (client.meta_data) {
-            let obj = {};
-            obj.first_name = client.first_name;
-            obj.last_name = client.last_name;
-            obj.id = client.id;
             obj.buckets = client.meta_data;
-            return obj;
         }
+        else{
+            obj.buckets = {};
+        }
+        return obj;
     }
 
     async getUpdatePaymentPage(clientId) {
