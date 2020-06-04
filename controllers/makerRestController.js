@@ -54,6 +54,25 @@ module.exports ={
     },
 
     /**
+     * ENDPOINT: /api/getAllMyRelationshipsMaker
+     * Retrieves all relationships for the requester
+     * Looks for values in the body in the form:
+     * {
+     *     "token": requester's token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getAllMyRelationships: async (req, res) =>{
+      console.log(`Attempting to get all relationships for maker with token...\n${req.body.token}\n... from REST`);
+      console.log(req.body);
+      let email = authService.getEmailFromToken(req.body.token);
+      let id = makerService.getMakerIdByEmail(email);
+          res.send(await makerService.getRelationshipsForMaker(id));
+    },
+
+    /**
      * Retrieves the designated relationship associated with the requester.
      * Looks for values in the body in the form:
      * {
