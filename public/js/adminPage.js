@@ -1861,8 +1861,8 @@ function creditModForm(res, status) {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        var hours = (Number.parseFloat($("#creditmodhours").val()) * 60);
-        var minutes = $("#creditmodminutes").val();
+        var hours = (Number.parseInt($("#creditmodhours").val()) * 60);
+        var minutes = Number.parseInt($("#creditmodminutes").val());
         var hoursPlusMin = hours + minutes;
 
         let valid = true;

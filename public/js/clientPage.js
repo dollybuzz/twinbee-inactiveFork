@@ -347,6 +347,7 @@ function buyForm () {
                                 message += `${numMin} minute(s) `;
                             }
 
+                            console.log(timeInMinutes/60)
                             $("#YesBuy").click(function () {
                                 $.ajax({
                                     url: "/api/creditNow",
