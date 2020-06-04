@@ -320,8 +320,8 @@ function buyForm () {
                             {
                                 $("#buyMin").val(0);
                             }
-                            let numHours = $("#buyHours").val();
-                            let numMin = $("#buyMin").val();
+                            let numHours = Number.parseInt($("#buyHours").val());
+                            let numMin = Number.parseInt($("#buyMin").val());
                             let timeInMinutes = numHours * 60 + numMin;
                             let planSelect = $("#buyPlan").val();
 
