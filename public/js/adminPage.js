@@ -1524,7 +1524,7 @@ function sheetModForm(res, status) {
         "<label for='modsheetid'>Time Sheet ID:</label>" +
         `<input class='form-control' type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modsheetplanname'>Plan:</label>" +
-        `<select class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}'></select>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}' disabled>\n<br><br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
         `<input class='form-control' type='date' id='modsheettimeindate' name='modsheettimeindate' value='${res.timeIn}'>`+
         `<input class='form-control' type='time' id='modsheettimeintime' name='modsheettimeintime' value='${res.timeIn}'>\n` +
@@ -1541,23 +1541,15 @@ function sheetModForm(res, status) {
     {
         $("#modsheetdetail").val("");
     }
-
     $.ajax({
-        url: "/api/getTimeBucketByClientId",
+        url: "/api/getAllPlans",
         method: "post",
         data: {
-            auth: id_token,
-            id: '16CHT7Ryu5EhnPWY',//tokenres.id,
+            auth: id_token
         },
         dataType: "json",
         success: function (planres, planstatus) {
-        },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working!");
-        }
-    });
-
-    //Submit button function
+            //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
                 let message = "";
@@ -1592,6 +1584,11 @@ function sheetModForm(res, status) {
                     $("#errormessage").html(message);
                 }
             });
+        },
+        error: function (planres, planstatus) {
+            $("#userMainContent").html("Plans isn't working!");
+        }
+    });
 }
 
 function sheetAddForm () {
