@@ -444,9 +444,7 @@ class ChargebeeService {
         if (minutes > 0){
             message += `${minutes} minute(s) `;
         }
-
-
-
+        
         chargebee.invoice.charge({
             customer_id : customerId,
             amount : calculatedPrice.toString(),
