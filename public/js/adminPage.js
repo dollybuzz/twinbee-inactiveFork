@@ -1166,7 +1166,6 @@ function planFunctionality (res) {
     res.forEach(item => {
         let plan = item.plan;
         item = item.plan;
-        console.log(plan)
         if(plan.status != "archived")
         {
             $("#planTable").append('\n' +
@@ -1909,7 +1908,6 @@ function creditAddForm() {
 
                     for(var client in clientres) {
                         client = clientres[client].customer;
-                        console.log(client);
                         $('#addClientCredit').append(
                             `<option id="${client.id}" value="${client.id}">${client.first_name} ${client.last_name} - ${client.id}</option>`
                         );

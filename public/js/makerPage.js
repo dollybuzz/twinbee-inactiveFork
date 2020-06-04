@@ -47,7 +47,6 @@ function showFunction (functionality, endpoint) {
         },
         error: function (res, status) {
             $("#userMainContent").html("Failed to verify you!");
-            console.log(res);
         }
     });
 }// end showFunction
@@ -458,7 +457,6 @@ function timeSheetFunctionality (res) {
                         '        </thead><tbody>');
                     //Populate table
                     for (var item in res){
-                        console.log(res[item]);
                         let clientIdentifier = res[item].clientId;
                         clientIdentifier = clientMap[clientIdentifier] ?
                             clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :

@@ -153,7 +153,6 @@ function openHostedPage(getPageEndpoint){
                 },
                 dataType: "json",
                 success: function (innerRes, innerStatus) {
-                    console.log(innerStatus);
                     window.open(innerRes.url);
                 },
                 error: function (innerRes, innerStatus) {
