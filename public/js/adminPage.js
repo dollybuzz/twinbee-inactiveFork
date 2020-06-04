@@ -1933,7 +1933,9 @@ function creditAddForm() {
                         "<label for='addPlanCredit'> Select a Plan: </label>" +
                         "<select class='form-control' id='addPlanCredit'>\n</select>\n<br><br>\n" +
                         "<label for='addMinCredit'> Enter Number of Hours: </label>" +
-                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br>"+
+                        "<input class='form-control' type='number' id='addHourCredit' name='addHourCredit'>\n<br>"+
+                        "<label for='addMinCredit'> Enter Number of Minutes: </label>" +
+                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br><br>"+
                         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
                     for(var client in clientres) {
@@ -1953,27 +1955,50 @@ function creditAddForm() {
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
-                        var hoursToMin = Number.parseInt($("#addMinCredit").val().toString())*60;
-                        let message = "";
+                        var hours = (Number.parseInt($("#addHourCredit").val()) * 60);
+                        var minutes = Number.parseInt($("#addMinCredit").val());
+                        var hoursPlusMin = hours + minutes;
+                        console.log(hoursPlusMin);
                         let valid = true;
-                        if ($("#addMinCredit").val().length === 0 || $("#addMinCredit").val().includes(".") || $("#addMinCredit").val() == 0){
+
+                        let message = "";
+                        if ($("#addHourCredit").val() == "" && $("#addMinCredit").val() == "") {
                             valid = false;
-                            message += "Please enter the number of hours!<br>";
+                            message += "Please enter an amount to purchase!<br>"
+                        }
+                        if ($("#addHourCredit").val().includes(".")) {
+                            valid = false;
+                            message += "No decimals in hours please!<br>";
+                        }
+                        if ($("#addMinCredit").val().includes(".")) {
+                            valid = false;
+                            message += "No decimals in minutes please!<br>"
                         }
 
-                        if (valid) {
-                            $("#errormessage").html("");
-                            addSubmit("/api/updateClientTimeBucket", {
-                                auth: id_token,
-                                id: $("#addClientCredit").val(),
-                                planId: $("#addPlanCredit").val(),
-                                minutes: hoursToMin,
-                            }, addCreditSuccess);
+                        if (!valid) {
+                            $("#errormessage").html(`<span style='color:red'>${message}</span>`);
+                        } else {
+
+                            if ($("#addHourCredit").val() == "") {
+                                $("#addHourCredit").val(0);
+                            }
+                            if ($("#addMinCredit").val() == "") {
+                                $("#addMinCredit").val(0);
+                            }
+
+                            if (valid) {
+                                $("#errormessage").html("");
+                                addSubmit("/api/updateClientTimeBucket", {
+                                    auth: id_token,
+                                    id: $("#addClientCredit").val(),
+                                    planId: $("#addPlanCredit").val(),
+                                    minutes: hoursPlusMin,
+                                }, addCreditSuccess);
+                            } else {
+                                $("#errormessage").html(message);
+                            }
                         }
-                        else{
-                            $("#errormessage").html(message);
-                        }
-                    });
+                     });
                 },
                 error: function (planres, planstatus) {
                     $("#userMainContent").html("Plan Credit isn't working!");
