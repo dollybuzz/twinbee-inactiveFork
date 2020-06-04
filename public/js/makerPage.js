@@ -105,8 +105,16 @@ function setClockInFunctionality() {
                                     },
                                     dataType: "json",
                                     success: function (bucketres, bucketstatus) {
-                                        let minToHours = ((bucketres.minutes)/60).toFixed(1);
-                                        $("#availcredit").html(minToHours + " hours");
+                                        let hours = Math.floor(((bucketres.minutes)/60));
+                                        let minutes = (bucketres.minutes)%60;
+                                        let message = "";
+                                        if (hours > 0) {
+                                            message += ` ${hours} hours `;
+                                        }
+                                        if (minutes > 0) {
+                                            message += ` ${minutes} minutes `;
+                                        }
+                                        $("#availcredit").html(message);
                                     },
                                     error: function (bucketres, bucketstatus) {
                                         $("#userMainContent").html("Bucket isn't working!");
