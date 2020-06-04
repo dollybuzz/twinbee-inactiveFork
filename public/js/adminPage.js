@@ -1861,27 +1861,47 @@ function creditModForm(res, status) {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        var hours = (Number.parseFloat($("#creditmodhours").val())*60);
+        var hours = (Number.parseFloat($("#creditmodhours").val()) * 60);
         var minutes = $("#creditmodminutes").val();
-        var hoursPlusMin = hours + min;
-        let message = "";
+        var hoursPlusMin = hours + minutes;
+
         let valid = true;
-        if ($("#creditmodhours").val().length === 0 || $("#creditmodhours").val() == 0 || $("#creditmodhours").val().includes(".") || $("#creditmodminutes").val().length === 0 || $("#creditmodminutes").val() == 0 || $("#creditmodminutes").val().includes(".") ){
+        let message = "";
+        if ($("#creditmodhours").val() == "" && $("#creditmodminutes").val() == "") {
             valid = false;
-            message += "Invalid entry! Please try again.<br>";
+            message += "Please enter an amount to purchase!<br>"
+        }
+        if ($("#creditmodhours").val().includes(".")) {
+            valid = false;
+            message += "No decimals in hours please!<br>";
+        }
+        if ($("#creditmodminutes").val().includes(".")) {
+            valid = false;
+            message += "No decimals in minutes please!<br>"
         }
 
-        if (valid) {
-            $("#errormessage").html("");
-            modSubmit("/api/updateClientTimeBucket", {
-                auth: id_token,
-                id: selectedRow.children()[0].innerHTML,
-                planId: selectedRow.children()[2].innerHTML,
-                minutes: hoursPlusMin,
-            }, modCreditSuccess);
-        }
-        else{
-            $("#errormessage").html(message);
+        if (!valid) {
+            $("#errormessage").html(`<span style='color:red'>${message}</span>`);
+        } else {
+
+            if ($("#buyHours").val() == "") {
+                $("#buyHours").val(0);
+            }
+            if ($("#buyMin").val() == "") {
+                $("#buyMin").val(0);
+            }
+
+            if (valid) {
+                $("#errormessage").html("");
+                modSubmit("/api/updateClientTimeBucket", {
+                    auth: id_token,
+                    id: selectedRow.children()[0].innerHTML,
+                    planId: selectedRow.children()[2].innerHTML,
+                    minutes: hoursPlusMin,
+                }, modCreditSuccess);
+            } else {
+                $("#errormessage").html(message);
+            }
         }
     });
 }
