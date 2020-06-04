@@ -187,6 +187,7 @@ function timeBucketFunctionality (res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Available Hours</th>\n' +
+        '            <th scope="col" id="subOptions">Option</th>\n' +
         '        </thead><tbody>');
     //Populate table
     for(var plan in res.buckets) {
@@ -195,15 +196,14 @@ function timeBucketFunctionality (res) {
         $("#bucketTable").append('\n' +
             '<tr class="bucketRow">' +
             '   <td scope="row">' + plan + '</td>' +
-            '   <td>' + minToHours + '</td></tr>'
-        );
+            '   <td>' + minToHours + '</td>' +
+            '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="BuyHoursSubButton">Buy Hours</button></td></tr>');
     }
     $("#bucketTable").append('\n</tbody>');
 
     //Body Block content
     createBody(null);
     $("#userMainContent").prepend("<div class='altTopButtons'></div>");
-    $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"BuyButton\">Buy Hours</button>");
     $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"updatePaymentButton\">Update Payment Method</button>");
     $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
 
@@ -220,12 +220,6 @@ function timeBucketFunctionality (res) {
 
     //Buy Hours
     $(".bucketRow").click(function () {
-        selectedRow = $(this);
-        popBuyForm(buyForm);
-    });
-
-    //Buy Hours
-    $("#BuyButton").click(function () {
         selectedRow = $(this);
         popBuyForm(buyForm);
     });
@@ -380,6 +374,7 @@ function subscriptionFunctionality (res) {
         '            <th scope="col">Next Billing</th>\n' +
         '            <th scope="col" id="subOptions">Option</th>\n' +
         '        </thead><tbody>');
+
 
     //Populate table
     res.forEach(item => {

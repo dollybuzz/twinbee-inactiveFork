@@ -107,14 +107,8 @@ body a:hover {
     background-color: #32444e;
 }
 
-#BuyButton {
-    font-size: 1.2em;
-    color: white;
-    background-color: #32444e;
-    opacity: 1;
-}
 
-#ChangeSubButton
+#ChangeSubButton, #BuyHoursSubButton
 {
     font-size: 0.8em;
     color: white;
@@ -123,7 +117,7 @@ body a:hover {
     transition: opacity 0.5s ease-in-out;
 }
 
-#ChangeSubButton:hover
+#ChangeSubButton:hover, #BuyHoursSubButton:hover
 {
     color: white;
     background-color: #dbb459;
@@ -152,7 +146,6 @@ body a:hover {
 
 #updatePaymentButton:hover,
 #revInvoicesButton:hover,
-#BuyNow:hover,
 #YesBuy:hover,
 #YesChange:hover {
     color: white;
