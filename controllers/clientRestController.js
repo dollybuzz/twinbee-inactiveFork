@@ -517,6 +517,25 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getMyUpdatePaymentPage
+     * retrieves the url for the requester's update payment page.
+     * looks for values in the body in the form:
+     * {
+     *     "token": requester's token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyUpdatePaymentPage: async (req, res) =>{
+      console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
+      console.log(req.body);
+      let email = authService.getEmailFromToken(req.body.token);
+      let client = clientService.getClientByEmail(email);
+      res.send(await clientService.getUpdatePaymentPage(client.id));
+    },
+
+    /**
      * ENDPOINT: /api/getClientPayInvoicesPage
      * {
      *     "id": client's chargebee id,
@@ -549,8 +568,8 @@ module.exports = {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
         console.log(req.body);
         let email = authService.getEmailFromToken(req.body.token);
-        let id = clientService.getClientByEmail(email);
-        let page = await clientService.getOutstandingPaymentsPage(id);
+        let client = clientService.getClientByEmail(email);
+        let page = await clientService.getOutstandingPaymentsPage(client.id);
         res.send({url: page.url});
     },
 
@@ -582,8 +601,8 @@ module.exports = {
         console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
         console.log(req.body);
         let email = authService.getEmailFromToken(req.body.token);
-        let id = clientService.getClientByEmail(email);
-        res.send(await clientService.getAllMyRelationships(id));
+        let client = clientService.getClientByEmail(email);
+        res.send(await clientService.getAllMyRelationships(client.id));
     },
 
     /**

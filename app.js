@@ -334,6 +334,9 @@ app.post("/api/retrieveMySubscription",
 app.post("/api/getMyPayInvoicesPage",
     authController.authorizeClient,
     clientRestController.getMyPayInvoicesPage);
+app.post("/api/getMyUpdatePaymentPage",
+    authController.authorizeClient,
+    clientRestController.getMyUpdatePaymentPage);
 app.post("/api/getMyTimeBucket",
     authController.authorizeClient,
     clientRestController.getMyTimeBucket);
