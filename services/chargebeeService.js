@@ -435,11 +435,22 @@ class ChargebeeService {
         let pricePerHour = Number.parseFloat(planObj.price);
         let calculatedPrice = pricePerHour * Number.parseFloat(numHours);
         let minutesString = (numHours * 60).toString();
+        let hours = Math.floor(numHours);
+        let minutes = numHours%60;
+        let message = "";
+        if (hours > 0) {
+            message += `${hours} hour(s) `;
+        }
+        if (minutes > 0){
+            message += `${minutes} minute(s) `;
+        }
+
+
 
         chargebee.invoice.charge({
             customer_id : customerId,
             amount : calculatedPrice.toString(),
-            description : `Buy ${numHours} hour(s) for ${planObj.name}`
+            description : `Buy ${message} for ${planObj.name}`
         }).request(function(error,result) {
             if(error){
                 //handle error
