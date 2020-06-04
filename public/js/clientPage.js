@@ -191,12 +191,19 @@ function timeBucketFunctionality (res) {
         '        </thead><tbody>');
     //Populate table
     for(var plan in res.buckets) {
-        let minToHours = (Number.parseFloat(res.buckets[plan]))/60;
-        minToHours = minToHours.toFixed(1);
+        let hours = Math.floor((Number.parseInt(res.buckets[plan])) / 60);
+        let minutes = (Number.parseInt(res.buckets[plan])) % 60;
+        let message = "";
+        if (hours > 0) {
+            message += ` ${hours} hours `;
+        }
+        if (minutes > 0) {
+            message += ` ${minutes} minutes `;
+        }
         $("#bucketTable").append('\n' +
             '<tr class="bucketRow">' +
             '   <td scope="row">' + plan + '</td>' +
-            '   <td>' + minToHours + '</td>' +
+            `   <td> ${message} </td>` +
             '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="BuyHoursSubButton">Buy Hours</button></td></tr>');
     }
     $("#bucketTable").append('\n</tbody>');
@@ -262,9 +269,11 @@ function buyForm () {
                         "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
                         "<form id='add'>" +
                         "<label for='buyPlan'> Select a Plan: </label>" +
-                        "<select class='form-control' id='buyPlan'></select>\n<br><br>\n" +
+                        "<select class='form-control' id='buyPlan'></select>\n<br>\n" +
                         "<label for='buyHours'> Enter Number of Hours: </label>" +
-                        "<input class='form-control' type='number' id='buyHours' name='buyHours'></form>\n<br>\n");
+                        "<input class='form-control' type='number' id='buyHours' name='buyHours'>\n<br><br>\n" +
+                        "<label for='buyHours'> Enter Number of Minutes: </label>" +
+                        "<input class='form-control' type='number' id='buyMin' name='buyMin'></form>\n<br>\n");
 
                     for (var item in planres.buckets) {
                         $("#buyPlan").append(
@@ -275,13 +284,24 @@ function buyForm () {
                     $("#optionsClient").append("<div id='verifyHourEntry'></div>");
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on("click", function (e) {
-                        if (($("#buyHours").val().length < 1) || ($("#buyHours").val().includes("-")) || $("#buyHours").val() == "0") {
+                        if (($("#buyHours").val().includes("-")) || ($("#buyHours").val().includes(".")) || ($("#buyMin").val().includes("-")) || ($("#buyMin").val().includes("."))) {
                             e.preventDefault();
                             $("#verifyHourEntry").html("<span style='color:red'>Invalid entry! Please try again.</span>");
                         } else {
-                            let numHours = $("#buyHours").val();
+                            let numHours = $("#buyHours").val()*60;
+                            let numMin = $("#buyMin").val();
+                            let hoursPlusMin = numHours + numMin;
                             let planSelect = $("#buyPlan").val();
-                            $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) for your plan ${$("#buyPlan").val()}?</h5>`);
+
+                            if($("#buyHours").val() == "")
+                            {
+                                numHours = 0;
+                            }
+                            if($("#buyMin").val() == "")
+                            {
+                                numMin = 0;
+                            }
+                            $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) and ${$("#buyMin").val()} minute(s) for your plan ${$("#buyPlan").val()}?</h5>`);
                             $("#optionsClient").append("<div id='selectionYorN'></div>");
                             $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
                             $("#selectionYorN").append("<button id='YesBuy' type='button' class='btn btn-default'>Yes</button>");
@@ -304,7 +324,7 @@ function buyForm () {
                                         auth: id_token,
                                         customerId: TEST_CUSTOMER,//tokenres.id,
                                         planId: planSelect,
-                                        numHours: numHours,
+                                        numHours: hoursPlusMin,
                                     },
                                     dataType: "json",
                                     success: function (res, status) {
