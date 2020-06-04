@@ -69,7 +69,7 @@ module.exports ={
       console.log(req.body);
       let email = authService.getEmailFromToken(req.body.token);
       let id = makerService.getMakerIdByEmail(email);
-      res.send(await makerService.getRelationshipsForMaker(id));
+          res.send(await makerService.getRelationshipsForMaker(id));
     },
 
     /**

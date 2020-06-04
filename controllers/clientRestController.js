@@ -547,11 +547,43 @@ module.exports = {
      */
     getMyPayInvoicesPage: async (req, res) => {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
-        console.log(body);
+        console.log(req.body);
         let email = authService.getEmailFromToken(req.body.token);
         let id = clientService.getClientByEmail(email);
         let page = await clientService.getOutstandingPaymentsPage(id);
         res.send({url: page.url});
+    },
+
+    /**
+     * Retrieves all relationships for the requester. Looks for data in the body in the form:
+     * {
+     *      "token": requester's token
+     * }
+     * returns values in the form:
+     * {
+     *      [
+     *          {
+     *              "id": relationship Id,
+     *              "makerId": id of maker in the relationship,
+     *              "clientId": id of client in the relationship,
+     *              "planId": id of plan binding the relationship,
+     *              "occupation": freedom maker's occupation for relationship,
+     *              "makerName": freedom maker's space-separated first and last name,
+     *              "makerEmail": freedom maker's email
+     *          },...
+     *      ]
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getAllMyRelationships: async (req, res) =>{
+        console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
+        console.log(req.body);
+        let email = authService.getEmailFromToken(req.body.token);
+        let id = clientService.getClientByEmail(email);
+        res.send(await clientService.getAllMyRelationships(id));
     },
 
     /**

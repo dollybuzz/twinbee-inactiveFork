@@ -313,6 +313,9 @@ app.post("/api/getMyRelationship",
 app.post("/api/getAllMyRelationshipsMaker",
     authController.authorizeMaker,
     makerRestController.getAllMyRelationships);
+app.post("/api/getAllMyRelationshipsClient",
+    authController.authorizeClient,
+    clientRestController.getAllMyRelationships);
 app.post("/api/getMyTimeSheetsClient",
     authController.authorizeClient,
     clientRestController.getMyTimeSheets);
@@ -339,6 +342,7 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
+    console.log(await cs.getAllMyRelationships("AzqgmORz6AFeK1Q5w"))
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

@@ -472,8 +472,14 @@ class ClientService {
             console.log(err);
             emailService.emailAdmin(err);
         });
-        console.log(relationshipList);
-        return relationshipList;
+        relationshipList = JSON.parse(relationshipList.body);
+        let finalList = [];
+        for (var relationship of relationshipList){
+            if (relationship.clientId === clientId){
+                finalList.push(relationship);
+            }
+        }
+        return finalList;
     }
 
     /**
@@ -485,7 +491,6 @@ class ClientService {
     async deleteAllRelationships(clientId){
         console.log(`Attempting to delete relationships for ${clientId}`);
         let relationshipList = await this.getRelationshipsForClient(clientId);
-        relationshipList = JSON.parse(relationshipList.body);
         for await (var relationship of relationshipList){
             if (relationship.clientId === clientId){
                 console.log("Relationship found.");
@@ -564,6 +569,7 @@ class ClientService {
         return timeBuckets;
     }
 
+
     async getTimeBucketByClientId(id) {
         let client = await this.getClientById(id).catch(err => {
             console.log(err);
@@ -630,9 +636,37 @@ class ClientService {
 
     async subscriptionCreated(parsedBody) {
         if (parsedBody.event_type === "subscription_created") {
-            console.log("Subscription creation request received")
+            console.log("Subscription creation request received");
             return await new ClientService().webHookBucketUpdate(parsedBody);
         }
+    }
+
+    async getAllMyRelationships(clientId){
+        let relationships = await this.getRelationshipsForClient(clientId);
+        let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+
+        let makerMap = {};
+        let makers = JSON.parse(result.body);
+        for (var maker of makers){
+            makerMap[maker.id] = maker;
+        }
+
+        for (var relationship of relationships){
+            let maker = makerMap[relationship.makerId];
+            relationship.makerName = maker.firstName + " " + maker.lastName;
+            relationship.makerEmail = maker.email;
+        }
+
+        return relationships;
     }
 
     async getOutstandingPaymentsPage(clientId) {
