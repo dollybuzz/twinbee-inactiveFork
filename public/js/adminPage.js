@@ -42,24 +42,6 @@ let navMapper = {
 };//end navMapper
 
 //Versatile Functions
-function updateDescriptionId(endpoint, idSource, targetSpan){
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token,
-            id: idSource
-        },
-        dataType: "json",
-        success:function (res, status) {
-            targetSpan.html(res.id)
-        },
-        error: function (clientres, clientstatus) {
-            $("#userMainContent").html("Clients isn't working!");
-        }
-    })
-}
-
 function isEmail(val){
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val);
 }
@@ -1561,27 +1543,21 @@ function sheetModForm(res, status) {
     }
 
     $.ajax({
-        url: "/api/getAllPlans",
+        url: "/api/getTimeBucketByClientId",
         method: "post",
         data: {
-            auth: id_token
+            auth: id_token,
+            id: '16CHT7Ryu5EhnPWY',//tokenres.id,
         },
         dataType: "json",
         success: function (planres, planstatus) {
-            for(var plan in planres){
-                plan = planres[plan].plan;
+        },
+        error: function (tokenres, tokenstatus) {
+            $("#userMainContent").html("Token isn't working!");
+        }
+    });
 
-                if (selectedRow.children()[3].innerHTML == plan.id)
-                    $('#modsheetplanname').append(
-                        `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
-                    );
-                else
-                    $('#modsheetplanname').append(
-                        `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
-                    );
-            }
-
-            //Submit button function
+    //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
                 let message = "";
@@ -1616,11 +1592,6 @@ function sheetModForm(res, status) {
                     $("#errormessage").html(message);
                 }
             });
-        },
-        error: function (planres, planstatus) {
-            $("#userMainContent").html("Plans isn't working!");
-        }
-    });
 }
 
 function sheetAddForm () {
@@ -1629,12 +1600,8 @@ function sheetAddForm () {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
-        "<label for='addsheetmakerid'>Freedom Maker ID:</label>" +
-        `<select class='form-control' id='addsheetmakerid' name='addsheetmakerid'></select>\n<br><br>\n` +
-        "<label for='addsheetclientid'>Client ID:</label>" +
-        `<select class='form-control' id='addsheetclientid' name='addsheetclientid'></select>\n<br>\n` +
-        "<label for='addsheetplanname'>Plan:</label>" +
-        `<select class='form-control' id='addsheetplanname' name='addsheetplanname'></select>\n<br><br>\n` +
+        "<label for='addsheetgroup'>Group:</label>" +
+        `<select class='form-control' id='addsheetgroup' name='addsheetgroup'></select>\n<br><br>\n` +
         "<label for='addsheettimein'>Time In:</label>" +
         `<input class='form-control' type='date' id='addsheettimeindate' name='addsheettimeindate' >` +
         `<input class='form-control' type='time' id='addsheettimeintime' name='addsheettimeintime' >\n` +
@@ -1647,14 +1614,6 @@ function sheetAddForm () {
         `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
-    $.ajax({
-        url: "/api/getAllPlans",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (planres, planstatus) {
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -1671,76 +1630,85 @@ function sheetAddForm () {
                         },
                         dataType: "json",
                         success: function (clientres, clientstatus) {
+                            $.ajax({
+                                url: "/api/getAllRelationships",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                },
+                                dataType: "json",
+                                success: function (relres, relstatus) {
+                                    let clientMap = {};
+                                    let makerMap = {};
 
-                            for(var plan in planres){
-                                plan = planres[plan].plan;
-                                    $('#addsheetplanname').append(
-                                        `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
-                                    );
-                            }
-                            for(var client in clientres){
-                                client = clientres[client].customer;
-                                $('#addsheetclientid').append(
-                                    `<option id="${client.id}" value="${client.id}">${client.first_name + " " + client.last_name + " - " + client.id}</option>`
-                                );
-                            }
+                                    for(var client of clientres){
+                                        clientMap[client.customer.id] = client;
+                                    }
 
-                            for(var maker in makerres){
+                                    for(var maker of makerres){
+                                        makerMap[maker.id] = maker;
+                                    }
 
-                                    maker = makerres[maker];
-                                    console.log(maker.deleted);
-                                    if(!maker.deleted)
+                                    for(var item of relres)
                                     {
-                                        $('#addsheetmakerid').append(
-                                        `<option id="${maker.id}" value="${maker.id}">${maker.firstName + " " + maker.lastName + " - " + maker.id}</option>`
-                                    );}
+                                        $('#addsheetgroup').append(
+                                            `<option value="${item.id}">${makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + " - " + item.planId + " - " + clientMap[item.clientId].customer.first_name + " " + clientMap[item.clientId].customer.last_name}</option>`
+                                        );
+                                    }
 
-                            }
-                            updateDescriptionId('/api/getClient', $("#addsheetclientid").val(), $("#addsheetclientdescription"));
-                            updateDescriptionId('/api/getMaker', $("#addsheetmakerid").val(), $("#addsheetmakerdescription"));
+                                    //Submit button function
+                                    $("#SubmitButton").off("click");
+                                    $("#SubmitButton").on('click', function (e) {
+                                        let message = "";
+                                        let valid = true;
+                                        if ($("#addsheettimeintime").val() == "" || $("#addsheettimeindate").val() == "" ||
+                                            $("#addsheettimeouttime").val() == "" || $("#addsheettimeoutdate").val() == ""){
+                                            valid = false;
+                                            message += "Please correct the dates and times!<br>";
+                                        }
+                                        if ($("#addsheettask").val().length === 0){
+                                            valid = false;
+                                            message += "Task must be added!<br>";
+                                        }
+                                        if ($("#addsheetdetail").val().length === 0){
+                                            valid = false;
+                                            message += "Please enter a reason for adding!<br>";
+                                        }
 
-                            $("#addsheetclientid").on('change', function () {
-                                updateDescriptionId('/api/getClient', $("#addsheetclientid").val(), $("#addsheetclientdescription"));
-                            });
-                            $("#addsheetmakerid").on('change', function () {
-                                updateDescriptionId('/api/getMaker', $("#addsheetmakerid").val(), $("#addsheetmakerdescription"));
-                            });
-
-
-                            //Submit button function
-                            $("#SubmitButton").off("click");
-                            $("#SubmitButton").on('click', function (e) {
-                                let message = "";
-                                let valid = true;
-                                if ($("#addsheettimeintime").val() == "" || $("#addsheettimeindate").val() == "" ||
-                                    $("#addsheettimeouttime").val() == "" || $("#addsheettimeoutdate").val() == ""){
-                                    valid = false;
-                                    message += "Please correct the dates and times!<br>";
-                                }
-                                if ($("#addsheettask").val().length === 0){
-                                    valid = false;
-                                    message += "Task must be added!<br>";
-                                }
-                                if ($("#addsheetdetail").val().length === 0){
-                                    valid = false;
-                                    message += "Please enter a reason for adding!<br>";
-                                }
-
-                                if (valid) {
-                                    $("#errormessage").html("");
-                                    addSubmit("/api/createTimeSheet", {
-                                        auth: id_token,
-                                        makerId: $("#addsheetmakerid").val(),
-                                        hourlyRate: $("#addsheetplanname").val() ,
-                                        clientId: $("#addsheetclientid").val(),
-                                        timeIn: `${$("#addsheettimeindate").val()} ${$("#addsheettimeintime").val()}:00`,
-                                        timeOut: `${$("#addsheettimeoutdate").val()} ${$("#addsheettimeouttime").val()}:00`,
-                                        task: $("#addsheettask").val(),
-                                        detail: $("#addsheetdetail").val()
-                                    }, addSheetSuccess);
-                                }
-                                else{
-                                    $("#errormessage").html(message);
+                                        if (valid) {
+                                            $.ajax({
+                                                url: "/api/getRelationshipById",
+                                                method: "post",
+                                                data: {
+                                                    auth: id_token,
+                                                    id: relres.id
+                                                },
+                                                dataType: "json",
+                                                success: function (subrelres, subrelstatus) {
+                                                    $("#errormessage").html("");
+                                                    addSubmit("/api/createTimeSheet", {
+                                                        auth: id_token,
+                                                        makerId: subrelres.makerId,
+                                                        hourlyRate: subrelres.planId,
+                                                        clientId: subrelres.clientId,
+                                                        timeIn: `${$("#addsheettimeindate").val()} ${$("#addsheettimeintime").val()}:00`,
+                                                        timeOut: `${$("#addsheettimeoutdate").val()} ${$("#addsheettimeouttime").val()}:00`,
+                                                        task: $("#addsheettask").val(),
+                                                        detail: $("#addsheetdetail").val()
+                                                    }, addSheetSuccess);
+                                                },
+                                                error: function (subrelres, subrelstatus) {
+                                                    $("#userMainContent").html("Submit relationship isn't working!");
+                                                }
+                                            });
+                                        }
+                                        else{
+                                            $("#errormessage").html(message);
+                                        }
+                                    });
+                                },
+                                error: function (relres, relstatus) {
+                                    $("#userMainContent").html("All relationships isn't working!");
                                 }
                             });
                         },
@@ -1753,11 +1721,6 @@ function sheetAddForm () {
                     $("#userMainContent").html("Plans isn't working!");
                 }
             });
-        },
-        error: function (planres, planstatus) {
-            $("#userMainContent").html("Plans isn't working!");
-        }
-    });
 
 }
 
@@ -2062,14 +2025,13 @@ function relationshipFunctionality (res) {
                             //Create table
                             let clientMap = {};
                             let makerMap = {};
-                            for(item of clientres) {
-                                console.log(item);
+                            for(var item of clientres) {
                                 if(item.customer.first_name)
                                 {
                                     clientMap[item.customer.id] = item.customer;
                                 }
                             }
-                            for(item of makerres) {
+                            for(var item of makerres) {
                                 makerMap[item.id] = item;
                             }
                             $("#userMainContent").html(
