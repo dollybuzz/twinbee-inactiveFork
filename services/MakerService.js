@@ -192,6 +192,40 @@ class MakerService {
         return sheets;
     }
 
+    async getMyRelationshipBucket(makerId, relationshipId){
+
+        let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getRelationshipById`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'id': relationshipId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        let body = JSON.parse(result.body);
+        if (body.makerId !== makerId){
+            return false;
+        }
+
+        result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getTimeBucket`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'id':body.clientId,
+                'planId': body.planId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        body = JSON.parse(result.body);
+        return body;
+    }
+
     /**
      * Retrieves all clients a given maker has worked for.
      *

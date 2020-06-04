@@ -46,6 +46,20 @@ module.exports = {
      * {
      *     "token": requester's google token
      * }
+     * Returns values as follows:
+     * [
+     *      {
+     *          "customer": {
+     *              ...
+     *          },
+     *          "subscription": {
+     *              ...
+     *          },
+     *          "card": {
+     *              ...
+     *          }
+     *      },...
+     * ]
      * @param req
      * @param res
      * @returns {Promise<void>}
@@ -78,6 +92,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/retrieveMySubscription
      * Retrieves a single subscription for a customer. Looks for data in the body in the form:
      * {
      *     "token": requester's token,
@@ -96,6 +111,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getMyTimeBucket
      * Retrieves a specific bucket for the authenticated client. Looks for data in the body in the form:
      * {
      *     "token": requester's token,
@@ -114,6 +130,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/undoMySubscriptionChanges
      * reverts subscription changes for the requesting client. Looks for data in the body in the
      * form:
      * {

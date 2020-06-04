@@ -34,6 +34,26 @@ module.exports ={
     },
 
     /**
+     * ENDPOINT: /api/getMyRelationshipBucket
+     * Retrieves the bucket minutes for the bucket associated with
+     * the given relationship. Looks for values in the body in the form:
+     * {
+     *     "token": requester's token,
+     *     "relationshipId": id of the relationship with the desired plan
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyRelationshipBucket: async (req, res) => {
+      console.log(`Attempting to get time bucket for relationship ${req.body.relationshipId} from REST`);
+      console.log(req.body);
+      let email = authService.getEmailFromToken(req.body.token);
+      let id = makerService.getMakerIdByEmail(email);
+      res.send(await makerService.getMyRelationshipBucket(id, req.body.relationshipId));
+    },
+
+    /**
      * ENDPOINT: /api/getAllMakers
      * Retrieves a list of all makers. Returns data in the form:
      *
