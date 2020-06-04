@@ -266,10 +266,9 @@ function buyForm () {
                 dataType: "json",
                 success: function (planres, planstatus) {
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<h6>Please select your plan and how many hours you would like to purchase:</h6><br>" +
                         "<form id='add'>" +
-                        "<label for='buyPlan'> Select a Plan: </label>" +
-                        "<select class='form-control' id='buyPlan'></select>\n<br>\n" +
+                        "<label for='buyPlan'> Plan: </label>" +
+                        `<input class='form-control' id='buyPlan' value='${selectedRow.children()[0].innerHTML}' disabled></input>\n<br>\n` +
                         "<label for='buyHours'> Enter Number of Hours: </label>" +
                         "<input class='form-control' type='number' id='buyHours' name='buyHours'>\n<br><br>\n" +
                         "<label for='buyHours'> Enter Number of Minutes: </label>" +
@@ -347,7 +346,6 @@ function buyForm () {
                                 message += `${numMin} minute(s) `;
                             }
 
-                            console.log(timeInMinutes/60)
                             $("#YesBuy").click(function () {
                                 $.ajax({
                                     url: "/api/creditNow",
@@ -363,9 +361,6 @@ function buyForm () {
                                         $("#optionsClient").append("<br><h5>Successfully purchased " + message + " for Plan " + planSelect + "!</h5>" +
                                             "<br><h6>Note: Due to processing, delays may occur. Please contact Freedom Makers<br>if your purchase does not reflect " +
                                             "in your account after 5 minutes.</h6>");
-                                        setTimeout(function () {
-                                            showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
-                                        }, 3000);
                                     },
                                     error: function (res, status) {
                                         $("#userMainContent").html("Buy Credit isn't working!");
