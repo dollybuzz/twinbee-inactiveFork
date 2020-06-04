@@ -1955,8 +1955,8 @@ function creditAddForm() {
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
-                        var hours = (Number.parseInt($("#addHourCredit").val()) * 60);
-                        var minutes = Number.parseInt($("#addMinCredit").val());
+                        var hours = (Number.parseInt($("#addHourCredit").val()) * 60) || 0;
+                        var minutes = Number.parseInt($("#addMinCredit").val()) || 0;
                         var hoursPlusMin = hours + minutes;
                         console.log(hoursPlusMin);
                         let valid = true;
