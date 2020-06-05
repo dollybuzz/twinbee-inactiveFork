@@ -470,3 +470,7 @@ th {
     text-align: center;
     opacity: 0;
 }
+
+#clockButton {
+    text-align: center;
+}

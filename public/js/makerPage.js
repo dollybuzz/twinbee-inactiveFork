@@ -147,67 +147,71 @@ function setClockInFunctionality() {
             },
             dataType: "json",
             success: function (tokenres, status) {
-                $.ajax({
-                    url: "api/getRelationshipById",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        id: $("#makerSelectedClient").val(),
-                    },
-                    dataType: "json",
-                    success: function (relres, status) {
-                        $.ajax({
-                            url: "api/clockIn",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                makerId: relres.makerId,
-                                hourlyRate: relres.planId,
-                                clientId: relres.clientId,
-                                task: $("#taskEntry").val()
-                            },
-                            dataType: "json",
-                            success: function (clockres, status) {
-                                if(clockres) {
-                                    setClockOutFunctionality();
-                                    $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
-                                    $("#makerText2").css("opacity", "1");
+                if(!$("#makerSElectedClient").val())
+                {
+                    $.ajax({
+                        url: "api/getRelationshipById",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            id: $("#makerSelectedClient").val(),
+                        },
+                        dataType: "json",
+                        success: function (relres, status) {
+                            $.ajax({
+                                url: "api/clockIn",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                    makerId: relres.makerId,
+                                    hourlyRate: relres.planId,
+                                    clientId: relres.clientId,
+                                    task: $("#taskEntry").val()
+                                },
+                                dataType: "json",
+                                success: function (clockres, status) {
+                                    if(clockres) {
+                                        setClockOutFunctionality();
+                                        $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
+                                        $("#makerText2").css("opacity", "1");
 
 
-                                    $("#clockPrompt").html("<h5>Time is running . . .</h5>");
-                                    $("#clockPrompt").css("opacity", "1");
+                                        $("#clockPrompt").html("<h5>Time is running . . .</h5>");
+                                        $("#clockPrompt").css("opacity", "1");
 
-                                    $("#taskBlock").css("opacity", "0");
-                                    $("#taskEntry").css("opacity", "0");
-                                    $("#taskBlock").css("transition", "opacity 0.5s ease-out");
-                                    $("#taskEntry").css("transition", "opacity 0.5s ease-out");
+                                        $("#taskBlock").css("opacity", "0");
+                                        $("#taskEntry").css("opacity", "0");
+                                        $("#taskBlock").css("transition", "opacity 0.5s ease-out");
+                                        $("#taskEntry").css("transition", "opacity 0.5s ease-out");
 
-                                    setTimeout(function () {
-                                        $("#makerText2").css("opacity", "0");
-                                        $("#taskBlock").hide();
-                                        $("#taskEntry").hide();
-                                    }, 3000);
+                                        setTimeout(function () {
+                                            $("#makerText2").css("opacity", "0");
+                                            $("#taskBlock").hide();
+                                            $("#taskEntry").hide();
+                                        }, 3000);
 
-                                    setTimeout(function () {
-                                        $("#makerText2").html("");
-                                    }, 6000);
+                                        setTimeout(function () {
+                                            $("#makerText2").html("");
+                                        }, 6000);
 
+                                    }
+                                    else {
+                                        $("#makerText2").html("<br><h5>Could not clock in!</h5>");
+                                    }
+                                },
+                                error: function (clockres, status) {
+                                    $("#makerClock").html('Clock In');
+                                    $("#userMainContent").html("Clock not working!");
                                 }
-                                else {
-                                    $("#makerText2").html("<br><h5>Could not clock in!</h5>");
-                                }
-                            },
-                            error: function (clockres, status) {
-                                $("#makerClock").html('Clock In');
-                                $("#userMainContent").html("Clock not working!");
-                            }
-                        });
-                    },
-                    error: function (relres, status) {
-                        $("#makerClock").html('Clock In');
-                        $("#userMainContent").html("Could not get relationships!");
-                    }
-                });
+                            });
+                        },
+                        error: function (relres, status) {
+                            $("#makerClock").html('Clock In');
+                            $("#clockButton").html("<h5>You are not currently assigned to any Client.<br>" +
+                                "Please follow up with Freedom Makers for further instruction.</h5>");
+                        }
+                    });
+                }
             },
             error: function (tokenres, status) {
                 $("#userMainContent").html("Failed to verify you!");
