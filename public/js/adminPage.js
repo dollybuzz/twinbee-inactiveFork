@@ -1671,13 +1671,14 @@ function sheetAddForm () {
                                             message += "Please enter a reason for adding!<br>";
                                         }
 
+                                        console.log(relres);
                                         if (valid) {
                                             $.ajax({
                                                 url: "/api/getRelationshipById",
                                                 method: "post",
                                                 data: {
                                                     auth: id_token,
-                                                    id: relres.id
+                                                    id: $("#addsheetgroup").val()
                                                 },
                                                 dataType: "json",
                                                 success: function (subrelres, subrelstatus) {
