@@ -47,6 +47,10 @@ body {
     padding: 15px;
 }
 
+.navItem{
+    cursor: pointer;
+}
+
 nav {
     display: inline-block;
     margin: auto;
