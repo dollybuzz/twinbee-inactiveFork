@@ -112,7 +112,7 @@ body a:hover {
 }
 
 
-#ChangeSubButton, #BuyHoursSubButton
+#ChangeSubButton, #BuyHoursSubButton, #ManageAvailCreditButton
 {
     font-size: 0.8em;
     color: white;
@@ -121,7 +121,7 @@ body a:hover {
     transition: opacity 0.5s ease-in-out;
 }
 
-#ChangeSubButton:hover, #BuyHoursSubButton:hover
+#ChangeSubButton:hover, #BuyHoursSubButton:hover, #ManageAvailCreditButton:hover
 {
     color: white;
     background-color: #dbb459;

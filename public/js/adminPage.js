@@ -1735,24 +1735,22 @@ function addSheetSuccess (res, status) {
     $("#optionsClient").append("<div id='addsuccess'></div>");
     $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>` +
-        "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.<br>" +
+        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>" +
         "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
-    $(`#${res.id}`).mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    }).click(function () {
-        prePopModForm("/api/getTimeSheet", sheetModForm);
+    $("#ManageAvailCreditButton").on('click', function () {
+        navMapper["manageCredit"]();
     });
 }
 
 function clearSheetSuccess (res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>` +
-    "<br><p>Next, please navigate to 'Manage Available Credit' to adjust credit for the plan and associated Client.<br>" +
-    "<br>Note: The table will reflect your changes once the request has completed.</p>");
+        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>" +
+        "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
+    $("#ManageAvailCreditButton").on('click', function () {
+        navMapper["manageCredit"]();
+    });
 }
 
 function verifyClearSheet () {
