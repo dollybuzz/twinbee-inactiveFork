@@ -447,8 +447,9 @@ th {
 }
 
 #makerText2 {
-    padding-top: 20px;
     opacity: 0;
+    height: 90px;
+    margin-top: 50px;
     transition: opacity 0.5s ease-in-out;
 }
 
@@ -467,7 +468,8 @@ th {
 }
 
 #clockPrompt {
-    height: 60px;
+    height: 30px;
+    margin-top: 20px;
     justify-content: center;
     text-align: center;
     opacity: 0;
