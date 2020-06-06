@@ -3,43 +3,60 @@ let selectedRow = null;
 let id_token = null;
 let selectedTab = null;
 let TEST_ENVIRONMENT = false;
-let NAV_MAP_TEXT = "";
-let SELECTED_NAV_MAP = null;
 
 let navMapper = {
     main: function () {
         location.reload();
     },
 
+
     manageClients: function () {
-      showFunction(clientFunctionality, "/api/getAllClients");
+        navItemChange("manageClients");
+        showFunction(clientFunctionality, "/api/getAllClients");
     },
 
     manageMakers: function () {
+        navItemChange("manageMakers");
         showFunction(makerFunctionality, "/api/getAllMakers");
     },
 
     manageSubscriptions: function () {
+        navItemChange("manageSubscriptions");
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     },
 
     managePlans: function () {
+        navItemChange("managePlans");
         showFunction(planFunctionality, "/api/getAllPlans");
     },
 
     reviewTimeSheets: function () {
+        navItemChange("reviewTimeSheets");
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     },
 
     manageCredit: function () {
+        navItemChange("manageCredit");
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     },
 
     manageRelationships: function () {
+        navItemChange("manageRelationships");
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     }
 
 };//end navMapper
+
+function navItemChange(id){
+    let selectedNavMap = $(`#${id}`);
+    let navItemText = selectedNavMap.html();
+    selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+
+    $(".navItem").css('color', 'white');
+    $(".navItem").css('font-style', 'normal');
+    selectedNavMap.css("color", '#dbb459');
+    selectedNavMap.css("font-style", 'italic');
+}
 
 //Versatile Functions
 function isEmail(val){
@@ -2438,13 +2455,6 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
-        SELECTED_NAV_MAP = $(this);
-        NAV_MAP_TEXT = SELECTED_NAV_MAP.html();
-        SELECTED_NAV_MAP.html(`${NAV_MAP_TEXT}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
-        $(".navItem").css('color', 'white');
-        $(".navItem").css('font-style', 'normal');
-        $(this).css("color", '#dbb459');
-        $(this).css("font-style", 'italic');
     })
 
     $(".navItem").hover(function () {
