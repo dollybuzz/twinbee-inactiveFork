@@ -105,6 +105,7 @@ function setClockInFunctionality() {
                                     },
                                     dataType: "json",
                                     success: function (bucketres, bucketstatus) {
+                                    console.log("hello")
                                         let hours = Math.floor(((bucketres.minutes)/60));
                                         let minutes = (bucketres.minutes)%60;
                                         let message = "";
@@ -410,6 +411,67 @@ onSignIn = function (googleUser) {
                                     }
                                 });
                             }
+                            setTimeout(function () {
+                                $.ajax({
+                                    method: "post",
+                                    url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
+                                    data: {
+                                        auth: id_token,
+                                        token: id_token
+                                    },
+                                    success: function (tokenres, tokenstatus) {
+                                        $.ajax({
+                                            method: "post",
+                                            url: "/api/getRelationshipsByMakerId",
+                                            data: {
+                                                auth: id_token,
+                                                id: TEST_ENVIRONMENT? 4: tokenres.id
+                                            },
+                                            success: function (relres, relstatus) {
+                                                for(var item of relres)
+                                                {
+                                                    if(item.id == $("#makerSelectedClient").val())
+                                                    {
+                                                        $.ajax({
+                                                            url: "/api/getTimeBucket",
+                                                            method: "post",
+                                                            data: {
+                                                                auth: id_token,
+                                                                id: item.clientId,
+                                                                planId: item.planId
+                                                            },
+                                                            dataType: "json",
+                                                            success: function (bucketres, bucketstatus) {
+                                                                console.log("hello")
+                                                                let hours = Math.floor(((bucketres.minutes)/60));
+                                                                let minutes = (bucketres.minutes)%60;
+                                                                let message = "";
+                                                                if (hours > 0) {
+                                                                    message += ` ${hours} hours `;
+                                                                }
+                                                                if (minutes > 0) {
+                                                                    message += ` ${minutes} minutes `;
+                                                                }
+                                                                $("#availcredit").html(message);
+                                                            },
+                                                            error: function (bucketres, bucketstatus) {
+                                                                $("#userMainContent").html("Bucket isn't working!");
+                                                            }
+                                                        });
+                                                    }
+                                                }
+
+                                            },
+                                            error: function (relres, relstatus) {
+                                                $("#userMainContent").html("Relationship isn't working!");
+                                            }
+                                        });
+                                    },
+                                    error: function (tokenres, tokenstatus) {
+                                        $("#userMainContent").html("Token isn't working!");
+                                    }
+                                });
+                            }, 300)
                         },
                         error: function (relres, status) {
                             $("#UserMainContent").html("Could not get relationships!");
