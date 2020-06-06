@@ -433,11 +433,11 @@ th {
 }
 
 #makerClock {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     padding: 10px 16px;
     border-radius: 100%;
-    font-size: 40px;
+    font-size: 45px;
     color: white;
     background-color: #dbb459;
     text-align: center;
@@ -477,4 +477,11 @@ th {
 
 #clockButton {
     text-align: center;
+    height: 300px;
+
+}
+
+#twinbeeLogo {
+    display: inline;
+    width: 180px;
 }
