@@ -2316,13 +2316,14 @@ function relationshipAddForm() {
                                         "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
                                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+
                                     for(var item of clientres) {
                                         $('#addClientRel').append(
                                             `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
                                         );
                                     }
 
-                                    $("#addClientRel").on('change', function () {
+                                    $("#addClientRel").on('click', function () {
                                             $.ajax({
                                                 url: "/api/getTimeBucketByClientId",
                                                 method: "post",
