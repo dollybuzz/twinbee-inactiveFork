@@ -754,7 +754,6 @@ function makerAddForm () {
             $("#errormessage").html("");
             addSubmit("/api/createMaker", {
                 auth: id_token,
-                id: $("#addmakerid").val(),
                 firstName: $("#addmakerfname").val(),
                 lastName: $("#addmakerlname").val(),
                 email: $("#addemail").val()
