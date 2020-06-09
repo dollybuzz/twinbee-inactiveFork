@@ -1664,7 +1664,7 @@ function sheetAddForm () {
                                     for(var item of relres)
                                     {
                                         $('#addsheetgroup').append(
-                                            `<option value="${item.id}">${makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + " - " + item.planId + " - " + clientMap[item.clientId].customer.first_name + " " + clientMap[item.clientId].customer.last_name}</option>`
+                                            `<option value="${item.id}">${makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + " - " + clientMap[item.clientId].customer.first_name + " " + clientMap[item.clientId].customer.last_name + " - " + item.planId}</option>`
                                         );
                                     }
 
