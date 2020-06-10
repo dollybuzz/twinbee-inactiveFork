@@ -342,6 +342,7 @@ onSignIn = function (googleUser) {
 
                 //Managing user navigation away
                 success: function (innerRes, innerStatus) {
+                    console.log(tokenres)
                     var clockedOut = true;
                     for (var i = 0; i < innerRes.length; ++i){
                         let sheet = innerRes[i];
