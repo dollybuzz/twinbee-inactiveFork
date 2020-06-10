@@ -83,6 +83,7 @@ function setClockInFunctionality() {
                 token: id_token
             },
             success: function (tokenres, tokenstatus) {
+                console.log(tokenres)
                 $.ajax({
                     method: "post",
                     url: "/api/getRelationshipsByMakerId",
