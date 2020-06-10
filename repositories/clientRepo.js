@@ -122,7 +122,7 @@ class ClientRepository {
                     reject(error);
                 } else {
                     var entry = result.list[0];
-                    var customer = entry.customer;
+                    var customer = entry.customer || null;
                     console.log("Customer retrieved by email successfully");
                     resolve(customer);
                 }
