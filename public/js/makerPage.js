@@ -315,7 +315,7 @@ function setClockOutFunctionality() {
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
-
+    GOOGLE_USER = googleUser;
     let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
     let name = TEST_ENVIRONMENT ? null : profile.getName();
     $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
@@ -629,8 +629,6 @@ $(document).ready(function () {
             if (TEST_ENVIRONMENT) {
                 onSignIn();
             }
-            else
-                (onSignIn(GOOGLE_USER))
         },
         error: function (clientres, clientstatus) {
             TEST_ENVIRONMENT = true;
