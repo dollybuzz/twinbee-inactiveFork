@@ -211,8 +211,11 @@ function timeBucketFunctionality (res) {
     //Body Block content
     createBody(null);
     $("#userMainContent").prepend("<div class='altTopButtons'></div>");
-    $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"updatePaymentButton\">Update Payment Method</button>");
-    $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
+    $(".altTopButtons").append("<div id='empty'></div>");
+    $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"updatePaymentButton\">Update Payment Method</button>" +
+   "<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
+    $(".altTopButtons").append("<div id='empty'></div>");
+
 
     //Event Listeners
     //Update Payment

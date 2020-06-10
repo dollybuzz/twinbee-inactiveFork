@@ -156,7 +156,7 @@ body a:hover {
 
 .altTopButtons {
     display: grid;
-    grid-template-columns: 3fr 3fr 3fr;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
     place-items: center;
     height: 45px;
 }

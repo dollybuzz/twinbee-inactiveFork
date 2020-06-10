@@ -754,7 +754,6 @@ function makerAddForm () {
             $("#errormessage").html("");
             addSubmit("/api/createMaker", {
                 auth: id_token,
-                id: $("#addmakerid").val(),
                 firstName: $("#addmakerfname").val(),
                 lastName: $("#addmakerlname").val(),
                 email: $("#addemail").val()
@@ -1665,7 +1664,7 @@ function sheetAddForm () {
                                     for(var item of relres)
                                     {
                                         $('#addsheetgroup').append(
-                                            `<option value="${item.id}">${makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + " - " + item.planId + " - " + clientMap[item.clientId].customer.first_name + " " + clientMap[item.clientId].customer.last_name}</option>`
+                                            `<option value="${item.id}">${makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + " - " + clientMap[item.clientId].customer.first_name + " " + clientMap[item.clientId].customer.last_name + " - " + item.planId}</option>`
                                         );
                                     }
 
@@ -2317,13 +2316,14 @@ function relationshipAddForm() {
                                         "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
                                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+
                                     for(var item of clientres) {
                                         $('#addClientRel').append(
                                             `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
                                         );
                                     }
 
-                                    $("#addClientRel").on('change', function () {
+                                    $("#addClientRel").on('click', function () {
                                             $.ajax({
                                                 url: "/api/getTimeBucketByClientId",
                                                 method: "post",
