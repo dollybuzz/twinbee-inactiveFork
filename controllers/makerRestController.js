@@ -174,7 +174,7 @@ module.exports ={
         console.log(req.body);
         let email = await authService.getEmailFromToken(req.body.token);
         let result = await makerService.getMakerIdByEmail(email).catch(err=>{console.log(err)});
-        res.send(result[0]);
+        res.send(result);
     },
 
 
