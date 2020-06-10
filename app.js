@@ -24,7 +24,6 @@ require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
     api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"});
-
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
 app.set('ip',  process.env.IP || "0.0.0.0");
@@ -348,6 +347,7 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
+ //   console.log(await makerService.getMakerById(5))
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
