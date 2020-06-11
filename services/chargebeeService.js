@@ -58,7 +58,7 @@ class ChargebeeService {
     createPlan(planId, invoiceName, pricePerHour, planDescription) {
         console.log(`Creating plan ${planId} with per hour cost of ${pricePerHour}...`);
         return new Promise((resolve, reject) => {
-            let planId = planId.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
+            planId = planId.replace(/\s+|\.|\,|'|"|&|\$|%|#|@|!/g, "-");
             chargebee.plan.create({
                 id: planId,
                 name: planId,
