@@ -139,7 +139,7 @@ module.exports = {
             clientPageController.renderLanding(req, res);
         }
         else{
-            landingPageController.renderLanding(req, res);
+            res.send(503);
         }
     }
 };
