@@ -66,8 +66,8 @@ module.exports = {
         console.log(client.id);
         console.log(subscriptionOwner.id)
         if (client.id === subscriptionOwner.id) {
-            res.send(await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
-                req.body.planQuantity, req.body.pricePerHour));
+            res.send(await chargebeeService.updateSubscriptionForCustomer(req.body.subscriptionId,
+                req.body.planQuantity));
         }
         else
             res.send(false);
