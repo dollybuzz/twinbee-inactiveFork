@@ -40,6 +40,7 @@ app.get("/admin", adminPageController.renderLanding);
 app.get("/administrator", adminPageController.renderLanding);
 app.get("/client", clientPageController.renderLanding);
 app.get("/freedom-maker", makerPageController.renderLanding);
+app.get("/forbidden", landingPageController.renderForbidden);
 
 //api routes
 app.get("/login",

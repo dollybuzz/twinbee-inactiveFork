@@ -24,7 +24,7 @@ module.exports ={
             text: "clientTitle"
         };
         let headerTitle = {
-            text: "Access Denied"
+            text: ""
         };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
