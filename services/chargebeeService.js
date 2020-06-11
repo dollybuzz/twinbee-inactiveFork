@@ -319,6 +319,29 @@ class ChargebeeService {
             });
         })
     }
+
+
+    updateSubscriptionForCustomer(subscriptionId, planQuantity){
+        console.log(`Updating subscription ${subscriptionId} for client...`);
+        return new Promise((resolve, reject) => {
+            chargebee.subscription.update(subscriptionId,{
+                end_of_term : true,
+                plan_quantity: planQuantity
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    emailService.emailAdmin(error);
+                    reject(error);
+                }else{
+                    console.log("Subscription updated.");
+                    var subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        })
+    }
+
     /**
      * Updates a subscription with new values. Note that
      * the pricePerHour will override defaults. Created for use
@@ -381,6 +404,7 @@ class ChargebeeService {
             })
         });
     }
+
 
     getCustomerOfSubscription(subscriptionId){
         console.log(`Getting subscription ${subscriptionId}...`)
