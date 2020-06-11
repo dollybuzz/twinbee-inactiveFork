@@ -112,7 +112,7 @@ function showFunction (functionality, endpoint) {
             });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you!");
+            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 };
@@ -161,7 +161,7 @@ function openHostedPage(getPageEndpoint){
             });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you!");
+            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 
@@ -381,7 +381,7 @@ function buyForm () {
             });
         },
         error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working!");
+            $("#userMainContent").html("Token isn't working! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
@@ -401,7 +401,7 @@ function prePopModForm (endpoint, modForm) { //not a versatile method
         dataType: "json",
         success: modForm,
         error: function (res, status) {
-            $("#optionsClient").html("Mod Form is not populating!");
+            $("#optionsClient").html("Mod Form is not populating! Please refresh the page. Contact support if the problem persists.");
         }
     });//end ajax
 }
@@ -529,7 +529,7 @@ function subscriptionModForm (res, status) {
                         }, 1000);
                     },
                     error: function (updateres, status) {
-                        $("#userMainContent").html("Updating Subscription isn't working!");
+                        $("#userMainContent").html("Failed to update subscription! Please refresh the page. Contact support if the problem persists.");
                     }
                 });
             });
@@ -575,13 +575,13 @@ function subscriptionModForm (res, status) {
                             }, 1000);
                         },
                         error: function (undores, undostatus) {
-                            $("#userMainContent").html("Unable to cancel change request!");
+                            $("#userMainContent").html("Unable to cancel change request! Please refresh the page. Contact support if the problem persists.");
                         }
                     });
                 });
             },
             error: function (retres, retstatus) {
-                $("#userMainContent").html("Retrieve changes isn't working!");
+                $("#userMainContent").html("Unable to retrieve changes! Please refresh the page. Contact support if the problem persists.");
             }
         });
     }
@@ -643,7 +643,7 @@ function makerFunctionality (res) {
                                 );
                             },
                             error: function (makerres, makerstatus) {
-                                $("#userMainContent").html("Maker isn't working!");
+                                $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
                             }
                         });
                     }
@@ -664,12 +664,12 @@ function makerFunctionality (res) {
                     });
                 },
                 error: function (relres, relstatus) {
-                    $("#userMainContent").html("Relationship isn't working!");
+                    $("#userMainContent").html("Unable to find relationships! Please refresh the page. Contact support if the problem persists.");
                 }
             });
         },
         error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working!");
+            $("#userMainContent").html("Your token isn't working! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
@@ -738,12 +738,12 @@ function timeSheetFunctionality (res) {
                     $("#buttonsTop").children()[0].remove();
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong with getmakers!");
+                    $("#userMainContent").html("Unable to get Freedom Makers! Please refresh the page. Contact support if the problem persists.");
                 }
             });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you!");
+            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 

@@ -41,12 +41,12 @@ function showFunction (functionality, endpoint) {
                     $(".spinner-border").remove();
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
+                    $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
                 }
             });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you!");
+            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }// end showFunction
@@ -118,7 +118,7 @@ function setClockInFunctionality() {
                                         $("#availcredit").html(message);
                                     },
                                     error: function (bucketres, bucketstatus) {
-                                        $("#userMainContent").html("Bucket isn't working!");
+                                        $("#userMainContent").html("Unable to grab client time buckets! Please refresh the page. Contact support if the problem persists.");
                                     }
                                 });
                             }
@@ -126,12 +126,12 @@ function setClockInFunctionality() {
 
                     },
                     error: function (relres, relstatus) {
-                        $("#userMainContent").html("Relationship isn't working!");
+                        $("#userMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
                     }
                 });
             },
             error: function (tokenres, tokenstatus) {
-                $("#userMainContent").html("Token isn't working!");
+                $("#userMainContent").html("Your token isn't working! Please refresh the page. Contact support if the problem persists.");
             }
         });
     });
@@ -202,7 +202,7 @@ function setClockInFunctionality() {
                                 },
                                 error: function (clockres, status) {
                                     $("#makerClock").html('Clock In');
-                                    $("#userMainContent").html("Clock not working!");
+                                    $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
                                 }
                             });
                         },
@@ -215,7 +215,7 @@ function setClockInFunctionality() {
                 }
             },
             error: function (tokenres, status) {
-                $("#userMainContent").html("Failed to verify you!");
+                $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
             }
         });
     });
@@ -300,13 +300,13 @@ function setClockOutFunctionality() {
                     },
                     error: function (clockres, status) {
                         $("#makerClock").html('Clock Out')
-                        $("#userMainContent").html("Clock not working!");
+                        $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
                     }
                 });
             },
             error: function (tokenres, status) {
                 $("#makerClock").html('Clock Out')
-                $("#userMainContent").html("Clock not working!");
+                $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
             }
         });
     });
@@ -455,7 +455,7 @@ onSignIn = function (googleUser) {
                                                                 $("#availcredit").html(message);
                                                             },
                                                             error: function (bucketres, bucketstatus) {
-                                                                $("#userMainContent").html("Bucket isn't working!");
+                                                                $("#userMainContent").html("Unable to grab client time buckets! Please refresh the page. Contact support if the problem persists.");
                                                             }
                                                         });
                                                     }
@@ -463,28 +463,28 @@ onSignIn = function (googleUser) {
 
                                             },
                                             error: function (relres, relstatus) {
-                                                $("#userMainContent").html("Relationship isn't working!");
+                                                $("#userMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
                                             }
                                         });
                                     },
                                     error: function (tokenres, tokenstatus) {
-                                        $("#userMainContent").html("Token isn't working!");
+                                        $("#userMainContent").html("Your token isn't working! Please refresh the page. Contact support if the problem persists.");
                                     }
                                 });
                             }, 300)
                         },
                         error: function (relres, status) {
-                            $("#UserMainContent").html("Could not get relationships!");
+                            $("#UserMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
                         }
                     });
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
+                    $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
                 }
             });// ajax
         },
         error: function (tokenres, status) {
-            $("#userMainContent").html("Failed to verify you!");
+            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 };
@@ -561,12 +561,12 @@ function timeSheetFunctionality (res) {
                     });
                 },
                 error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong!");
+                    $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
                 }
             });// ajax
         },
         error: function (tokenres, status) {
-            $("#userMainContent").html("Failed to verify you!");
+            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 

@@ -146,7 +146,7 @@ function showFunction (functionality, endpoint) {
             $(".spinner-border").remove();
         },
         error: function (res, status) {
-            $("#userMainContent").html("Something went wrong!");
+            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
         }
     });
 };
@@ -1144,7 +1144,7 @@ function addSubscriptionSuccess (res, status) {
             }, 1000);
         },
         error: function (res, status) {
-            $("#userMainContent").html("Something went wrong!");
+            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
@@ -1524,7 +1524,7 @@ function timeSheetFunctionality (res) {
 
         },
         error: function (makerres, makerstatus) {
-            $("#userMainContent").html("Something went wrong!");
+            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
@@ -1601,7 +1601,7 @@ function sheetModForm(res, status) {
             });
         },
         error: function (planres, planstatus) {
-            $("#userMainContent").html("Plans isn't working!");
+            $("#userMainContent").html("Plans isn't working! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
@@ -1731,7 +1731,7 @@ function sheetAddForm () {
                     });
                 },
                 error: function (makerres, makerstatus) {
-                    $("#userMainContent").html("Plans isn't working!");
+                    $("#userMainContent").html("Plans isn't working! Please refresh the page. Contact support if the problem persists.");
                 }
             });
 
@@ -2021,7 +2021,7 @@ function creditAddForm() {
             });
         },
         error: function (clientres, clientstatus) {
-            $("#userMainContent").html("Client Credit isn't working!");
+            $("#userMainContent").html("Client Credit isn't working! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
@@ -2192,7 +2192,7 @@ function relationshipFunctionality (res) {
             });
         },
         error: function (clientres, clientstatus) {
-            $("#userMainContent").html("Client Relationship isn't working!");
+            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
@@ -2269,7 +2269,7 @@ function relationshipModForm(res, status) {
                     });
                 },
                 error: function (makerres, makerstatus) {
-                    $("#userMainContent").html("Relationships isn't working!");
+                    $("#userMainContent").html("Relationships isn't working! Please refresh the page. Contact support if the problem persists.");
                 }
             });
 }
@@ -2393,7 +2393,7 @@ function relationshipAddForm() {
             });
         },
         error: function (clientres, clientstatus) {
-            $("#userMainContent").html("Client Relationship isn't working!");
+            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
