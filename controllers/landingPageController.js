@@ -20,22 +20,23 @@ module.exports ={
         res.render("landing", {welcome:user, headerImg:headerImageActual, navItemsBottom: footerLinks});
     },
     renderForbidden: (req, res)=>{
-
+        let thisID = {
+            text: "clientTitle"
+        };
+        let headerTitle = {
+            text: "Access Denied"
+        };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
         };
+        let headerLinks = [
+            {link: "", text: "", id: ""}
+        ];
         let footerLinks = [
-            {link: "", text: "Our Mission"},
-            {link: "", text: "Become a Maker"},
-            {link: "", text: "FAQ"},
-            {link: "", text: "Problems? Contact us."},
+            {link: "", text: ""}
         ];
 
-        let user = {
-            text: "Welcome!"
-        };
-
-        res.render("forbidden", {welcome:user, headerImg:headerImageActual, navItemsBottom: footerLinks});
+        res.render("forbidden", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
 };
