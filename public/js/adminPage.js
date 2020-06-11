@@ -1401,7 +1401,7 @@ function timeSheetFunctionality (res) {
                     let clientMap = {};
                     for (var i = 0; i < innerRes.length; ++i) {
                         let client = innerRes[i].customer;
-                        if (client && client.billing_address) {
+                        if (client && client.first_name) {
                             clientMap[client.id] = client;
                         }
                     }
