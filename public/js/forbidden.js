@@ -31,7 +31,7 @@ $(document).ready(function () {
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
-    
+
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 })//end document ready
