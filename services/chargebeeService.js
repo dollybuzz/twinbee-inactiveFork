@@ -319,6 +319,39 @@ class ChargebeeService {
             });
         })
     }
+    /**
+     * Updates a subscription with new values. Note that
+     * the pricePerHour will override defaults. Created for use
+     * by clients; no access to modify price
+     * The revised subscription is returned
+     *
+     * @param subscriptionId - id of the subscription to modify
+     * @param planId        - id of the new plan to be used
+     * @param planQuantity  - number of hours to be used
+     * @param pricePerHour  - custom price per hour - DEACTIVATED
+     * @returns {Promise<subscription>}
+     */
+    customerUpdateSubscription(subscriptionId, planId, planQuantity) {
+        console.log(`Updating subscription ${subscriptionId}...`);
+        return new Promise((resolve, reject) => {
+            chargebee.subscription.update(subscriptionId,{
+                plan_id : planId,
+                end_of_term : true,
+                plan_quantity: planQuantity
+            }).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    emailService.emailAdmin(error);
+                    reject(error);
+                }else{
+                    console.log("Subscription updated.");
+                    var subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        })
+    }
 
     /**
      * Gets all subscriptions (up to 100) for a given client. Looks
@@ -347,6 +380,26 @@ class ChargebeeService {
                 }
             })
         });
+    }
+
+    getCustomerOfSubscription(subscriptionId){
+        console.log(`Getting subscription ${subscriptionId}...`)
+        return new Promise(((resolve, reject) => {
+
+            chargebee.subscription.retrieve(subscriptionId).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log(error);
+                    reject(error)
+                }else{
+                    console.log(result);
+                    var subscription = result.subscription;
+                    var customer = result.customer;
+                    var card = result.card;
+                    resolve(customer);
+                }
+            });
+        }))
     }
 
     /**

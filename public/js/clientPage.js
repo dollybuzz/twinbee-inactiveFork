@@ -513,7 +513,7 @@ function subscriptionModForm (res, status) {
 
             $("#YesChange").click(function () {
                 $.ajax({
-                    url: "/api/updateSubscription",
+                    url: "/api/updateMySubscription",
                     method: "post",
                     data: {
                         auth: id_token,

@@ -1,6 +1,6 @@
 const clientService = require('../services/ClientService.js');
 const authService = require('../services/authService.js');
-
+const chargebeeService = require('../services/chargebeeService.js');
 //TODO Add validation before action
 module.exports = {
 
@@ -40,6 +40,39 @@ module.exports = {
         let client = await clientService.getClientByEmail(email);
         res.send(await clientService.getSheetsByClient(client.id));
     },
+
+    /**
+     * /api/updateSubscription
+     * Updates a subscription with new values. Note that
+     * the pricePerHour will override defaults. This can be used
+     * to create "custom" subscriptions. Use caution when doing so.
+     * The revised subscription is returned. Looks for values in the body as follows:
+     * {
+     *     "subscriptionId": id of subscription to be modified,
+     *     "planId": new plan to use for subscription,
+     *     "planQuantity": new number of hours to use,
+     *     "pricePerHour": overridden price per hour for subscription, - DEACTIVATED
+     *     "auth": client's authentication token
+     * }
+     *
+     * @returns subscription{}
+     */
+    updateMySubscription: async function(req, res){
+        console.log("Attempting to update subscription from  REST by client request: ");
+        console.log(req.body);
+        let subscriptionOwner = chargebeeService.getCustomerOfSubscription(req.body.subscriptionId);
+        let clientEmail = authService.getEmailFromToken(req.body.auth);
+        let client= clientService.getClientByEmail(clientEmail);
+        console.log(client.id);
+        console.log(subscriptionOwner.id)
+        if (client.id === subscriptionOwner.id) {
+            res.send(await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
+                req.body.planQuantity, req.body.pricePerHour));
+        }
+        else
+            res.send(false);
+    },
+
 
     /**
      * Retrieves subscriptions for the requesting client. Looks for data in the body in the

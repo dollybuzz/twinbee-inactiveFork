@@ -342,6 +342,9 @@ app.post("/api/getMyUpdatePaymentPage",
 app.post("/api/getMyTimeBucket",
     authController.authorizeClient,
     clientRestController.getMyTimeBucket);
+app.post("/api/updateMySubscription",
+    authController.authorizeClient,
+    clientRestController.updateMySubscription);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
