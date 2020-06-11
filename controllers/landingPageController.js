@@ -36,6 +36,6 @@ module.exports ={
             text: "Welcome!"
         };
 
-        res.render("landing", {welcome:user, headerImg:headerImageActual, navItemsBottom: footerLinks});
+        res.render("forbidden", {welcome:user, headerImg:headerImageActual, navItemsBottom: footerLinks});
     },
 };
