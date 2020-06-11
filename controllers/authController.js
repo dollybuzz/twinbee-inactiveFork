@@ -139,7 +139,7 @@ module.exports = {
             clientPageController.renderLanding(req, res);
         }
         else{
-            res.send(403);
+            res.render("forbidden");
         }
     }
 };
