@@ -356,7 +356,7 @@ function buyForm () {
                                     method: "post",
                                     data: {
                                         auth: id_token,
-                                        customerId: TEST_CUSTOMER,//tokenres.id,
+                                        customerId: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id,
                                         planId: planSelect,
                                         numHours: timeInMinutes/60
                                     },
