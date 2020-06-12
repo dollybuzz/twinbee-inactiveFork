@@ -42,16 +42,14 @@ module.exports = {
     },
 
     /**
-     * /api/updateSubscription
+     * /api/updateMySubscription
      * Updates a subscription with new values. Note that
      * the pricePerHour will override defaults. This can be used
      * to create "custom" subscriptions. Use caution when doing so.
      * The revised subscription is returned. Looks for values in the body as follows:
      * {
      *     "subscriptionId": id of subscription to be modified,
-     *     "planId": new plan to use for subscription,
      *     "planQuantity": new number of hours to use,
-     *     "pricePerHour": overridden price per hour for subscription, - DEACTIVATED
      *     "auth": client's authentication token
      * }
      *
@@ -75,6 +73,7 @@ module.exports = {
 
 
     /**
+     * Endpoint: '/api/getMySubscriptions
      * Retrieves subscriptions for the requesting client. Looks for data in the body in the
      * form:
      * {
@@ -108,6 +107,7 @@ module.exports = {
     },
 
     /**
+     * Endpoint: /api/getMySubscriptionChanges
      * Retrieves subscription changes for the requesting client. Looks for data in the body in the
      * form:
      * {

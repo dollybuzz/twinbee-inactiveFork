@@ -492,7 +492,9 @@ Sample response:
 **Create a Subscription**
 
 Endpoint: '/api/createSubscription'</br>
-      Creates a new subscription for an existing customer.
+      Creates a new subscription for an existing customer. Note that this action causes
+      the customer's payment source to be charged for the calculated cost of the first 
+      month.
       Note that auto_collection is ALWAYS off. Looks for values in the body as follows:
 ```
       {
@@ -603,6 +605,119 @@ Sample response:
     "base_currency_code": "USD"
 }
 ```
+
+
+**Get/Grab/load/retrieve an existing Subscription with pending changes shown**
+
+Endpoint: '/api/retrieveSubscriptionChanges'</br>
+      Retrieves a subscription object by chargebee subscription id. Looks for values in the body
+      as follows:
+```
+      {
+          "subscriptionId": id of desired subscription,
+          "auth": authentication credentials; either master or token
+      }
+```
+
+Sample request body:
+```
+{
+  "subscriptionId": "169yKpRytp3VPQ7Q",
+  "auth": "myValidAuth"
+}:
+```
+
+Sample response:
+```
+{
+    "id": "169yKpRytp3VPQ7Q",
+    "customer_id": "169yFgRypfdqVmo",
+    "plan_id": "freedom-makers-32",
+    "plan_quantity": 10,
+    "plan_unit_price": 3200,
+    "plan_amount": 32000,
+    "billing_period": 1,
+    "billing_period_unit": "month",
+    "plan_free_quantity": 0,
+    "status": "active",
+    "current_term_start": 1589399197,
+    "current_term_end": 1592077597,
+    "next_billing_at": 1592077597,
+    "created_at": 1589399197,
+    "started_at": 1589399197,
+    "activated_at": 1589399197,
+    "updated_at": 1589399208,
+    "has_scheduled_changes": true,
+    "auto_collection": "off",
+    "resource_version": 1589399208777,
+    "deleted": false,
+    "object": "subscription",
+    "currency_code": "USD",
+    "due_invoices_count": 1,
+    "due_since": 1589399197,
+    "total_dues": 32000,
+    "mrr": 32000,
+    "exchange_rate": 1,
+    "base_currency_code": "USD"
+}
+```
+
+**Undo/Revert Scheduled Subscription Changes**
+
+Endpoint: '/api/undoSubscriptionChanges'<br>
+    Reverts a subscription to the state prior to the currently
+    scheduled changes. The reverted subscription is returned.
+    Looks for values in the body as follows:
+    ```
+        {
+            "subscriptionId": id of the desired subscription,
+            "auth": auth credentials, master or token
+        }
+    ```
+
+Sample request body:
+```
+{
+  "subscriptionId": "169yKpRytp3VPQ7Q",
+  "auth": "myValidAuth"
+}:
+```
+
+Sample response:
+```
+{
+    "id": "169yKpRytp3VPQ7Q",
+    "customer_id": "169yFgRypfdqVmo",
+    "plan_id": "freedom-makers-32",
+    "plan_quantity": 10,
+    "plan_unit_price": 3200,
+    "plan_amount": 32000,
+    "billing_period": 1,
+    "billing_period_unit": "month",
+    "plan_free_quantity": 0,
+    "status": "active",
+    "current_term_start": 1589399197,
+    "current_term_end": 1592077597,
+    "next_billing_at": 1592077597,
+    "created_at": 1589399197,
+    "started_at": 1589399197,
+    "activated_at": 1589399197,
+    "updated_at": 1589399208,
+    "has_scheduled_changes": false,
+    "auto_collection": "off",
+    "resource_version": 1589399208777,
+    "deleted": false,
+    "object": "subscription",
+    "currency_code": "USD",
+    "due_invoices_count": 1,
+    "due_since": 1589399197,
+    "total_dues": 32000,
+    "mrr": 32000,
+    "exchange_rate": 1,
+    "base_currency_code": "USD"
+}
+```
+
 
 
 **Update/Change/Modify an existing Subscription**
@@ -729,6 +844,29 @@ Sample response:
 }
 ```
 
+**Get/Retrieve/Grab subscriptions for a single client**
+Endpoint: '/api/getSubscriptionsByClient'
+      Retrieves all subscriptions for a single client. Looks for values in the
+      body as follows:<br>
+      ```
+          {
+                "id": client's chargebee id,
+                "auth": valid auth token
+          }
+      ```<br>
+      Returns data in the form:
+      ```
+      [
+           {
+               subscription: {...},
+               customer:{...}
+           },
+           {
+               subscription: {...},
+               customer:{...}
+           },...
+      ]
+      ```
 
 **Cancel an existing Subscription**
 
@@ -1086,7 +1224,72 @@ Sample request body:
 
 No response is returned.
 
+**Update Subscription by Google Token (secure "update my subscription")**
+Endpoint: '/api/updateMySubscription'<br>
+    See '/api/updateSubscription' for details
+    Looks for values in the body in the form:<br>
+    ```
+      {
+          "subscriptionId": id of subscription to be modified,
+          "planQuantity": new number of hours to use,
+          "auth": client's authentication token
+      }
+    ```<br>
+    See 'api/updateSubscription' for return values and samples
 
+**Get/Retrieve/Grab Subscriptions by Google Token (secure "get all my subscriptions")**
+Endpoint: '/api/getMySubscriptions'<br>
+    Retrieves all subscriptions for the client that owns the passed token
+    Looks for values in the body in the form:<br>
+    ```
+      {
+          "token": requester's google token,
+          "auth": valid authentication
+      }
+    ```<br>
+    Returns data in the form:<br>
+    ```
+      [
+           {
+               "customer": {
+                   ...
+               },
+               "subscription": {
+                   ...
+               },
+               "card": {
+                   ...
+               }
+           },...
+      ]
+    ```
+
+**Get/Retrieve/Grab one Subscription by Google Token (secure "get one of my subscriptions")**
+Endpoint: '/api/getMySubscription'<br>
+    Retrieves the requested subscription for the client that owns the passed token
+    Looks for values in the body in the form:<br>
+    ```
+     * {
+     *     "token": requester's google token,
+     *     "subscriptionId": id of the subscription to view,
+     *     "auth": valid authentication
+     * }
+    ```<br>
+    See '/api/retrieveSubscription' for return values and samples<br>
+    
+**Get/Retrieve/Grab one Subscription by Google Token with scheduled changes (secure "get one of my subscriptions with planned changes")**
+Endpoint: '/api/getMySubscriptionChanges'<br>
+    Retrieves the requested subscription for the client that owns the passed token with scheduled changes
+    Looks for values in the body in the form:<br>
+    ```
+     * {
+     *     "token": requester's google token,
+     *     "subscriptionId": id of the subscription to view,
+     *     "auth": valid authentication
+     * }
+    ```<br>
+    See '/api/retrieveSubscription' for return values and samples<br>
+    
 **MORE TO COME!**
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
