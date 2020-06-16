@@ -13,7 +13,7 @@ let navMapper = {
     },
 
     reviewTimeSheets: function () {
-        showFunction(timeSheetFunctionality, "/api/getMyTimeSheetsClient");
+        showFunction(timeSheetFunctionality, "https://twinbee-test.herokuapp.com/api/getMyTimeSheetsClient");
     },
 
     manageSubscriptions: function () {
@@ -699,10 +699,10 @@ function timeSheetFunctionality (res) {
 
     $.ajax({
         method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getMyTimeSheetsClient',
+        url: 'https://twinbee-test.herokuapp.com/api/getMyTimeSheetsClient',
         data: {
-            auth: id_token,
-            token: id_token
+            auth:  TEST_ENVIRONMENT ? 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImIxNmRlMWIyYWIwYzE2YWMwYWNmNjYyZWYwMWY3NTY3ZTU0NDI1MmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3Nzk4MDQ1MDcwOTQ2OTkzMDk4IiwiaGQiOiJjaXBoZXItc2VjLmNvbSIsImVtYWlsIjoibWFzdGVyQGNpcGhlci1zZWMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJma01HUXNOdXlpZVpsZ2x0aWllOVR3IiwibmFtZSI6IkdyZWcgYXQgQ2lwaGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg0Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tZzItVEtkMnAtLW8vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQU1adXVjazlBTXlIQkE0bmlxTVcyaHY2Vk1JU1FFMTFGdy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiR3JlZyIsImZhbWlseV9uYW1lIjoiYXQgQ2lwaGVyIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1OTIzNDI3OTAsImV4cCI6MTU5MjM0NjM5MCwianRpIjoiYjYyNGZlMmJiZDI1MzkwNzhlYmZlZDIwMjljMzIxMDAwYzEyNzJjMyJ9.rVYp-9ORMMjZUVoaV3I849V_CgS8Vej7ZCIH6XYZrqWdOPKi2fG98lsMqgkUXBQqsk7hc7Tan8jql-ScDpN5Uro-lkjp-0thzr7NiKbUb2XY2JNgh81M_NjNSRWXAjl1ZUsVuIZ9SUWHzFsa8Pzo03H8PBpE8umom9Won6i3mvrVHJvp6Z2vtS2L9ahpnH0aGn2u8wHpnmiAbSsfTek4BUqIKBJOXuJrZutJtUufLIuW8IS5qN6j7uvbU0bxQ8hWKQabHLHixNzEX2hFCDtHPm2NkBsLLujHRoq0apmAfH1tFfLq-jVlsT9G7jiakffN10G3X4Rm1Fn_4VdJVscVOA' : id_token,
+            token: TEST_ENVIRONMENT ? 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImIxNmRlMWIyYWIwYzE2YWMwYWNmNjYyZWYwMWY3NTY3ZTU0NDI1MmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3Nzk4MDQ1MDcwOTQ2OTkzMDk4IiwiaGQiOiJjaXBoZXItc2VjLmNvbSIsImVtYWlsIjoibWFzdGVyQGNpcGhlci1zZWMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJma01HUXNOdXlpZVpsZ2x0aWllOVR3IiwibmFtZSI6IkdyZWcgYXQgQ2lwaGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg0Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tZzItVEtkMnAtLW8vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQU1adXVjazlBTXlIQkE0bmlxTVcyaHY2Vk1JU1FFMTFGdy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiR3JlZyIsImZhbWlseV9uYW1lIjoiYXQgQ2lwaGVyIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1OTIzNDI3OTAsImV4cCI6MTU5MjM0NjM5MCwianRpIjoiYjYyNGZlMmJiZDI1MzkwNzhlYmZlZDIwMjljMzIxMDAwYzEyNzJjMyJ9.rVYp-9ORMMjZUVoaV3I849V_CgS8Vej7ZCIH6XYZrqWdOPKi2fG98lsMqgkUXBQqsk7hc7Tan8jql-ScDpN5Uro-lkjp-0thzr7NiKbUb2XY2JNgh81M_NjNSRWXAjl1ZUsVuIZ9SUWHzFsa8Pzo03H8PBpE8umom9Won6i3mvrVHJvp6Z2vtS2L9ahpnH0aGn2u8wHpnmiAbSsfTek4BUqIKBJOXuJrZutJtUufLIuW8IS5qN6j7uvbU0bxQ8hWKQabHLHixNzEX2hFCDtHPm2NkBsLLujHRoq0apmAfH1tFfLq-jVlsT9G7jiakffN10G3X4Rm1Fn_4VdJVscVOA' : id_token
         },
         success: function (tokenres, status) {
 
