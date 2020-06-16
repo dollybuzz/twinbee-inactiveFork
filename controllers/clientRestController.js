@@ -176,7 +176,13 @@ module.exports = {
      * }
      * sends data in the form:
      * {
-     *     "first_name":
+     *     "first_name": client's first name,
+     *     "last_name": client's last name,
+     *     "id": client's id,
+     *     "buckets": {
+     *         "bucketName": number of hours for the bucket,
+     *         "bucketName2": number of hours for the bucket...
+     *     }
      * }
      * @param req
      * @param res
@@ -187,7 +193,7 @@ module.exports = {
         console.log(req.body);
         let email = await authService.getEmailFromToken(req.body.token);
         let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getTimeBucketsByClientId(client.id);
+        res.send(await clientService.getTimeBucketsByClientId(client.id));
     },
 
     /**
