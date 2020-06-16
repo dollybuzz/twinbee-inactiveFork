@@ -44,7 +44,7 @@ module.exports = {
 
     authorizeClient: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async (req, res, next) =>{
         console.log("Attempting to authorize client...");
-      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient(req.body.auth)){
+      if (req[process.env.TWINBEE_IS_OK] || authService.accessorIsClient(req.body.auth)){
           req[process.env.TWINBEE_IS_OK] = true;
           next();
       }
