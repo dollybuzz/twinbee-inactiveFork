@@ -630,7 +630,7 @@ class ClientService {
     }
 
     async chargeMeNow(planId, numHours, customerId){
-        console.log(customerId)
+        console.log(`Attempting to charge ${customerId} for ${numHours} ${planId} hours...`);
         let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/creditNow`,
