@@ -699,48 +699,30 @@ function timeSheetFunctionality (res) {
 
     $.ajax({
         method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
+        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getMyTimeSheetsClient',
         data: {
             auth: id_token,
             token: id_token
         },
         success: function (tokenres, status) {
-            $.ajax({
-                url: '/api/getMakersForClient',
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
 
-                    let makerMap = {};
-                    for (var i = 0; i < innerRes.length; ++i) {
-                        let maker = innerRes[i];
-                        makerMap[maker.id] = maker;
-                    }
-                    for (var item in res) {
-                        $("#sheetsTable").append('\n' +
-                            '<tr class="sheetRow">' +
-                            '   <td scope="row">' + res[item].id + '</td>' +
-                            '   <td>' + makerMap[res[item].makerId].id + '</td>' +
-                            '   <td>' + makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
-                            '   <td>' + res[item].hourlyRate + '</td>' +
-                            '   <td>' + res[item].timeIn + '</td>' +
-                            '   <td>' + res[item].timeOut + '</td>' +
-                            '   <td>' + res[item].task + '</td></tr>'
-                        );
-                    }
+            tokenres.forEach(item => {
+                $("#sheetsTable").append('\n' +
+                    '<tr class="sheetsRow">' +
+                    '   <td>' + item.id + '</td>' +
+                    '   <td>' + item.makerId + '</td>'+
+                    '   <td>' + item.makerName + '</td>'+
+                    '   <td>' + item.hourlyRate + '</td>'+
+                    '   <td>' + item.timeIn + '</td>'+
+                    '   <td>' + item.timeOut + '</td>' +
+                    '   <td>' + item.task + '</td>'
+                );
+            })
 
-                    //remove loading message/gif
-                    $("#buttonsTop").children()[0].remove();
-                    $("#buttonsTop").children()[0].remove();
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Unable to get Freedom Makers! Please refresh the page. Contact support if the problem persists.");
-                }
-            });// ajax
+            //remove loading message/gif
+            $("#buttonsTop").children()[0].remove();
+            $("#buttonsTop").children()[0].remove();
+
         },
         error: function (res, status) {
             $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
