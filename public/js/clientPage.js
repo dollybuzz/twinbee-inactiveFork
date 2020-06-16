@@ -13,7 +13,7 @@ let navMapper = {
     },
 
     reviewTimeSheets: function () {
-        showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
+        showFunction(timeSheetFunctionality, "/api/getMyTimeSheetsClient");
     },
 
     manageSubscriptions: function () {
