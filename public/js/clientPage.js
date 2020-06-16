@@ -721,7 +721,7 @@ function timeSheetFunctionality () {
             //remove loading message/gif
             $("#buttonsTop").children()[0].remove();
             $("#buttonsTop").children()[0].remove();
-
+            $(".spinner-border").remove();
         },
         error: function (tokenres, tokenstatus) {
             console.log(tokenres);
