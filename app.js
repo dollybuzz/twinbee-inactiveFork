@@ -353,6 +353,9 @@ app.post("/api/updateMySubscription",
 app.post("/api/getMyMakers",
     authController.authorizeClient,
     clientRestController.getMyMakers);
+app.post("/api/getAllMyTimeBuckets",
+    authController.authorizeClient,
+    clientRestController.getAllMyTimeBuckets);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
