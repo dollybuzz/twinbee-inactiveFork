@@ -42,7 +42,7 @@ class AuthService {
 
     async accessorIsClient(creds) {
         let email = await this.getEmailFromToken(creds).catch(err => {
-            console.log(err)
+            console.log(err);
             emailService.emailAdmin(err);
         });
         let response = await request({

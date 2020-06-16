@@ -121,7 +121,7 @@ function showFunction (functionality, endpoint) {
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
-    showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
+    showFunction(timeBucketFunctionality, '/api/getTimeBucketsByClientId');
 }
 
 //Google
@@ -261,7 +261,7 @@ function buyForm () {
         dataType: "json",
         success: function (tokenres, tokenstatus) {
             $.ajax({
-                url: "/api/getTimeBucketByClientId",
+                url: "/api/getTimeBucketsByClientId",
                 method: "post",
                 data: {
                     auth: id_token,

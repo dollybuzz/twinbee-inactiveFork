@@ -236,11 +236,11 @@ app.post("/api/getAllTimeBuckets",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     clientRestController.getAllTimeBuckets);
-app.post("/api/getTimeBucketByClientId",
+app.post("/api/getTimeBucketsByClientId",
     authController.authorizeAdmin,
     authController.authorizeClient,
     authController.authorizeMaster,
-    clientRestController.getTimeBucketByClientId);
+    clientRestController.getTimeBucketsByClientId);
 app.post("/api/getAllRelationships",
     authController.authorizeAdmin,
     authController.authorizeMaster,
@@ -313,6 +313,10 @@ app.post("/api/getMyRelationship",
 app.post("/api/getAllMyRelationshipsMaker",
     authController.authorizeMaker,
     makerRestController.getAllMyRelationships);
+app.post("/api/getMyClients",
+    authController.authorizeMaker,
+    makerRestController.getMyClients);
+
 app.post("/api/getAllMyRelationshipsClient",
     authController.authorizeClient,
     clientRestController.getAllMyRelationships);
@@ -346,6 +350,9 @@ app.post("/api/getMyTimeBucket",
 app.post("/api/updateMySubscription",
     authController.authorizeClient,
     clientRestController.updateMySubscription);
+app.post("/api/getMyMakers",
+    authController.authorizeClient,
+    clientRestController.getMyMakers);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
