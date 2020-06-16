@@ -168,6 +168,29 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getMyBuckets
+     * Retrieves all buckets for the authenticated client. Looks for data in the body in the form:
+     * {
+     *     "token": requester's token,
+     *     "auth": valid authentication
+     * }
+     * sends data in the form:
+     * {
+     *     "first_name":
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyTimeBucket: async(req, res)=>{
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
+        res.send(await clientService.getTimeBucketsByClientId(client.id);
+    },
+
+    /**
      * ENDPOINT: /api/undoMySubscriptionChanges
      * reverts subscription changes for the requesting client. Looks for data in the body in the
      * form:
@@ -314,7 +337,7 @@ module.exports = {
 
 
     /**
-     * ENDPOINT: /api/getTimeBucketByClientId
+     * ENDPOINT: /api/getTimeBucketsByClientId
      * Retrieves all time buckets for clients/customers.
      * Looks for data in the body in the form:
      * {
@@ -336,10 +359,10 @@ module.exports = {
      * @param req
      * @param res
      */
-    async getTimeBucketByClientId(req, res) {
+    async getTimeBucketsByClientId(req, res) {
         console.log(`Attempting to get a time bucket for client ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await clientService.getTimeBucketByClientId(req.body.id));
+        res.send(await clientService.getTimeBucketsByClientId(req.body.id));
     },
 
     /**
@@ -669,6 +692,28 @@ module.exports = {
       let client = await clientService.getClientByEmail(email);
       console.log(client)
       res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id));
+    },
+
+    /**
+     * ENDPOINT: /api/getMyMakers
+     * Retrieves freedom makers for a client
+     * looks for values in the body in the form:
+     * {
+     *     "token": requester's token,
+     *     "auth": valid authentication
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyMakers: async (req, res) =>{
+        console.log(`Attempting to retrieve makers for client with token...\n${req.body.token}\n...from REST`);
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let client = await clientService.getClientByEmail(email);
+        console.log(client);
+        res.send(await clientService.getMakersForClient(client.id));
     },
 
     /**

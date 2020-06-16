@@ -570,7 +570,7 @@ class ClientService {
     }
 
 
-    async getTimeBucketByClientId(id) {
+    async getTimeBucketsByClientId(id) {
         let client = await this.getClientById(id).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
@@ -727,7 +727,7 @@ class ClientService {
 
     async getTimeBucket(clientId, planId) {
         console.log(`Getting available credit for ${clientId}'s time bucket`);
-        let bucketObj = await this.getTimeBucketByClientId(clientId);
+        let bucketObj = await this.getTimeBucketsByClientId(clientId);
         return {minutes: bucketObj.buckets[planId]};
     }
 

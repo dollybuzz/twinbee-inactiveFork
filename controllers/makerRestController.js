@@ -58,7 +58,8 @@ module.exports ={
      * Retrieves all relationships for the requester
      * Looks for values in the body in the form:
      * {
-     *     "token": requester's token
+     *     "token": requester's token,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -200,11 +201,36 @@ module.exports ={
     },
 
 
+
+    /**
+     * ENDPOINT: /api/getMyClients
+     * Retrieves clients for the requesting maker.
+     * Looks for values in the body in the form:
+     * {
+     *     "token":requester's token,
+     *     "auth": valid authentication
+     * }
+     * and returns data in the form:
+     *  [
+     *      customer object,
+     *      customer object,...
+     *  ]
+     * @returns {Promise<maker>}
+     */
+    getMyClients: async (req, res) =>{
+        console.log("Getting client list for maker from REST");
+        console.log(req.body);
+        let email = authService.getEmailFromToken(req.body.token);
+        let makerId = makerService.getMakerIdByEmail(email);
+        res.send(await makerService.getClientListForMakerId(makerId));
+    },
+
     /**
      * Retrieves timesheets for the requesting maker. Looks for data in the body in the
      * form:
      * {
-     *     "token": requester's google token
+     *     "token": requester's google token,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
