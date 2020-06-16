@@ -188,8 +188,8 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyTimeBucket: async(req, res)=>{
-        console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
+    getAllMyTimeBuckets: async(req, res)=>{
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their time buckets from REST`);
         console.log(req.body);
         let email = await authService.getEmailFromToken(req.body.token);
         let client = await clientService.getClientByEmail(email);
