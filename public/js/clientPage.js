@@ -13,7 +13,7 @@ let navMapper = {
     },
 
     reviewTimeSheets: function () {
-        showFunction(timeSheetFunctionality, "https://twinbee-test.herokuapp.com/api/getMyTimeSheetsClient");
+        timeSheetFunctionality();
     },
 
     manageSubscriptions: function () {
@@ -112,7 +112,7 @@ function showFunction (functionality, endpoint) {
             });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+            $("#userMainContent").html("Show Function: Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 };
@@ -161,7 +161,7 @@ function openHostedPage(getPageEndpoint){
             });// ajax
         },
         error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+            $("#userMainContent").html("Open Hosted page: Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 
@@ -675,7 +675,7 @@ function makerFunctionality (res) {
 }
 
 //TimeSheet Methods
-function timeSheetFunctionality (res) {
+function timeSheetFunctionality () {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -701,11 +701,10 @@ function timeSheetFunctionality (res) {
         method: "post",
         url: 'https://twinbee-test.herokuapp.com/api/getMyTimeSheetsClient',
         data: {
-            auth:  TEST_ENVIRONMENT ? 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImIxNmRlMWIyYWIwYzE2YWMwYWNmNjYyZWYwMWY3NTY3ZTU0NDI1MmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3Nzk4MDQ1MDcwOTQ2OTkzMDk4IiwiaGQiOiJjaXBoZXItc2VjLmNvbSIsImVtYWlsIjoibWFzdGVyQGNpcGhlci1zZWMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJma01HUXNOdXlpZVpsZ2x0aWllOVR3IiwibmFtZSI6IkdyZWcgYXQgQ2lwaGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg0Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tZzItVEtkMnAtLW8vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQU1adXVjazlBTXlIQkE0bmlxTVcyaHY2Vk1JU1FFMTFGdy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiR3JlZyIsImZhbWlseV9uYW1lIjoiYXQgQ2lwaGVyIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1OTIzNDI3OTAsImV4cCI6MTU5MjM0NjM5MCwianRpIjoiYjYyNGZlMmJiZDI1MzkwNzhlYmZlZDIwMjljMzIxMDAwYzEyNzJjMyJ9.rVYp-9ORMMjZUVoaV3I849V_CgS8Vej7ZCIH6XYZrqWdOPKi2fG98lsMqgkUXBQqsk7hc7Tan8jql-ScDpN5Uro-lkjp-0thzr7NiKbUb2XY2JNgh81M_NjNSRWXAjl1ZUsVuIZ9SUWHzFsa8Pzo03H8PBpE8umom9Won6i3mvrVHJvp6Z2vtS2L9ahpnH0aGn2u8wHpnmiAbSsfTek4BUqIKBJOXuJrZutJtUufLIuW8IS5qN6j7uvbU0bxQ8hWKQabHLHixNzEX2hFCDtHPm2NkBsLLujHRoq0apmAfH1tFfLq-jVlsT9G7jiakffN10G3X4Rm1Fn_4VdJVscVOA' : id_token,
-            token: TEST_ENVIRONMENT ? 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImIxNmRlMWIyYWIwYzE2YWMwYWNmNjYyZWYwMWY3NTY3ZTU0NDI1MmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3Nzk4MDQ1MDcwOTQ2OTkzMDk4IiwiaGQiOiJjaXBoZXItc2VjLmNvbSIsImVtYWlsIjoibWFzdGVyQGNpcGhlci1zZWMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJma01HUXNOdXlpZVpsZ2x0aWllOVR3IiwibmFtZSI6IkdyZWcgYXQgQ2lwaGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg0Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tZzItVEtkMnAtLW8vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQU1adXVjazlBTXlIQkE0bmlxTVcyaHY2Vk1JU1FFMTFGdy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiR3JlZyIsImZhbWlseV9uYW1lIjoiYXQgQ2lwaGVyIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1OTIzNDI3OTAsImV4cCI6MTU5MjM0NjM5MCwianRpIjoiYjYyNGZlMmJiZDI1MzkwNzhlYmZlZDIwMjljMzIxMDAwYzEyNzJjMyJ9.rVYp-9ORMMjZUVoaV3I849V_CgS8Vej7ZCIH6XYZrqWdOPKi2fG98lsMqgkUXBQqsk7hc7Tan8jql-ScDpN5Uro-lkjp-0thzr7NiKbUb2XY2JNgh81M_NjNSRWXAjl1ZUsVuIZ9SUWHzFsa8Pzo03H8PBpE8umom9Won6i3mvrVHJvp6Z2vtS2L9ahpnH0aGn2u8wHpnmiAbSsfTek4BUqIKBJOXuJrZutJtUufLIuW8IS5qN6j7uvbU0bxQ8hWKQabHLHixNzEX2hFCDtHPm2NkBsLLujHRoq0apmAfH1tFfLq-jVlsT9G7jiakffN10G3X4Rm1Fn_4VdJVscVOA' : id_token
+            auth:  TEST_ENVIRONMENT ? 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImIxNmRlMWIyYWIwYzE2YWMwYWNmNjYyZWYwMWY3NTY3ZTU0NDI1MmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3Nzk4MDQ1MDcwOTQ2OTkzMDk4IiwiaGQiOiJjaXBoZXItc2VjLmNvbSIsImVtYWlsIjoibWFzdGVyQGNpcGhlci1zZWMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJBbE5zTjA3MEZMalRmYWdMZ2gtRVZBIiwibmFtZSI6IkdyZWcgYXQgQ2lwaGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg0Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tZzItVEtkMnAtLW8vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQU1adXVjazlBTXlIQkE0bmlxTVcyaHY2Vk1JU1FFMTFGdy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiR3JlZyIsImZhbWlseV9uYW1lIjoiYXQgQ2lwaGVyIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1OTIzNDg2MzcsImV4cCI6MTU5MjM1MjIzNywianRpIjoiMWU5NTU1YjViZjQ0YTdmZWE2YjZiODVmNzYyOThkMzNmZWZmYTJmYiJ9.N8LEBneulGzS_ozSIHnkPC2Vb4icu3mUH0DfD-McIB4a-U5Cw-x1yRRk0tldubb9X_kiIDnUVqBJSCv3bSIrbq-c55Xw8XL994jgFN6rAcb981hkVBUVzrIx46d6HpXtZETnFG7w0hu-ZcjSjMckapNUO3Dg7uNXJuPIjccVe6qe8hxsyLq7TtvqutJ6FgZNgeeVbkAYTI56LaKpbADV8DquFwqAwJEa_R5ORjb4qJTyYQC_qrsBcMsi04o2jDHk8E06icHnTL-AziQqIWvs2Oth5orrWqKzt3eH0fggc5KuywSqKvFaE93GZAbHZnrS2BqgtyyTkI2g8AS6Q4rm0A' : id_token,
+            token: TEST_ENVIRONMENT ? 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImIxNmRlMWIyYWIwYzE2YWMwYWNmNjYyZWYwMWY3NTY3ZTU0NDI1MmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3Nzk4MDQ1MDcwOTQ2OTkzMDk4IiwiaGQiOiJjaXBoZXItc2VjLmNvbSIsImVtYWlsIjoibWFzdGVyQGNpcGhlci1zZWMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJBbE5zTjA3MEZMalRmYWdMZ2gtRVZBIiwibmFtZSI6IkdyZWcgYXQgQ2lwaGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg0Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tZzItVEtkMnAtLW8vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQU1adXVjazlBTXlIQkE0bmlxTVcyaHY2Vk1JU1FFMTFGdy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiR3JlZyIsImZhbWlseV9uYW1lIjoiYXQgQ2lwaGVyIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1OTIzNDg2MzcsImV4cCI6MTU5MjM1MjIzNywianRpIjoiMWU5NTU1YjViZjQ0YTdmZWE2YjZiODVmNzYyOThkMzNmZWZmYTJmYiJ9.N8LEBneulGzS_ozSIHnkPC2Vb4icu3mUH0DfD-McIB4a-U5Cw-x1yRRk0tldubb9X_kiIDnUVqBJSCv3bSIrbq-c55Xw8XL994jgFN6rAcb981hkVBUVzrIx46d6HpXtZETnFG7w0hu-ZcjSjMckapNUO3Dg7uNXJuPIjccVe6qe8hxsyLq7TtvqutJ6FgZNgeeVbkAYTI56LaKpbADV8DquFwqAwJEa_R5ORjb4qJTyYQC_qrsBcMsi04o2jDHk8E06icHnTL-AziQqIWvs2Oth5orrWqKzt3eH0fggc5KuywSqKvFaE93GZAbHZnrS2BqgtyyTkI2g8AS6Q4rm0A' : id_token
         },
-        success: function (tokenres, status) {
-
+        success: function (tokenres, tokenstatus) {
             tokenres.forEach(item => {
                 $("#sheetsTable").append('\n' +
                     '<tr class="sheetsRow">' +
@@ -724,8 +723,10 @@ function timeSheetFunctionality (res) {
             $("#buttonsTop").children()[0].remove();
 
         },
-        error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+        error: function (tokenres, tokenstatus) {
+            console.log(tokenres);
+            console.log(tokenstatus);
+            $("#userMainContent").html("TimeSheet: Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 
