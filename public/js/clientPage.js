@@ -676,27 +676,6 @@ function makerFunctionality (res) {
 
 //TimeSheet Methods
 function timeSheetFunctionality () {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#sheetsTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">Time Sheet ID</th>\n' +
-        '            <th scope="col">Freedom Maker ID</th>\n' +
-        '            <th scope="col">Freedom Maker</th>\n' +
-        '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
-        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
-        '            <th scope="col">Task</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
     $.ajax({
         method: "post",
         url: 'https://twinbee-test.herokuapp.com/api/getMyTimeSheetsClient',
@@ -705,23 +684,7 @@ function timeSheetFunctionality () {
             token: TEST_ENVIRONMENT ? 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImIxNmRlMWIyYWIwYzE2YWMwYWNmNjYyZWYwMWY3NTY3ZTU0NDI1MmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzYwMzQwOTE0MDc3LXBocGowc21raG9mc3BvMm52aDZvN2c0MGhxdnNicGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3Nzk4MDQ1MDcwOTQ2OTkzMDk4IiwiaGQiOiJjaXBoZXItc2VjLmNvbSIsImVtYWlsIjoibWFzdGVyQGNpcGhlci1zZWMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJBbE5zTjA3MEZMalRmYWdMZ2gtRVZBIiwibmFtZSI6IkdyZWcgYXQgQ2lwaGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg0Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tZzItVEtkMnAtLW8vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQU1adXVjazlBTXlIQkE0bmlxTVcyaHY2Vk1JU1FFMTFGdy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiR3JlZyIsImZhbWlseV9uYW1lIjoiYXQgQ2lwaGVyIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1OTIzNDg2MzcsImV4cCI6MTU5MjM1MjIzNywianRpIjoiMWU5NTU1YjViZjQ0YTdmZWE2YjZiODVmNzYyOThkMzNmZWZmYTJmYiJ9.N8LEBneulGzS_ozSIHnkPC2Vb4icu3mUH0DfD-McIB4a-U5Cw-x1yRRk0tldubb9X_kiIDnUVqBJSCv3bSIrbq-c55Xw8XL994jgFN6rAcb981hkVBUVzrIx46d6HpXtZETnFG7w0hu-ZcjSjMckapNUO3Dg7uNXJuPIjccVe6qe8hxsyLq7TtvqutJ6FgZNgeeVbkAYTI56LaKpbADV8DquFwqAwJEa_R5ORjb4qJTyYQC_qrsBcMsi04o2jDHk8E06icHnTL-AziQqIWvs2Oth5orrWqKzt3eH0fggc5KuywSqKvFaE93GZAbHZnrS2BqgtyyTkI2g8AS6Q4rm0A' : id_token
         },
         success: function (tokenres, tokenstatus) {
-            tokenres.forEach(item => {
-                $("#sheetsTable").append('\n' +
-                    '<tr class="sheetsRow">' +
-                    '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.makerId + '</td>'+
-                    '   <td>' + item.makerName + '</td>'+
-                    '   <td>' + item.hourlyRate + '</td>'+
-                    '   <td>' + item.timeIn + '</td>'+
-                    '   <td>' + item.timeOut + '</td>' +
-                    '   <td>' + item.task + '</td>'
-                );
-            })
-
-            //remove loading message/gif
-            $("#buttonsTop").children()[0].remove();
-            $("#buttonsTop").children()[0].remove();
-
+           console.log(tokenres);
         },
         error: function (tokenres, tokenstatus) {
             console.log(tokenres);
@@ -730,21 +693,6 @@ function timeSheetFunctionality () {
         }
     });
 
-    //Body Block content
-    createBody(null);
-
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
-
-    //Row effect
-    $(".sheetRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
 }
 
 

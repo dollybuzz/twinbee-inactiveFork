@@ -38,7 +38,9 @@ module.exports = {
         console.log(req.body);
         let email = await authService.getEmailFromToken(req.body.token);
         let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getSheetsByClient(client.id));
+        let test = await clientService.getSheetsByClient(client.id);
+        console.log(test);
+        res.send(test);
     },
 
     /**
