@@ -32,7 +32,7 @@ module.exports = {
         }
         else{
             console.log("Not authorized as client");
-            if (next != undefined){
+            if (next){
                 next()
             }
             else {
@@ -44,13 +44,13 @@ module.exports = {
 
     authorizeClient: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async (req, res, next) =>{
         console.log("Attempting to authorize client...");
-      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsClient(req.body.auth)){
+      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsMaster(req.body.auth) || await authService.accessorIsClient(req.body.auth)){
           req[process.env.TWINBEE_IS_OK] = true;
           next();
       }
       else{
           console.log("Not authorized as client");
-          if (next != undefined){
+          if (next){
               next()
           }
           else {
@@ -61,13 +61,13 @@ module.exports = {
     },
     authorizeMaker: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize maker...");
-        if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaker(req.body.auth)) {
+        if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaster(req.body.auth) || await authService.accessorIsMaker(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK]  = true;
             next();
         }
         else{
             console.log("Not authorized as maker");
-            if (next != undefined){
+            if (next){
                 next()
             }
             else {
@@ -80,7 +80,7 @@ module.exports = {
     authorizeAdmin: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize admin...");
         console.log(req.body);
-        if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsAdmin(req.body.auth)) {
+        if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsMaster(req.body.auth) || await authService.accessorIsAdmin(req.body.auth)) {
             req[process.env.TWINBEE_IS_OK] = true;
             console.log("Passed auth check");
             console.log(authService.accessorIsAdmin(req.body.auth));
@@ -88,7 +88,7 @@ module.exports = {
         }
         else{
             console.log("Not authorized as admin");
-            if (next != undefined){
+            if (next){
                 console.log("Checking next auth...");
                 next()
             }
