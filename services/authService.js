@@ -115,6 +115,7 @@ class AuthService {
             emailService.emailAdmin(err);
         });
         const payload = ticket.getPayload();
+        console.log(`Email was: ${payload['email']}`);
         return payload['email'];
     }
 }

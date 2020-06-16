@@ -16,10 +16,11 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
-const makerService = require('./services/MakerService.js')
+const makerService = require('./services/MakerService.js');
 const es = require('./services/emailService.js');
-const mr = require('./repositories/makerRepo.js')
+const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
+const chargebeeservice = require('./services/chargebeeService.js')
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
@@ -361,7 +362,7 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
- //   console.log(await makerService.getMakerById(5))
+    console.log((await chargebeeservice.getAllSubscriptions()).length);
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
