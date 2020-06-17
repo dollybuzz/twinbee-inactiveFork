@@ -390,11 +390,8 @@ function subscriptionFunctionality (res) {
         '            <th scope="col" id="subOptions">Option</th>\n' +
         '        </thead><tbody>');
 
-
-    console.log(res);
-
     //Populate table
-    res.body.forEach(item => {
+    res.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
         if (item && !subscription.deleted) {
