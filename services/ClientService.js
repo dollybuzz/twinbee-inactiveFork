@@ -721,8 +721,9 @@ class ClientService {
      */
     async getClientByEmail(email) {
         console.log(`Getting client by email...`);
-        return await clientRepo.getClientByEmail(email)
-        emailService.emailAdmin(err);
+        let client = await clientRepo.getClientByEmail(email);
+        console.log(`Client was ${client.id}`);
+        return client;
     }
 
     async getTimeBucket(clientId, planId) {
