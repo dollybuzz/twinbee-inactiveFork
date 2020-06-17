@@ -696,7 +696,7 @@ module.exports = {
       console.log(req.body);
       let email = await authService.getEmailFromToken(req.body.token);
       let client = await clientService.getClientByEmail(email);
-      console.log(client)
+      console.log(client);
       res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id));
     },
 

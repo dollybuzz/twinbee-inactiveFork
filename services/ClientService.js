@@ -359,7 +359,7 @@ class ClientService {
      */
     async getSubscriptionsForClient(clientId){
         console.log(`Getting all subscriptions for ${clientId}`);
-        return await request({
+        let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllSubscriptions`,
             form: {
@@ -369,6 +369,16 @@ class ClientService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+
+        let subscriptions = JSON.parse(result.body);
+        let list = [];
+        for (var entry of subscriptions){
+            if (entry.subscription.customer_id === clientId){
+                list.push(entry.subscription);
+            }
+        }
+
+        return list;
     }
 
     /**
