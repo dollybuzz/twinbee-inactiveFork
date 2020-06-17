@@ -91,7 +91,7 @@ function showFunction (functionality, endpoint) {
         method: "post",
         data: {
             auth: id_token,
-            id: TEST_ENVIRONMENT ? TEST_CUSTOMER : res.id
+            token: id_token
         },
         dataType: "json",
         success: function (innerRes, innerStatus) {
@@ -391,8 +391,10 @@ function subscriptionFunctionality (res) {
         '        </thead><tbody>');
 
 
+    console.log(res);
+
     //Populate table
-    res.forEach(item => {
+    res.body.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
         if (item && !subscription.deleted) {
@@ -452,8 +454,6 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>" +
         "<div id='pendingChanges'></div>");
-
-    let plan = $(selectedRow.children()[1].innerHTML).val();
 
     $("#SubmitButton").on("click", function (e) {
         let monthlyHours = $("#modsubscriptionplanquantity").val();
