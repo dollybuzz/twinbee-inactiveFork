@@ -391,6 +391,8 @@ function subscriptionFunctionality (res) {
         '        </thead><tbody>');
 
 
+    console.log(res);
+    
     //Populate table
     res.forEach(item => {
         let subscription = item.subscription;
