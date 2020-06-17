@@ -501,10 +501,11 @@ function subscriptionModForm (res, status) {
     if(selectedRow.children()[3].innerHTML == "Yes")
     {
         $.ajax({
-            url: "/api/retrieveSubscriptionChanges",
+            url: "/api/getMySubscriptionChanges",
             method: "post",
             data: {
                 auth: id_token,
+                token: id_token,
                 subscriptionId: selectedRow.children()[0].innerHTML
             },
             dataType: "json",
@@ -521,10 +522,11 @@ function subscriptionModForm (res, status) {
 
                 $("#CancelChangeButton").on("click", function() {
                     $.ajax({
-                        url: "/api/undoSubscriptionChanges",
+                        url: "/api/undoMySubscriptionChanges",
                         method: "post",
                         data: {
                             auth: id_token,
+                            token: id_token,
                             subscriptionId: selectedRow.children()[0].innerHTML
                         },
                         dataType: "json",
@@ -532,7 +534,7 @@ function subscriptionModForm (res, status) {
                             $("#cancelChange").html("");
                             $("#cancelChange").append("<br><h5>Successfully canceled change request!</h5>");
                             setTimeout(function () {
-                                showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+                                showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                             }, 1000);
                         },
                         error: function (undores, undostatus) {
