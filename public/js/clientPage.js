@@ -108,7 +108,7 @@ function showFunction (functionality, endpoint) {
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
-    showFunction(timeBucketFunctionality, '/api/getTimeBucketsByClientId');
+    showFunction(timeBucketFunctionality, '/api/getAllMyTimeBuckets');
 }
 
 //Google
@@ -510,8 +510,7 @@ function subscriptionModForm (res, status) {
             dataType: "json",
             success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
-
-                $("#pendingChanges").append("<hr><p>This plan has the following scheduled change and will take effect on the next " +
+                $("#pendingChanges").html("<hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
                     `<br><h6>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h6>` +
                     "<br>If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
@@ -530,6 +529,7 @@ function subscriptionModForm (res, status) {
                         },
                         dataType: "json",
                         success: function (undores, undostatus) {
+                            $("#cancelChange").html("");
                             $("#cancelChange").append("<br><h5>Successfully canceled change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
