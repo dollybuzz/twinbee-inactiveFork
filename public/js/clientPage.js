@@ -17,7 +17,7 @@ let navMapper = {
     },
 
     manageSubscriptions: function () {
-        showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+        showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
     },
 
     manageMakers: function () {
@@ -87,32 +87,19 @@ function expandTable () {
 
 function showFunction (functionality, endpoint) {
     $.ajax({
+        url: endpoint,
         method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         data: {
             auth: id_token,
-            token: id_token
+            id: TEST_ENVIRONMENT ? TEST_CUSTOMER : res.id
         },
-        success: function (res, status) {
-            $.ajax({
-                url: endpoint,
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : res.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
-                    functionality(innerRes);
-                    $(".spinner-border").remove();
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html(`Something went wrong with ${endpoint}`);
-                }
-            });// ajax
+        dataType: "json",
+        success: function (innerRes, innerStatus) {
+            functionality(innerRes);
+            $(".spinner-border").remove();
         },
-        error: function (res, status) {
-            $("#userMainContent").html("Show Function: Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+        error: function (innerRes, innerStatus) {
+            $("#userMainContent").html(`Something went wrong with ${endpoint}`);
         }
     });
 };
@@ -372,6 +359,7 @@ function prePopModForm (endpoint, modForm) { //not a versatile method
         method: "post",
         data: {
             auth: id_token,
+            token: id_token,
             subscriptionId: subscriptionId,
         },
         dataType: "json",
@@ -422,31 +410,32 @@ function subscriptionFunctionality (res) {
                 '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
+
+        //Body Block content
+        createBody(null);
+
+        //Event Listeners
+        //Change Subscription
+        $(".subscriptionRow").click(function () {
+            selectedRow = $(this);
+            prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
+        });
+
+        //Expand Table Button
+        $("#ExpandButton").click(function () {
+            expandTable();
+        });
+
+        //Row effect
+        $(".subscriptionRow").mouseenter(function () {
+            $(this).css('transition', 'background-color 0.5s ease');
+            $(this).css('background-color', '#e8ecef');
+        }).mouseleave(function () {
+            $(this).css('background-color', 'white');
+        });
+
     });
     $("#subscriptionTable").append('\n</tbody>');
-
-    //Body Block content
-    createBody(null);
-
-    //Event Listeners
-    //Change Subscription
-    $(".subscriptionRow").click(function () {
-        selectedRow = $(this);
-        prePopModForm("/api/retrieveSubscription", subscriptionModForm);
-    });
-
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
-
-    //Row effect
-    $(".subscriptionRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
 }
 
 function subscriptionModForm (res, status) {
@@ -494,14 +483,13 @@ function subscriptionModForm (res, status) {
                     data: {
                         auth: id_token,
                         subscriptionId: res.id,
-                        planId: plan,
                         planQuantity: monthlyHours
                     },
                     dataType: "json",
                     success: function (updateres, status) {
                         $("#optionsClient").append("<br><h5>Successfully updated monthly hours for Subscription " + `${updateres.id}` + "!</h5>");
                         setTimeout(function () {
-                            showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+                            showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                         }, 1000);
                     },
                     error: function (updateres, status) {
