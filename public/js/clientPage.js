@@ -240,21 +240,13 @@ function timeBucketFunctionality (res) {
 }
 
 function buyForm () {
-    $.ajax({
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token,
-        },
-        dataType: "json",
-        success: function (tokenres, tokenstatus) {
+
             $.ajax({
                 url: "/api/getTimeBucketsByClientId",
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
+                   token: id_token
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
@@ -341,11 +333,11 @@ function buyForm () {
 
                             $("#YesBuy").click(function () {
                                 $.ajax({
-                                    url: "/api/creditNow",
+                                    url: "/api/chargeMeNow",
                                     method: "post",
                                     data: {
                                         auth: id_token,
-                                        customerId: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id,
+                                        token: id_token,
                                         planId: planSelect,
                                         numHours: timeInMinutes/60
                                     },
@@ -368,11 +360,6 @@ function buyForm () {
                     $("#userMainContent").html("Plan isn't working!");
                 }
             });
-        },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
 }
 
 //Subscription Methods
