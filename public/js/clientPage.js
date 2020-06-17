@@ -221,7 +221,7 @@ function timeBucketFunctionality (res) {
     $(".bucketRow").click(function () {
         selectedRow = $(this);
         $("#optionsClient").html(`<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`)
-        popBuyForm(buyForm);
+        popBuyForm(buyForm(selectedRow.children()[0].innerHTML));
     });
 
     //Expand Table Button
@@ -239,14 +239,14 @@ function timeBucketFunctionality (res) {
 
 }
 
-function buyForm () {
-
+function buyForm (rowData) {
             $.ajax({
-                url: "/api/getTimeBucketsByClientId",
+                url: "/api/getMyTimeBucket",
                 method: "post",
                 data: {
                     auth: id_token,
-                   token: id_token
+                   token: id_token,
+                    bucket: rowData
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
