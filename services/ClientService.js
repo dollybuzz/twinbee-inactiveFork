@@ -374,7 +374,7 @@ class ClientService {
         let list = [];
         for (var entry of subscriptions){
             if (entry.subscription.customer_id === clientId){
-                list.push(entry.subscription);
+                list.push(entry);
             }
         }
 
