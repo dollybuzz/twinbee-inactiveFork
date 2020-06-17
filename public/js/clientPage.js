@@ -392,9 +392,9 @@ function subscriptionFunctionality (res) {
 
 
     console.log(res);
-    
+
     //Populate table
-    res.forEach(item => {
+    res.body.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
         if (item && !subscription.deleted) {
