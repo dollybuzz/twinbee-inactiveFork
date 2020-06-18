@@ -536,7 +536,7 @@ class ClientService {
             emailService.emailAdmin(err);
         });
 
-        let makers = JSON.parse(result.body);
+        let makers = JSON.parse(response.body);
 
         let result = await request({
             method: 'POST',
