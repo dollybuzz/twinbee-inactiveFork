@@ -48,8 +48,8 @@ module.exports ={
     getMyRelationshipBucket: async (req, res) => {
         console.log(`Attempting to get time bucket for relationship ${req.body.relationshipId} from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let id = makerService.getMakerIdByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let id = await makerService.getMakerIdByEmail(email);
         res.send(await makerService.getMyRelationshipBucket(id, req.body.relationshipId));
     },
 
@@ -68,8 +68,8 @@ module.exports ={
     getAllMyRelationships: async (req, res) =>{
       console.log(`Attempting to get all relationships for maker with token...\n${req.body.token}\n... from REST`);
       console.log(req.body);
-      let email = authService.getEmailFromToken(req.body.token);
-      let id = makerService.getMakerIdByEmail(email);
+      let email = await authService.getEmailFromToken(req.body.token);
+      let id = await  makerService.getMakerIdByEmail(email);
           res.send(await makerService.getRelationshipsForMaker(id));
     },
 
@@ -88,8 +88,8 @@ module.exports ={
         console.log(`Attempting to get "my" relationship for maker` +
             ` with token...\n${req.body.token}\n...with relationship id ${req.body.relationshipId} from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let id = makerService.getMakerIdByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let id = await makerService.getMakerIdByEmail(email);
         res.send(await makerService.getMyRelationship(id, req.body.relationshipId));
     },
 
