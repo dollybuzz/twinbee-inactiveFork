@@ -578,6 +578,7 @@ function makerFunctionality (res) {
         success: function (res, status) {
             //Populate table
             for(var item of res){
+                console.log(res);
                 $("#makerTable").append('\n' +
                     '<tr class="makerRow">' +
                     '   <td>' + item.id + '</td>' +
