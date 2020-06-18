@@ -548,6 +548,7 @@ class ClientService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+
         let relationships = JSON.parse(result.body);
         let makerMap = {};
         let clientMakers = [];
@@ -557,11 +558,11 @@ class ClientService {
         }
 
         for (var i = 0; i < relationships.length; ++i){
-            let makerOnSheet = relationships[i].makerId;
-            if (makerMap[makerOnSheet] && relationships[i].clientId == id){
-                let maker = makerMap[makerOnSheet];
-                maker.occupation = relationships[i].occupation;
-                clientMakers.push(maker);
+            let makerOfRelationship = relationships[i].makerId;
+            if (makerMap[makerOfRelationship] && relationships[i].clientId == id){
+                let maker = makerMap[makerOfRelationship];
+                let occupation = relationships[i].occupation;
+                clientMakers.push({maker: maker, occupation: occupation});
             }
         }
         console.log('List retrieved: ');
