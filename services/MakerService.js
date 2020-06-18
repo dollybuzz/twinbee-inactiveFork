@@ -279,7 +279,6 @@ class MakerService {
             emailService.emailAdmin(err);
         });
 
-
         let clients = JSON.parse(result.body);
 
         result = await request({

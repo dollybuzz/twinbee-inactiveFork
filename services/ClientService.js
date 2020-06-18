@@ -536,8 +536,7 @@ class ClientService {
             emailService.emailAdmin(err);
         });
 
-        let body = response.body;
-        let makers = JSON.parse(body);
+        let makers = JSON.parse(result.body);
 
         let result = await request({
             method: 'POST',
@@ -564,7 +563,7 @@ class ClientService {
                 let maker = makerMap[makerOnSheet];
                 maker.occupation = relationships[i].occupation;
                 clientMakers.push(maker);
-                alreadyOnList[maker] = true;
+                alreadyOnList[makerOnSheet] = true;
             }
         }
         console.log('List retrieved: ');
