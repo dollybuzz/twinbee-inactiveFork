@@ -567,8 +567,6 @@ function makerFunctionality (res) {
         '            <th scope="col">Email</th>\n' +
         '            <th scope="col">Role</th>\n' +
         '        </thead><tbody>');
-    for (var item in res) {
-        console.log(res);
         $.ajax({
             url: "/api/getMyMakers",
             method: "post",
@@ -577,17 +575,20 @@ function makerFunctionality (res) {
                 token: id_token
             },
             dataType: "json",
-            success: function (res, makerstatus) {
+            success: function (res, status) {
                 //Populate table
-                $("#makerTable").append('\n' +
-                    '<tr class="makerRow">' +
-                    '   <td>' + `${makerres.id}` + '</td>' +
-                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
-                    '   <td>' + `${makerres.email}` + '</td>' +
-                    '   <td>' + occ + '</td></tr>'
-                );
+                res.forEach(item => {
+                    $("#makerTable").append('\n' +
+                        '<tr class="makerRow">' +
+                        '   <td>' +  item.id + '</td>' +
+                        '   <td>' + item.firstName + " " + item.lastName + '</td>' +
+                        '   <td>' + item.email + '</td>' +
+                        '   <td>' + item.occupation + '</td></tr>'
+                    );
+                });
+
                 },
-            error: function (res, makerstatus) {
+            error: function (res, status) {
                 $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
             }
         });
