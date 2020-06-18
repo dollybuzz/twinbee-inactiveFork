@@ -278,7 +278,10 @@ class MakerService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+
+
         let clients = JSON.parse(result.body);
+
         result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
@@ -295,17 +298,17 @@ class MakerService {
         let makersClients = [];
 
         for (var i = 0; i < clients.length; ++i){
-            clientMap[clients[i].customer.id] = {
-                isPresent : true,
-                object : clients[i].customer
-            }
+            clientMap[clients[i].customer.id] = clients[i].customer;
         }
+        console.log(clientMap)
 
         for (var i = 0; i < relationships.length; ++i){
             let clientOnSheet = relationships[i].clientId;
-            if (clientMap[clientOnSheet] && clientMap[clientOnSheet].relationships
-                && !alreadyOnList[clientOnSheet] && relationships[i].makerId == id){
-                let client = clientMap[clientOnSheet].object;
+            console.log(`Client on sheet was ${clientOnSheet}`);
+            console.log(`maker on sheet was ${relationships[i].makerId}`);
+            if (clientMap[clientOnSheet] && !alreadyOnList[clientOnSheet] && relationships[i].makerId == id){
+                console.log(`doing stuff`)
+                let client = clientMap[clientOnSheet];
                 let censoredClient = {};
                 censoredClient.first_name = client.first_name;
                 censoredClient.last_name = client.last_name;
