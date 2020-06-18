@@ -567,31 +567,32 @@ function makerFunctionality (res) {
         '            <th scope="col">Email</th>\n' +
         '            <th scope="col">Role</th>\n' +
         '        </thead><tbody>');
-    for (var item in res) {
-        console.log(res);
-        $.ajax({
-            url: "/api/getMyMakers",
-            method: "post",
-            data: {
-                auth: id_token,
-                token: id_token
-            },
-            dataType: "json",
-            success: function (res, makerstatus) {
-                //Populate table
+    $.ajax({
+        url: "/api/getMyMakers",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        success: function (res, status) {
+            //Populate table
+            for(var item of res){
                 $("#makerTable").append('\n' +
                     '<tr class="makerRow">' +
-                    '   <td>' + `${makerres.id}` + '</td>' +
-                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
-                    '   <td>' + `${makerres.email}` + '</td>' +
-                    '   <td>' + occ + '</td></tr>'
+                    '   <td>' + item.id + '</td>' +
+                    '   <td>' + item.firstName + " " + item.lastName + '</td>' +
+                    '   <td>' + item.email + '</td>' +
+                    '   <td>' + item.occupation + '</td></tr>'
                 );
-                },
-            error: function (res, makerstatus) {
-                $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
-            }
-        });
-    };
+            };
+
+        },
+        error: function (res, status) {
+            $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+
     $("#makerTable").append('\n</tbody>');
     //Body Block content
     createBody(null);
