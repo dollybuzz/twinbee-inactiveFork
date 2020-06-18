@@ -445,7 +445,7 @@ class ClientService {
      * @returns {Promise<boolean|any>}
      */
     async undoMySubscriptionChanges(clientId, subscriptionId){
-        if (this.getSubscriptionChanges(clientId, subscriptionId)){
+        if (this.getMySubscriptionChanges(clientId, subscriptionId)){
             let result = await request({
                 method: 'POST',
                 uri: `https://www.freedom-makers-hours.com/api/undoSubscriptionChanges`,
