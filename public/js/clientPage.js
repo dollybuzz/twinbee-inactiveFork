@@ -397,7 +397,7 @@ function subscriptionFunctionality (res) {
         if (item && !subscription.deleted) {
             let scheduled = subscription.has_scheduled_changes;
             let changes = "";
-            (scheduled ? changes="Yes" : changes="No");
+            (scheduled ? changes = "Yes" : changes = "No");
 
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
@@ -406,9 +406,11 @@ function subscriptionFunctionality (res) {
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td>' +
+                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
+    });
+    $("#subscriptionTable").append('\n</tbody>');
 
         //Body Block content
         createBody(null);
@@ -432,9 +434,6 @@ function subscriptionFunctionality (res) {
         }).mouseleave(function () {
             $(this).css('background-color', 'white');
         });
-
-    });
-    $("#subscriptionTable").append('\n</tbody>');
 }
 
 function subscriptionModForm (res, status) {
