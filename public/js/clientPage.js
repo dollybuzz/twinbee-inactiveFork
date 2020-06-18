@@ -577,7 +577,7 @@ function makerFunctionality (res) {
         dataType: "json",
         success: function (res, status) {
             //Populate table
-            res.forEach(item => {
+            for(var item of res){
                 $("#makerTable").append('\n' +
                     '<tr class="makerRow">' +
                     '   <td>' + item.id + '</td>' +
@@ -585,14 +585,14 @@ function makerFunctionality (res) {
                     '   <td>' + item.email + '</td>' +
                     '   <td>' + item.occupation + '</td></tr>'
                 );
-            });
+            };
 
         },
         error: function (res, status) {
             $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
         }
     });
-    
+
     $("#makerTable").append('\n</tbody>');
     //Body Block content
     createBody(null);
