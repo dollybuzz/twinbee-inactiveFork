@@ -220,8 +220,8 @@ module.exports ={
     getMyClients: async (req, res) =>{
         console.log("Getting client list for maker from REST");
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let makerId = makerService.getMakerIdByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let makerId = await makerService.getMakerIdByEmail(email);
         res.send(await makerService.getClientListForMakerId(makerId));
     },
 
