@@ -550,7 +550,6 @@ class ClientService {
         });
         let relationships = JSON.parse(result.body);
         let makerMap = {};
-        let alreadyOnList = {};
         let clientMakers = [];
 
         for (var i = 0; i < makers.length; ++i){
@@ -559,11 +558,10 @@ class ClientService {
 
         for (var i = 0; i < relationships.length; ++i){
             let makerOnSheet = relationships[i].makerId;
-            if (makerMap[makerOnSheet] && !alreadyOnList[makerOnSheet] && relationships[i].clientId == id){
+            if (makerMap[makerOnSheet] && relationships[i].clientId == id){
                 let maker = makerMap[makerOnSheet];
                 maker.occupation = relationships[i].occupation;
                 clientMakers.push(maker);
-                alreadyOnList[makerOnSheet] = true;
             }
         }
         console.log('List retrieved: ');
