@@ -525,7 +525,6 @@ class ClientService {
      */
     async getMakersForClient(id) {
         console.log(`Getting makers for client ${id}...`);
-        let clientMakers = [];
         let response = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
@@ -539,23 +538,36 @@ class ClientService {
 
         let body = response.body;
         let makers = JSON.parse(body);
-        let makersMap = {};
-        let foundIds = {};
 
-        for (var i = 0; i < makers.length; ++i) {
-            makersMap[makers[i].id] = makers[i];
-        }
-
-        let sheets = await this.getSheetsByClient(id).catch(err => {
+        result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
         });
-        for (var i = 0; i < sheets.length; ++i) {
-            if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
-                foundIds[sheets[i].makerId] = true;
-                clientMakers.push(makersMap[sheets[i].makerId]);
+        let relationships = JSON.parse(result.body);
+        let makerMap = {};
+        let alreadyOnList = {};
+        let clientMakers = [];
+
+        for (var i = 0; i < makers.length; ++i){
+            makerMap[makers[i].id] = makers[i];
+        }
+
+        for (var i = 0; i < relationships.length; ++i){
+            let makerOnSheet = relationships[i].makerId;
+            if (makerMap[makerOnSheet] && !alreadyOnList[makerOnSheet] && relationships[i].clientId == id){
+                let maker = makerMap[makerOnSheet];
+                clientMakers.push(maker);
+                alreadyOnList[maker] = true;
             }
         }
+        console.log('List retrieved: ');
+        console.log(clientMakers);
         return clientMakers;
     };
 
