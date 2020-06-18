@@ -539,7 +539,7 @@ class ClientService {
         let body = response.body;
         let makers = JSON.parse(body);
 
-        result = await request({
+        let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
             form: {
