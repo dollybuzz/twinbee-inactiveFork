@@ -14,39 +14,26 @@ let navMapper = {
     },
 
     manageClients: function () {
-        showFunction(clientFunctionality, "/api/getClientsForMaker");
+        showFunction(clientFunctionality, "/api/getMyClients");
     },
 };//end navMapper
 
 //Versatile Functions
 function showFunction (functionality, endpoint) {
     $.ajax({
+        url: endpoint,
         method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
         data: {
             auth: id_token,
             token: id_token
         },
-        success: function (res, status) {
-            $.ajax({
-                url: endpoint,
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? 4 : res.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
-                    functionality(innerRes);
-                    $(".spinner-border").remove();
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
-                }
-            });// ajax
+        dataType: "json",
+        success: function (innerRes, innerStatus) {
+            functionality(innerRes);
+            $(".spinner-border").remove();
         },
-        error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+        error: function (innerRes, innerStatus) {
+            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }// end showFunction
