@@ -3,7 +3,6 @@ let selectedRow = null;
 let selectedTab = null;
 let id_token = null;
 let TEST_ENVIRONMENT = false;
-let TEST_CUSTOMER = "AzqgmORz6AFeK1Q5w";
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
 
