@@ -21,7 +21,7 @@ let navMapper = {
     },
 
     manageMakers: function () {
-        showFunction(makerFunctionality, "/api/getMakersForClient");
+        showFunction(makerFunctionality, "/api/getMyMakers");
     }
 };//end navMapper
 
@@ -551,88 +551,60 @@ function subscriptionModForm (res, status) {
 
 //Maker Methods
 function makerFunctionality (res) {
-    $.ajax({
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token,
-        },
-        dataType: "json",
-        success: function (tokenres, status) {
-            $.ajax({
-                url: "/api/getRelationshipsByClientId", //returns maker id, use maker id to get maker name
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
+
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"makerTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#makerTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '            <th scope="col">Role</th>\n' +
+        '        </thead><tbody>');
+    for (var item in res) {
+        console.log(res);
+        $.ajax({
+            url: "/api/getMyMakers",
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token
+            },
+            dataType: "json",
+            success: function (res, makerstatus) {
+                //Populate table
+                $("#makerTable").append('\n' +
+                    '<tr class="makerRow">' +
+                    '   <td>' + `${makerres.id}` + '</td>' +
+                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
+                    '   <td>' + `${makerres.email}` + '</td>' +
+                    '   <td>' + occ + '</td></tr>'
+                );
                 },
-                dataType: "json",
-                success: function (relres, status) {
-                    //Create table
-                    $("#userMainContent").html(
-                        "<div id=\"buttonsTop\"></div>\n" +
-                        "<div class='row' id='topRow'>\n" +
-                        "<div id=\"floor\">\n" +
-                        "    <table id=\"makerTable\" class=\"table\">\n" +
-                        "    </table>\n" +
-                        "</div></div>");
-                    $("#makerTable").append('\n' +
-                        '        <thead class="thead">\n' +
-                        '            <th scope="col">Freedom Maker ID</th>\n' +
-                        '            <th scope="col">Freedom Maker</th>\n' +
-                        '            <th scope="col">Email</th>\n' +
-                        '            <th scope="col">Role</th>\n' +
-                        '        </thead><tbody>');
-                    for (var item in relres) {
-                        let occ = relres[item].occupation;
-                        $.ajax({
-                            url: "/api/getMaker",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                id: relres[item].makerId,//tokenres.id,
-                            },
-                            dataType: "json",
-                            success: function (makerres, makerstatus) {
-                                //Populate table
-                                $("#makerTable").append('\n' +
-                                    '<tr class="makerRow">' +
-                                    '   <td>' + `${makerres.id}` + '</td>' +
-                                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
-                                    '   <td>' + `${makerres.email}` + '</td>' +
-                                    '   <td>' + occ + '</td></tr>'
-                                );
-                            },
-                            error: function (makerres, makerstatus) {
-                                $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
-                            }
-                        });
-                    }
-                    ;
-                    $("#makerTable").append('\n</tbody>');
-                    //Body Block content
-                    createBody(null);
-                    //Expand Table Button
-                    $("#ExpandButton").click(function () {
-                        expandTable();
-                    });
-                    //Row effect
-                    $(".subscriptionRow").mouseenter(function () {
-                        $(this).css('transition', 'background-color 0.5s ease');
-                        $(this).css('background-color', '#e8ecef');
-                    }).mouseleave(function () {
-                        $(this).css('background-color', 'white');
-                    });
-                },
-                error: function (relres, relstatus) {
-                    $("#userMainContent").html("Unable to find relationships! Please refresh the page. Contact support if the problem persists.");
-                }
-            });
-        },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Your token isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
+            error: function (res, makerstatus) {
+                $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
+            }
+        });
+    };
+    $("#makerTable").append('\n</tbody>');
+    //Body Block content
+    createBody(null);
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+    //Row effect
+    $(".subscriptionRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
     });
 }
 

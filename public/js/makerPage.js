@@ -92,7 +92,6 @@ function setClockInFunctionality() {
                                     },
                                     dataType: "json",
                                     success: function (bucketres, bucketstatus) {
-                                    console.log("hello")
                                         let hours = Math.floor(((bucketres.minutes)/60));
                                         let minutes = (bucketres.minutes)%60;
                                         let message = "";
