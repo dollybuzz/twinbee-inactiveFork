@@ -10,7 +10,7 @@ let navMapper = {
     },
 
     previousHours: function () {
-        showFunction(timeSheetFunctionality, "/api/getTimeSheetsByMakerId");
+        timeSheetFunctionality();
     },
 
     manageClients: function () {
@@ -428,7 +428,6 @@ onSignIn = function (googleUser) {
                                                             },
                                                             dataType: "json",
                                                             success: function (bucketres, bucketstatus) {
-                                                                console.log("hello")
                                                                 let hours = Math.floor(((bucketres.minutes)/60));
                                                                 let minutes = (bucketres.minutes)%60;
                                                                 let message = "";
