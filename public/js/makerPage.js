@@ -10,7 +10,7 @@ let navMapper = {
     },
 
     previousHours: function () {
-        timeSheetFunctionality();
+        showFunction(timeSheetFunctionality, "/api/getMyTimeSheetsMaker");
     },
 
     manageClients: function () {
@@ -19,7 +19,7 @@ let navMapper = {
 };//end navMapper
 
 //Versatile Functions
-function showFunction (functionality, endpoint) {
+function showFunction(functionality, endpoint) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -61,7 +61,7 @@ function setClockInFunctionality() {
         $("#makerClock").css("background-color", "#dbb459");
     });
 
-    $("#makerSelectedClient").on('change', function() {
+    $("#makerSelectedClient").on('change', function () {
         $.ajax({
             method: "post",
             url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
@@ -75,13 +75,11 @@ function setClockInFunctionality() {
                     url: "/api/getRelationshipsByMakerId",
                     data: {
                         auth: id_token,
-                        id: TEST_ENVIRONMENT? 4: tokenres.id
+                        id: TEST_ENVIRONMENT ? 4 : tokenres.id
                     },
                     success: function (relres, relstatus) {
-                        for(var item of relres)
-                        {
-                            if(item.id == $("#makerSelectedClient").val())
-                            {
+                        for (var item of relres) {
+                            if (item.id == $("#makerSelectedClient").val()) {
                                 $.ajax({
                                     url: "/api/getTimeBucket",
                                     method: "post",
@@ -92,8 +90,8 @@ function setClockInFunctionality() {
                                     },
                                     dataType: "json",
                                     success: function (bucketres, bucketstatus) {
-                                        let hours = Math.floor(((bucketres.minutes)/60));
-                                        let minutes = (bucketres.minutes)%60;
+                                        let hours = Math.floor(((bucketres.minutes) / 60));
+                                        let minutes = (bucketres.minutes) % 60;
                                         let message = "";
                                         if (hours > 0) {
                                             message += ` ${hours} hours `;
@@ -134,8 +132,7 @@ function setClockInFunctionality() {
             },
             dataType: "json",
             success: function (tokenres, status) {
-                if(!$("#makerSElectedClient").val())
-                {
+                if (!$("#makerSElectedClient").val()) {
                     $.ajax({
                         url: "api/getRelationshipById",
                         method: "post",
@@ -157,7 +154,7 @@ function setClockInFunctionality() {
                                 },
                                 dataType: "json",
                                 success: function (clockres, status) {
-                                    if(clockres) {
+                                    if (clockres) {
                                         setClockOutFunctionality();
                                         $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
                                         $("#makerText2").css("opacity", "1");
@@ -181,8 +178,7 @@ function setClockInFunctionality() {
                                             $("#makerText2").html("");
                                         }, 6000);
 
-                                    }
-                                    else {
+                                    } else {
                                         $("#makerText2").html("<br><h5>Could not clock in!</h5>");
                                     }
                                 },
@@ -250,7 +246,7 @@ function setClockOutFunctionality() {
                     },
                     dataType: "json",
                     success: function (clockres, status) {
-                        if(clockres) {
+                        if (clockres) {
                             setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
                             $("#makerText2").html("<br><h5>Successfully clocked out!</h5>");
@@ -279,8 +275,7 @@ function setClockOutFunctionality() {
                                 $("#makerText2").html("");
                                 $("#clockPrompt").html("");
                             }, 6000);
-                        }
-                        else {
+                        } else {
                             $("#makerText2").html("<br><h5>Could not clock out!</h5>");
                         }
                     },
@@ -328,14 +323,13 @@ onSignIn = function (googleUser) {
                 //Managing user navigation away
                 success: function (innerRes, innerStatus) {
                     var clockedOut = true;
-                    for (var i = 0; i < innerRes.length; ++i){
+                    for (var i = 0; i < innerRes.length; ++i) {
                         let sheet = innerRes[i];
-                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0"){
+                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0") {
                             clockedOut = false;
                             $("#taskBlock").css("opacity", "1");
                             $("#taskEntry").css("opacity", "1");
-                        }
-                        else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0"){
+                        } else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
                             clockedOut = false;
                             $("#taskBlock").css("opacity", "0");
                             $("#taskEntry").css("opacity", "0");
@@ -352,8 +346,7 @@ onSignIn = function (googleUser) {
                                 $("#clientRole").hide();
                                 $("#availcredit").hide();
                             }, 3000)
-                        }
-                        else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0"){
+                        } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                             clockedOut = true;
                             $("#taskBlock").css("opacity", "1");
                             $("#taskEntry").css("opacity", "1");
@@ -363,10 +356,9 @@ onSignIn = function (googleUser) {
                             $("#makerSelectedClient").css("opacity", "1");
                         }
                     }
-                    if (clockedOut){
+                    if (clockedOut) {
                         setClockInFunctionality();
-                    }
-                    else{
+                    } else {
                         setClockOutFunctionality();
                     }
                     $.ajax({
@@ -411,13 +403,11 @@ onSignIn = function (googleUser) {
                                             url: "/api/getRelationshipsByMakerId",
                                             data: {
                                                 auth: id_token,
-                                                id: TEST_ENVIRONMENT? 4: tokenres.id
+                                                id: TEST_ENVIRONMENT ? 4 : tokenres.id
                                             },
                                             success: function (relres, relstatus) {
-                                                for(var item of relres)
-                                                {
-                                                    if(item.id == $("#makerSelectedClient").val())
-                                                    {
+                                                for (var item of relres) {
+                                                    if (item.id == $("#makerSelectedClient").val()) {
                                                         $.ajax({
                                                             url: "/api/getTimeBucket",
                                                             method: "post",
@@ -428,8 +418,8 @@ onSignIn = function (googleUser) {
                                                             },
                                                             dataType: "json",
                                                             success: function (bucketres, bucketstatus) {
-                                                                let hours = Math.floor(((bucketres.minutes)/60));
-                                                                let minutes = (bucketres.minutes)%60;
+                                                                let hours = Math.floor(((bucketres.minutes) / 60));
+                                                                let minutes = (bucketres.minutes) % 60;
                                                                 let message = "";
                                                                 if (hours > 0) {
                                                                     message += ` ${hours} hours `;
@@ -475,78 +465,61 @@ onSignIn = function (googleUser) {
 };
 
 //Previous Hours Methods
-function timeSheetFunctionality (res) {
+function timeSheetFunctionality(res) {
+    let clientMap = {};
+    for (var i = 0; i < res.length; ++i) {
+        clientMap[res[i].id] = res[i];
+    }
 
-    $.ajax({
-        url: '/api/getMyClients',
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        dataType: "json",
-        success: function (res, innerStatus) {
-            let clientMap = {};
-            for (var i = 0; i < innerRes.length; ++i) {
-                clientMap[innerRes[i].id] = innerRes[i];
-            }
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#sheetsTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Timesheet ID</th>\n' +
+        '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
+        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
+        '            <th scope="col">Task</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    for (var item in res) {
+        let clientIdentifier = res[item].clientId;
+        clientIdentifier = clientMap[clientIdentifier] ?
+            clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
+            `Deleted client ${clientIdentifier}`;
 
-            //Create table
-            $("#userMainContent").html(
-                "<div id=\"buttonsTop\"></div>\n" +
-                "<div class='row' id='topRow'>\n" +
-                "<div id=\"floor\">\n" +
-                "    <table id=\"sheetsTable\" class=\"table\">\n" +
-                "    </table>\n" +
-                "</div></div>");
-            $("#sheetsTable").append('\n' +
-                '        <thead class="thead">\n' +
-                '            <th scope="col">Timesheet ID</th>\n' +
-                '            <th scope="col">Client</th>\n' +
-                '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
-                '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
-                '            <th scope="col">Task</th>\n' +
-                '        </thead><tbody>');
-            //Populate table
-            for (var item in res) {
-                let clientIdentifier = res[item].clientId;
-                clientIdentifier = clientMap[clientIdentifier] ?
-                    clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
-                    `Deleted client ${clientIdentifier}`;
+        $("#sheetsTable").append('\n' +
+            '<tr class="sheetRow">' +
+            '   <td>' + res[item].id + '</td>' +
+            '   <td>' + clientIdentifier + '</td>' +
+            '   <td>' + res[item].timeIn + '</td>' +
+            '   <td>' + res[item].timeOut + '</td>' +
+            '   <td>' + res[item].task + '</td></tr>'
+        );
+    }
+    $("#sheetsTable").append('\n</tbody>');
 
-                $("#sheetsTable").append('\n' +
-                    '<tr class="sheetRow">' +
-                    '   <td>' + res[item].id + '</td>' +
-                    '   <td>' + clientIdentifier + '</td>' +
-                    '   <td>' + res[item].timeIn + '</td>' +
-                    '   <td>' + res[item].timeOut + '</td>' +
-                    '   <td>' + res[item].task + '</td></tr>'
-                );
-            }
-            $("#sheetsTable").append('\n</tbody>');
+    //Body Block content
+    createBody();
 
-            //Body Block content
-            createBody();
-
-            //Event Listeners
-
-            //Row effect
-            $(".sheetRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-            });
-        },
-        error: function (innerRes, innerStatus) {
-            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
-        }
+    //Event Listeners
+    //Row effect
+    $(".sheetRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
     });
-
 }
 
 //Client Methods
-function clientFunctionality (res){
+function clientFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -570,7 +543,8 @@ function clientFunctionality (res){
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
             );
-        };
+        }
+        ;
     });
     $("#clientTable").append('\n</tbody>');
 
@@ -597,7 +571,7 @@ $(document).ready(function () {
         url: "/api/getEnvironment",
         method: "get",
         dataType: "json",
-        success:function (res, status) {
+        success: function (res, status) {
             TEST_ENVIRONMENT = res;
             if (TEST_ENVIRONMENT) {
                 onSignIn();
@@ -631,9 +605,8 @@ $(document).ready(function () {
         $(this).css("font-style", 'italic');
     });
 
-    $(".navItem").on("mouseleave", function() {
-        if (selectedTab!= $(this)[0].id)
-        {
+    $(".navItem").on("mouseleave", function () {
+        if (selectedTab != $(this)[0].id) {
             $(this).css("color", 'white');
             $(this).css("font-style", 'normal');
         }
