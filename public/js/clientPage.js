@@ -573,7 +573,7 @@ function makerFunctionality (res) {
                     '   <td>' + item.maker.id + '</td>' +
                     '   <td>' + item.maker.firstName + " " + item.maker.lastName + '</td>' +
                     '   <td>' + item.maker.email + '</td>' +
-                    '   <td>' + item.maker.occupation + '</td></tr>'
+                    '   <td>' + item.occupation + '</td></tr>'
                 );
             };
 
