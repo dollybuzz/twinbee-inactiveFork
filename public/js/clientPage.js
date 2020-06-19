@@ -568,13 +568,12 @@ function makerFunctionality (res) {
         '        </thead><tbody>');
             //Populate table
             for(var item of res){
-                console.log(res);
                 $("#makerTable").append('\n' +
                     '<tr class="makerRow">' +
-                    '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.firstName + " " + item.lastName + '</td>' +
-                    '   <td>' + item.email + '</td>' +
-                    '   <td>' + item.occupation + '</td></tr>'
+                    '   <td>' + item.maker.id + '</td>' +
+                    '   <td>' + item.maker.firstName + " " + item.maker.lastName + '</td>' +
+                    '   <td>' + item.maker.email + '</td>' +
+                    '   <td>' + item.maker.occupation + '</td></tr>'
                 );
             };
 
