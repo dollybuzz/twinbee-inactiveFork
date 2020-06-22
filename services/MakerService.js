@@ -126,7 +126,36 @@ class MakerService {
             console.log(err);
             emailService.emailAdmin(err);
         });
-        return JSON.parse(relationshipList.body);
+
+        relationshipList = JSON.parse(body);
+
+        let clients = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllClients`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        clients = JSON.parse(clients.body);
+        let clientMap = {};
+
+        for (var entry of clients){
+            clientMap[entry.customer.id] = entry.customer;
+        }
+        for (var relationship of relationshipList){
+            if (clientMap[relationship.clientId]){
+                let clientName = `${clientMap[relationship.clientId].first_name} ${clientMap[relationship.clientId].last_name}`;
+            }
+            else{
+                let clientName = "Deleted Client";
+            }
+            relationship.clientName = clientMap;
+        }
+
+        return relationshipList;
     }
 
     /**
