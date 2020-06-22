@@ -116,7 +116,7 @@ class MakerService {
      */
     async getRelationshipsForMaker(makerId){
         console.log(`Checking for relationships related to ${makerId}...`);
-        let relationshipList = await request({
+        let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
             form: {
@@ -126,8 +126,9 @@ class MakerService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+        console.log(result)
 
-        relationshipList = JSON.parse(relationshipList);
+        let relationshipList = JSON.parse(result);
 
         let clients = await request({
             method: 'POST',
