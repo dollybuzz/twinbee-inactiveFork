@@ -466,10 +466,6 @@ onSignIn = function (googleUser) {
 
 //Previous Hours Methods
 function timeSheetFunctionality(res) {
-    let clientMap = {};
-    for (var i = 0; i < res.length; ++i) {
-        clientMap[res[i].id] = res[i];
-    }
 
     //Create table
     $("#userMainContent").html(
@@ -489,10 +485,11 @@ function timeSheetFunctionality(res) {
         '        </thead><tbody>');
     //Populate table
     for (var item in res) {
-        let clientIdentifier = res[item].clientId;
-        clientIdentifier = clientMap[clientIdentifier] ?
-            clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
-            `Deleted client ${clientIdentifier}`;
+        if(res[item].clientName == null)
+        {
+            var clientIdentifier = `Deleted client ${res[item].clientName}`;
+        }
+
 
         $("#sheetsTable").append('\n' +
             '<tr class="sheetRow">' +
