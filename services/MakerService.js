@@ -195,7 +195,12 @@ class MakerService {
             clientMap[entry.customer.id] = entry.customer;
         }
         for (var sheet of sheets){
-            sheet.clientName = `${clientMap[sheet.clientId].first_name} ${clientMap[sheet.clientId].last_name}` || "Deleted Client";
+            if (!clientMap[sheet.clientId]){
+                sheet.clientName = "Deleted Client";
+            }
+            else {
+                sheet.clientName = `${clientMap[sheet.clientId].first_name} ${clientMap[sheet.clientId].last_name}`;
+            }
         }
         return sheets;
     }
