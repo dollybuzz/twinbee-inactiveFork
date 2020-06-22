@@ -127,7 +127,7 @@ class MakerService {
             emailService.emailAdmin(err);
         });
 
-        relationshipList = JSON.parse(body);
+        relationshipList = JSON.parse(relationshipList);
 
         let clients = await request({
             method: 'POST',
