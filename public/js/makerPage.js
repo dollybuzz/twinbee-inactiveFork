@@ -303,23 +303,15 @@ onSignIn = function (googleUser) {
 
     setClockInFunctionality();
     //Populating drop down selection
-    $.ajax({
-        method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        success: function (tokenres, status) {
+
             $.ajax({
-                url: "/api/getTimeSheetsByMakerId",
+                url: "/api/getMyTimeSheetsMaker",
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: TEST_ENVIRONMENT ? 4 : tokenres.id
+                    token: id_token
                 },
                 dataType: "json",
-
                 //Managing user navigation away
                 success: function (innerRes, innerStatus) {
                     var clockedOut = true;
@@ -361,12 +353,13 @@ onSignIn = function (googleUser) {
                     } else {
                         setClockOutFunctionality();
                     }
+
                     $.ajax({
-                        url: "/api/getRelationshipsByMakerId",
+                        url: "/api/getAllMyRelationshipsMaker",
                         method: "post",
                         data: {
                             auth: id_token,
-                            id: TEST_ENVIRONMENT ? 4 : tokenres.id,
+                            token: id_token
                         },
                         dataType: "json",
                         success: function (relres, status) {
@@ -457,11 +450,6 @@ onSignIn = function (googleUser) {
                     $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
                 }
             });// ajax
-        },
-        error: function (tokenres, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
 };
 
 //Previous Hours Methods
