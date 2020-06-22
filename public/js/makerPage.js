@@ -489,6 +489,10 @@ function timeSheetFunctionality(res) {
         {
             var clientIdentifier = `Deleted client ${res[item].clientName}`;
         }
+        else
+        {
+            clientIdentifier = res[item].clientName;
+        }
 
 
         $("#sheetsTable").append('\n' +
