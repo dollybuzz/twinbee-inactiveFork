@@ -175,20 +175,27 @@ class MakerService {
         });
 
         let sheets = JSON.parse(result.body);
+
+        console.log(`Getting client list for maker ${id}...`);
+        result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllClients`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+
+        let clients = JSON.parse(result.body);
+        let clientMap = {};
+
+        for (var entry of clients){
+            clientMap[entry.customer.id] = entry.customer;
+        }
         for (var sheet of sheets){
-            let res =  await request({
-                method: 'POST',
-                uri: `https://www.freedom-makers-hours.com/api/getClient`,
-                form: {
-                    'auth':process.env.TWINBEE_MASTER_AUTH,
-                    'id':sheet.clientId
-                }
-            }).catch(err => {
-                console.log(err);
-                emailService.emailAdmin(err);
-            });
-            let client = JSON.parse(res.body);
-            sheet.clientName = client.first_name + " " + client.last_name;
+            sheet.clientName = `${clientMap[sheet.clientId].first_name} ${clientMap[sheet.clientId].last_name}`;
         }
         return sheets;
     }
