@@ -255,7 +255,7 @@ class MakerService {
         if (body.makerId !== makerId){
             return false;
         }
-
+        let occupation = body.occupation;
         result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getTimeBucket`,
@@ -269,6 +269,7 @@ class MakerService {
             emailService.emailAdmin(err);
         });
         body = JSON.parse(result.body);
+        body.occupation = occupation;
         return body;
     }
 
