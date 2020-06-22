@@ -5,7 +5,7 @@ const request = util.promisify(require('request'));
 const emailService = require('./emailService.js');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
-    api_key : process.env.CHARGEBEE_TEST_API})
+    api_key : process.env.CHARGEBEE_API_KEY})
 
 
 
