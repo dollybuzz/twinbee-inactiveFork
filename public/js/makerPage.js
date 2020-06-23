@@ -62,146 +62,74 @@ function setClockInFunctionality() {
     });
 
     $("#makerSelectedClient").on('change', function () {
-        $.ajax({
-            method: "post",
-            url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
-            data: {
-                auth: id_token,
-                token: id_token
-            },
-            success: function (tokenres, tokenstatus) {
-                $.ajax({
-                    method: "post",
-                    url: "/api/getRelationshipsByMakerId",
-                    data: {
-                        auth: id_token,
-                        id: TEST_ENVIRONMENT ? 4 : tokenres.id
-                    },
-                    success: function (relres, relstatus) {
-                        for (var item of relres) {
-                            if (item.id == $("#makerSelectedClient").val()) {
-                                $.ajax({
-                                    url: "/api/getTimeBucket",
-                                    method: "post",
-                                    data: {
-                                        auth: id_token,
-                                        id: item.clientId,
-                                        planId: item.planId
-                                    },
-                                    dataType: "json",
-                                    success: function (bucketres, bucketstatus) {
-                                        let hours = Math.floor(((bucketres.minutes) / 60));
-                                        let minutes = (bucketres.minutes) % 60;
-                                        let message = "";
-                                        if (hours > 0) {
-                                            message += ` ${hours} hours `;
-                                        }
-                                        if (minutes > 0) {
-                                            message += ` ${minutes} minutes `;
-                                        }
-                                        $("#availcredit").html(message);
-                                    },
-                                    error: function (bucketres, bucketstatus) {
-                                        $("#userMainContent").html("Unable to grab client time buckets! Please refresh the page. Contact support if the problem persists.");
-                                    }
-                                });
-                            }
-                        }
-
-                    },
-                    error: function (relres, relstatus) {
-                        $("#userMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
-                    }
-                });
-            },
-            error: function (tokenres, tokenstatus) {
-                $("#userMainContent").html("Your token isn't working! Please refresh the page. Contact support if the problem persists.");
-            }
-        });
+        availableCredits();
     });
-
 
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+
         $.ajax({
-            url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
+            url: "api/getAllMyRelationship",
             method: "post",
             data: {
                 auth: id_token,
-                token: id_token,
+                id: $("#makerSelectedClient").val(),
             },
             dataType: "json",
-            success: function (tokenres, status) {
-                if (!$("#makerSElectedClient").val()) {
-                    $.ajax({
-                        url: "api/getRelationshipById",
-                        method: "post",
-                        data: {
-                            auth: id_token,
-                            id: $("#makerSelectedClient").val(),
-                        },
-                        dataType: "json",
-                        success: function (relres, status) {
-                            $.ajax({
-                                url: "api/clockIn",
-                                method: "post",
-                                data: {
-                                    auth: id_token,
-                                    makerId: relres.makerId,
-                                    hourlyRate: relres.planId,
-                                    clientId: relres.clientId,
-                                    task: $("#taskEntry").val()
-                                },
-                                dataType: "json",
-                                success: function (clockres, status) {
-                                    if (clockres) {
-                                        setClockOutFunctionality();
-                                        $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
-                                        $("#makerText2").css("opacity", "1");
+            success: function (relres, status) {
+                $.ajax({
+                    url: "api/clockIn",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        makerId: relres.makerId,
+                        hourlyRate: relres.planId,
+                        clientId: relres.clientId,
+                        task: $("#taskEntry").val()
+                    },
+                    dataType: "json",
+                    success: function (clockres, status) {
+                        if (clockres) {
+                            setClockOutFunctionality();
+                            $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
+                            $("#makerText2").css("opacity", "1");
 
 
-                                        $("#clockPrompt").html("<h5>Time is running . . .</h5>");
-                                        $("#clockPrompt").css("opacity", "1");
+                            $("#clockPrompt").html("<h5>Time is running . . .</h5>");
+                            $("#clockPrompt").css("opacity", "1");
 
-                                        $("#taskBlock").css("opacity", "0");
-                                        $("#taskEntry").css("opacity", "0");
-                                        $("#taskBlock").css("transition", "opacity 0.5s ease-out");
-                                        $("#taskEntry").css("transition", "opacity 0.5s ease-out");
+                            $("#taskBlock").css("opacity", "0");
+                            $("#taskEntry").css("opacity", "0");
+                            $("#taskBlock").css("transition", "opacity 0.5s ease-out");
+                            $("#taskEntry").css("transition", "opacity 0.5s ease-out");
 
-                                        setTimeout(function () {
-                                            $("#makerText2").css("opacity", "0");
-                                            $("#taskBlock").hide();
-                                            $("#taskEntry").hide();
-                                        }, 3000);
+                            setTimeout(function () {
+                                $("#makerText2").css("opacity", "0");
+                                $("#taskBlock").hide();
+                                $("#taskEntry").hide();
+                            }, 3000);
 
-                                        setTimeout(function () {
-                                            $("#makerText2").html("");
-                                        }, 6000);
+                            setTimeout(function () {
+                                $("#makerText2").html("");
+                            }, 6000);
 
-                                    } else {
-                                        $("#makerText2").html("<br><h5>Could not clock in!</h5>");
-                                    }
-                                },
-                                error: function (clockres, status) {
-                                    $("#makerClock").html('Clock In');
-                                    $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
-                                }
-                            });
-                        },
-                        error: function (relres, status) {
-                            $("#makerClock").html('Clock In');
-                            $("#clockButton").html("<h5>You are not currently assigned to any Client.<br>" +
-                                "Please follow up with Freedom Makers for further instruction.</h5>");
+                        } else {
+                            $("#makerText2").html("<br><h5>Could not clock in!</h5>");
                         }
-                    });
-                }
+                    },
+                    error: function (clockres, status) {
+                        $("#makerClock").html('Clock In');
+                        $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
+                    }
+                });
             },
-            error: function (tokenres, status) {
-                $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+            error: function (relres, status) {
+                $("#makerClock").html('Clock In');
+                $("#clockButton").html("<h5>You are not currently assigned to any Client.<br>" +
+                    "Please follow up with Freedom Makers for further instruction.</h5>");
             }
         });
     });
-
 }
 
 function setClockOutFunctionality() {
@@ -293,6 +221,34 @@ function setClockOutFunctionality() {
     });
 };
 
+function availableCredits() {
+    $.ajax({
+        url: "/api/getMyRelationshipBucket",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+            relationshipId: $("#makerSelectedClient").val()
+        },
+        dataType: "json",
+        success: function (bucketres, bucketstatus) {
+            let hours = Math.floor(((bucketres.minutes) / 60));
+            let minutes = (bucketres.minutes) % 60;
+            let message = "";
+            if (hours > 0) {
+                message += ` ${hours} hours `;
+            }
+            if (minutes > 0) {
+                message += ` ${minutes} minutes `;
+            }
+            $("#availcredit").html(message);
+        },
+        error: function (bucketres, bucketstatus) {
+            $("#userMainContent").html("Unable to grab client time buckets! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+}
+
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
@@ -302,154 +258,89 @@ onSignIn = function (googleUser) {
     $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
 
     setClockInFunctionality();
-    //Populating drop down selection
 
+    //Getting timesheets to manage user navigation away
+    $.ajax({
+        url: "/api/getMyTimeSheetsMaker",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        //Managing user navigation away
+        success: function (innerRes, innerStatus) {
+            var clockedOut = true;
+            for (var i = 0; i < innerRes.length; ++i) {
+                let sheet = innerRes[i];
+                if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0") {
+                    clockedOut = false;
+                    $("#taskBlock").css("opacity", "1");
+                    $("#taskEntry").css("opacity", "1");
+                } else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
+                    clockedOut = false;
+                    $("#taskBlock").css("opacity", "0");
+                    $("#taskEntry").css("opacity", "0");
+                    $("#clientRole").css("opacity", "0");
+                    $("#clockPrompt").css("opacity", "1");
+                    $("#makerSelectedClient").css("opacity", "0");
+                    $("#clientCredit").css("opacity", "0");
+                    $("#availcredit").css("opacity", "0");
+                    $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
+
+                    setTimeout(function () {
+                        $("#taskBlock").hide();
+                        $("#taskEntry").hide();
+                        $("#clientRole").hide();
+                        $("#availcredit").hide();
+                    }, 3000)
+                } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
+                    clockedOut = true;
+                    $("#taskBlock").css("opacity", "1");
+                    $("#taskEntry").css("opacity", "1");
+                    $("#clientRole").css("opacity", "1");
+                    $("#availcredit").css("opacity", "1");
+                    $("#clientCredit").css("opacity", "1");
+                    $("#makerSelectedClient").css("opacity", "1");
+                }
+            }
+            if (clockedOut) {
+                setClockInFunctionality();
+            } else {
+                setClockOutFunctionality();
+            }
+
+            //Populating drop down selection
             $.ajax({
-                url: "/api/getMyTimeSheetsMaker",
+                url: "/api/getAllMyRelationshipsMaker",
                 method: "post",
                 data: {
                     auth: id_token,
                     token: id_token
                 },
                 dataType: "json",
-                //Managing user navigation away
-                success: function (innerRes, innerStatus) {
-                    var clockedOut = true;
-                    for (var i = 0; i < innerRes.length; ++i) {
-                        let sheet = innerRes[i];
-                        if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0") {
-                            clockedOut = false;
-                            $("#taskBlock").css("opacity", "1");
-                            $("#taskEntry").css("opacity", "1");
-                        } else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
-                            clockedOut = false;
-                            $("#taskBlock").css("opacity", "0");
-                            $("#taskEntry").css("opacity", "0");
-                            $("#clientRole").css("opacity", "0");
-                            $("#clockPrompt").css("opacity", "1");
-                            $("#makerSelectedClient").css("opacity", "0");
-                            $("#clientCredit").css("opacity", "0");
-                            $("#availcredit").css("opacity", "0");
-                            $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
+                success: function (relres, status) {
+                   for(var i = 0; i < relres.length; ++i) {
+                       $("#makerSelectedClient").append(
+                           `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
 
-                            setTimeout(function () {
-                                $("#taskBlock").hide();
-                                $("#taskEntry").hide();
-                                $("#clientRole").hide();
-                                $("#availcredit").hide();
-                            }, 3000)
-                        } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                            clockedOut = true;
-                            $("#taskBlock").css("opacity", "1");
-                            $("#taskEntry").css("opacity", "1");
-                            $("#clientRole").css("opacity", "1");
-                            $("#availcredit").css("opacity", "1");
-                            $("#clientCredit").css("opacity", "1");
-                            $("#makerSelectedClient").css("opacity", "1");
-                        }
-                    }
-                    if (clockedOut) {
-                        setClockInFunctionality();
-                    } else {
-                        setClockOutFunctionality();
-                    }
+                       if (i == reslres.length - 1) {
+                           //Getting available credits by client selected
+                           availableCredits();
 
-                    $.ajax({
-                        url: "/api/getAllMyRelationshipsMaker",
-                        method: "post",
-                        data: {
-                            auth: id_token,
-                            token: id_token
-                        },
-                        dataType: "json",
-                        success: function (relres, status) {
-                            for (var relationship of relres) {
-                                let occ = relationship.occupation;
-                                $.ajax({
-                                    url: "/api/getClientName",
-                                    method: "post",
-                                    data: {
-                                        auth: id_token,
-                                        relationshipObj: relationship,
-                                    },
-                                    dataType: "json",
-                                    success: function (clientres, status) {
-                                        $("#makerSelectedClient").append(
-                                            `<option id=${clientres.relId} value=${clientres.relId}>${clientres.name + " - " + occ}</option>`);
-                                    },
-                                    error: function (clientres, status) {
-                                        $("#UserMainContent").html("Could not get clients!");
-                                    }
-                                });
-                            }
-                            setTimeout(function () {
-                                $.ajax({
-                                    method: "post",
-                                    url: TEST_ENVIRONMENT ? '/api/getAllMakers' : '/api/getMakerIdByToken',
-                                    data: {
-                                        auth: id_token,
-                                        token: id_token
-                                    },
-                                    success: function (tokenres, tokenstatus) {
-                                        $.ajax({
-                                            method: "post",
-                                            url: "/api/getRelationshipsByMakerId",
-                                            data: {
-                                                auth: id_token,
-                                                id: TEST_ENVIRONMENT ? 4 : tokenres.id
-                                            },
-                                            success: function (relres, relstatus) {
-                                                for (var item of relres) {
-                                                    if (item.id == $("#makerSelectedClient").val()) {
-                                                        $.ajax({
-                                                            url: "/api/getTimeBucket",
-                                                            method: "post",
-                                                            data: {
-                                                                auth: id_token,
-                                                                id: item.clientId,
-                                                                planId: item.planId
-                                                            },
-                                                            dataType: "json",
-                                                            success: function (bucketres, bucketstatus) {
-                                                                let hours = Math.floor(((bucketres.minutes) / 60));
-                                                                let minutes = (bucketres.minutes) % 60;
-                                                                let message = "";
-                                                                if (hours > 0) {
-                                                                    message += ` ${hours} hours `;
-                                                                }
-                                                                if (minutes > 0) {
-                                                                    message += ` ${minutes} minutes `;
-                                                                }
-                                                                $("#availcredit").html(message);
-                                                            },
-                                                            error: function (bucketres, bucketstatus) {
-                                                                $("#userMainContent").html("Unable to grab client time buckets! Please refresh the page. Contact support if the problem persists.");
-                                                            }
-                                                        });
-                                                    }
-                                                }
+                       }
+                   }
 
-                                            },
-                                            error: function (relres, relstatus) {
-                                                $("#userMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
-                                            }
-                                        });
-                                    },
-                                    error: function (tokenres, tokenstatus) {
-                                        $("#userMainContent").html("Your token isn't working! Please refresh the page. Contact support if the problem persists.");
-                                    }
-                                });
-                            }, 300)
-                        },
-                        error: function (relres, status) {
-                            $("#UserMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
-                        }
-                    });
                 },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+                error: function (relres, status) {
+                    $("#UserMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
                 }
-            });// ajax
+            });
+        },
+        error: function (innerRes, innerStatus) {
+            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
 };
 
 //Previous Hours Methods
