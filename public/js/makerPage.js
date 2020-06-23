@@ -320,11 +320,12 @@ onSignIn = function (googleUser) {
                 },
                 dataType: "json",
                 success: function (relres, status) {
+                    console.log(relres);
                    for(var i = 0; i < relres.length; ++i) {
                        $("#makerSelectedClient").append(
                            `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
 
-                       if (i == reslres.length - 1) {
+                       if (i == relres.length - 1) {
                            //Getting available credits by client selected
                            availableCredits();
 
