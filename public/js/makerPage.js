@@ -494,7 +494,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#makerSelectedClient").append("<option> <span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\">Loading...</span></option>");
+    $("#makerSelectedClient").append("<option>Loading...</option>");
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
