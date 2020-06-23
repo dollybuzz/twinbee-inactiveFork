@@ -39,7 +39,7 @@ module.exports ={
      * the given relationship. Looks for values in the body in the form:
      * {
      *     "token": requester's token,
-     *     "relationshipId": id of the relationship with the desired plan
+     *     "relationshipId"1: id of the relationship with the desired plan
      * }
      * @param req
      * @param res

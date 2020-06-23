@@ -321,6 +321,7 @@ onSignIn = function (googleUser) {
                 dataType: "json",
                 success: function (relres, status) {
                     console.log(relres);
+                    $("#makerSelectedClient").html("");
                    for(var i = 0; i < relres.length; ++i) {
                        $("#makerSelectedClient").append(
                            `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
@@ -492,6 +493,8 @@ $(document).ready(function () {
             $(this).css("font-style", 'normal');
         }
     });
+
+    $("#makerSelectedClient").append("<option> <span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\">Loading...</span></option>");
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
