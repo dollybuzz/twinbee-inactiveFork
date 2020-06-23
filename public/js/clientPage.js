@@ -722,5 +722,5 @@ $(document).ready(function () {
             location.reload();
         }, 5000)
     }
-    
+
 });//end document ready
