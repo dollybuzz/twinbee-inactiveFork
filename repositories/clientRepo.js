@@ -93,23 +93,24 @@ class ClientRepository {
         });
     }
 
-    getAllClients() {
-        return new Promise((resolve, reject)=>{
-            chargebee.customer.list({
-                "limit": "100"
-            }).request(function(error,result) {
-                if(error){
-                    //handle error, email us?
-                    console.log(error);
-                    reject(error);
-                }else{
-                    console.log("All clients retrieved successfully");
-                    resolve(result.list);
-                }
-            })
+    async getAllClients() {
+        let listObject = await chargebee.customer.list({
+            "limit": "100"
+        }).request().catch(error => {
+            console.log(error)
         });
+        let list = listObject.list;
+        while (listObject.next_offset) {
+            listObject = await chargebee.customer.list({
+                limit: 100,
+                offset: listObject.next_offset
+            }).request().catch(error => console.log(error));
+            for (var item of listObject.list) {
+                list.push(item);
+            }
+        }
+        return list;
     }
-
 
     getClientByEmail(email) {
         return new Promise((resolve, reject)=> {
