@@ -2292,98 +2292,85 @@ function relationshipAddForm() {
                 },
                 dataType: "json",
                 success: function (makerres, makerstatus) {
-                    $.ajax({
-                        url: "/api/getAllPlans",
-                        method: "post",
-                        data: {
-                            auth: id_token
-                        },
-                        dataType: "json",
-                        success: function (planres, planstatus) {
-
-                                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                                        "<form id='add'>\n" +
-                                        "<label for='empty'></label>" +
-                                        "<label for='empty'></label>" +
-                                        "<label for='empty'></label>" +
-                                        "<label for='addClientRel'> Select a Client:</label>" +
-                                        "<select class='form-control' id='addClientRel'>\n</select>\n<br><br>" +
-                                        "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
-                                        "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
-                                        "<label for='addPlanRel'> Select a Plan:</label>" +
-                                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
-                                        "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
-                                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
-                                        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
 
-                                    for(var item of clientres) {
-                                        $('#addClientRel').append(
-                                            `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
+                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+                        "<form id='add'>\n" +
+                        "<label for='empty'></label>" +
+                        "<label for='empty'></label>" +
+                        "<label for='empty'></label>" +
+                        "<label for='addClientRel'> Select a Client:</label>" +
+                        "<select class='form-control' id='addClientRel'>\n</select>\n<br><br>" +
+                        "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
+                        "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
+                        "<label for='addPlanRel'> Select a Plan:</label>" +
+                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
+                        "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
+                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
+                        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+
+                    for (var item of clientres) {
+                        $('#addClientRel').append(
+                            `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
+                        );
+                    }
+
+                    $("#addClientRel").on('click', function () {
+                        $.ajax({
+                            url: "/api/getTimeBucketsByClientId",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: $("#addClientRel").val()
+                            },
+                            dataType: "json",
+                            success: function (bucketres, bucketstatus) {
+                                $("#addPlanRel").html("");
+
+                                for (var item of makerres) {
+                                    if (!item.deleted) {
+                                        $('#addMakerRel').append(
+                                            `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
                                         );
                                     }
+                                }
 
-                                    $("#addClientRel").on('click', function () {
-                                            $.ajax({
-                                                url: "/api/getTimeBucketsByClientId",
-                                                method: "post",
-                                                data: {
-                                                    auth: id_token,
-                                                    id: $("#addClientRel").val()
-                                                },
-                                                dataType: "json",
-                                                success: function (bucketres, bucketstatus) {
-                                                    $("#addPlanRel").html("");
+                                for (var item in bucketres.buckets) {
+                                    $('#addPlanRel').append(
+                                        `<option id="${item}" value="${item}">${item}</option>`
+                                    );
 
-                                                    for(var item of makerres) {
-                                                        if(!item.deleted)
-                                                        {
-                                                            $('#addMakerRel').append(
-                                                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
-                                                            );
-                                                        }
-                                                    }
+                                }
 
-                                                    for(var item in bucketres.buckets) {
-                                                        $('#addPlanRel').append(
-                                                            `<option id="${item}" value="${item}">${item}</option>`
-                                                        );
-
-                                                    }
-
-                                                },
-                                                error: function (bucketres, bucketstatus) {
-                                                    $("#userMainContent").html("Subscriptions isn't working!");
-                                                }
-                                            });
-                                    })
+                            },
+                            error: function (bucketres, bucketstatus) {
+                                $("#userMainContent").html("Subscriptions isn't working!");
+                            }
+                        });
+                    })
 
 
-                                    //Submit button function
-                                    $("#SubmitButton").off("click");
-                                    $("#SubmitButton").on('click', function (e) {
-                                        let message = "";
-                                        let valid = true;
-                                        if ($("#addOccRel").val().length === 0) {
-                                            valid = false;
-                                            message += "A Role is required!<br>";
-                                        }
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        let message = "";
+                        let valid = true;
+                        if ($("#addOccRel").val().length === 0) {
+                            valid = false;
+                            message += "A Role is required!<br>";
+                        }
 
-                                        if (valid) {
-                                            addSubmit("/api/createRelationship", {
-                                                auth: id_token,
-                                                clientId: $("#addClientRel").val(),
-                                                makerId: $("#addMakerRel").val(),
-                                                planId: $("#addPlanRel").val(),
-                                                occupation: $("#addOccRel").val(),
-                                            }, addRelationshipSuccess);
-                                        } else {
-                                            $("#errormessage").html(message);
-                                        }
-                                    });
-                        },
-                        error: function (planres, planstatus) {
-                            $("#userMainContent").html("Plan Relationship isn't working!");
+                        if (valid) {
+                            addSubmit("/api/createRelationship", {
+                                auth: id_token,
+                                clientId: $("#addClientRel").val(),
+                                makerId: $("#addMakerRel").val(),
+                                planId: $("#addPlanRel").val(),
+                                occupation: $("#addOccRel").val(),
+                            }, addRelationshipSuccess);
+                        } else {
+                            $("#errormessage").html(message);
                         }
                     });
                 },
