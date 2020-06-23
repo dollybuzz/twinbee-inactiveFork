@@ -128,7 +128,13 @@ class MakerService {
         });
 
         let relationshipList = JSON.parse(result.body);
-
+        let newRelationshipList = [];
+        for (var ship of relationshipList){
+            if (ship.makerId == makerId){
+                newRelationshipList.push(ship)
+            }
+        }
+        relationshipList = newRelationshipList;
         let clients = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllClients`,
