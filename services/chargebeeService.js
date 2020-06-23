@@ -28,23 +28,21 @@ class ChargebeeService {
      *  returnedValue[0].plan.pricing_model
      * @returns {Promise<[{entry:plan{}}]>}
      */
-    getAllPlans(){
-        console.log("Getting all plans...");
-        return new Promise((resolve, reject) => {
-            chargebee.plan.list({
-                limit:100
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
-                    emailService.emailAdmin(error);
-                    console.log(error);
-                    reject(error);
-                }else{
-                    console.log("All plans retrieved");
-                    resolve(result.list);
-                }
-            });
-        })
+    async getAllPlans(){
+        let listObject = await chargebee.plan.list({
+            limit: 100
+        }).request().catch(error => console.log(error));
+        let list = listObject.list;
+        while (listObject.next_offset) {
+            listObject = await chargebee.plan.list({
+                limit: 100,
+                offset: listObject.next_offset
+            }).request().catch(error => console.log(error));
+            for (var item of listObject.list) {
+                list.push(item);
+            }
+        }
+        return list;
     }
 
     /**
