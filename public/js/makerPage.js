@@ -498,4 +498,13 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
+
+    if(id_token == null)
+    {
+        setTimeout(function () {
+            location.reload();
+        }, 5000)
+    }
+
+
 })//end document ready
