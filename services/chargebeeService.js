@@ -1,6 +1,6 @@
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
-    api_key : process.env.CHARGEBEE_TEST_API});
+    api_key : process.env.CHARGEBEE_API_KEY});
 const util = require('util');
 const request = util.promisify(require('request'));
 const emailService = require('./emailService.js');
@@ -165,24 +165,24 @@ class ChargebeeService {
      * }
      * @returns {Promise<entry>}
      */
-    getAllSubscriptions(){
+    async getAllSubscriptions() {
         console.log("Getting all subscriptions...");
-        return new Promise((resolve, reject) => {
-            chargebee.subscription.list({
-                limit:100,
-                include_deleted: true
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
-                    console.log(error);
-                    emailService.emailAdmin(error);
-                    reject(error);
-                }else{
-                    console.log("Retrieved all subscriptions");
-                    resolve(result.list);
-                }
-            });
-        })
+        let listObject = await chargebee.subscription.list({
+            limit: 100,
+            include_deleted: true
+        }).request().catch(error => console.log(error));
+        let list = listObject.list;
+        while (listObject.next_offset) {
+            listObject = await chargebee.subscription.list({
+                limit: 100,
+                include_deleted: true,
+                offset: listObject.next_offset
+            }).request().catch(error => console.log(error));
+            for (var item of listObject.list) {
+                list.push(item);
+            }
+        }
+        return list;
     }
 
     /**

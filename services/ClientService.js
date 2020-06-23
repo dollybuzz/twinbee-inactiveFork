@@ -5,7 +5,7 @@ const request = util.promisify(require('request'));
 const emailService = require('./emailService.js');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
-    api_key : process.env.CHARGEBEE_TEST_API})
+    api_key : process.env.CHARGEBEE_API_KEY})
 
 
 
@@ -359,7 +359,7 @@ class ClientService {
      */
     async getSubscriptionsForClient(clientId){
         console.log(`Getting all subscriptions for ${clientId}`);
-        return await request({
+        let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllSubscriptions`,
             form: {
@@ -369,6 +369,16 @@ class ClientService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+
+        let subscriptions = JSON.parse(result.body);
+        let list = [];
+        for (var entry of subscriptions){
+            if (entry.subscription.customer_id === clientId){
+                list.push(entry);
+            }
+        }
+
+        return list;
     }
 
     /**
@@ -435,7 +445,7 @@ class ClientService {
      * @returns {Promise<boolean|any>}
      */
     async undoMySubscriptionChanges(clientId, subscriptionId){
-        if (this.getSubscriptionChanges(clientId, subscriptionId)){
+        if (this.getMySubscriptionChanges(clientId, subscriptionId)){
             let result = await request({
                 method: 'POST',
                 uri: `https://www.freedom-makers-hours.com/api/undoSubscriptionChanges`,
@@ -515,7 +525,6 @@ class ClientService {
      */
     async getMakersForClient(id) {
         console.log(`Getting makers for client ${id}...`);
-        let clientMakers = [];
         let response = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
@@ -527,25 +536,37 @@ class ClientService {
             emailService.emailAdmin(err);
         });
 
-        let body = response.body;
-        let makers = JSON.parse(body);
-        let makersMap = {};
-        let foundIds = {};
+        let makers = JSON.parse(response.body);
 
-        for (var i = 0; i < makers.length; ++i) {
-            makersMap[makers[i].id] = makers[i];
-        }
-
-        let sheets = await this.getSheetsByClient(id).catch(err => {
+        let result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
         });
-        for (var i = 0; i < sheets.length; ++i) {
-            if (!foundIds[sheets[i].makerId] && makersMap[sheets[i].makerId]) {
-                foundIds[sheets[i].makerId] = true;
-                clientMakers.push(makersMap[sheets[i].makerId]);
+
+        let relationships = JSON.parse(result.body);
+        let makerMap = {};
+        let clientMakers = [];
+
+        for (var i = 0; i < makers.length; ++i){
+            makerMap[makers[i].id] = makers[i];
+        }
+
+        for (var i = 0; i < relationships.length; ++i){
+            let makerOfRelationship = relationships[i].makerId;
+            if (makerMap[makerOfRelationship] && relationships[i].clientId == id){
+                let maker = makerMap[makerOfRelationship];
+                let occupation = relationships[i].occupation;
+                clientMakers.push({maker: maker, occupation: occupation});
             }
         }
+        console.log('List retrieved: ');
+        console.log(clientMakers);
         return clientMakers;
     };
 
@@ -570,7 +591,7 @@ class ClientService {
     }
 
 
-    async getTimeBucketByClientId(id) {
+    async getTimeBucketsByClientId(id) {
         let client = await this.getClientById(id).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
@@ -630,7 +651,7 @@ class ClientService {
     }
 
     async chargeMeNow(planId, numHours, customerId){
-        console.log(customerId)
+        console.log(`Attempting to charge ${customerId} for ${numHours} ${planId} hours...`);
         let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/creditNow`,
@@ -721,13 +742,14 @@ class ClientService {
      */
     async getClientByEmail(email) {
         console.log(`Getting client by email...`);
-        return await clientRepo.getClientByEmail(email)
-        emailService.emailAdmin(err);
+        let client = await clientRepo.getClientByEmail(email);
+        console.log(`Client was ${client.id}`);
+        return client;
     }
 
     async getTimeBucket(clientId, planId) {
         console.log(`Getting available credit for ${clientId}'s time bucket`);
-        let bucketObj = await this.getTimeBucketByClientId(clientId);
+        let bucketObj = await this.getTimeBucketsByClientId(clientId);
         return {minutes: bucketObj.buckets[planId]};
     }
 

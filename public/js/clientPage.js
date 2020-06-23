@@ -3,7 +3,6 @@ let selectedRow = null;
 let selectedTab = null;
 let id_token = null;
 let TEST_ENVIRONMENT = false;
-let TEST_CUSTOMER = "AzqgmORz6AFeK1Q5w";
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
 
@@ -13,15 +12,15 @@ let navMapper = {
     },
 
     reviewTimeSheets: function () {
-        showFunction(timeSheetFunctionality, "/api/getTimeSheetsByClientId");
+        timeSheetFunctionality();
     },
 
     manageSubscriptions: function () {
-        showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+        showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
     },
 
     manageMakers: function () {
-        showFunction(makerFunctionality, "/api/getMakersForClient");
+        showFunction(makerFunctionality, "/api/getMyMakers");
     }
 };//end navMapper
 
@@ -87,32 +86,19 @@ function expandTable () {
 
 function showFunction (functionality, endpoint) {
     $.ajax({
+        url: endpoint,
         method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         data: {
             auth: id_token,
             token: id_token
         },
-        success: function (res, status) {
-            $.ajax({
-                url: endpoint,
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : res.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
-                    functionality(innerRes);
-                    $(".spinner-border").remove();
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html(`Something went wrong with ${endpoint}`);
-                }
-            });// ajax
+        dataType: "json",
+        success: function (innerRes, innerStatus) {
+            functionality(innerRes);
+            $(".spinner-border").remove();
         },
-        error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+        error: function (innerRes, innerStatus) {
+            $("#userMainContent").html(`Something went wrong with ${endpoint}`);
         }
     });
 };
@@ -121,7 +107,7 @@ function showFunction (functionality, endpoint) {
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
-    showFunction(timeBucketFunctionality, '/api/getTimeBucketByClientId');
+    showFunction(timeBucketFunctionality, '/api/getAllMyTimeBuckets');
 }
 
 //Google
@@ -136,34 +122,23 @@ onSignIn = function (googleUser) {
 };
 
 function openHostedPage(getPageEndpoint){
+
     $.ajax({
+        url: getPageEndpoint,
         method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
         data: {
             auth: id_token,
-            token: id_token
+            token: id_token,
         },
-        success: function (res, status) {
-            $.ajax({
-                url: getPageEndpoint,
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id:  TEST_ENVIRONMENT ? TEST_CUSTOMER : res.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
-                    window.open(innerRes.url);
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("failed to get page!");
-                }
-            });// ajax
+        dataType: "json",
+        success: function (innerRes, innerStatus) {
+            window.open(innerRes.url);
         },
-        error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+        error: function (innerRes, innerStatus) {
+            $("#userMainContent").html("failed to get page!");
         }
-    });
+    });// ajax
+
 
 }
 
@@ -220,19 +195,19 @@ function timeBucketFunctionality (res) {
     //Event Listeners
     //Update Payment
     $("#updatePaymentButton").on('click', function () {
-        openHostedPage('/api/getUpdatePaymentURL');
+        openHostedPage('/api/getMyUpdatePaymentPage');
     })
 
     //Review Invoices
     $("#revInvoicesButton").on('click', function () {
-        openHostedPage('/api/getClientPayInvoicesPage');
+        openHostedPage('/api/getMyPayInvoicesPage');
     })
 
     //Buy Hours
     $(".bucketRow").click(function () {
         selectedRow = $(this);
         $("#optionsClient").html(`<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`)
-        popBuyForm(buyForm);
+        popBuyForm(buyForm(selectedRow.children()[0].innerHTML));
     });
 
     //Expand Table Button
@@ -250,22 +225,14 @@ function timeBucketFunctionality (res) {
 
 }
 
-function buyForm () {
-    $.ajax({
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token,
-        },
-        dataType: "json",
-        success: function (tokenres, tokenstatus) {
+function buyForm (rowData) {
             $.ajax({
-                url: "/api/getTimeBucketByClientId",
+                url: "/api/getMyTimeBucket",
                 method: "post",
                 data: {
                     auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
+                   token: id_token,
+                    bucket: rowData
                 },
                 dataType: "json",
                 success: function (planres, planstatus) {
@@ -352,11 +319,11 @@ function buyForm () {
 
                             $("#YesBuy").click(function () {
                                 $.ajax({
-                                    url: "/api/creditNow",
+                                    url: "/api/chargeMeNow",
                                     method: "post",
                                     data: {
                                         auth: id_token,
-                                        customerId: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id,
+                                        token: id_token,
                                         planId: planSelect,
                                         numHours: timeInMinutes/60
                                     },
@@ -379,11 +346,6 @@ function buyForm () {
                     $("#userMainContent").html("Plan isn't working!");
                 }
             });
-        },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
 }
 
 //Subscription Methods
@@ -396,6 +358,7 @@ function prePopModForm (endpoint, modForm) { //not a versatile method
         method: "post",
         data: {
             auth: id_token,
+            token: id_token,
             subscriptionId: subscriptionId,
         },
         dataType: "json",
@@ -426,7 +389,6 @@ function subscriptionFunctionality (res) {
         '            <th scope="col" id="subOptions">Option</th>\n' +
         '        </thead><tbody>');
 
-
     //Populate table
     res.forEach(item => {
         let subscription = item.subscription;
@@ -434,7 +396,7 @@ function subscriptionFunctionality (res) {
         if (item && !subscription.deleted) {
             let scheduled = subscription.has_scheduled_changes;
             let changes = "";
-            (scheduled ? changes="Yes" : changes="No");
+            (scheduled ? changes = "Yes" : changes = "No");
 
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
@@ -443,34 +405,34 @@ function subscriptionFunctionality (res) {
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td>' +
+                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
     });
     $("#subscriptionTable").append('\n</tbody>');
 
-    //Body Block content
-    createBody(null);
+        //Body Block content
+        createBody(null);
 
-    //Event Listeners
-    //Change Subscription
-    $(".subscriptionRow").click(function () {
-        selectedRow = $(this);
-        prePopModForm("/api/retrieveSubscription", subscriptionModForm);
-    });
+        //Event Listeners
+        //Change Subscription
+        $(".subscriptionRow").click(function () {
+            selectedRow = $(this);
+            prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
+        });
 
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
+        //Expand Table Button
+        $("#ExpandButton").click(function () {
+            expandTable();
+        });
 
-    //Row effect
-    $(".subscriptionRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
+        //Row effect
+        $(".subscriptionRow").mouseenter(function () {
+            $(this).css('transition', 'background-color 0.5s ease');
+            $(this).css('background-color', '#e8ecef');
+        }).mouseleave(function () {
+            $(this).css('background-color', 'white');
+        });
 }
 
 function subscriptionModForm (res, status) {
@@ -487,8 +449,6 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>" +
         "<div id='pendingChanges'></div>");
-
-    let plan = $(selectedRow.children()[1].innerHTML).val();
 
     $("#SubmitButton").on("click", function (e) {
         let monthlyHours = $("#modsubscriptionplanquantity").val();
@@ -518,14 +478,13 @@ function subscriptionModForm (res, status) {
                     data: {
                         auth: id_token,
                         subscriptionId: res.id,
-                        planId: plan,
                         planQuantity: monthlyHours
                     },
                     dataType: "json",
                     success: function (updateres, status) {
                         $("#optionsClient").append("<br><h5>Successfully updated monthly hours for Subscription " + `${updateres.id}` + "!</h5>");
                         setTimeout(function () {
-                            showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+                            showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                         }, 1000);
                     },
                     error: function (updateres, status) {
@@ -540,17 +499,17 @@ function subscriptionModForm (res, status) {
     if(selectedRow.children()[3].innerHTML == "Yes")
     {
         $.ajax({
-            url: "/api/retrieveSubscriptionChanges",
+            url: "/api/getMySubscriptionChanges",
             method: "post",
             data: {
                 auth: id_token,
+                token: id_token,
                 subscriptionId: selectedRow.children()[0].innerHTML
             },
             dataType: "json",
             success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
-
-                $("#pendingChanges").append("<hr><p>This plan has the following scheduled change and will take effect on the next " +
+                $("#pendingChanges").html("<hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
                     `<br><h6>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h6>` +
                     "<br>If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
@@ -561,17 +520,19 @@ function subscriptionModForm (res, status) {
 
                 $("#CancelChangeButton").on("click", function() {
                     $.ajax({
-                        url: "/api/undoSubscriptionChanges",
+                        url: "/api/undoMySubscriptionChanges",
                         method: "post",
                         data: {
                             auth: id_token,
+                            token: id_token,
                             subscriptionId: selectedRow.children()[0].innerHTML
                         },
                         dataType: "json",
                         success: function (undores, undostatus) {
+                            $("#cancelChange").html("");
                             $("#cancelChange").append("<br><h5>Successfully canceled change request!</h5>");
                             setTimeout(function () {
-                                showFunction(subscriptionFunctionality, "/api/getSubscriptionsByClient");
+                                showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                             }, 1000);
                         },
                         error: function (undores, undostatus) {
@@ -589,93 +550,51 @@ function subscriptionModForm (res, status) {
 
 //Maker Methods
 function makerFunctionality (res) {
-    $.ajax({
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token,
-        },
-        dataType: "json",
-        success: function (tokenres, status) {
-            $.ajax({
-                url: "/api/getRelationshipsByClientId", //returns maker id, use maker id to get maker name
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
-                },
-                dataType: "json",
-                success: function (relres, status) {
-                    //Create table
-                    $("#userMainContent").html(
-                        "<div id=\"buttonsTop\"></div>\n" +
-                        "<div class='row' id='topRow'>\n" +
-                        "<div id=\"floor\">\n" +
-                        "    <table id=\"makerTable\" class=\"table\">\n" +
-                        "    </table>\n" +
-                        "</div></div>");
-                    $("#makerTable").append('\n' +
-                        '        <thead class="thead">\n' +
-                        '            <th scope="col">Freedom Maker ID</th>\n' +
-                        '            <th scope="col">Freedom Maker</th>\n' +
-                        '            <th scope="col">Email</th>\n' +
-                        '            <th scope="col">Role</th>\n' +
-                        '        </thead><tbody>');
-                    for (var item in relres) {
-                        let occ = relres[item].occupation;
-                        $.ajax({
-                            url: "/api/getMaker",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                id: relres[item].makerId,//tokenres.id,
-                            },
-                            dataType: "json",
-                            success: function (makerres, makerstatus) {
-                                //Populate table
-                                $("#makerTable").append('\n' +
-                                    '<tr class="makerRow">' +
-                                    '   <td>' + `${makerres.id}` + '</td>' +
-                                    '   <td>' + `${makerres.firstName} ${makerres.lastName}` + '</td>' +
-                                    '   <td>' + `${makerres.email}` + '</td>' +
-                                    '   <td>' + occ + '</td></tr>'
-                                );
-                            },
-                            error: function (makerres, makerstatus) {
-                                $("#userMainContent").html("Unable to find Freedom Makers! Please refresh the page. Contact support if the problem persists.");
-                            }
-                        });
-                    }
-                    ;
-                    $("#makerTable").append('\n</tbody>');
-                    //Body Block content
-                    createBody(null);
-                    //Expand Table Button
-                    $("#ExpandButton").click(function () {
-                        expandTable();
-                    });
-                    //Row effect
-                    $(".subscriptionRow").mouseenter(function () {
-                        $(this).css('transition', 'background-color 0.5s ease');
-                        $(this).css('background-color', '#e8ecef');
-                    }).mouseleave(function () {
-                        $(this).css('background-color', 'white');
-                    });
-                },
-                error: function (relres, relstatus) {
-                    $("#userMainContent").html("Unable to find relationships! Please refresh the page. Contact support if the problem persists.");
-                }
-            });
-        },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Your token isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
+
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"makerTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#makerTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '            <th scope="col">Role</th>\n' +
+        '        </thead><tbody>');
+            //Populate table
+            for(var item of res){
+                $("#makerTable").append('\n' +
+                    '<tr class="makerRow">' +
+                    '   <td>' + item.maker.id + '</td>' +
+                    '   <td>' + item.maker.firstName + " " + item.maker.lastName + '</td>' +
+                    '   <td>' + item.maker.email + '</td>' +
+                    '   <td>' + item.occupation + '</td></tr>'
+                );
+            };
+
+    $("#makerTable").append('\n</tbody>');
+    //Body Block content
+    createBody(null);
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+    //Row effect
+    $(".subscriptionRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
     });
 }
 
 //TimeSheet Methods
-function timeSheetFunctionality (res) {
+function timeSheetFunctionality () {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -699,51 +618,34 @@ function timeSheetFunctionality (res) {
 
     $.ajax({
         method: "post",
-        url: TEST_ENVIRONMENT ? '/api/getAllClients' : '/api/getClientByToken',
+        url: '/api/getMyTimeSheetsClient',
         data: {
-            auth: id_token,
+            auth:  id_token,
             token: id_token
         },
-        success: function (tokenres, status) {
-            $.ajax({
-                url: '/api/getMakersForClient',
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: TEST_ENVIRONMENT ? TEST_CUSTOMER : tokenres.id
-                },
-                dataType: "json",
-                success: function (innerRes, innerStatus) {
+        success: function (tokenres, tokenstatus) {
+            tokenres.forEach(item => {
+                $("#sheetsTable").append('\n' +
+                    '<tr class="sheetsRow">' +
+                    '   <td>' + item.id + '</td>' +
+                    '   <td>' + item.makerId + '</td>'+
+                    '   <td>' + item.makerName + '</td>'+
+                    '   <td>' + item.hourlyRate + '</td>'+
+                    '   <td>' + item.timeIn + '</td>'+
+                    '   <td>' + item.timeOut + '</td>' +
+                    '   <td>' + item.task + '</td>'
+                );
+            })
 
-                    let makerMap = {};
-                    for (var i = 0; i < innerRes.length; ++i) {
-                        let maker = innerRes[i];
-                        makerMap[maker.id] = maker;
-                    }
-                    for (var item in res) {
-                        $("#sheetsTable").append('\n' +
-                            '<tr class="sheetRow">' +
-                            '   <td scope="row">' + res[item].id + '</td>' +
-                            '   <td>' + makerMap[res[item].makerId].id + '</td>' +
-                            '   <td>' + makerMap[res[item].makerId].firstName + " " + makerMap[res[item].makerId].lastName + '</td>' +
-                            '   <td>' + res[item].hourlyRate + '</td>' +
-                            '   <td>' + res[item].timeIn + '</td>' +
-                            '   <td>' + res[item].timeOut + '</td>' +
-                            '   <td>' + res[item].task + '</td></tr>'
-                        );
-                    }
-
-                    //remove loading message/gif
-                    $("#buttonsTop").children()[0].remove();
-                    $("#buttonsTop").children()[0].remove();
-                },
-                error: function (innerRes, innerStatus) {
-                    $("#userMainContent").html("Unable to get Freedom Makers! Please refresh the page. Contact support if the problem persists.");
-                }
-            });// ajax
+            //remove loading message/gif
+            $("#buttonsTop").children()[0].remove();
+            $("#buttonsTop").children()[0].remove();
+            $(".spinner-border").remove();
         },
-        error: function (res, status) {
-            $("#userMainContent").html("Failed to verify you! Please refresh the page. Contact support if the problem persists.");
+        error: function (tokenres, tokenstatus) {
+            console.log(tokenres);
+            console.log(tokenstatus);
+            $("#userMainContent").html("TimeSheet: Failed to verify you! Please refresh the page. Contact support if the problem persists.");
         }
     });
 

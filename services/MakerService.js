@@ -116,7 +116,7 @@ class MakerService {
      */
     async getRelationshipsForMaker(makerId){
         console.log(`Checking for relationships related to ${makerId}...`);
-        let relationshipList = await request({
+        let result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
             form: {
@@ -126,7 +126,37 @@ class MakerService {
             console.log(err);
             emailService.emailAdmin(err);
         });
-        return JSON.parse(relationshipList.body);
+
+        let relationshipList = JSON.parse(result.body);
+
+        let clients = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllClients`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+        clients = JSON.parse(clients.body);
+        let clientMap = {};
+
+        for (var entry of clients){
+            clientMap[entry.customer.id] = entry.customer;
+        }
+        for (var relationship of relationshipList){
+            let clientName;
+            if (clientMap[relationship.clientId]){
+                clientName = `${clientMap[relationship.clientId].first_name} ${clientMap[relationship.clientId].last_name}`;
+            }
+            else{
+                clientName = "Deleted Client";
+            }
+            relationship.clientName = clientName;
+        }
+
+        return relationshipList;
     }
 
     /**
@@ -175,20 +205,32 @@ class MakerService {
         });
 
         let sheets = JSON.parse(result.body);
+
+        console.log(`Getting client list for maker ${id}...`);
+        result = await request({
+            method: 'POST',
+            uri: `https://www.freedom-makers-hours.com/api/getAllClients`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.emailAdmin(err);
+        });
+
+        let clients = JSON.parse(result.body);
+        let clientMap = {};
+
+        for (var entry of clients){
+            clientMap[entry.customer.id] = entry.customer;
+        }
         for (var sheet of sheets){
-            let res =  await request({
-                method: 'POST',
-                uri: `https://www.freedom-makers-hours.com/api/getClient`,
-                form: {
-                    'auth':process.env.TWINBEE_MASTER_AUTH,
-                    'id':sheet.clientId
-                }
-            }).catch(err => {
-                console.log(err);
-                emailService.emailAdmin(err);
-            });
-            let client = JSON.parse(res.body);
-            sheet.clientName = client.first_name + " " + client.last_name;
+            if (!clientMap[sheet.clientId]){
+                sheet.clientName = "Deleted Client";
+            }
+            else {
+                sheet.clientName = `${clientMap[sheet.clientId].first_name} ${clientMap[sheet.clientId].last_name}`;
+            }
         }
         return sheets;
     }
@@ -243,7 +285,7 @@ class MakerService {
         if (body.makerId !== makerId){
             return false;
         }
-
+        let occupation = body.occupation;
         result = await request({
             method: 'POST',
             uri: `https://www.freedom-makers-hours.com/api/getTimeBucket`,
@@ -257,6 +299,7 @@ class MakerService {
             emailService.emailAdmin(err);
         });
         body = JSON.parse(result.body);
+        body.occupation = occupation;
         return body;
     }
 
@@ -278,10 +321,12 @@ class MakerService {
             console.log(err);
             emailService.emailAdmin(err);
         });
+
         let clients = JSON.parse(result.body);
+
         result = await request({
             method: 'POST',
-            uri: `https://www.freedom-makers-hours.com/api/getAllTimeSheets`,
+            uri: `https://www.freedom-makers-hours.com/api/getAllRelationships`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -289,23 +334,19 @@ class MakerService {
             console.log(err);
             emailService.emailAdmin(err);
         });
-        let sheets = JSON.parse(result.body);
+        let relationships = JSON.parse(result.body);
         let clientMap = {};
         let alreadyOnList = {};
         let makersClients = [];
 
         for (var i = 0; i < clients.length; ++i){
-            clientMap[clients[i].customer.id] = {
-                isPresent : true,
-                object : clients[i].customer
-            }
+            clientMap[clients[i].customer.id] = clients[i].customer;
         }
 
-        for (var i = 0; i < sheets.length; ++i){
-            let clientOnSheet = sheets[i].clientId;
-            if (clientMap[clientOnSheet] && clientMap[clientOnSheet].isPresent
-                && !alreadyOnList[clientOnSheet] && sheets[i].makerId == id){
-                let client = clientMap[clientOnSheet].object;
+        for (var i = 0; i < relationships.length; ++i){
+            let clientOnSheet = relationships[i].clientId;
+            if (clientMap[clientOnSheet] && !alreadyOnList[clientOnSheet] && relationships[i].makerId == id){
+                let client = clientMap[clientOnSheet];
                 let censoredClient = {};
                 censoredClient.first_name = client.first_name;
                 censoredClient.last_name = client.last_name;

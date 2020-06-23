@@ -48,8 +48,8 @@ module.exports ={
     getMyRelationshipBucket: async (req, res) => {
         console.log(`Attempting to get time bucket for relationship ${req.body.relationshipId} from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let id = makerService.getMakerIdByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let id = await makerService.getMakerIdByEmail(email);
         res.send(await makerService.getMyRelationshipBucket(id, req.body.relationshipId));
     },
 
@@ -58,7 +58,8 @@ module.exports ={
      * Retrieves all relationships for the requester
      * Looks for values in the body in the form:
      * {
-     *     "token": requester's token
+     *     "token": requester's token,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res
@@ -67,8 +68,8 @@ module.exports ={
     getAllMyRelationships: async (req, res) =>{
       console.log(`Attempting to get all relationships for maker with token...\n${req.body.token}\n... from REST`);
       console.log(req.body);
-      let email = authService.getEmailFromToken(req.body.token);
-      let id = makerService.getMakerIdByEmail(email);
+      let email = await authService.getEmailFromToken(req.body.token);
+      let id = await  makerService.getMakerIdByEmail(email);
           res.send(await makerService.getRelationshipsForMaker(id));
     },
 
@@ -87,8 +88,8 @@ module.exports ={
         console.log(`Attempting to get "my" relationship for maker` +
             ` with token...\n${req.body.token}\n...with relationship id ${req.body.relationshipId} from REST`);
         console.log(req.body);
-        let email = authService.getEmailFromToken(req.body.token);
-        let id = makerService.getMakerIdByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let id = await makerService.getMakerIdByEmail(email);
         res.send(await makerService.getMyRelationship(id, req.body.relationshipId));
     },
 
@@ -200,11 +201,36 @@ module.exports ={
     },
 
 
+
+    /**
+     * ENDPOINT: /api/getMyClients
+     * Retrieves clients for the requesting maker.
+     * Looks for values in the body in the form:
+     * {
+     *     "token":requester's token,
+     *     "auth": valid authentication
+     * }
+     * and returns data in the form:
+     *  [
+     *      customer object,
+     *      customer object,...
+     *  ]
+     * @returns {Promise<maker>}
+     */
+    getMyClients: async (req, res) =>{
+        console.log("Getting client list for maker from REST");
+        console.log(req.body);
+        let email = await authService.getEmailFromToken(req.body.token);
+        let makerId = await makerService.getMakerIdByEmail(email);
+        res.send(await makerService.getClientListForMakerId(makerId));
+    },
+
     /**
      * Retrieves timesheets for the requesting maker. Looks for data in the body in the
      * form:
      * {
-     *     "token": requester's google token
+     *     "token": requester's google token,
+     *     "auth": valid authentication
      * }
      * @param req
      * @param res

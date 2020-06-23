@@ -2,7 +2,7 @@ const {query} = require('./repoMaster');
 const request = require('request');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
-    api_key : process.env.CHARGEBEE_TEST_API});
+    api_key : process.env.CHARGEBEE_API_KEY});
 const emailService = require('../services/emailService.js');
 
 class ClientRepository {

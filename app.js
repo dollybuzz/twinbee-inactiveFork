@@ -16,10 +16,11 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
-const makerService = require('./services/MakerService.js')
+const makerService = require('./services/MakerService.js');
 const es = require('./services/emailService.js');
-const mr = require('./repositories/makerRepo.js')
+const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
+const chargebeeservice = require('./services/chargebeeService.js')
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : "freedom-makers-test",
@@ -170,6 +171,7 @@ app.post("/api/getAllSubscriptions",
     chargebeeRestController.getAllSubscriptions);
 app.post("/api/createSubscription",
     authController.authorizeAdmin,
+    authController.authorizeAdmin,
     authController.authorizeMaster,
     chargebeeRestController.createSubscription);
 app.post("/api/updateSubscription",
@@ -236,11 +238,11 @@ app.post("/api/getAllTimeBuckets",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     clientRestController.getAllTimeBuckets);
-app.post("/api/getTimeBucketByClientId",
+app.post("/api/getTimeBucketsByClientId",
     authController.authorizeAdmin,
     authController.authorizeClient,
     authController.authorizeMaster,
-    clientRestController.getTimeBucketByClientId);
+    clientRestController.getTimeBucketsByClientId);
 app.post("/api/getAllRelationships",
     authController.authorizeAdmin,
     authController.authorizeMaster,
@@ -313,6 +315,10 @@ app.post("/api/getMyRelationship",
 app.post("/api/getAllMyRelationshipsMaker",
     authController.authorizeMaker,
     makerRestController.getAllMyRelationships);
+app.post("/api/getMyClients",
+    authController.authorizeMaker,
+    makerRestController.getMyClients);
+
 app.post("/api/getAllMyRelationshipsClient",
     authController.authorizeClient,
     clientRestController.getAllMyRelationships);
@@ -346,12 +352,18 @@ app.post("/api/getMyTimeBucket",
 app.post("/api/updateMySubscription",
     authController.authorizeClient,
     clientRestController.updateMySubscription);
+app.post("/api/getMyMakers",
+    authController.authorizeClient,
+    clientRestController.getMyMakers);
+app.post("/api/getAllMyTimeBuckets",
+    authController.authorizeClient,
+    clientRestController.getAllMyTimeBuckets);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
- //   console.log(await makerService.getMakerById(5))
+    //console.log((await chargebeeservice.getAllSubscriptions()).length);
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

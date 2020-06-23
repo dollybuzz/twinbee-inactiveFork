@@ -2325,7 +2325,7 @@ function relationshipAddForm() {
 
                                     $("#addClientRel").on('click', function () {
                                             $.ajax({
-                                                url: "/api/getTimeBucketByClientId",
+                                                url: "/api/getTimeBucketsByClientId",
                                                 method: "post",
                                                 data: {
                                                     auth: id_token,
