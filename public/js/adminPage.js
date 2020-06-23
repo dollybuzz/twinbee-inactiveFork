@@ -2309,19 +2309,79 @@ function relationshipAddForm() {
                         "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
-                    //Populate select a client in add form
+
                     for (var i = 0; i < clientres.length; ++i) {
                         $('#addClientRel').append(
                             `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
                         );
                         if(i = clientres.length-1)
                         {
-                           populateAddRelClient();
+                            $.ajax({
+                                url: "/api/getTimeBucketsByClientId",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                    id: $("#addClientRel").val()
+                                },
+                                dataType: "json",
+                                success: function (bucketres, bucketstatus) {
+                                    $("#addPlanRel").html("");
+
+                                    for (var item of makerres) {
+                                        if (!item.deleted) {
+                                            $('#addMakerRel').append(
+                                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                            );
+                                        }
+                                    }
+
+                                    for (var item in bucketres.buckets) {
+                                        $('#addPlanRel').append(
+                                            `<option id="${item}" value="${item}">${item}</option>`
+                                        );
+
+                                    }
+
+                                },
+                                error: function (bucketres, bucketstatus) {
+                                    $("#userMainContent").html("Subscriptions isn't working!");
+                                }
+                            });
+                        }
                     }
 
-                    //event listener for drop downs
                     $("#addClientRel").on('change', function () {
-                        populateAddRelClient();
+                        $.ajax({
+                            url: "/api/getTimeBucketsByClientId",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: $("#addClientRel").val()
+                            },
+                            dataType: "json",
+                            success: function (bucketres, bucketstatus) {
+                                $("#addPlanRel").html("");
+
+                                for (var item of makerres) {
+                                    if (!item.deleted) {
+                                        $('#addMakerRel').append(
+                                            `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                        );
+                                    }
+                                }
+
+                                for (var item in bucketres.buckets) {
+                                    $('#addPlanRel').append(
+                                        `<option id="${item}" value="${item}">${item}</option>`
+                                    );
+
+                                }
+
+                            },
+                            error: function (bucketres, bucketstatus) {
+                                $("#userMainContent").html("Subscriptions isn't working!");
+                            }
+                        });
                     })
 
 
@@ -2355,40 +2415,6 @@ function relationshipAddForm() {
         },
         error: function (clientres, clientstatus) {
             $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
-}
-
-function populateAddRelClient() {
-    $.ajax({
-        url: "/api/getTimeBucketsByClientId",
-        method: "post",
-        data: {
-            auth: id_token,
-            id: $("#addClientRel").val()
-        },
-        dataType: "json",
-        success: function (bucketres, bucketstatus) {
-            $("#addPlanRel").html("");
-
-            for (var item of makerres) {
-                if (!item.deleted) {
-                    $('#addMakerRel').append(
-                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
-                    );
-                }
-            }
-
-            for (var item in bucketres.buckets) {
-                $('#addPlanRel').append(
-                    `<option id="${item}" value="${item}">${item}</option>`
-                );
-
-            }
-
-        },
-        error: function (bucketres, bucketstatus) {
-            $("#userMainContent").html("Subscriptions isn't working!");
         }
     });
 }
