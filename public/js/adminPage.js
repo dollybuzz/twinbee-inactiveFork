@@ -2326,6 +2326,7 @@ function relationshipAddForm() {
                                 dataType: "json",
                                 success: function (bucketres, bucketstatus) {
                                     $("#addPlanRel").html("");
+                                    $("#addMakerRel").html("");
 
                                     for (var item of makerres) {
                                         if (!item.deleted) {
