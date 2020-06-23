@@ -2312,7 +2312,7 @@ function relationshipAddForm() {
 
                     for (var i = 0; i < clientres.length; ++i) {
                         $('#addClientRel').append(
-                            `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
+                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         );
                         if(i == clientres.length-1)
                         {
