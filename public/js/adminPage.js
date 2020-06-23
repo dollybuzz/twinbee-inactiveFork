@@ -2314,7 +2314,7 @@ function relationshipAddForm() {
                         $('#addClientRel').append(
                             `<option id="${item.customer.id}" value="${item.customer.id}">${item.customer.first_name} ${item.customer.last_name} - ${item.customer.id}</option>`
                         );
-                        if(i = clientres.length-1)
+                        if(i == clientres.length-1)
                         {
                             $.ajax({
                                 url: "/api/getTimeBucketsByClientId",
