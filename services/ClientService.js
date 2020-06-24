@@ -265,7 +265,7 @@ class ClientService {
         let clientSheets = [];
         let response = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByClientId`,
+            uri: `/api/getTimeSheetsByClientId`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id':id
@@ -280,7 +280,7 @@ class ClientService {
 
         let makerResponse =  await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
+            uri: `/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
@@ -340,7 +340,7 @@ class ClientService {
             if (entry.customer.id === clientId) {
                 await request({
                     method: 'POST',
-                    uri: `${process.env.TWINBEE_URL}/api/cancelSubscription`,
+                    uri: `/api/cancelSubscription`,
                     form: {
                         'auth': process.env.TWINBEE_MASTER_AUTH,
                         'subscriptionId': entry.subscription.id
@@ -362,7 +362,7 @@ class ClientService {
         console.log(`Getting all subscriptions for ${clientId}`);
         let result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllSubscriptions`,
+            uri: `/api/getAllSubscriptions`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
@@ -394,7 +394,7 @@ class ClientService {
         console.log(`Getting subscription ${subscriptionId} for client ${clientId}`);
         let result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/retrieveSubscription`,
+            uri: `/api/retrieveSubscription`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 "subscriptionId": subscriptionId
@@ -424,7 +424,7 @@ class ClientService {
     async getMySubscriptionChanges(clientId, subscriptionId){
         let result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/retrieveSubscriptionChanges`,
+            uri: `/api/retrieveSubscriptionChanges`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'subscriptionId': subscriptionId
@@ -449,7 +449,7 @@ class ClientService {
         if (this.getMySubscriptionChanges(clientId, subscriptionId)){
             let result = await request({
                 method: 'POST',
-                uri: `${process.env.TWINBEE_URL}/api/undoSubscriptionChanges`,
+                uri: `/api/undoSubscriptionChanges`,
                 form: {
                     'auth': process.env.TWINBEE_MASTER_AUTH,
                     'subscriptionId': subscriptionId
@@ -475,7 +475,7 @@ class ClientService {
         console.log(`Checking for relationships related to ${clientId}...`);
         let relationshipList = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
+            uri: `/api/getAllRelationships`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
@@ -507,7 +507,7 @@ class ClientService {
                 console.log("Relationship found.");
                 request({
                     method: 'POST',
-                    uri: `${process.env.TWINBEE_URL}/api/deleteRelationship`,
+                    uri: `/api/deleteRelationship`,
                     form: {
                         'auth': process.env.TWINBEE_MASTER_AUTH,
                         'id': relationship.id
@@ -528,7 +528,7 @@ class ClientService {
         console.log(`Getting makers for client ${id}...`);
         let response = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
+            uri: `/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
@@ -541,7 +541,7 @@ class ClientService {
 
         let result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
+            uri: `/api/getAllRelationships`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -655,7 +655,7 @@ class ClientService {
         console.log(`Attempting to charge ${customerId} for ${numHours} ${planId} hours...`);
         let result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/creditNow`,
+            uri: `/api/creditNow`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'planId':planId,
@@ -688,7 +688,7 @@ class ClientService {
         let relationships = await this.getRelationshipsForClient(clientId);
         let result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
+            uri: `/api/getAllMakers`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }

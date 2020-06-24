@@ -211,7 +211,7 @@ class ChargebeeService {
                         `plan ${subscription.plan_id} and initial quantity ${subscription.plan_quantity}`);
                     let response = request({
                         method: 'POST',
-                        uri: `${process.env.TWINBEE_URL}/api/updateClientTimeBucket`,
+                        uri: `/api/updateClientTimeBucket`,
                         form: {
                             'id': result.customer.id,
                             'planId': planId,
@@ -547,7 +547,7 @@ class ChargebeeService {
                 console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
                     method: 'POST',
-                    uri: `${process.env.TWINBEE_URL}/api/updateClientTimeBucket`,
+                    uri: `/api/updateClientTimeBucket`,
                     form: {
                         'id': customerId,
                         'planId': plan,

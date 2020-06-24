@@ -15,7 +15,7 @@ class TimeClockService {
     async getOnlineSheets(makerId){
         let result = await request({
         method: 'POST',
-        uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByMakerId`,
+        uri: `/api/getTimeSheetsByMakerId`,
         form: {
             'auth':process.env.TWINBEE_MASTER_AUTH,
             'id':makerId.toString()
@@ -54,7 +54,7 @@ class TimeClockService {
     async clockIn(makerId, hourlyRate, clientId, task){
         let result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByMakerId`,
+            uri: `/api/getTimeSheetsByMakerId`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'id':makerId.toString()
@@ -74,7 +74,7 @@ class TimeClockService {
         let rightNow = await this.getCurrentMoment();
         result = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/createTimeSheet`,
+            uri: `/api/createTimeSheet`,
             form: {
                 'makerId': makerId,
                 'hourlyRate': hourlyRate,
@@ -114,7 +114,7 @@ class TimeClockService {
             });
             request({
                 method: 'POST',
-                uri: `${process.env.TWINBEE_URL}/api/updateTimeSheet`,
+                uri: `/api/updateTimeSheet`,
                 form: {
                     id: currentSheet.id,
                     hourlyRate: currentSheet.hourlyRate,
@@ -133,7 +133,7 @@ class TimeClockService {
             });
             request({
                 method: 'POST',
-                uri: `${process.env.TWINBEE_URL}/api/updateClientTimeBucket`,
+                uri: `/api/updateClientTimeBucket`,
                 form: {
                     id: currentSheet.clientId,
                     planId: currentSheet.hourlyRate,
