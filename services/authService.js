@@ -21,7 +21,7 @@ class AuthService {
         });
         let response = await request({
             method: 'POST',
-            uri: `/api/getAllMakers`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
@@ -50,7 +50,7 @@ class AuthService {
         });
         let response = await request({
             method: 'POST',
-            uri: `/api/getAllClients`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }

@@ -118,7 +118,7 @@ class MakerService {
         console.log(`Checking for relationships related to ${makerId}...`);
         let result = await request({
             method: 'POST',
-            uri: `/api/getAllRelationships`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
@@ -137,7 +137,7 @@ class MakerService {
         relationshipList = newRelationshipList;
         let clients = await request({
             method: 'POST',
-            uri: `/api/getAllClients`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -181,7 +181,7 @@ class MakerService {
                 console.log("Relationship found.");
                 request({
                     method: 'POST',
-                    uri: `/api/deleteRelationship`,
+                    uri: `${process.env.TWINBEE_URL}/api/deleteRelationship`,
                     form: {
                         'auth': process.env.TWINBEE_MASTER_AUTH,
                         'id': relationship.id
@@ -200,7 +200,7 @@ class MakerService {
         console.log(`Getting sheets for maker ${id}...`);
         let result =  await request({
             method: 'POST',
-            uri: `/api/getTimeSheetsByMakerId`,
+            uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByMakerId`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'id':id
@@ -215,7 +215,7 @@ class MakerService {
         console.log(`Getting client list for maker ${id}...`);
         result = await request({
             method: 'POST',
-            uri: `/api/getAllClients`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -244,7 +244,7 @@ class MakerService {
     async getMyRelationship(makerId, relationshipId){
         let result = await request({
             method: 'POST',
-            uri: `/api/getRelationshipById`,
+            uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'id': relationshipId
@@ -260,7 +260,7 @@ class MakerService {
 
         result = await request({
             method: 'POST',
-            uri: `/api/getClientName`,
+            uri: `${process.env.TWINBEE_URL}/api/getClientName`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'relationshipObj': relationship
@@ -278,7 +278,7 @@ class MakerService {
 
         let result = await request({
             method: 'POST',
-            uri: `/api/getRelationshipById`,
+            uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'id': relationshipId
@@ -294,7 +294,7 @@ class MakerService {
         let occupation = body.occupation;
         result = await request({
             method: 'POST',
-            uri: `/api/getTimeBucket`,
+            uri: `${process.env.TWINBEE_URL}/api/getTimeBucket`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
                 'id':body.clientId,
@@ -319,7 +319,7 @@ class MakerService {
         console.log(`Getting client list for maker ${id}...`);
         let result = await request({
             method: 'POST',
-            uri: `/api/getAllClients`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
@@ -332,7 +332,7 @@ class MakerService {
 
         result = await request({
             method: 'POST',
-            uri: `/api/getAllRelationships`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH
             }
