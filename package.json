@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "google-auth-library": "^6.0.0",
     "googleapis": "^39.2.0",
+    "heroku-ssl-redirect": "0.0.4",
     "mocha": "^7.1.2",
     "moment": "^2.24.0",
     "mysql": "^2.18.1",

@@ -3,6 +3,7 @@ Authors: Dalia Faria, Greg Brown
 
  */
 const express = require("express");
+const sslRedirect = require('heroku-ssl-redirect');
 const landingPageController = require('./controllers/landingPageController.js');
 const adminPageController = require('./controllers/adminPageController.js');
 const clientPageController = require('./controllers/clientPageController.js');
@@ -31,6 +32,7 @@ app.set('ip',  process.env.IP || "0.0.0.0");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(sslRedirect());
 
 //page routes (including to-be-removed dev routes)
 app.get("/googlee47aeec58d0a4570.html", (req, res) => {res.render("googlee47aeec58d0a4570");});
