@@ -30,6 +30,7 @@ class AuthService {
             emailService.emailAdmin(err);
         });
 
+        console.log(response)
         let body = response.body;
         let makers = JSON.parse(body);
 
