@@ -14,7 +14,7 @@ class AuthService {
     }
 
     async accessorIsMaker(creds) {
-        Console.log("Let's see if you are a Freedom Maker...");
+        console.log("Let's see if you are a Freedom Maker...");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
