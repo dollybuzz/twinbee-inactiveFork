@@ -672,7 +672,6 @@ class ClientService {
     async subscriptionRenewed(parsedBody) {
         if (parsedBody.event_type === "subscription_renewed") {
             console.log("Subscription renewal request received");
-            console.log(this.webHookBucketUpdate);
             return await new ClientService().webHookBucketUpdate(parsedBody);
         }
     }
