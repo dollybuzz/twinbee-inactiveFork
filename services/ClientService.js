@@ -641,7 +641,7 @@ class ClientService {
         let customerId = subscription.customer_id;
         let minutes = subscription.plan_quantity * 60;
         let planId = subscription.plan_id;
-        if (await eventRepo.createEvent(parsedBody.id)) {
+        if (await eventRepo.createEvent(parsedBody.id).catch(error => {return error})) {
             console.log("New event, updating minutes");
             return await this.updateClientRemainingMinutes(customerId, planId, minutes);
         } else {
