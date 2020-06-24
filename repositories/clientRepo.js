@@ -123,16 +123,11 @@ class ClientRepository {
                     console.log(error);
                     reject(error);
                 } else {
-                    if (result.list[0]) {
                         var entry = result.list[0];
                         var customer = entry.customer || null;
                         console.log("Customer retrieved by email successfully");
                         resolve(customer);
-                    }
-                    else{
-                        console.log(`Something went wrong grabbing that client. Here's what we have for th list: ${result.list}`);
-                    reject("Not found.")
-                    }
+
                 }
             });
         })
