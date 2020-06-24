@@ -23,7 +23,7 @@ const cs = require('./services/ClientService.js');
 const chargebeeservice = require('./services/chargebeeService.js')
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
-chargebee.configure({site : "freedom-makers-test",
+chargebee.configure({site : process.env.CHARGEBEE_SITE,
     api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"});
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
