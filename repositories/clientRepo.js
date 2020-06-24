@@ -113,6 +113,7 @@ class ClientRepository {
     }
 
     getClientByEmail(email) {
+
         return new Promise((resolve, reject)=> {
             chargebee.customer.list({
                 "email[is]": email
