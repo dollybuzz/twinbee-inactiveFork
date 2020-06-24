@@ -21,7 +21,7 @@ const makerService = require('./services/MakerService.js');
 const es = require('./services/emailService.js');
 const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
-const chargebeeservice = require('./services/chargebeeService.js')
+const chargebeeservice = require('./services/chargebeeService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
