@@ -24,7 +24,7 @@ const chargebeeservice = require('./services/chargebeeService.js')
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
-    api_key : "test_uRyjE5xojHVh9DYAI0pjJbv2TS3LPYfV"});
+    api_key : process.env.CHARGEBEE_API_KEY});
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
 app.set('ip',  process.env.IP || "0.0.0.0");
@@ -363,21 +363,6 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
-    let listObject = await chargebee.customer.list({
-        "limit": "100"
-    }).request().catch(error => {
-        console.log(error)
-    });
-    let list = listObject.list;
-    while (listObject.next_offset) {
-        listObject = await chargebee.customer.list({
-            limit: 100,
-            offset: listObject.next_offset
-        }).request().catch(error => console.log(error));
-        for (var item of listObject.list) {
-            list.push(item);
-        }
-    }
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
