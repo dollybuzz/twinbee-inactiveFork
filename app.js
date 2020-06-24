@@ -37,10 +37,6 @@ app.get("/googlee47aeec58d0a4570.html", (req, res) => {res.render("googlee47aeec
 app.get("/", landingPageController.renderLanding);
 app.get("/home", landingPageController.renderLanding);
 app.get("/landing", landingPageController.renderLanding);
-app.get("/admin", adminPageController.renderLanding);
-app.get("/administrator", adminPageController.renderLanding);
-app.get("/client", clientPageController.renderLanding);
-app.get("/freedom-maker", makerPageController.renderLanding);
 app.get("/forbidden", landingPageController.renderForbidden);
 
 //api routes
