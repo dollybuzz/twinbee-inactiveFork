@@ -363,7 +363,21 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
-    console.log(process.env.CHARGEBEE_SITE)
+    let listObject = await chargebee.customer.list({
+        "limit": "100"
+    }).request().catch(error => {
+        console.log(error)
+    });
+    let list = listObject.list;
+    while (listObject.next_offset) {
+        listObject = await chargebee.customer.list({
+            limit: 100,
+            offset: listObject.next_offset
+        }).request().catch(error => console.log(error));
+        for (var item of listObject.list) {
+            list.push(item);
+        }
+    }
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
