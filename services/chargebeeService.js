@@ -209,6 +209,20 @@ class ChargebeeService {
                     resolve(subscription);
                     console.log(`Subscription created for customer ${result.customer.id} with` +
                         `plan ${subscription.plan_id} and initial quantity ${subscription.plan_quantity}`);
+                    let response = request({
+                        method: 'POST',
+                        uri: `https://www.freedom-makers-hours.com/api/updateClientTimeBucket`,
+                        form: {
+                            'id': result.customer.id,
+                            'planId': planId,
+                            'minutes': subscription.plan_quantity * 60,
+                            'auth':process.env.TWINBEE_MASTER_AUTH
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        emailService.emailAdmin(error);
+                    });
+                    console.log("Update time bucket due to purchase request sent")
                 }
             });
         })
