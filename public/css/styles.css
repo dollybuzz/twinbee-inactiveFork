@@ -373,6 +373,7 @@ th {
 
 #optionsClient {
     display: inline-block;
+    padding-left: 5pt;
     width: auto;
     height: auto;
     opacity: 0;
