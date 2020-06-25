@@ -1755,6 +1755,7 @@ function addSheetSuccess (res, status) {
         "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
     $("#ManageAvailCreditButton").on('click', function () {
+        selectedTab = $("#manageCredit");
         navMapper["manageCredit"]();
     });
 }
@@ -1765,6 +1766,7 @@ function clearSheetSuccess (res, status) {
         "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
     $("#ManageAvailCreditButton").on('click', function () {
+        selectedTab = $("#manageCredit");
         navMapper["manageCredit"]();
     });
 }
