@@ -400,7 +400,6 @@ th {
 
 #deletePrompt {
     text-align: center;
-    padding-top: 140px;
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
 }
