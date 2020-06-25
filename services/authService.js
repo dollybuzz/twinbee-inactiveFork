@@ -14,21 +14,23 @@ class AuthService {
     }
 
     async accessorIsMaker(creds) {
+        console.log("Let's see if you are a Freedom Maker...");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             emailService.emailAdmin(err);
         });
         let response = await request({
             method: 'POST',
-            uri: `https://www.freedom-makers-hours.com/api/getAllMakers`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
             emailService.emailAdmin(err);
         });
 
+        console.log(response)
         let body = response.body;
         let makers = JSON.parse(body);
 
@@ -37,6 +39,7 @@ class AuthService {
                 return true
             }
         }
+        console.log("Not a Freedom Maker");
          return false;
     }
 
@@ -47,7 +50,7 @@ class AuthService {
         });
         let response = await request({
             method: 'POST',
-            uri: `https://www.freedom-makers-hours.com/api/getAllClients`,
+            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }

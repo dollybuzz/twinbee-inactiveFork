@@ -329,7 +329,7 @@ function buyForm (rowData) {
                                     },
                                     dataType: "json",
                                     success: function (res, status) {
-                                        $("#optionsClient").append("<br><h5>Successfully purchased " + message + " for Plan " + planSelect + "!</h5>" +
+                                        $("#optionsClient").html("<br><h5>Successfully purchased " + message + " for Plan " + planSelect + "!</h5>" +
                                             "<br><h6>Note: Due to processing, delays may occur. Please contact Freedom Makers<br>if your purchase does not reflect " +
                                             "in your account after 5 minutes.</h6>");
                                     },
@@ -482,7 +482,7 @@ function subscriptionModForm (res, status) {
                     },
                     dataType: "json",
                     success: function (updateres, status) {
-                        $("#optionsClient").append("<br><h5>Successfully updated monthly hours for Subscription " + `${updateres.id}` + "!</h5>");
+                        $("#optionsClient").html("<br><h5>Successfully updated monthly hours for Subscription " + `${updateres.id}` + "!</h5>");
                         setTimeout(function () {
                             showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                         }, 1000);

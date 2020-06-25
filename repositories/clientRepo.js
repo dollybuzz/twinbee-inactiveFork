@@ -123,13 +123,11 @@ class ClientRepository {
                     console.log(error);
                     reject(error);
                 } else {
-                    if (entry) {
                         var entry = result.list[0];
                         var customer = entry.customer || null;
                         console.log("Customer retrieved by email successfully");
                         resolve(customer);
-                    }
-                    reject("Not found.")
+
                 }
             });
         })

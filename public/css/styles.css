@@ -373,6 +373,7 @@ th {
 
 #optionsClient {
     display: inline-block;
+    padding-left: 5pt;
     width: auto;
     height: auto;
     opacity: 0;
@@ -400,7 +401,6 @@ th {
 
 #deletePrompt {
     text-align: center;
-    padding-top: 140px;
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
 }

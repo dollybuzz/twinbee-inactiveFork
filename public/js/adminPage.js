@@ -1120,8 +1120,7 @@ function modSubscriptionSuccess (res, status) {
 
 function addSubscriptionSuccess (res, status) {
     $("#optionsClient").append("<div id='addsuccess'></div>");
-    $("#addsuccess").html("");
-    $("#addsuccess").html(`<br><h5>Successfully added Subscription ${res.id}!</h5>`);
+    $("#addsuccess").html('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
     $.ajax({
         url: '/api/getAllClients',
         method: "post",
@@ -1138,6 +1137,7 @@ function addSubscriptionSuccess (res, status) {
                 }
             }
             let customer = clientMap[res.customer_id];
+            $("#addsuccess").html(`<br><h5>Successfully added Subscription ${res.id}!</h5>`);
 
             setTimeout(function() {
                 showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
@@ -1755,6 +1755,7 @@ function addSheetSuccess (res, status) {
         "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
     $("#ManageAvailCreditButton").on('click', function () {
+        selectedTab = $("#manageCredit");
         navMapper["manageCredit"]();
     });
 }
@@ -1765,6 +1766,7 @@ function clearSheetSuccess (res, status) {
         "<br>Note: The table will reflect your changes once the request has completed.</p>");
 
     $("#ManageAvailCreditButton").on('click', function () {
+        selectedTab = $("#manageCredit");
         navMapper["manageCredit"]();
     });
 }
