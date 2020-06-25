@@ -482,7 +482,7 @@ function subscriptionModForm (res, status) {
                     },
                     dataType: "json",
                     success: function (updateres, status) {
-                        $("#optionsClient").append("<br><h5>Successfully updated monthly hours for Subscription " + `${updateres.id}` + "!</h5>");
+                        $("#optionsClient").html("<br><h5>Successfully updated monthly hours for Subscription " + `${updateres.id}` + "!</h5>");
                         setTimeout(function () {
                             showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                         }, 1000);
