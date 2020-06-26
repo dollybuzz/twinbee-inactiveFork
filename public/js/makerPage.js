@@ -81,6 +81,33 @@ function timeClockFunctionality() {
         "    </div>"
     );
 
+    //Populating drop down selection
+    $.ajax({
+        url: "/api/getAllMyRelationshipsMaker",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        success: function (relres, status) {
+            $("#makerSelectedClient").html("");
+            for(var i = 0; i < relres.length; ++i) {
+                $("#makerSelectedClient").append(
+                    `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
+
+                if (i == relres.length - 1) {
+                    //Getting available credits by client selected
+                    availableCredits();
+                }
+            }
+            $(".spinner-border").remove();
+        },
+        error: function (relres, status) {
+            $("#UserMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+
     //Getting timesheets to manage user navigation away
     $.ajax({
         url: "/api/getMyTimeSheetsMaker",
@@ -123,43 +150,10 @@ function timeClockFunctionality() {
                 }
             }
             if (clockedOut) {
-                console.log("hi");
                 setClockInFunctionality();
             } else {
-                console.log("hello");
                 setClockOutFunctionality();
             }
-
-            //Populating drop down selection
-            $.ajax({
-                url: "/api/getAllMyRelationshipsMaker",
-                method: "post",
-                data: {
-                    auth: id_token,
-                    token: id_token
-                },
-                dataType: "json",
-                success: function (relres, status) {
-                    $("#makerSelectedClient").html("");
-                    for(var i = 0; i < relres.length; ++i) {
-                        $("#makerSelectedClient").append(
-                            `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
-
-                        if (i == relres.length - 1) {
-                            //Getting available credits by client selected
-                            availableCredits();
-
-                        }
-                    }
-
-                    $(".spinner-border").remove();
-                    setClockInFunctionality();
-
-                },
-                error: function (relres, status) {
-                    $("#UserMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
-                }
-            });
         },
         error: function (innerRes, innerStatus) {
             $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
@@ -186,11 +180,12 @@ function setClockInFunctionality() {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
 
         $.ajax({
-            url: "api/getAllMyRelationship",
+            url: "api/getMyRelationship",
             method: "post",
             data: {
                 auth: id_token,
-                id: $("#makerSelectedClient").val(),
+                token: id_token,
+                relationshipId: $("#makerSelectedClient").val()
             },
             dataType: "json",
             success: function (relres, status) {
