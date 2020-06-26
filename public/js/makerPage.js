@@ -81,10 +81,6 @@ function timeClockFunctionality() {
         "    </div>"
     );
 
-
-
-    setClockInFunctionality();
-
     //Getting timesheets to manage user navigation away
     $.ajax({
         url: "/api/getMyTimeSheetsMaker",
@@ -144,7 +140,6 @@ function timeClockFunctionality() {
                 },
                 dataType: "json",
                 success: function (relres, status) {
-                    console.log(relres);
                     $("#makerSelectedClient").html("");
                     for(var i = 0; i < relres.length; ++i) {
                         $("#makerSelectedClient").append(
@@ -156,6 +151,9 @@ function timeClockFunctionality() {
 
                         }
                     }
+
+                    $(".spinner-border").remove();
+                    setClockInFunctionality();
 
                 },
                 error: function (relres, status) {
