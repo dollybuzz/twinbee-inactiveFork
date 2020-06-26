@@ -25,7 +25,7 @@ class TimeSheetService {
         let id = await timeSheetRepo.createSheet(makerId, clientId,
             hourlyRate, timeIn, timeOut, task, detail).catch(err=>{
                 console.log(err);
-                emailService.emailAdmin(err);
+                emailService.notifyAdmin(err);
             });
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, detail);
     }
@@ -87,7 +87,7 @@ class TimeSheetService {
         for (var i = 0; i < sheets.length; ++i){
                 let refinedSheet = await createSheetFromRow(sheets[i]).catch(err=>{
                     console.log(err);
-                    emailService.emailAdmin(err);
+                    emailService.notifyAdmin(err);
                 });
             refinedSheets.push(refinedSheet);
         }
@@ -118,13 +118,13 @@ class TimeSheetService {
     async getSheetsByMaker(id){
         let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let makerSheets = [];
         await sheets.forEach(async row=>{
             let refinedSheet = await createSheetFromRow(row).catch(err=>{
                 console.log(err);
-                emailService.emailAdmin(err);
+                emailService.notifyAdmin(err);
             });
             makerSheets.push(refinedSheet);
         });
@@ -139,13 +139,13 @@ class TimeSheetService {
     async getSheetsByClient(id){
         let sheets = await timeSheetRepo.getSheetsByClient(id).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let clientSheets = [];
         await sheets.forEach(async row=>{
             let refinedSheet = await createSheetFromRow(row).catch(err=>{
                 console.log(err);
-                emailService.emailAdmin(err);
+                emailService.notifyAdmin(err);
             });
             clientSheets.push(refinedSheet);
         });

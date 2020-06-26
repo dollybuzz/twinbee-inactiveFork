@@ -11,7 +11,7 @@ class RelationshipService {
         console.log("Creating a relationship...");
         let id = await relationshipRepo.createRelationship(makerId, clientId, planId, occupation).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         return new Relationship(id, makerId, clientId, planId, occupation);
     }
@@ -21,7 +21,7 @@ class RelationshipService {
         let relationships = [];
         let repoResult = await relationshipRepo.getAllRelationships().catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         repoResult.forEach(item => {
             let newObj = new Relationship(item.id, item.maker_id, item.client_id, item.plan_id, item.occupation);
@@ -34,7 +34,7 @@ class RelationshipService {
         console.log(`Getting relationship data for maker ${makerId}... `);
         let result = await relationshipRepo.getRelationshipsByMakerId(makerId).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let relationships = [];
         result.forEach(item => {
@@ -48,7 +48,7 @@ class RelationshipService {
         console.log(`Getting relationship data for client ${clientId}...`);
         let result = await relationshipRepo.getRelationshipsByClientId(clientId).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let relationships = [];
         result.forEach(item => {
@@ -62,7 +62,7 @@ class RelationshipService {
         console.log(`Getting relationship data for relationship ${id}`);
         let result = await  relationshipRepo.getRelationshipById(id).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         if (result[0]) {
             let relationship = result[0];
@@ -83,7 +83,7 @@ class RelationshipService {
         await relationshipRepo.updateRelationship(relationshipId, planId,
             occupation, makerId).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         return this.getRelationshipById(relationshipId);
     }

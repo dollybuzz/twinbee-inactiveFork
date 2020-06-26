@@ -17,7 +17,7 @@ class AuthService {
         console.log("Let's see if you are a Freedom Maker...");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let response = await request({
             method: 'POST',
@@ -27,7 +27,7 @@ class AuthService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         console.log(response);
@@ -46,7 +46,7 @@ class AuthService {
     async accessorIsClient(creds) {
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let response = await request({
             method: 'POST',
@@ -56,7 +56,7 @@ class AuthService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         let body = response.body;
@@ -75,14 +75,14 @@ class AuthService {
         let adminList = await authRepo.getAdmins().catch(err => {
             console.log(err);
             console.log("Error grabbing admin list");
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
             return false;
         });
         console.log("Who's token is this?");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             console.log("Error grabbing email from token");
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
             return false;
         });
         console.log("Let's see if you're on the list...");
@@ -96,7 +96,7 @@ class AuthService {
                 }
                 else{
                     console.log(err);
-                    emailService.emailAdmin(err);
+                    emailService.notifyAdmin(err);
                 }
                 console.log("Error bcrypt.comapare'ing adminList[i] to the passed email");
                 return false;
@@ -122,7 +122,7 @@ class AuthService {
             audience: clientId
         }).catch(err => {
                 console.log(err);
-                emailService.emailAdmin(err);
+                emailService.notifyAdmin(err);
         });
         const payload = ticket.getPayload();
         console.log(`Email was: ${payload['email']}`);

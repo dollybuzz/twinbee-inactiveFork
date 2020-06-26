@@ -17,7 +17,7 @@ class MakerService {
         let makers = [];
         let repoResult = await makerRepo.getAllMakers().catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         repoResult.forEach(item => {
             let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted);
@@ -40,11 +40,11 @@ class MakerService {
         console.log("Creating new maker...");
         await makerRepo.createMaker(firstName, lastName, email).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let id = await makerRepo.getMakerIdByEmail(email).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         console.log(id);
         emailService.sendWelcome(email);
@@ -62,7 +62,7 @@ class MakerService {
         let onliners = [];
         let retrieved = await makerRepo.getOnlineMakers().catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         retrieved.forEach(item => {
             let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email);
@@ -93,7 +93,7 @@ class MakerService {
         console.log(`Updating maker ${id}...`);
         await makerRepo.updateMaker(id, firstName, lastName, email).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         return this.getMakerById(id);
     }
@@ -124,7 +124,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         let relationshipList = JSON.parse(result.body);
@@ -143,7 +143,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         clients = JSON.parse(clients.body);
         let clientMap = {};
@@ -207,7 +207,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         let sheets = JSON.parse(result.body);
@@ -221,7 +221,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         let clients = JSON.parse(result.body);
@@ -251,7 +251,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let relationship = JSON.parse(result.body);
         if (relationship.makerId !== makerId){
@@ -267,7 +267,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let client = JSON.parse(result.body);
         relationship.clientName = client.name;
@@ -285,7 +285,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let body = JSON.parse(result.body);
         if (body.makerId !== makerId){
@@ -302,7 +302,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         body = JSON.parse(result.body);
         body.occupation = occupation;
@@ -325,7 +325,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         let clients = JSON.parse(result.body);
@@ -338,7 +338,7 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let relationships = JSON.parse(result.body);
         let clientMap = {};
@@ -378,7 +378,7 @@ class MakerService {
         console.log(`Getting maker data for maker ${id}`);
         let result = await  makerRepo.getMakerById(id).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         if (result[0]) {
