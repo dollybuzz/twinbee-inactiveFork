@@ -88,7 +88,10 @@ class AuthService {
         console.log("Let's see if you're on the list...");
         for (var i = 0; i < adminList.length; ++i){
             let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
-                if (err.toString().includes("data and hash must be strings")){
+                if (creds === process.env.TWINBEE_MASTER_AUTH){
+                    console.log("Bcrypt tried to compare the master token to an email which obviously doesn't work.")
+                }
+                else if (err.toString().includes("data and hash must be strings")){
                     console.log(`Bcrypt threw 'data and hash must be strings' with data: ${creds} `)
                 }
                 else{
@@ -114,8 +117,13 @@ class AuthService {
             idToken: token,
             audience: clientId
         }).catch(err => {
-            console.log(err);
-            emailService.emailAdmin(err);
+            if (err.includes("Wrong number of segments")){
+                console.log("Wrong number of segments error. Not a problem if the cred was the master token.")
+            }
+            else{
+                console.log(err);
+                emailService.emailAdmin(err);
+            }
         });
         const payload = ticket.getPayload();
         console.log(`Email was: ${payload['email']}`);
