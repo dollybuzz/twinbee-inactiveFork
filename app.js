@@ -2,6 +2,13 @@
 Authors: Dalia Faria, Greg Brown
 
  */
+
+
+const nodemailer = require('nodemailer');
+const {WebClient} = require('@slack/web-api');
+const slackToken = process.env.SLACK_TOKEN;
+const web = new WebClient("xoxb-1194525138327-1207902583557-7HpmdFzFRlD8DFsTOtSLXMXl");
+
 const express = require("express");
 const sslRedirect = require('heroku-ssl-redirect');
 const landingPageController = require('./controllers/landingPageController.js');
@@ -361,9 +368,6 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
-    console.log("TEST")
-    console.log(process.env.TWINBEE_URL)
-    console.log("TEST")
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
