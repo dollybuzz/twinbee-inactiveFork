@@ -112,6 +112,10 @@ class AuthService {
 
     async getEmailFromToken(token) {
         console.log("getting email from token:");
+        if (token === process.env.TWINBEE_MASTER_AUTH){
+            console.log("Master auth, no email associated.");
+            return;
+        }
         console.log(token);
         const ticket = await client.verifyIdToken({
             idToken: token,
