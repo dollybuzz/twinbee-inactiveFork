@@ -2,7 +2,7 @@ const makerRepo = require('../repositories/makerRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 const Maker = require('../domain/entity/maker.js');
-const emailService = require('./emailService.js');
+const emailService = require('./notificationService.js');
 
 class MakerService {
     constructor(){};

@@ -2,7 +2,7 @@ const makerRepo = require('../repositories/makerRepo.js');
 const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
-const emailService = require('./emailService.js');
+const emailService = require('./notificationService.js');
 
 class TimeClockService {
     constructor(){};

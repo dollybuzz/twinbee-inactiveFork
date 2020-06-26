@@ -3,7 +3,7 @@ require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const TimeSheet = require('../domain/entity/timeSheet.js');
-const emailService = require('./emailService.js');
+const emailService = require('./notificationService.js');
 
 class TimeSheetService {
     constructor(){};
