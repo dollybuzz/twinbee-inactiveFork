@@ -99,11 +99,7 @@ function timeClockFunctionality() {
             var clockedOut = true;
             for (var i = 0; i < innerRes.length; ++i) {
                 let sheet = innerRes[i];
-                if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0") {
-                    clockedOut = false;
-                    $("#taskBlock").css("opacity", "1");
-                    $("#taskEntry").css("opacity", "1");
-                } else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
+                if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = false;
                     $("#taskBlock").css("opacity", "0");
                     $("#taskEntry").css("opacity", "0");
