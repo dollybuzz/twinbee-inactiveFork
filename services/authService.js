@@ -117,7 +117,7 @@ class AuthService {
             idToken: token,
             audience: clientId
         }).catch(err => {
-            if (err.includes("Wrong number of segments")){
+            if (err.toString().includes("Wrong number of segments")){
                 console.log("Wrong number of segments error. Not a problem if the cred was the master token.")
             }
             else{
