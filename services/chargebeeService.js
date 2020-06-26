@@ -428,7 +428,6 @@ class ChargebeeService {
                     console.log(error);
                     reject(error)
                 }else{
-                    console.log(result);
                     var subscription = result.subscription;
                     var customer = result.customer;
                     var card = result.card;

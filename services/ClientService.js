@@ -458,7 +458,6 @@ class ClientService {
                 console.log(err);
                 emailService.notifyAdmin(err);
             });
-            console.log(result);
             return result.body && result.body.length > 0;
         }
         else {
