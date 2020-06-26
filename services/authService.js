@@ -121,13 +121,8 @@ class AuthService {
             idToken: token,
             audience: clientId
         }).catch(err => {
-            if (err.toString().includes("Wrong number of segments")){
-                console.log("Wrong number of segments error. Not a problem if the cred was the master token.")
-            }
-            else{
                 console.log(err);
                 emailService.emailAdmin(err);
-            }
         });
         const payload = ticket.getPayload();
         console.log(`Email was: ${payload['email']}`);
