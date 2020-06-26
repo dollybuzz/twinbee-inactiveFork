@@ -2,13 +2,6 @@
 Authors: Dalia Faria, Greg Brown
 
  */
-
-
-const nodemailer = require('nodemailer');
-const {WebClient} = require('@slack/web-api');
-const slackToken = process.env.SLACK_TOKEN;
-const web = new WebClient("xoxb-1194525138327-1207902583557-7HpmdFzFRlD8DFsTOtSLXMXl");
-
 const express = require("express");
 const sslRedirect = require('heroku-ssl-redirect');
 const landingPageController = require('./controllers/landingPageController.js');
