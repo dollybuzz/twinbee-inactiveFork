@@ -81,6 +81,8 @@ function timeClockFunctionality() {
         "    </div>"
     );
 
+
+
     setClockInFunctionality();
 
     //Getting timesheets to manage user navigation away
@@ -129,8 +131,10 @@ function timeClockFunctionality() {
                 }
             }
             if (clockedOut) {
+                console.log("hi");
                 setClockInFunctionality();
             } else {
+                console.log("hello");
                 setClockOutFunctionality();
             }
 
