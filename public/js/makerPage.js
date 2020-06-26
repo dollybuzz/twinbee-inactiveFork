@@ -123,10 +123,8 @@ function timeClockFunctionality() {
                 }
             }
             if (clockedOut) {
-                console.log("hi");
                 setClockInFunctionality();
             } else {
-                console.log("hello");
                 setClockOutFunctionality();
             }
 
@@ -186,11 +184,12 @@ function setClockInFunctionality() {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
 
         $.ajax({
-            url: "api/getAllMyRelationship",
+            url: "api/getMyRelationship",
             method: "post",
             data: {
                 auth: id_token,
-                id: $("#makerSelectedClient").val(),
+                token: id_token,
+                relationshipId: $("#makerSelectedClient").val()
             },
             dataType: "json",
             success: function (relres, status) {
