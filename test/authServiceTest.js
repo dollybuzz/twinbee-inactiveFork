@@ -33,7 +33,7 @@ describe('Authentication Tests', function () {
     });
 
     it('Should match the client email', async function () {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+        let scope = nock(process.env.TWINBEE_URL)
             .post('/api/getAllClients', {auth: process.env.TWINBEE_MASTER_AUTH})
             .reply(200,
                 [
@@ -65,12 +65,12 @@ describe('Authentication Tests', function () {
                 ]
             );
 
-        let result = await authService.accessorIsClient("dummy");
+        let result = await authService.accessorIsClient();
         expect(result).to.equal(true);
     });
 
     it('Should not match the client email', async function () {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+        let scope = nock(process.env.TWINBEE_URL)
             .post('/api/getAllClients', {auth: process.env.TWINBEE_MASTER_AUTH})
             .reply(200,
                 [
@@ -111,7 +111,7 @@ describe('Authentication Tests', function () {
     });
 
     it('should match the maker email', async function () {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+        let scope = nock(process.env.TWINBEE_URL)
             .post('/api/getAllMakers', {auth: process.env.TWINBEE_MASTER_AUTH})
             .reply(200,
                 [
@@ -128,7 +128,7 @@ describe('Authentication Tests', function () {
     });
 
     it('should not match the maker email', async function () {
-        let scope = nock(`http://${process.env.IP}:${process.env.PORT}`)
+        let scope = nock(process.env.TWINBEE_URL)
             .post('/api/getAllMakers', {auth: process.env.TWINBEE_MASTER_AUTH})
             .reply(200,
                 [
