@@ -18,20 +18,21 @@ module.exports = {
      * }
      * Returns data in the form:
      *      {
-     *          clientName: client's name,
-     *          makerName: maker's name
-     *          }
      *          sheets:[
      *              {
      *                  id: timesheet id,
      *                  duration: length of time worked
+     *                  clientName: client's name,
+     *                  makerName: maker's name
      *              },
      *              {
      *                  id: timesheet id,
      *                  duration: length of time worked
+     *                  clientName: client's name,
+     *                  makerName: maker's name
      *              },...
      *          ]
-     *          totaL: total time of all timesheets
+     *          total: total time of all timesheets
      *      }
      */
     getTimeForMakerClientPair: async (req, res)=>{
