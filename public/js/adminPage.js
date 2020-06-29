@@ -1446,10 +1446,20 @@ function timeSheetFunctionality (res) {
                             message = item.adminNote;
                         }
 
+                        let makerValue;
+                        if(makerMap[item.makerId].deleted)
+                        {
+                            makerValue = "Deleted Freedom Maker, ID:" + makerMap[item.makerId];
+                        }
+                        else
+                        {
+                            makerValue = makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName
+                        }
+
                         $("#sheetsTable").append('\n' +
                             '<tr class="sheetRow">' +
                             '   <td scope="row">' + item.id + '</td>' +
-                            '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
+                            '   <td>' + makerValue + '</td>' +
                             '   <td>' + clientIdentifier + '</td>' +
                             '   <td>' + item.hourlyRate + '</td>' +
                             '   <td>' + item.timeIn + '</td>' +
@@ -1563,7 +1573,7 @@ function timeSheetFunctionality (res) {
                                     let deleted;
                                     if(item.deleted)
                                     {
-                                        deleted = "Deleted ";
+                                        deleted = "*Deleted* ";
                                     }
                                     else
                                     {
