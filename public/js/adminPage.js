@@ -1493,9 +1493,9 @@ function timeSheetFunctionality (res) {
                                 success: function (makerres, makerstatus) {
                                     console.log(makerres);
                                     for (var item of makerres) {
-                                        if (!item.deleted) {
+                                        if (!item.maker.deleted) {
                                             $('#makerReport').append(
-                                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                                `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
                                             );
                                         }
                                     }
