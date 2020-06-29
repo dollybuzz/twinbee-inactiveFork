@@ -4,7 +4,7 @@ const authRepo = require('../repositories/authRepo.js');const {OAuth2Client} = r
 const clientId = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(clientId);
 const compare = util.promisify(require('bcrypt').compare);
-const emailService = require('./emailService.js');
+const emailService = require('./notificationService.js');
 class AuthService {
     constructor() {
     };
@@ -17,7 +17,7 @@ class AuthService {
         console.log("Let's see if you are a Freedom Maker...");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let response = await request({
             method: 'POST',
@@ -27,10 +27,9 @@ class AuthService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
-        console.log(response)
         let body = response.body;
         let makers = JSON.parse(body);
 
@@ -46,7 +45,7 @@ class AuthService {
     async accessorIsClient(creds) {
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         let response = await request({
             method: 'POST',
@@ -56,7 +55,7 @@ class AuthService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         let body = response.body;
@@ -75,25 +74,28 @@ class AuthService {
         let adminList = await authRepo.getAdmins().catch(err => {
             console.log(err);
             console.log("Error grabbing admin list");
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
             return false;
         });
         console.log("Who's token is this?");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             console.log("Error grabbing email from token");
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
             return false;
         });
         console.log("Let's see if you're on the list...");
         for (var i = 0; i < adminList.length; ++i){
             let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
-                if (err.toString().includes("data and hash must be strings")){
+                if (creds === process.env.TWINBEE_MASTER_AUTH){
+                    console.log("Bcrypt tried to compare the master token to an email which obviously doesn't work.")
+                }
+                else if (err.toString().includes("data and hash must be strings")){
                     console.log(`Bcrypt threw 'data and hash must be strings' with data: ${creds} `)
                 }
                 else{
                     console.log(err);
-                    emailService.emailAdmin(err);
+                    emailService.notifyAdmin(err);
                 }
                 console.log("Error bcrypt.comapare'ing adminList[i] to the passed email");
                 return false;
@@ -109,13 +111,17 @@ class AuthService {
 
     async getEmailFromToken(token) {
         console.log("getting email from token:");
+        if (token === process.env.TWINBEE_MASTER_AUTH){
+            console.log("Master auth, no email associated.");
+            return;
+        }
         console.log(token);
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: clientId
         }).catch(err => {
-            console.log(err);
-            emailService.emailAdmin(err);
+                console.log(err);
+                emailService.notifyAdmin(err);
         });
         const payload = ticket.getPayload();
         console.log(`Email was: ${payload['email']}`);

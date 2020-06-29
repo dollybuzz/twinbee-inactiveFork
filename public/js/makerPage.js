@@ -9,6 +9,10 @@ let navMapper = {
         location.reload();
     },
 
+    timeclock: function() {
+        timeClockFunctionality();
+    },
+
     previousHours: function () {
         showFunction(timeSheetFunctionality, "/api/getMyTimeSheetsMaker");
     },
@@ -50,6 +54,113 @@ function createBody() {
 };
 
 //Main Clock Methods
+function timeClockFunctionality() {
+    //Create page
+    $("#userMainContent").html(
+        "<div class=\"block\">\n" +
+        "            <div id=\"empty\"></div>\n" +
+        "            <div id=\"clientRole\"><br><h6>Please select your Client<br>and Role:</h6><br></div>\n" +
+        "            <div><br><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
+        "            <div id=\"clientCredit\"><br><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
+        "            <div id=\"makerText1\"></div>\n" +
+        "            <div id=\"empty\"></div>\n" +
+        "            <div id=\"empty\"></div>\n" +
+        "            <div id=\"empty\"></div>\n" +
+        "            <div id=\"empty\"></div>\n" +
+        "            <div id=\"taskBlock\"><br><h6>Please enter in a task:</h6></div>\n" +
+        "            <div><br><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
+        "        </div>\n" +
+        "        <div id='clockPrompt'></div>\n" +
+        "        <br>\n" +
+        "    <div class=\"row\" id=\"makerBottomRow\">\n" +
+        "        <div id=\"empty\"></div>\n" +
+        "        <div id=\"clockButton\"><button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"makerClock\">Clock In</button></div>\n" +
+        "        <div id=\"empty\"></div>\n" +
+        "        <div id=\"empty\"></div>\n" +
+        "        <div id=\"makerText2\"></div>\n" +
+        "    </div>"
+    );
+
+    //Populating drop down selection
+    $.ajax({
+        url: "/api/getAllMyRelationshipsMaker",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        success: function (relres, status) {
+            $("#makerSelectedClient").html("");
+            for(var i = 0; i < relres.length; ++i) {
+                $("#makerSelectedClient").append(
+                    `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
+
+                if (i == relres.length - 1) {
+                    //Getting available credits by client selected
+                    availableCredits();
+                }
+            }
+            $(".spinner-border").remove();
+        },
+        error: function (relres, status) {
+            $("#UserMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+
+    //Getting timesheets to manage user navigation away
+    $.ajax({
+        url: "/api/getMyTimeSheetsMaker",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        //Managing user navigation away
+        success: function (innerRes, innerStatus) {
+            var clockedOut = true;
+            for (var i = 0; i < innerRes.length; ++i) {
+                let sheet = innerRes[i];
+                if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
+                    clockedOut = false;
+                    $("#taskBlock").css("opacity", "0");
+                    $("#taskEntry").css("opacity", "0");
+                    $("#clientRole").css("opacity", "0");
+                    $("#clockPrompt").css("opacity", "1");
+                    $("#makerSelectedClient").css("opacity", "0");
+                    $("#clientCredit").css("opacity", "0");
+                    $("#availcredit").css("opacity", "0");
+                    $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
+
+                    setTimeout(function () {
+                        $("#taskBlock").hide();
+                        $("#taskEntry").hide();
+                        $("#clientRole").hide();
+                        $("#availcredit").hide();
+                    }, 3000)
+                } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
+                    clockedOut = true;
+                    $("#taskBlock").css("opacity", "1");
+                    $("#taskEntry").css("opacity", "1");
+                    $("#clientRole").css("opacity", "1");
+                    $("#availcredit").css("opacity", "1");
+                    $("#clientCredit").css("opacity", "1");
+                    $("#makerSelectedClient").css("opacity", "1");
+                }
+            }
+            if (clockedOut) {
+                setClockInFunctionality();
+            } else {
+                setClockOutFunctionality();
+            }
+        },
+        error: function (innerRes, innerStatus) {
+            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+}
+
 function setClockInFunctionality() {
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#dbb459");
@@ -69,11 +180,12 @@ function setClockInFunctionality() {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
 
         $.ajax({
-            url: "api/getAllMyRelationship",
+            url: "api/getMyRelationship",
             method: "post",
             data: {
                 auth: id_token,
-                id: $("#makerSelectedClient").val(),
+                token: id_token,
+                relationshipId: $("#makerSelectedClient").val()
             },
             dataType: "json",
             success: function (relres, status) {
@@ -256,93 +368,6 @@ onSignIn = function (googleUser) {
     let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
     let name = TEST_ENVIRONMENT ? null : profile.getName();
     $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
-
-    setClockInFunctionality();
-
-    //Getting timesheets to manage user navigation away
-    $.ajax({
-        url: "/api/getMyTimeSheetsMaker",
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        dataType: "json",
-        //Managing user navigation away
-        success: function (innerRes, innerStatus) {
-            var clockedOut = true;
-            for (var i = 0; i < innerRes.length; ++i) {
-                let sheet = innerRes[i];
-                if (sheet.timeOut[0] === "0" && sheet.timeIn[0] === "0") {
-                    clockedOut = false;
-                    $("#taskBlock").css("opacity", "1");
-                    $("#taskEntry").css("opacity", "1");
-                } else if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
-                    clockedOut = false;
-                    $("#taskBlock").css("opacity", "0");
-                    $("#taskEntry").css("opacity", "0");
-                    $("#clientRole").css("opacity", "0");
-                    $("#clockPrompt").css("opacity", "1");
-                    $("#makerSelectedClient").css("opacity", "0");
-                    $("#clientCredit").css("opacity", "0");
-                    $("#availcredit").css("opacity", "0");
-                    $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
-
-                    setTimeout(function () {
-                        $("#taskBlock").hide();
-                        $("#taskEntry").hide();
-                        $("#clientRole").hide();
-                        $("#availcredit").hide();
-                    }, 3000)
-                } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                    clockedOut = true;
-                    $("#taskBlock").css("opacity", "1");
-                    $("#taskEntry").css("opacity", "1");
-                    $("#clientRole").css("opacity", "1");
-                    $("#availcredit").css("opacity", "1");
-                    $("#clientCredit").css("opacity", "1");
-                    $("#makerSelectedClient").css("opacity", "1");
-                }
-            }
-            if (clockedOut) {
-                setClockInFunctionality();
-            } else {
-                setClockOutFunctionality();
-            }
-
-            //Populating drop down selection
-            $.ajax({
-                url: "/api/getAllMyRelationshipsMaker",
-                method: "post",
-                data: {
-                    auth: id_token,
-                    token: id_token
-                },
-                dataType: "json",
-                success: function (relres, status) {
-                    console.log(relres);
-                    $("#makerSelectedClient").html("");
-                   for(var i = 0; i < relres.length; ++i) {
-                       $("#makerSelectedClient").append(
-                           `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
-
-                       if (i == relres.length - 1) {
-                           //Getting available credits by client selected
-                           availableCredits();
-
-                       }
-                   }
-
-                },
-                error: function (relres, status) {
-                    $("#UserMainContent").html("Unable to grab relationships! Please refresh the page. Contact support if the problem persists.");
-                }
-            });
-        },
-        error: function (innerRes, innerStatus) {
-            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
 };
 
 //Previous Hours Methods

@@ -3,7 +3,7 @@ chargebee.configure({site : process.env.CHARGEBEE_SITE,
     api_key : process.env.CHARGEBEE_API_KEY});
 const util = require('util');
 const request = util.promisify(require('request'));
-const emailService = require('./emailService.js');
+const emailService = require('./notificationService.js');
 
 
 //TODO: Add validation
@@ -71,7 +71,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     //handle error
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     console.log(error);
                     reject(error);
                 } else {
@@ -96,7 +96,7 @@ class ChargebeeService {
             chargebee.plan.retrieve(planId).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 } else {
                     console.log(`Plan ${planId} retrieved`);
@@ -127,7 +127,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 } else {
                     console.log(`Plan ${planId} updated. New name: ${planId}, `+
@@ -148,7 +148,7 @@ class ChargebeeService {
         chargebee.plan.delete(planId).request(function (error, result) {
             if (error) {
                 console.log(error);
-                emailService.emailAdmin(error);
+                emailService.notifyAdmin(error);
             } else {
                 var plan = result.plan;
             }
@@ -202,7 +202,7 @@ class ChargebeeService {
                 if (error) {
                     //handle error
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 } else {
                     var subscription = result.subscription;
@@ -220,7 +220,7 @@ class ChargebeeService {
                         }
                     }).catch(err => {
                         console.log(err);
-                        emailService.emailAdmin(error);
+                        emailService.notifyAdmin(error);
                     });
                     console.log("Update time bucket due to purchase request sent")
                 }
@@ -240,7 +240,7 @@ class ChargebeeService {
                 if(error){
                     //handle error
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 }else{
                     var subscription = result.subscription;
@@ -262,7 +262,7 @@ class ChargebeeService {
             chargebee.subscription.remove_scheduled_changes(subscriptionId).request(function(error,result) {
                 if(error){
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 }else{
                     var subscription = result.subscription;
@@ -286,7 +286,7 @@ class ChargebeeService {
             chargebee.subscription.retrieve_with_scheduled_changes(subscriptionId).request(function(error,result) {
                 if(error){
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 }else{
                     var subscription = result.subscription;
@@ -321,7 +321,7 @@ class ChargebeeService {
                 if(error){
                     //handle error
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 }else{
                     console.log("Subscription updated.");
@@ -343,7 +343,7 @@ class ChargebeeService {
                 if(error){
                     //handle error
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 }else{
                     console.log("Subscription updated.");
@@ -377,7 +377,7 @@ class ChargebeeService {
                 if(error){
                     //handle error
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 }else{
                     console.log("Subscription updated.");
@@ -408,7 +408,7 @@ class ChargebeeService {
                 if (error) {
                     //handle error
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 } else {
                     resolve(result.list);
@@ -428,7 +428,6 @@ class ChargebeeService {
                     console.log(error);
                     reject(error)
                 }else{
-                    console.log(result);
                     var subscription = result.subscription;
                     var customer = result.customer;
                     var card = result.card;
@@ -450,7 +449,7 @@ class ChargebeeService {
             if(error){
                 //handle error
                 console.log(error);
-                emailService.emailAdmin(error);
+                emailService.notifyAdmin(error);
             }else{
                 var subscription = result.subscription;
                 var customer = result.customer;
@@ -475,9 +474,9 @@ class ChargebeeService {
                 if(error){
                     //handle error
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                 }else{
-                    var subscription = result.subscription;
+                    const subscription = result.subscription;
                     resolve(subscription);
                 }
             });
@@ -499,10 +498,10 @@ class ChargebeeService {
             }).request(function(error,result) {
                 if(error){
                     console.log(error);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                     reject(error);
                 }else{
-                    var subscription = result.subscription;
+                    const subscription = result.subscription;
                     resolve(subscription);
                 }
             });
@@ -542,7 +541,7 @@ class ChargebeeService {
             if(error){
                 //handle error
                 console.log(error);
-                emailService.emailAdmin(error);
+                emailService.notifyAdmin(error);
             }else{
                 console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
@@ -556,7 +555,7 @@ class ChargebeeService {
                     }
                 }).catch(err => {
                     console.log(err);
-                    emailService.emailAdmin(error);
+                    emailService.notifyAdmin(error);
                 });
                 console.log("Update time bucket due to purchase request sent")
             }

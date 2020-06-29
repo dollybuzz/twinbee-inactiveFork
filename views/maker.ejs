@@ -12,27 +12,15 @@
     <%}%>
 </nav>
 <div id="userMainContent">
+    <div class="row" id="clientTopRow">
+        <div class="block"></div>
+        <div id="makerText1"></div>
+    </div>
+    <br>
+    <div class="row" id="clientBottomRow">
         <div class="block">
-            <div id="empty"></div>
-            <div id="clientRole"><br><h6>Please select your Client<br>and Role:</h6><br></div>
-            <div><br><select class="form-control" id="makerSelectedClient"></select></div>
-            <div id="clientCredit"><br><h6>Client's available credit:</h6><span id="availcredit"></span></div>
-            <div id="makerText1"></div>
-            <div id="empty"></div>
-            <div id="empty"></div>
-            <div id="empty"></div>
-            <div id="empty"></div>
-            <div id="taskBlock"><br><h6>Please enter in a task:</h6></div>
-            <div><br><input class="form-control" type="text" id="taskEntry" name="taskEntry"></div>
+            <div id="makerText2"></div>
         </div>
-        <div id='clockPrompt'></div>
-        <br>
-    <div class="row" id="makerBottomRow">
-        <div id="empty"></div>
-        <div id="clockButton"><button type="button" class="btn btn-select btn-circle btn-xl" id="makerClock">Clock In</button></div>
-        <div id="empty"></div>
-        <div id="empty"></div>
-        <div id="makerText2"></div>
     </div>
 </div>
 <%- include('partials/footer.ejs') -%>

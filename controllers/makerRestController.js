@@ -74,6 +74,7 @@ module.exports ={
     },
 
     /**
+     * * ENDPOINT: /api/getMyRelationship
      * Retrieves the designated relationship associated with the requester.
      * Looks for values in the body in the form:
      * {

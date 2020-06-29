@@ -4,6 +4,9 @@ as well as nodemailer and google api docs.
 * */
 
 const nodemailer = require('nodemailer');
+const {WebClient} = require('@slack/web-api');
+const slackToken = process.env.SLACK_TOKEN;
+const web = new WebClient(slackToken);
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -31,7 +34,7 @@ const transporter = nodemailer.createTransport({
  */
 exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject) => {
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
-    transporter.sendMail({to: toEmail, subject: subject, html:content}, (error) => {
+    transporter.sendMail({to: toEmail, subject: subject, html: content}, (error) => {
         if (error) {
             console.log(error);
             reject(error);
@@ -54,7 +57,7 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
         "<br><br>" +
         "This email was sent to notify you of your account's successful setup.  No unsubscribe necessary.";
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
-    transporter.sendMail({to: toEmail, subject: subject, html:content}, (error) => {
+    transporter.sendMail({to: toEmail, subject: subject, html: content}, (error) => {
         if (error) {
             console.log(error);
             reject(error);
@@ -64,45 +67,19 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
 });
 
 /**
- * Sends an email to the admins - DISABLED
+ * Sends a notification to the admins
  * @param content
  * @returns {Promise<>}
  */
-exports.emailAdmin = content => new Promise((resolve, reject) => {
-    /*
+exports.notifyAdmin = content => {
     if (process.env.TWINBEE_LIVE) {
-        setTimeout(()=>{
-            console.log(`Emailing admin!`);
-            transporter.sendMail({to: process.env.ADMIN_TWINBEE, subject: "TwinBee Alert!", html: content}, (error) => {
-                if (error) {
-                    console.log("Error emailing admin! Catastrophic failure!");
-                    console.log(error);
-                    reject(error);
-                }
-                resolve();
-            });
-        }, 3000);
-        setTimeout(()=>{
-            setTimeout(()=>{
-                console.log(`Emailing admin!`);
-                transporter.sendMail({to: process.env.ADMIN_WINBEE, subject: "TwinBee Alert!", html: content}, (error) => {
-                    if (error) {
-                        console.log("Error emailing admin! Catastrophic failure!");
-                        console.log(error);
-                        reject(error);
-                    }
-                    resolve();
-                });
-            }, 3000);
-        }, 3000);
-
+        console.log(`Notifying admin!`);
+        web.chat.postMessage({
+            text: content,
+            channel: "C0163S58V0D",
+        });
     }
-    else{
-        console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
-    }
-
-     */
-});
+};
 
 /**
  * Sends an email to the Freedom Makers admins
@@ -112,8 +89,12 @@ exports.emailAdmin = content => new Promise((resolve, reject) => {
 exports.emailFMAdmin = (subject, content) => new Promise((resolve, reject) => {
     if (process.env.TWINBEE_LIVE) {
         console.log(`Emailing Freedom Makers!`);
-        setTimeout(()=>{
-            transporter.sendMail({to: process.env.FREEDOM_MAKERS_ADMIN_EMAIL, subject: subject, html: content}, (error) => {
+        setTimeout(() => {
+            transporter.sendMail({
+                to: process.env.FREEDOM_MAKERS_ADMIN_EMAIL,
+                subject: subject,
+                html: content
+            }, (error) => {
                 if (error) {
                     console.log(error);
                     reject(error);
@@ -121,8 +102,7 @@ exports.emailFMAdmin = (subject, content) => new Promise((resolve, reject) => {
                 resolve();
             });
         }, 3000);
-    }
-    else{
+    } else {
         console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
     }
 });

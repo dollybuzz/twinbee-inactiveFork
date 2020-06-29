@@ -13,6 +13,7 @@ module.exports ={
         };
         let headerLinks = [
             {link: "/maker", text: "Main", id:"main"},
+            {link: "", text: "Time Clock", id:"timeclock"},
             {link: "", text: "View Previous Hours", id:"previousHours"},
             {link: "", text: "My Clients", id: "manageClients"},
         ];

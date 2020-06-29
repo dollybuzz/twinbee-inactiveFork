@@ -2,7 +2,7 @@ const makerRepo = require('../repositories/makerRepo.js');
 const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
-const emailService = require('./emailService.js');
+const emailService = require('./notificationService.js');
 
 class TimeClockService {
     constructor(){};
@@ -61,7 +61,7 @@ class TimeClockService {
             }
         }).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
         result = JSON.parse(result.body);
         for (var sheet of result){
@@ -102,7 +102,7 @@ class TimeClockService {
 
         let onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });
 
         //"clock out" online sheets
@@ -110,7 +110,7 @@ class TimeClockService {
             let currentSheet = onlineSheets[i];
             let rightNow = await this.getCurrentMoment().catch(err=>{
                 console.log(err);
-                emailService.emailAdmin(err);
+                emailService.notifyAdmin(err);
             });
             request({
                 method: 'POST',
@@ -129,7 +129,7 @@ class TimeClockService {
 
             let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow).catch(err=>{
                 console.log(err);
-                emailService.emailAdmin(err);
+                emailService.notifyAdmin(err);
             });
             request({
                 method: 'POST',
@@ -149,7 +149,7 @@ class TimeClockService {
 
         onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
-            emailService.emailAdmin(err);
+            emailService.notifyAdmin(err);
         });;
 
         console.log("Remaining online sheets: ");
