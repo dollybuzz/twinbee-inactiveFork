@@ -1464,8 +1464,9 @@ function timeSheetFunctionality (res) {
                     $("#userMainContent").prepend("<div class='timeTopButtons'></div>");
                     $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>" +
                     "<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
-                    $(".timeTopButtons").append("<div id='empty'></div>");
-
+                    $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label></div>");
+                    $(".timeTopButtons").append("<div><label for='client'>Client:</label></div>");
+                    $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReport'>Run ReportButton</button>");
                     //Event Listeners
                     //Modify
                     $(".sheetRow").click(function () {

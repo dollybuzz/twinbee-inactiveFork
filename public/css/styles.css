@@ -140,7 +140,8 @@ body a:hover {
 #updatePaymentButton,
 #revInvoicesButton,
 #YesBuy,
-#YesChange {
+#YesChange,
+#runReportButton {
     font-size: 1.2em;
     color: white;
     background-color: #32444e;
@@ -149,7 +150,8 @@ body a:hover {
 #updatePaymentButton:hover,
 #revInvoicesButton:hover,
 #YesBuy:hover,
-#YesChange:hover {
+#YesChange:hover,
+#runReportButton:hover {
     color: white;
     background-color: #dbb459;
 }
@@ -158,7 +160,7 @@ body a:hover {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
     place-items: center;
-    height: 45px;
+    height: 100px;
 }
 
 .timeTopButtons {
