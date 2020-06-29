@@ -324,7 +324,7 @@ function availableCredits() {
         },
         dataType: "json",
         success: function (bucketres, bucketstatus) {
-            let hours = (Number.parseFloat(customer.buckets[item])/60);
+            let hours = ((bucketres.minutes) / 60);
             let minutes = (bucketres.minutes) % 60;
             let message = "";
             if (hours >= 0) {

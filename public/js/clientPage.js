@@ -166,7 +166,7 @@ function timeBucketFunctionality (res) {
         '        </thead><tbody>');
     //Populate table
     for(var plan in res.buckets) {
-        let hours = (Number.parseFloat(customer.buckets[item])/60);
+        let hours = (Number.parseInt(res.buckets[plan]) / 60);
         let minutes = (Number.parseInt(res.buckets[plan])) % 60;
         let message = "";
         if (hours >= 0) {
