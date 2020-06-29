@@ -1495,11 +1495,15 @@ function timeSheetFunctionality (res) {
                                     dataType: "json",
                                     success: function (makerres, makerstatus) {
                                         for (var item of makerres) {
+                                            let makerMap = {};
                                             if (!item.maker.deleted) {
+                                                makerMap[item] = item.maker.id;
+                                            }
+
+                                            if(item.maker.id != makerMap[item])
                                                 $('#makerReport').html(
                                                     `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
                                                 );
-                                            }
                                         }
                                     },
                                     error: function (makerres, makerstatus) {
