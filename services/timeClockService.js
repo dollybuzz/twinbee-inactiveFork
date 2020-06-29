@@ -149,7 +149,7 @@ class TimeClockService {
         onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
             emailService.notifyAdmin(err);
-        });;
+        });
 
         console.log("Remaining online sheets: ");
         console.log(onlineSheets);

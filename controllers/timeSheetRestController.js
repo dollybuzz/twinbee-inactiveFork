@@ -88,7 +88,7 @@ module.exports = {
     },
 
     /**
-     * ENDPOINT: /getTimeSheetsByMakerId
+     * ENDPOINT: /api/getTimeSheetsByMakerId
      * Retrieves a list of all timesheets for a given maker in form
      * {
      *      "id": sheet id,
