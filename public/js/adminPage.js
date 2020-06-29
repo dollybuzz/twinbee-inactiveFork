@@ -1464,8 +1464,8 @@ function timeSheetFunctionality (res) {
                     $("#userMainContent").prepend("<div class='timeTopButtons'></div>");
                     $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>" +
                     "<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
-                    $(".timeTopButtons").append("<div><label for='client'>Client:</label><select class='form-control' id='clientReport'>\n</select>\n<br><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'></div>");
-                    $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label><select class='form-control' id='makerReport'>\n</select>\n<br><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'></div>");
+                    $(".timeTopButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+                    $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
                     $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
 
                     //Pre-populate Report drop down options
