@@ -161,14 +161,9 @@ module.exports ={
      *     "auth": authentication credentials; either master or token
      * }
      * and returns data in the form:
-     * {
      *  {
-     *      "id": maker's database id,
-     *      "firstName": maker's first name,
-     *      "lastName": maker's last name,
-     *      "email": maker's email address
+     *      "id": maker's database id
      *  }
-     * }
      * @returns {Promise<maker>}
      */
     getMakerIdByToken: async (req, res)=>{

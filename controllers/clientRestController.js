@@ -58,9 +58,9 @@ module.exports = {
     updateMySubscription: async function(req, res){
         console.log("Attempting to update subscription from  REST by client request: ");
         console.log(req.body);
-        let subscriptionOwner = chargebeeService.getCustomerOfSubscription(req.body.subscriptionId);
-        let clientEmail = authService.getEmailFromToken(req.body.auth);
-        let client= clientService.getClientByEmail(clientEmail);
+        let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId);
+        let clientEmail = await authService.getEmailFromToken(req.body.auth);
+        let client= await clientService.getClientByEmail(clientEmail);
         console.log(client.id);
         console.log(subscriptionOwner.id)
         if (client.id === subscriptionOwner.id) {

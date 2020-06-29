@@ -216,8 +216,6 @@ app.post("/api/getClientsForMaker",
     makerRestController.getClientsForMaker);
 app.post("/api/getMakerIdByToken",
     authController.authorizeMaker,
-    authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     makerRestController.getMakerIdByToken);
 app.post("/api/getAllTimeBuckets",
