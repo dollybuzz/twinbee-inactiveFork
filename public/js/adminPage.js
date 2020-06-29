@@ -1481,6 +1481,7 @@ function timeSheetFunctionality (res) {
                                 $('#clientReport').html(
                                     `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                                 )};
+
                             if(i == clientres.length-1)
                             {
                                 $("#makerReport").html("");
@@ -1495,7 +1496,7 @@ function timeSheetFunctionality (res) {
                                     success: function (makerres, makerstatus) {
                                         for (var item of makerres) {
                                             if (!item.maker.deleted) {
-                                                $('#makerReport').append(
+                                                $('#makerReport').html(
                                                     `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
                                                 );
                                             }
