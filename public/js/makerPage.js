@@ -324,13 +324,18 @@ function availableCredits() {
         },
         dataType: "json",
         success: function (bucketres, bucketstatus) {
-            let hours = Math.floor(((bucketres.minutes) / 60));
+            let hours = (Number.parseFloat(customer.buckets[item])/60);
             let minutes = (bucketres.minutes) % 60;
             let message = "";
-            if (hours > 0) {
-                message += ` ${hours} hours `;
+            if (hours >= 0) {
+                message += ` ${Math.floor(hours)} hours `;
             }
-            if (minutes > 0) {
+            if(hours < 0)
+            {
+                hours = Math.abs(hours);
+                message += `-${Math.floor(hours)} hours `;
+            }
+            if (minutes >= 0 || minutes < 0) {
                 message += ` ${minutes} minutes `;
             }
             $("#availcredit").html(message);
