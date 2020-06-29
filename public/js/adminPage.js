@@ -1481,29 +1481,31 @@ function timeSheetFunctionality (res) {
                                 $('#clientReport').append(
                                     `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                                 )};
-
-                            $.ajax({
-                                url: "/api/getMakersForClient",
-                                method: "post",
-                                data: {
-                                    auth: id_token,
-                                    id: $("#clientReport").val()
-                                },
-                                dataType: "json",
-                                success: function (makerres, makerstatus) {
-                                    console.log(makerres);
-                                    for (var item of makerres) {
-                                        if (!item.maker.deleted) {
-                                            $('#makerReport').append(
-                                                `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
-                                            );
+                            if(i == clientres.length-1)
+                            {
+                                $.ajax({
+                                    url: "/api/getMakersForClient",
+                                    method: "post",
+                                    data: {
+                                        auth: id_token,
+                                        id: $("#clientReport").val()
+                                    },
+                                    dataType: "json",
+                                    success: function (makerres, makerstatus) {
+                                        console.log(makerres);
+                                        for (var item of makerres) {
+                                            if (!item.maker.deleted) {
+                                                $('#makerReport').append(
+                                                    `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
+                                                );
+                                            }
                                         }
+                                    },
+                                    error: function (makerres, makerstatus) {
+                                        $("#userMainContent").html("Could not get makers for drop down!");
                                     }
-                                },
-                                error: function (makerres, makerstatus) {
-                                    $("#userMainContent").html("Could not get makers for drop down!");
-                                }
-                            });
+                                });
+                            }
                         },
                         error: function (clientres, clientstatus) {
                             $("#userMainContent").html("Could not get clients for drop down!");
@@ -1564,6 +1566,32 @@ function timeSheetFunctionality (res) {
                         $(this).css('background-color', '#e8ecef');
                     }).mouseleave(function () {
                         $(this).css('background-color', 'white');
+                    });
+
+                    //Report drop down
+                    $("#clientReport").on("change", function() {
+                        $.ajax({
+                            url: "/api/getMakersForClient",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: $("#clientReport").val()
+                            },
+                            dataType: "json",
+                            success: function (makerres, makerstatus) {
+                                console.log(makerres);
+                                for (var item of makerres) {
+                                    if (!item.maker.deleted) {
+                                        $('#makerReport').append(
+                                            `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
+                                        );
+                                    }
+                                }
+                            },
+                            error: function (makerres, makerstatus) {
+                                $("#userMainContent").html("Could not get makers for drop down!");
+                            }
+                        });
                     });
                 },
                 error: function (innerres, innerstatus) {
