@@ -9,7 +9,7 @@ let navMapper = {
         location.reload();
     },
 
-    timeclock: function() {
+    timeclock: function () {
         timeClockFunctionality();
     },
 
@@ -92,7 +92,7 @@ function timeClockFunctionality() {
         dataType: "json",
         success: function (relres, status) {
             $("#makerSelectedClient").html("");
-            for(var i = 0; i < relres.length; ++i) {
+            for (var i = 0; i < relres.length; ++i) {
                 $("#makerSelectedClient").append(
                     `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
 
@@ -178,69 +178,50 @@ function setClockInFunctionality() {
 
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-
         $.ajax({
-            url: "api/getMyRelationship",
+            url: "api/clockIn",
             method: "post",
             data: {
                 auth: id_token,
-                token: id_token,
-                relationshipId: $("#makerSelectedClient").val()
+                relationshipId: $("#makerSelectedClient").val(),
+                task: $("#taskEntry").val()
             },
             dataType: "json",
-            success: function (relres, status) {
-                $.ajax({
-                    url: "api/clockIn",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        makerId: relres.makerId,
-                        hourlyRate: relres.planId,
-                        clientId: relres.clientId,
-                        task: $("#taskEntry").val()
-                    },
-                    dataType: "json",
-                    success: function (clockres, status) {
-                        if (clockres) {
-                            setClockOutFunctionality();
-                            $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
-                            $("#makerText2").css("opacity", "1");
+            success: function (clockres, status) {
+                if (clockres) {
+                    setClockOutFunctionality();
+                    $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
+                    $("#makerText2").css("opacity", "1");
 
 
-                            $("#clockPrompt").html("<h5>Time is running . . .</h5>");
-                            $("#clockPrompt").css("opacity", "1");
+                    $("#clockPrompt").html("<h5>Time is running . . .</h5>");
+                    $("#clockPrompt").css("opacity", "1");
 
-                            $("#taskBlock").css("opacity", "0");
-                            $("#taskEntry").css("opacity", "0");
-                            $("#taskBlock").css("transition", "opacity 0.5s ease-out");
-                            $("#taskEntry").css("transition", "opacity 0.5s ease-out");
+                    $("#taskBlock").css("opacity", "0");
+                    $("#taskEntry").css("opacity", "0");
+                    $("#taskBlock").css("transition", "opacity 0.5s ease-out");
+                    $("#taskEntry").css("transition", "opacity 0.5s ease-out");
 
-                            setTimeout(function () {
-                                $("#makerText2").css("opacity", "0");
-                                $("#taskBlock").hide();
-                                $("#taskEntry").hide();
-                            }, 3000);
+                    setTimeout(function () {
+                        $("#makerText2").css("opacity", "0");
+                        $("#taskBlock").hide();
+                        $("#taskEntry").hide();
+                    }, 3000);
 
-                            setTimeout(function () {
-                                $("#makerText2").html("");
-                            }, 6000);
+                    setTimeout(function () {
+                        $("#makerText2").html("");
+                    }, 6000);
 
-                        } else {
-                            $("#makerText2").html("<br><h5>Could not clock in!</h5>");
-                        }
-                    },
-                    error: function (clockres, status) {
-                        $("#makerClock").html('Clock In');
-                        $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
-                    }
-                });
+                } else {
+                    $("#makerText2").html("<br><h5>Could not clock in!</h5>");
+                }
             },
-            error: function (relres, status) {
+            error: function (clockres, status) {
                 $("#makerClock").html('Clock In');
-                $("#clockButton").html("<h5>You are not currently assigned to any Client.<br>" +
-                    "Please follow up with Freedom Makers for further instruction.</h5>");
+                $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
             }
         });
+
     });
 }
 
@@ -281,8 +262,7 @@ function setClockOutFunctionality() {
                     url: "api/clockOut",
                     method: "post",
                     data: {
-                        auth: id_token,
-                        makerId: TEST_ENVIRONMENT ? 4 : tokenres.id
+                        auth: id_token
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -391,12 +371,9 @@ function timeSheetFunctionality(res) {
         '        </thead><tbody>');
     //Populate table
     for (var item in res) {
-        if(res[item].clientName == null)
-        {
+        if (res[item].clientName == null) {
             var clientIdentifier = `Deleted client ${res[item].clientName}`;
-        }
-        else
-        {
+        } else {
             clientIdentifier = res[item].clientName;
         }
 
