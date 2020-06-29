@@ -1,6 +1,4 @@
 const relationshipRepo = require('../repositories/relationshipRepo.js');
-const util = require('util');
-const request = util.promisify(require('request'));
 const Relationship = require('../domain/entity/relationship');
 const emailService = require('./notificationService.js');
 

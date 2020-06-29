@@ -16,7 +16,6 @@
     let result = await dbControl.query(sql, sqlParams);
  */
 
-
 const mysql = require("mysql");
 const util = require('util');
 
@@ -36,7 +35,6 @@ class DbMaster {
             if (err) throw err;
         });
     }
-
 }
 
 module.exports = new DbMaster();

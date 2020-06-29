@@ -1,5 +1,4 @@
 const {query} = require('./repoMaster');
-const request = require('request');
 const notificationService = require('../services/notificationService.js');
 class AuthRepository {
     constructor() {
