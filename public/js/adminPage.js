@@ -1556,7 +1556,7 @@ function timeSheetFunctionality (res) {
                                                 let makerName = item.firstName + " " + item.lastName;
                                                 if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
                                                 {
-                                                    $('#makerReport').html(
+                                                    $('#makerReport').append(
                                                         `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
                                                     );
                                                 }
