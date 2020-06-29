@@ -1536,7 +1536,7 @@ function timeSheetFunctionality (res) {
                                 $("#clientReport").html("");
                                 for (var i = 0; i < clientres.length; ++i) {
                                     let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
-                                    if($("#clientRepSearch").val().toLowerCase().includes(clientName.toLowerCase())) {
+                                    if(clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase())) {
                                         $('#clientReport').append(
                                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                                         )};
@@ -1554,7 +1554,7 @@ function timeSheetFunctionality (res) {
                                             $("#makerReport").html("");
                                             for (var item of makerres) {
                                                 let makerName = item.firstName + " " + item.lastName;
-                                                if($("#makerRepSearch").val().toLowerCase().includes(makerName.toLowerCase()))
+                                                if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
                                                 {
                                                     $('#makerReport').html(
                                                         `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
