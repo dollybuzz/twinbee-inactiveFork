@@ -1462,11 +1462,13 @@ function timeSheetFunctionality (res) {
                     //Body Block content
                     createBody("Clear");
                     $("#userMainContent").prepend("<div class='timeTopButtons'></div>");
+                    $(".timeTopButtons").append("<div id='empty'></div>");
                     $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>" +
                     "<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
                     $(".timeTopButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
                     $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
                     $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+                    $(".timeTopButtons").append("<div id='empty'></div>");
 
                     //Pre-populate Report drop down options
                     $("clientRepSearch").on("change", function () {
@@ -1481,7 +1483,7 @@ function timeSheetFunctionality (res) {
                                 $("#clientReport").html("");
                                 for (var i = 0; i < clientres.length; ++i) {
                                     let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
-                                    if($("#clientRepSearch").val().toLowerCase().contains(clientName.toLowerCase())) {
+                                    if($("#clientRepSearch").val().toLowerCase().includes(clientName.toLowerCase())) {
                                         $('#clientReport').append(
                                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                                         )};
@@ -1499,7 +1501,7 @@ function timeSheetFunctionality (res) {
                                             $("#makerReport").html("");
                                             for (var item of makerres) {
                                                 let makerName = item.firstName + " " + item.lastName;
-                                                if($("#makerRepSearch").val().toLowerCase().contains(makerName.toLowerCase()))
+                                                if($("#makerRepSearch").val().toLowerCase().includes(makerName.toLowerCase()))
                                                 {
                                                     $('#makerReport').html(
                                                         `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
