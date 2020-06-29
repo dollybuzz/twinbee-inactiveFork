@@ -1482,9 +1482,9 @@ function timeSheetFunctionality (res) {
                                     `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                                 )};
 
+                            $("#makerReport").html("");
                             if(i == clientres.length-1)
                             {
-                                $("#makerReport").html("");
                                 $.ajax({
                                     url: "/api/getMakersForClient",
                                     method: "post",
@@ -1571,6 +1571,7 @@ function timeSheetFunctionality (res) {
 
                     //Report drop down
                     $("#clientReport").on("change", function() {
+                        $("#makerReport").html("");
                         $.ajax({
                             url: "/api/getMakersForClient",
                             method: "post",
