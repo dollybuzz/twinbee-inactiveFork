@@ -160,14 +160,14 @@ body a:hover {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
     place-items: center;
-    height: 100px;
+    height: 45px;
 }
 
 .timeTopButtons {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     place-items: center;
-    height: 45px;
+    height: 100px;
 }
 
 #DeleteButton,
