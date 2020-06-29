@@ -1539,39 +1539,38 @@ function timeSheetFunctionality (res) {
                                     if(clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase())) {
                                         $('#clientReport').append(
                                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
-                                        )};
+                                        )
+                                    };
                                 }
-
-                                $("#makerRepSearch").on("change", function () {
-                                    $.ajax({
-                                        url: "/api/getAllMakers",
-                                        method: "post",
-                                        data: {
-                                            auth: id_token,
-                                        },
-                                        dataType: "json",
-                                        success: function (makerres, makerstatus) {
-                                            $("#makerReport").html("");
-                                            for (var item of makerres) {
-                                                let makerName = item.firstName + " " + item.lastName;
-                                                if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
-                                                {
-                                                    $('#makerReport').append(
-                                                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
-                                                    );
-                                                }
-                                            }
-                                        },
-                                        error: function (makerres, makerstatus) {
-                                            $("#userMainContent").html("Could not get makers for drop down!");
-                                        }
-                                    });
-
-                                });
-
                             },
                             error: function (clientres, clientstatus) {
                                 $("#userMainContent").html("Could not get clients for drop down!");
+                            }
+                        });
+                    });
+
+                    $("#makerRepSearch").on("change", function () {
+                        $.ajax({
+                            url: "/api/getAllMakers",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                            },
+                            dataType: "json",
+                            success: function (makerres, makerstatus) {
+                                $("#makerReport").html("");
+                                for (var item of makerres) {
+                                    let makerName = item.firstName + " " + item.lastName;
+                                    if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
+                                    {
+                                        $('#makerReport').append(
+                                            `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                        );
+                                    }
+                                }
+                            },
+                            error: function (makerres, makerstatus) {
+                                $("#userMainContent").html("Could not get makers for drop down!");
                             }
                         });
                     });
