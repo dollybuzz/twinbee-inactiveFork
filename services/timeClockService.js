@@ -112,7 +112,7 @@ class TimeClockService {
             uri: `${process.env.TWINBEE_URL}/api/createTimeSheet`,
             form: {
                 'makerId': relationship.makerId,
-                'hourlyRate': relationship.hourlyRate,
+                'hourlyRate': relationship.planId,
                 'clientId': relationship.clientId,
                 timeIn: await this.getCurrentMoment(),
                 timeOut: '0000-00-00 00:00:00',
