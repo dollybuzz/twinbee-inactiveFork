@@ -161,6 +161,13 @@ body a:hover {
     height: 45px;
 }
 
+.timeTopButtons {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    place-items: center;
+    height: 45px;
+}
+
 #DeleteButton,
 #YesDelete,
 #NoBuy,
