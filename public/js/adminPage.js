@@ -1469,62 +1469,6 @@ function timeSheetFunctionality (res) {
                     $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
                     $(".timeTopButtons").append("<div id='empty'></div>");
 
-                    //Pre-populate Report drop down options
-                    $("clientRepSearch").on("change", function () {
-                        $.ajax({
-                            url: "/api/getAllClients",
-                            method: "post",
-                            data: {
-                                auth: id_token
-                            },
-                            dataType: "json",
-                            success: function (clientres, clientstatus) {
-                                $("#clientReport").html("");
-                                for (var i = 0; i < clientres.length; ++i) {
-                                    let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
-                                    if($("#clientRepSearch").val().toLowerCase().includes(clientName.toLowerCase())) {
-                                        $('#clientReport').append(
-                                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
-                                        )};
-                                    }
-
-                                $("makerRepSearch").on("change", function () {
-                                    $.ajax({
-                                        url: "/api/getAllMakers",
-                                        method: "post",
-                                        data: {
-                                            auth: id_token,
-                                        },
-                                        dataType: "json",
-                                        success: function (makerres, makerstatus) {
-                                            $("#makerReport").html("");
-                                            for (var item of makerres) {
-                                                let makerName = item.firstName + " " + item.lastName;
-                                                if($("#makerRepSearch").val().toLowerCase().includes(makerName.toLowerCase()))
-                                                {
-                                                    $('#makerReport').html(
-                                                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
-                                                    );
-                                                }
-                                            }
-                                        },
-                                        error: function (makerres, makerstatus) {
-                                            $("#userMainContent").html("Could not get makers for drop down!");
-                                        }
-                                    });
-
-                                });
-
-                            },
-                            error: function (clientres, clientstatus) {
-                                $("#userMainContent").html("Could not get clients for drop down!");
-                            }
-                        });
-                    });
-
-
-
-
                     //Event Listeners
                     //Modify
                     $(".sheetRow").click(function () {
@@ -1580,32 +1524,59 @@ function timeSheetFunctionality (res) {
                         $(this).css('background-color', 'white');
                     });
 
-                    //Report drop down
-                    $("#clientReport").on("change", function() {
-                        $("#makerReport").html("");
+                    //Pre-populate Report drop down options
+                    $("clientRepSearch").on("change", function () {
                         $.ajax({
-                            url: "/api/getMakersForClient",
+                            url: "/api/getAllClients",
                             method: "post",
                             data: {
-                                auth: id_token,
-                                id: $("#clientReport").val()
+                                auth: id_token
                             },
                             dataType: "json",
-                            success: function (makerres, makerstatus) {
-                                console.log(makerres);
-                                for (var item of makerres) {
-                                    if (!item.maker.deleted) {
-                                        $('#makerReport').append(
-                                            `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
-                                        );
-                                    }
+                            success: function (clientres, clientstatus) {
+                                $("#clientReport").html("");
+                                for (var i = 0; i < clientres.length; ++i) {
+                                    let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
+                                    if($("#clientRepSearch").val().toLowerCase().includes(clientName.toLowerCase())) {
+                                        $('#clientReport').append(
+                                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
+                                        )};
                                 }
+
+                                $("makerRepSearch").on("change", function () {
+                                    $.ajax({
+                                        url: "/api/getAllMakers",
+                                        method: "post",
+                                        data: {
+                                            auth: id_token,
+                                        },
+                                        dataType: "json",
+                                        success: function (makerres, makerstatus) {
+                                            $("#makerReport").html("");
+                                            for (var item of makerres) {
+                                                let makerName = item.firstName + " " + item.lastName;
+                                                if($("#makerRepSearch").val().toLowerCase().includes(makerName.toLowerCase()))
+                                                {
+                                                    $('#makerReport').html(
+                                                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                                    );
+                                                }
+                                            }
+                                        },
+                                        error: function (makerres, makerstatus) {
+                                            $("#userMainContent").html("Could not get makers for drop down!");
+                                        }
+                                    });
+
+                                });
+
                             },
-                            error: function (makerres, makerstatus) {
-                                $("#userMainContent").html("Could not get makers for drop down!");
+                            error: function (clientres, clientstatus) {
+                                $("#userMainContent").html("Could not get clients for drop down!");
                             }
                         });
                     });
+
                 },
                 error: function (innerres, innerstatus) {
                     $("#userMainContent").html("Something went wrong!");
