@@ -1464,9 +1464,53 @@ function timeSheetFunctionality (res) {
                     $("#userMainContent").prepend("<div class='timeTopButtons'></div>");
                     $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>" +
                     "<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
-                    $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label></div>");
-                    $(".timeTopButtons").append("<div><label for='client'>Client:</label></div>");
-                    $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReport'>Run ReportButton</button>");
+                    $(".timeTopButtons").append("<div><label for='client'>Client:</label><select class='form-control' id='clientReport'>\n</select></div>");
+                    $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label><select class='form-control' id='makerReport'>\n</select></div>");
+                    $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+
+                    //Pre-populate Report drop down options
+                    $.ajax({
+                        url: "/api/getAllClients",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (clientres, clientstatus) {
+                            for (var i = 0; i < clientres.length; ++i) {
+                                $('#clientReport').append(
+                                    `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
+                                )};
+
+                            $.ajax({
+                                url: "/api/getMakersForClient",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                    id: $("#clientReport").val()
+                                },
+                                dataType: "json",
+                                success: function (makerres, makerstatus) {
+                                    console.log(makerres);
+                                    for (var item of makerres) {
+                                        if (!item.deleted) {
+                                            $('#makerReport').append(
+                                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                            );
+                                        }
+                                    }
+                                },
+                                error: function (makerres, makerstatus) {
+                                    $("#userMainContent").html("Could not get makers for drop down!");
+                                }
+                            });
+                        },
+                        error: function (clientres, clientstatus) {
+                            $("#userMainContent").html("Could not get clients for drop down!");
+                        }
+                    });
+
+
                     //Event Listeners
                     //Modify
                     $(".sheetRow").click(function () {
@@ -2299,8 +2343,6 @@ function relationshipAddForm() {
                 },
                 dataType: "json",
                 success: function (makerres, makerstatus) {
-
-
                     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
                         "<form id='add'>\n" +
                         "<label for='empty'></label>" +
