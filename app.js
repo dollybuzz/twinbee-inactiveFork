@@ -14,6 +14,7 @@ const timeSheetRestController = require('./controllers/timeSheetRestController.j
 const timeClockRestController = require('./controllers/timeClockRestController.js');
 const relationshipRestController = require('./controllers/relationshipRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
+const timeReportingRestController = require('./controllers/timeReportingRestController.js');
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
@@ -22,6 +23,8 @@ const es = require('./services/notificationService.js');
 const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
 const chargebeeservice = require('./services/chargebeeService.js');
+const timeReportingService = require('./services/timeReportingService.js');
+
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
@@ -356,6 +359,12 @@ app.post("/api/getMyMakers",
 app.post("/api/getAllMyTimeBuckets",
     authController.authorizeClient,
     clientRestController.getAllMyTimeBuckets);
+
+app.post("/api/getTimeForMakerClientPair",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeReportingRestController.getTimeForMakerClientPair);
+
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
