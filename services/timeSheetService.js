@@ -1,6 +1,4 @@
-const makerRepo = require('../repositories/makerRepo.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
-const moment = require('moment');
 const timeSheetRepo = require('../repositories/timeSheetRepo.js');
 const TimeSheet = require('../domain/entity/timeSheet.js');
 const emailService = require('./notificationService.js');

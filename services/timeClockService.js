@@ -1,4 +1,3 @@
-const makerRepo = require('../repositories/makerRepo.js');
 const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
