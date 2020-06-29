@@ -1877,10 +1877,10 @@ function creditFunctionality (res) {
            let hours = Math.floor((Number.parseFloat(customer.buckets[item]))/60);
            let minutes = (customer.buckets[item])%60;
            let message = "";
-           if (hours >= 0) {
+           if (hours >= 0 || hours < 0) {
                message += ` ${hours} hours `;
            }
-           if (minutes >= 0) {
+           if (minutes >= 0 || minutes < 0) {
                message += ` ${minutes} minutes `;
            }
            $("#creditTable").append('\n' +
