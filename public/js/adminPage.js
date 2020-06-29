@@ -1560,21 +1560,20 @@ function timeSheetFunctionality (res) {
                             success: function (makerres, makerstatus) {
                                 $("#makerReport").html("");
                                 for (var item of makerres) {
-                                    let makerName = item.firstName + " " + item.lastName;
+                                    let deleted;
+                                    if(item.deleted)
+                                    {
+                                        deleted = "Deleted ";
+                                    }
+                                    else
+                                    {
+                                        deleted = "";
+                                    }
+                                    let makerName = deleted + item.firstName + " " + item.lastName;
                                     if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
                                     {
-                                        let deleted;
-                                        if(item.deleted)
-                                        {
-                                            deleted = "Deleted ";
-                                        }
-                                        else
-                                        {
-                                            deleted = "";
-                                        }
-
                                         $('#makerReport').append(
-                                            `<option id="${item.id}" value="${item.id}">` + deleted + `${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                            `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                                         );
                                     }
                                 }
