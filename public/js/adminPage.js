@@ -1478,7 +1478,7 @@ function timeSheetFunctionality (res) {
                         dataType: "json",
                         success: function (clientres, clientstatus) {
                             for (var i = 0; i < clientres.length; ++i) {
-                                $('#clientReport').append(
+                                $('#clientReport').html(
                                     `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                                 )};
                             if(i == clientres.length-1)
