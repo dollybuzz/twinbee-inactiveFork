@@ -18,6 +18,7 @@
 
 const mysql = require("mysql");
 const util = require('util');
+const notificationService = require('../services/notificationService.js');
 
 class DbMaster {
     constructor(){
@@ -32,7 +33,10 @@ class DbMaster {
 
         this.query = util.promisify(this.conn.query).bind(this.conn);
         this.conn.connect(function (err) {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err);
+            }
         });
     }
 }
