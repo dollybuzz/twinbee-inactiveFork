@@ -1462,12 +1462,11 @@ function timeSheetFunctionality (res) {
                     //Body Block content
                     createBody("Clear");
                     $("#userMainContent").prepend("<div class='timeTopButtons'></div>");
-                    $(".timeTopButtons").append("<div id='empty'></div>");
-                    $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
+                    $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
+                    $(".timeTopButtons").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
                     $(".timeTopButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
                     $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
                     $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
-                    $(".timeTopButtons").append("<div id='empty'></div>");
 
                     //Event Listeners
                     //Modify
