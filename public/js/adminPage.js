@@ -1436,7 +1436,7 @@ function timeSheetFunctionality (res) {
                         let clientIdentifier = item.clientId;
                         clientIdentifier = clientMap[clientIdentifier] ?
                             clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
-                            `Deleted Client, ID: ${clientIdentifier}`;
+                            `Deleted, ID: ${clientIdentifier}`;
                         let message = null;
                         if(item.adminNote == null)
                         {
@@ -1449,7 +1449,7 @@ function timeSheetFunctionality (res) {
                         let makerValue;
                         if(makerMap[item.makerId].deleted)
                         {
-                            makerValue = "Deleted Freedom Maker, ID:" + makerMap[item.makerId];
+                            makerValue = "Deleted, ID:" + makerMap[item.makerId].id;
                         }
                         else
                         {
