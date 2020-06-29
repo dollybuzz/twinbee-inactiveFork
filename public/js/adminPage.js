@@ -1563,8 +1563,18 @@ function timeSheetFunctionality (res) {
                                     let makerName = item.firstName + " " + item.lastName;
                                     if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
                                     {
+                                        let deleted;
+                                        if(item.deleted)
+                                        {
+                                            deleted = "Deleted ";
+                                        }
+                                        else
+                                        {
+                                            deleted = "";
+                                        }
+
                                         $('#makerReport').append(
-                                            `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                            `<option id="${item.id}" value="${item.id}">` + deleted + `${item.firstName} ${item.lastName}  -  ${item.id}</option>`
                                         );
                                     }
                                 }
