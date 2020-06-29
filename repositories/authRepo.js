@@ -1,5 +1,6 @@
 const {query} = require('./repoMaster');
 const request = require('request');
+const notificationService = require('../services/notificationService.js');
 class AuthRepository {
     constructor() {
     };
@@ -7,9 +8,11 @@ class AuthRepository {
     async getAdmins() {
         let sql = 'SELECT * FROM admin';
         let sqlParam = [];
-        let result = await query(sql, sqlParam).catch(e => {
+        let result;
+        result = await query(sql, sqlParam).catch(e => {
             console.log(e);
             result = [];
+            notificationService.notifyAdmin(e);
         });
         return result;
     }

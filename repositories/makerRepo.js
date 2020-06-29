@@ -62,7 +62,8 @@ class MakerRepository {
     async getAllMakers() {
         let sql = 'SELECT * FROM maker';
         let sqlParam = [];
-        let result = await query(sql, sqlParam).catch(e => {
+        let result;
+        result = await query(sql, sqlParam).catch(e => {
             console.log(e);
             result = [];
         });
