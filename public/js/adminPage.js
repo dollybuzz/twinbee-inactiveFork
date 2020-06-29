@@ -1524,7 +1524,7 @@ function timeSheetFunctionality (res) {
                     });
 
                     //Pre-populate Report drop down options
-                    $("clientRepSearch").on("change", function () {
+                    $("#clientRepSearch").on("change", function () {
                         $.ajax({
                             url: "/api/getAllClients",
                             method: "post",
@@ -1542,7 +1542,7 @@ function timeSheetFunctionality (res) {
                                         )};
                                 }
 
-                                $("makerRepSearch").on("change", function () {
+                                $("#makerRepSearch").on("change", function () {
                                     $.ajax({
                                         url: "/api/getAllMakers",
                                         method: "post",
