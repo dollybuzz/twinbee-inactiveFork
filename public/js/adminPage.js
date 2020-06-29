@@ -1483,6 +1483,7 @@ function timeSheetFunctionality (res) {
                                 )};
                             if(i == clientres.length-1)
                             {
+                                $("#makerReport").html("");
                                 $.ajax({
                                     url: "/api/getMakersForClient",
                                     method: "post",
@@ -1492,7 +1493,6 @@ function timeSheetFunctionality (res) {
                                     },
                                     dataType: "json",
                                     success: function (makerres, makerstatus) {
-                                        console.log(makerres);
                                         for (var item of makerres) {
                                             if (!item.maker.deleted) {
                                                 $('#makerReport').append(
