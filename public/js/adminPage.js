@@ -1464,58 +1464,64 @@ function timeSheetFunctionality (res) {
                     $("#userMainContent").prepend("<div class='timeTopButtons'></div>");
                     $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>" +
                     "<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
-                    $(".timeTopButtons").append("<div><label for='client'>Client:</label><select class='form-control' id='clientReport'>\n</select></div>");
-                    $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label><select class='form-control' id='makerReport'>\n</select></div>");
+                    $(".timeTopButtons").append("<div><label for='client'>Client:</label><select class='form-control' id='clientReport'>\n</select>\n<br><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'></div>");
+                    $(".timeTopButtons").append("<div><label for='maker'>Freedom Maker:</label><select class='form-control' id='makerReport'>\n</select>\n<br><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'></div>");
                     $(".timeTopButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
 
                     //Pre-populate Report drop down options
-                    $.ajax({
-                        url: "/api/getAllClients",
-                        method: "post",
-                        data: {
-                            auth: id_token
-                        },
-                        dataType: "json",
-                        success: function (clientres, clientstatus) {
-                            for (var i = 0; i < clientres.length; ++i) {
-                                $('#clientReport').append(
-                                    `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
-                                )};
-
-                            $("#makerReport").html("");
-                            if(i == clientres.length-1)
-                            {
-                                $.ajax({
-                                    url: "/api/getMakersForClient",
-                                    method: "post",
-                                    data: {
-                                        auth: id_token,
-                                        id: $("#clientReport").val()
-                                    },
-                                    dataType: "json",
-                                    success: function (makerres, makerstatus) {
-                                        for (var item of makerres) {
-                                            let makerMap = {};
-                                            if (!item.maker.deleted) {
-                                                makerMap[item] = item.maker.id;
-                                            }
-
-                                            if(item.maker.id != makerMap[item])
-                                                $('#makerReport').html(
-                                                    `<option id="${item.maker.id}" value="${item.maker.id}">${item.maker.firstName} ${item.maker.lastName}  -  ${item.maker.id}</option>`
-                                                );
-                                        }
-                                    },
-                                    error: function (makerres, makerstatus) {
-                                        $("#userMainContent").html("Could not get makers for drop down!");
+                    $("clientRepSearch").on("change", function () {
+                        $.ajax({
+                            url: "/api/getAllClients",
+                            method: "post",
+                            data: {
+                                auth: id_token
+                            },
+                            dataType: "json",
+                            success: function (clientres, clientstatus) {
+                                $("#clientReport").html("");
+                                for (var i = 0; i < clientres.length; ++i) {
+                                    let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
+                                    if($("#clientRepSearch").val().toLowerCase().contains(clientName.toLowerCase())) {
+                                        $('#clientReport').append(
+                                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
+                                        )};
                                     }
+
+                                $("makerRepSearch").on("change", function () {
+                                    $.ajax({
+                                        url: "/api/getAllMakers",
+                                        method: "post",
+                                        data: {
+                                            auth: id_token,
+                                        },
+                                        dataType: "json",
+                                        success: function (makerres, makerstatus) {
+                                            $("#makerReport").html("");
+                                            for (var item of makerres) {
+                                                let makerName = item.firstName + " " + item.lastName;
+                                                if($("#makerRepSearch").val().toLowerCase().contains(makerName.toLowerCase()))
+                                                {
+                                                    $('#makerReport').html(
+                                                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                                    );
+                                                }
+                                            }
+                                        },
+                                        error: function (makerres, makerstatus) {
+                                            $("#userMainContent").html("Could not get makers for drop down!");
+                                        }
+                                    });
+
                                 });
+
+                            },
+                            error: function (clientres, clientstatus) {
+                                $("#userMainContent").html("Could not get clients for drop down!");
                             }
-                        },
-                        error: function (clientres, clientstatus) {
-                            $("#userMainContent").html("Could not get clients for drop down!");
-                        }
+                        });
                     });
+
+
 
 
                     //Event Listeners
