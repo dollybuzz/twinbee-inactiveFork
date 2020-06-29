@@ -1449,7 +1449,7 @@ function timeSheetFunctionality (res) {
                         let makerValue;
                         if(makerMap[item.makerId].deleted)
                         {
-                            makerValue = "Deleted, ID:" + makerMap[item.makerId].id;
+                            makerValue = "Deleted, ID: " + makerMap[item.makerId].id;
                         }
                         else
                         {
