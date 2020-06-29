@@ -72,11 +72,13 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
  * @returns {Promise<>}
  */
 exports.notifyAdmin = content => {
+    let channel = process.env.TWINBEE_LIVE ? "C0163S58V0D" : "C015TU1QG0P";
     if (process.env.TWINBEE_LIVE) {
+
         console.log(`Notifying admin!`);
         web.chat.postMessage({
             text: content,
-            channel: "C0163S58V0D",
+            channel: channel,
         });
     }
 };
