@@ -1462,11 +1462,8 @@ function timeSheetFunctionality (res) {
                     //Body Block content
                     createBody("Clear");
                     $("#userMainContent").prepend("<div class='timeTopButtons'></div>");
-                    $(".timeTopButtons").append("<div id='empty'></div>");
-                    $(".timeTopButtons").append("<div class='fieldContainer'>Start Date: <input id='startDate' width='276'/>" +
-                        "End Date: <input id='endDate' width='276' />" +
-                        "<span id='dynamicDate'></span>" +
-                        "</div>");
+                    $(".timeTopButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>" +
+                    "<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
                     $(".timeTopButtons").append("<div id='empty'></div>");
 
                     //Event Listeners
@@ -2503,23 +2500,5 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-
-    //field container in timesheets method
-    $("#dynamicDate").append("<script>var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());\n" +
-        "        $('#startDate').datepicker({\n" +
-        "            uiLibrary: 'bootstrap4',\n" +
-        "            iconsLibrary: 'fontawesome',\n" +
-        "            minDate: today,\n" +
-        "            maxDate: function () {\n" +
-        "                return $('#endDate').val();\n" +
-        "            }\n" +
-        "        });\n" +
-        "        $('#endDate').datepicker({\n" +
-        "            uiLibrary: 'bootstrap4',\n" +
-        "            iconsLibrary: 'fontawesome',\n" +
-        "            minDate: function () {\n" +
-        "                return $('#startDate').val();\n" +
-        "            }\n" +
-        "        });</script>");
 
 })
