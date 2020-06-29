@@ -1874,11 +1874,16 @@ function creditFunctionality (res) {
     //Populate table
     res.forEach(customer => {
        for(var item in customer.buckets) {
-           let hours = Math.floor((Number.parseFloat(customer.buckets[item]))/60);
+           let hours = (Number.parseFloat(customer.buckets[item])/60);
            let minutes = (customer.buckets[item])%60;
            let message = "";
-           if (hours >= 0 || hours < 0) {
-               message += ` ${hours} hours `;
+           if (hours >= 0) {
+               message += ` ${Math.floor(hours)} hours `;
+           }
+           if(hours < 0)
+           {
+               hours = Math.abs(hours);
+               message += `-${Math.floor(hours)} hours `;
            }
            if (minutes >= 0 || minutes < 0) {
                message += ` ${minutes} minutes `;
