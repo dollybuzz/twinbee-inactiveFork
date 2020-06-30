@@ -324,7 +324,7 @@ function buyForm (rowData) {
                                     data: {
                                         auth: id_token,
                                         token: id_token,
-                                        subscriptionId: planres.subscriptionId,
+                                        planId: planSelect,
                                         numHours: timeInMinutes/60
                                     },
                                     dataType: "json",

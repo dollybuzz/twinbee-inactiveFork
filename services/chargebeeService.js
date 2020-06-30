@@ -175,6 +175,7 @@ class ChargebeeService {
             listObject = await chargebee.subscription.list({
                 limit: 100,
                 include_deleted: true,
+                "sort_by[desc]" : "created_at",
                 offset: listObject.next_offset
             }).request().catch(error => console.log(error));
             for (var item of listObject.list) {
@@ -519,9 +520,9 @@ class ChargebeeService {
      * @param customerId- customer that is adding hours
      * @returns {Promise<void>}
      */
-    async chargeCustomerNow(subscription, numHours, customerId){
-        let subscriptionObj = await this.retrieveSubscription(subscription);
-        let pricePerHour = Number.parseFloat(subscriptionObj.plan_unit_price);
+    async chargeCustomerNow(plan, numHours, customerId){
+        let planObj = await this.retrievePlan(plan);
+        let pricePerHour = Number.parseFloat(planObj.price);
         let calculatedPrice = Math.floor(pricePerHour * Number.parseFloat(numHours));
         let minutesString = (numHours * 60).toString();
         let hours = Math.floor(numHours);
