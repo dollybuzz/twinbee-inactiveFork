@@ -1865,7 +1865,7 @@ function runReportFunctionality () {
     //Event Listeners
     //Back to TimeSheets Functionality
     $("#BackButton").on('click', function() {
-        location.reload();
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     });
 
     $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total:</th><td>500</td></tfoot>');
