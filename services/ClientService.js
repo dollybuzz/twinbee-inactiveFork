@@ -650,14 +650,14 @@ class ClientService {
         }
     }
 
-    async chargeMeNow(subscriptionId, numHours, customerId){
-        console.log(`Attempting to charge ${customerId} for ${numHours} ${subscriptionId} hours...`);
+    async chargeMeNow(planId, numHours, customerId){
+        console.log(`Attempting to charge ${customerId} for ${numHours} ${planId} hours...`);
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/creditNow`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
-                'planId':subscriptionId,
+                'planId':planId,
                 'numHours': numHours,
                 'customerId': customerId
             }
@@ -669,7 +669,7 @@ class ClientService {
 
         let client = await this.getClientById(customerId);
         emailService.emailFMAdmin("Hours added!",
-            `${client.first_name} ${client.last_name} has manually added ${numHours} for time bucket ${subscriptionId}`);
+            `${client.first_name} ${client.last_name} has manually added ${numHours} for time bucket ${planId}`);
         return true;
     }
 
@@ -751,16 +751,9 @@ class ClientService {
     }
 
     async getTimeBucket(clientId, planId) {
-        let subscriptionId = null;
-        let subscriptionEntries = await this.getSubscriptionsForClient(clientId);
-        for (var entry of subscriptionEntries){
-            if (entry.subscription.plan_id.toString() === planId.toString()){
-                subscriptionId = entry.subscription.id;
-            }
-        }
         console.log(`Getting available credit for ${clientId}'s time bucket`);
         let bucketObj = await this.getTimeBucketsByClientId(clientId);
-        return {minutes: bucketObj.buckets[planId], subscriptionId: subscriptionId};
+        return {minutes: bucketObj.buckets[planId]};
     }
 
 }
