@@ -36,11 +36,6 @@ class DbMaster {
     }
 
     async activateConnection(dbMaster, numRetries) {
-        try{
-            dbMaster.conn.end();
-        }catch (e) {
-            console.log("Connection destroyed")
-        }
         return new Promise((resolve, reject) => {
             dbMaster.conn.connect(function (err) {
                 if (err) {
