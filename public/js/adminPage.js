@@ -1426,6 +1426,7 @@ function timeSheetFunctionality (res) {
                         '            <th scope="col">Task</th>\n' +
                         '            <th scope="col">Detail</th>\n' +
                         '        </thead><tbody>');
+
                     //Populate table
                     res.forEach(item => {
                         let clientIdentifier = item.clientId;
@@ -1463,6 +1464,7 @@ function timeSheetFunctionality (res) {
                             '   <td>' + message + '</td></tr>');
                     });
                     $("#sheetsTable").append('\n</tbody>');
+                    $("#sheetsTable").append('<tfoot><th id="test" colspan="1">Total:</th><td>500</td></tfoot>');
 
                     //Body Block content
                     createBody("Clear");
@@ -1589,7 +1591,10 @@ function timeSheetFunctionality (res) {
                         });
                     });
 
-                    //Run Report Functionality
+                    //Run Report
+                    $("#runReportButton").on('click', function () {
+                        runReportFunctionality();
+                    });
 
 
 
@@ -1811,7 +1816,6 @@ function sheetAddForm () {
                     $("#userMainContent").html("Plans isn't working! Please refresh the page. Contact support if the problem persists.");
                 }
             });
-
 }
 
 function modSheetSuccess (res, status) {
@@ -1851,6 +1855,10 @@ function clearSheetSuccess (res, status) {
 function verifyClearSheet () {
     let deleteId = $("#deleteUser").val();
     return (deleteId == selectedRow.children()[0].innerHTML);
+}
+
+function runReportFunctionality () {
+
 }
 
 //Credit Methods
