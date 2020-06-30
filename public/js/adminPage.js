@@ -1869,7 +1869,16 @@ function runReportFunctionality () {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     });
 
-    $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total:</th><td>500</td></tfoot>');
+    //Creating the table
+    $("#sheetsTable").html('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Time Sheet ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Shift Duration</th>\n' +
+        '        </thead><tbody>');
+    $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total Time:</th><td>?</td></tfoot>');
 
 }
 
