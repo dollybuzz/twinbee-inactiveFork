@@ -217,14 +217,7 @@ body a:hover {
     height: 40px;
 }
 
-#buttonsBottom {
-    display: block;
-    width: inherit;
-    height: 40px;
-}
-
 #SubmitButton {
-    float: right;
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
 }

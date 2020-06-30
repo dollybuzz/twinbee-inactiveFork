@@ -83,10 +83,7 @@ function createBody (button) {
     $("#AddButton").css("opacity", "1");
 
     //bottom row of OptionsClient instead of UserMainContent
-    $("#optionsClient").append('\n<div class="row" id="bottomRow"></div>');
-    $("#optionsClient").append('<div id="buttonsBottom"></div>');
-    $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#buttonsBottom").hide();
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 };
 
 function showBlock () {
