@@ -21,20 +21,30 @@ const util = require('util');
 const notificationService = require('../services/notificationService.js');
 
 function activateConnection(dbConnection, numRetries) {
-    dbConnection.conn.connect(function (err) {
-        if (err) {
-            console.log(err);
-            notificationService.notifyAdmin(err.toString());
-            setTimeout(function () {
-                notificationService.notifyAdmin(`Retrying connection, ${numRetries} left...`)
-                activateConnection(dbConnection, numRetries - 1)
-            }, 5000)
-        }
-    });
+    return new Promise((resolve, reject) => {
+        dbConnection.conn.connect(function (err) {
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err.toString());
+                if (numRetries === 0){
+                    console.log("Failed all reconnect attempts.");
+                    notificationService.notifyAdmin("Failed all reconnect attempts!");
+                    reject();
+                }
+                setTimeout(function () {
+                    notificationService.notifyAdmin(`Retrying connection, ${numRetries} left...`);
+                    activateConnection(dbConnection, numRetries - 1)
+                }, 5000)
+            }
+            else{
+                resolve();
+            }
+        });
+    })
 }
 
 class DbMaster {
-    constructor(){
+    async constructor(){
         this.conn = mysql.createConnection({
             multipleStatements: true,
             host: process.env.TWINBEE_DB_HOST,
@@ -45,7 +55,7 @@ class DbMaster {
         });
 
         this.query = util.promisify(this.conn.query).bind(this.conn);
-        activateConnection(this, 20);
+        await activateConnection(this, 20);
     }
 }
 
