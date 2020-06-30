@@ -445,6 +445,7 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>" +
         "<div id='pendingChanges'></div>");
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 
     $("#SubmitButton").on("click", function (e) {
         let monthlyHours = $("#modsubscriptionplanquantity").val();
