@@ -20,29 +20,6 @@ const mysql = require("mysql");
 const util = require('util');
 const notificationService = require('../services/notificationService.js');
 
-function activateConnection(dbConnection, numRetries) {
-    return new Promise((resolve, reject) => {
-        dbConnection.conn.connect(function (err) {
-            if (err) {
-                console.log(err);
-                notificationService.notifyAdmin(err.toString());
-                if (numRetries === 0){
-                    console.log("Failed all reconnect attempts.");
-                    notificationService.notifyAdmin("Failed all reconnect attempts!");
-                    reject();
-                }
-                setTimeout(function () {
-                    notificationService.notifyAdmin(`Retrying connection, ${numRetries} left...`);
-                    activateConnection(dbConnection, numRetries - 1)
-                }, 5000)
-            }
-            else{
-                resolve();
-            }
-        });
-    })
-}
-
 class DbMaster {
     async constructor(){
         this.conn = mysql.createConnection({
@@ -55,7 +32,35 @@ class DbMaster {
         });
 
         this.query = util.promisify(this.conn.query).bind(this.conn);
-        await activateConnection(this, 20);
+        await this.activateConnection(this, 20);
+    }
+
+    async activateConnection(dbMaster, numRetries) {
+        try{
+            dbMaster.conn.destroy();
+        }catch (e) {
+            console.log("Connection destroyed")
+        }
+        return new Promise((resolve, reject) => {
+            dbMaster.conn.connect(function (err) {
+                if (err) {
+                    console.log(err);
+                    notificationService.notifyAdmin(err.toString());
+                    if (numRetries === 0){
+                        console.log("Failed all reconnect attempts.");
+                        notificationService.notifyAdmin("Failed all reconnect attempts!");
+                        reject();
+                    }
+                    setTimeout(function () {
+                        notificationService.notifyAdmin(`Retrying connection, ${numRetries} left...`);
+                        this.activateConnection(dbMaster, numRetries - 1)
+                    }, 5000)
+                }
+                else{
+                    resolve();
+                }
+            });
+        })
     }
 }
 
