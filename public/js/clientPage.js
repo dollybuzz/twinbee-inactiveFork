@@ -207,7 +207,7 @@ function timeBucketFunctionality (res) {
     $(".bucketRow").click(function () {
         selectedRow = $(this);
         $("#optionsClient").html(`<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`)
-        popBuyForm(buyForm(selectedRow.children()[0].innerHTML));
+        popBuyForm(buyForm);
     });
 
     //Expand Table Button
@@ -225,7 +225,8 @@ function timeBucketFunctionality (res) {
 
 }
 
-function buyForm (rowData) {
+function buyForm () {
+    let rowData = selectedRow.children()[0].innerHTML;
             $.ajax({
                 url: "/api/getMyTimeBucket",
                 method: "post",
