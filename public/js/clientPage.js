@@ -166,13 +166,18 @@ function timeBucketFunctionality (res) {
         '        </thead><tbody>');
     //Populate table
     for(var plan in res.buckets) {
-        let hours = Math.floor((Number.parseInt(res.buckets[plan])) / 60);
+        let hours = (Number.parseInt(res.buckets[plan]) / 60);
         let minutes = (Number.parseInt(res.buckets[plan])) % 60;
         let message = "";
-        if (hours > 0) {
-            message += ` ${hours} hours `;
+        if (hours >= 0) {
+            message += ` ${Math.floor(hours)} hours `;
         }
-        if (minutes > 0) {
+        if(hours <= -1)
+        {
+            hours = Math.abs(hours);
+            message += `-${Math.floor(hours)} hours `;
+        }
+        if (minutes >= 0 || minutes < 0) {
             message += ` ${minutes} minutes `;
         }
         $("#bucketTable").append('\n' +
