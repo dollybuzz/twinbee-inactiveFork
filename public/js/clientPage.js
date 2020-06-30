@@ -172,7 +172,7 @@ function timeBucketFunctionality (res) {
         if (hours >= 0) {
             message += ` ${Math.floor(hours)} hours `;
         }
-        if(hours < 0)
+        if(hours <= -1)
         {
             hours = Math.abs(hours);
             message += `-${Math.floor(hours)} hours `;
