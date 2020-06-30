@@ -508,8 +508,10 @@ $(document).ready(function () {
 
     //refresh tokens before timeout
     setTimeout(function () {
-        GOOGLE_USER.reloadAuthResponse();
-        id_token = GOOGLE_USER.getAuthResponse().id_token;
+        GOOGLE_USER.reloadAuthResponse()
+            .then(function () {
+                id_token = GOOGLE_USER.getAuthResponse().id_token;
+            });
     }, 3300000)
 
 })//end document ready
