@@ -1595,12 +1595,6 @@ function timeSheetFunctionality (res) {
                         runReportFunctionality();
                     });
 
-                    //Back to TimeSheets
-                    $("#BackButton").on('click', function() {
-                        navItemChange("reviewTimeSheets");
-                        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
-                    });
-
                 },
                 error: function (innerres, innerstatus) {
                     $("#userMainContent").html("Something went wrong!");
@@ -1861,12 +1855,19 @@ function verifyClearSheet () {
 }
 
 function runReportFunctionality () {
-
+    //CSS
     $("#AddButton").hide();
     $("#ExpandButton").hide();
     $("DeleteButton").hide();
     $("#buttonsTop").append("<button id='BackButton' type='button' class='btn btn-default'>Back to TimeSheets</button>")
     $("#BackButton").css("opacity", "1");
+
+    //Event Listeners
+    //Back to TimeSheets Functionality
+    $("#BackButton").on('click', function() {
+        navItemChange("reviewTimeSheets");
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    });
 
     $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total:</th><td>500</td></tfoot>');
 
