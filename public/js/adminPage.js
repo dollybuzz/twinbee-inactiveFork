@@ -1858,6 +1858,11 @@ function verifyClearSheet () {
 
 function runReportFunctionality () {
 
+    $("#AddButton").hide();
+    $("#ExpandButton").hide();
+    $("DeleteButton").hide();
+    $("#buttonsTop").append("<button id='BackButton' type='button' class='btn btn-default'>Back to TimeSheets</button>")
+
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +

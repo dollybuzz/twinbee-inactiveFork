@@ -193,16 +193,17 @@ body a:hover {
 }
 
 #ExpandButton:hover,
-#AddButton:hover {
+#AddButton:hover,
+#BackButton:hover {
     background-color: #e8ecef;
 }
 
 #ExpandButton,
-#AddButton {
+#AddButton, #BackButton {
     background-color: #a4b6ba;
 }
 
-#AddButton {
+#AddButton, #BackButton {
     position: relative;
     z-index: 2500;
     margin-bottom: -18px;
