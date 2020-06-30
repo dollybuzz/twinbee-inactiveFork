@@ -84,13 +84,13 @@ function createBody (button) {
 
     //bottom row of OptionsClient instead of UserMainContent
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").hide();
 };
 
 function showBlock () {
     //show block after table stops moving
     setTimeout(function () {
         $("#optionsClient").show();
-        $("#buttonsBottom").show();
         $("#AddButton").show();
         $("#ExpandButton").show();
         $("#SubmitButton").show();
@@ -112,7 +112,6 @@ function minimizeTable () {
 
 function expandTable () {
     $("#optionsClient").hide();
-    $("#buttonsBottom").hide();
     $("#DeleteButton").hide();
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
