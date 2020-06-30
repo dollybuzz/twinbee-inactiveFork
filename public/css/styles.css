@@ -212,6 +212,10 @@ body a:hover {
     transition: opacity 0.5s ease-in-out;
 }
 
+#BackButton {
+    font-style: italic;
+}
+
 #buttonsTop {
     display: block;
     width: inherit;
