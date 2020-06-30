@@ -1589,6 +1589,10 @@ function timeSheetFunctionality (res) {
                         });
                     });
 
+                    //Run Report Functionality
+
+
+
                 },
                 error: function (innerres, innerstatus) {
                     $("#userMainContent").html("Something went wrong!");
