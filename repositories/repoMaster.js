@@ -35,7 +35,7 @@ class DbMaster {
         this.conn.connect(function (err) {
             if (err) {
                 console.log(err);
-                notificationService.notifyAdmin(err);
+                notificationService.notifyAdmin(err.toString());
             }
         });
     }

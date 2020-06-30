@@ -11,7 +11,7 @@ class AuthRepository {
         result = await query(sql, sqlParam).catch(e => {
             console.log(e);
             result = [];
-            notificationService.notifyAdmin(e);
+            notificationService.notifyAdmin(e.toString());
         });
         return result;
     }
