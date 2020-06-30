@@ -38,12 +38,10 @@ function createBody (button) {
     $("#ExpandButton").hide();
 
     //dynamically append submit button once showBlock is called
-};
-
+}
 function showBlock () {
     //show block after table stops moving
     setTimeout(function () {
-        $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
         $("#optionsClient").show();
         $("#ExpandButton").show();
         $("#SubmitButton").show();
@@ -53,8 +51,7 @@ function showBlock () {
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1")
     }, 800);
-};
-
+}
 function minimizeTable () {
     $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#floor").css("width", "50%");
@@ -77,8 +74,7 @@ function expandTable () {
         $("#ExpandButton").hide();
     }, 500);
 
-};
-
+}
 function showFunction (functionality, endpoint) {
     $.ajax({
         url: endpoint,
@@ -96,9 +92,7 @@ function showFunction (functionality, endpoint) {
             $("#userMainContent").html(`Something went wrong with ${endpoint}`);
         }
     });
-};
-
-
+}
 //Main Methods
 function showMain () {
     //Contains any main tab functionality
@@ -245,6 +239,7 @@ function buyForm () {
                         "<input class='form-control' type='number' id='buyHours' name='buyHours'>\n<br><br>\n" +
                         "<label for='buyHours'> Enter Number of Minutes: </label>" +
                         "<input class='form-control' type='number' id='buyMin' name='buyMin'></form>\n<br>\n");
+                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 
                     for (var item in planres.buckets) {
                         $("#buyPlan").append(
@@ -576,8 +571,7 @@ function makerFunctionality (res) {
                     '   <td>' + item.maker.email + '</td>' +
                     '   <td>' + item.occupation + '</td></tr>'
                 );
-            };
-
+            }
     $("#makerTable").append('\n</tbody>');
     //Body Block content
     createBody(null);
