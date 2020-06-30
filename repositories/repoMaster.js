@@ -38,7 +38,7 @@ class DbMaster {
     async activateConnection(dbMaster, numRetries) {
         return new Promise((resolve, reject) => {
             dbMaster.conn.connect(function (err) {
-                if (err) {
+                if (err && err.toString().includes("ECONNREFUSED")) {
                     console.log(err);
                     notificationService.notifyAdmin(err.toString());
                     if (numRetries === 0){
