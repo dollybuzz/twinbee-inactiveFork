@@ -3,7 +3,7 @@ const eventRepo = require('../repositories/eventRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 const emailService = require('./notificationService.js');
-const chargebee = require("chargebee");
+const chargebee = require("chargebee");\
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
     api_key : process.env.CHARGEBEE_API_KEY})
 
@@ -666,6 +666,10 @@ class ClientService {
             emailService.notifyAdmin(err.toString());
             return false;
         });
+
+        let client = await this.getClientById(customerId);
+        emailService.emailFMAdmin("Hours added!",
+            `${client.first_name} ${client.last_name} has manually added ${numHours} for time bucket ${planId}`);
         return true;
     }
 
