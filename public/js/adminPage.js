@@ -1471,7 +1471,7 @@ function timeSheetFunctionality (res) {
 
                     //Body Block content
                     createBody("Clear");
-                    $("#userMainContent").append("<div class='timeBottomButtons'></div><hr>");
+                    $("#userMainContent").append("<hr><div class='timeBottomButtons'></div>");
                     $(".timeBottomButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
                     $(".timeBottomButtons").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
                     $(".timeBottomButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
