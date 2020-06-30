@@ -2311,7 +2311,7 @@ function relationshipModForm(res, status) {
                                         `<option id="${makerId}" value="${makerId}" selected>${item.firstName} ${item.lastName} - ${makerId}</option>`
                                     );
                                 }
-                                else {
+                                else if(!item.deleted) {
                                     $('#modMakerRel').append(
                                         `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName} - ${item.id}</option>`
                                     );
