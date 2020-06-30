@@ -37,15 +37,7 @@ class DbMaster {
 
     async activateConnection(dbMaster, numRetries) {
         try{
-            dbMaster.conn.destroy();
-            dbMaster.conn = mysql.createConnection({
-                multipleStatements: true,
-                host: process.env.TWINBEE_DB_HOST,
-                port:process.env.TWINBEE_DB_PORT,
-                user: process.env.TWINBEE_DB_USERNAME,
-                password: process.env.TWINBEE_DB_PASS,
-                database: process.env.TWINBEE_DB_SCHEMA
-            });
+            dbMaster.conn.end();
         }catch (e) {
             console.log("Connection destroyed")
         }
