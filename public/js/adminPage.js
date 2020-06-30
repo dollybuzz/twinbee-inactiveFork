@@ -85,7 +85,7 @@ function createBody (button) {
     //bottom row
     $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
     $("#userMainContent").append('<div id="buttonsBottom"></div>');
-    $("#buttonsBottom").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#buttonsBottom").hide();
 };
 
