@@ -81,6 +81,8 @@ function createBody (button) {
         $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
     }
     $("#AddButton").css("opacity", "1");
+
+    //dynamically append submit button once showBlock is called
 };
 
 function showBlock () {
