@@ -1878,7 +1878,7 @@ function runReportFunctionality () {
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
         '        </thead><tbody>');
-    $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total Time:</th><td>?</td></tfoot>');
+    $("#sheetsTable").append('<tfoot><th id="test" colspan="6">Total Time:</th><td>?</td></tfoot>');
 
 }
 
