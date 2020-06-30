@@ -1862,6 +1862,7 @@ function runReportFunctionality () {
     $("#ExpandButton").hide();
     $("DeleteButton").hide();
     $("#buttonsTop").append("<button id='BackButton' type='button' class='btn btn-default'>Back to TimeSheets</button>")
+    $("#BackButton").css("opacity", "1");
 
     $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total:</th><td>500</td></tfoot>');
 
