@@ -1865,6 +1865,7 @@ function runReportFunctionality () {
     //Event Listeners
     //Back to TimeSheets Functionality
     $("#BackButton").on('click', function() {
+        $("#buttonsTop").append('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     });
 
