@@ -50,7 +50,7 @@ function showBlock () {
         $("#optionsClient").css("opacity", "1");
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1")
-    }, 800);
+    }, 500);
 }
 function minimizeTable () {
     $("#floor").css("transition", "width 0.5s ease-in-out");
