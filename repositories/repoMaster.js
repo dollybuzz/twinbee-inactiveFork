@@ -20,6 +20,19 @@ const mysql = require("mysql");
 const util = require('util');
 const notificationService = require('../services/notificationService.js');
 
+function activateConnection(dbConnection, numRetries) {
+    dbConnection.conn.connect(function (err) {
+        if (err) {
+            console.log(err);
+            notificationService.notifyAdmin(err.toString());
+            setTimeout(function () {
+                notificationService.notifyAdmin(`Retrying connection, ${numRetries} left...`)
+                activateConnection(dbConnection, numRetries - 1)
+            }, 5000)
+        }
+    });
+}
+
 class DbMaster {
     constructor(){
         this.conn = mysql.createConnection({
@@ -32,12 +45,7 @@ class DbMaster {
         });
 
         this.query = util.promisify(this.conn.query).bind(this.conn);
-        this.conn.connect(function (err) {
-            if (err) {
-                console.log(err);
-                notificationService.notifyAdmin(err.toString());
-            }
-        });
+        activateConnection(this, 20);
     }
 }
 
