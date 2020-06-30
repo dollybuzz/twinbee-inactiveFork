@@ -21,7 +21,7 @@ const util = require('util');
 const notificationService = require('../services/notificationService.js');
 
 class DbMaster {
-    async constructor(){
+    constructor(){
         this.conn = mysql.createConnection({
             multipleStatements: true,
             host: process.env.TWINBEE_DB_HOST,
@@ -32,18 +32,13 @@ class DbMaster {
         });
 
         this.query = util.promisify(this.conn.query).bind(this.conn);
-        await this.activateConnection(this, 20);
+        this.activateConnection(this, 20);
     }
 
     async activateConnection(dbMaster, numRetries) {
-        try{
-            dbMaster.conn.destroy();
-        }catch (e) {
-            console.log("Connection destroyed")
-        }
         return new Promise((resolve, reject) => {
             dbMaster.conn.connect(function (err) {
-                if (err) {
+                if (err && err.toString().includes("ECONNREFUSED")) {
                     console.log(err);
                     notificationService.notifyAdmin(err.toString());
                     if (numRetries === 0){
