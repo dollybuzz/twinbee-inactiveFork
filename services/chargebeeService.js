@@ -518,11 +518,29 @@ class ChargebeeService {
      * @param plan      - id of plan for which to add hours
      * @param numHours  - number of hours to add
      * @param customerId- customer that is adding hours
-     * @returns {Promise<void>}
+     * @returns {Promise<>}
      */
     async chargeCustomerNow(plan, numHours, customerId){
-        let planObj = await this.retrievePlan(plan);
-        let pricePerHour = Number.parseFloat(planObj.price);
+
+        let subscriptionEntries = await this.getSubscriptionsByClient(customerId);
+        let pricePerHour;
+        for (var entry of subscriptionEntries){
+            if (entry.subscription.plan_id.toString() === plan.toString()){
+                pricePerHour = entry.subscription.plan_unit_price;
+                console.log(`Using subscription price of ${entry.subscription.plan_unit_price} instead of plan price.`);
+                break;
+            }
+        }
+        if (!pricePerHour){
+            let planObj = await this.retrievePlan(plan);
+            pricePerHour = Number.parseFloat(planObj.price);
+        }
+        if (!pricePerHour){
+            notifyAdmin(`No price found for plan ${plan} for customer ${customerId} for ${numHours} hours.`);
+            console.log(`No price found for plan ${plan} for customer ${customerId} for ${numHours} hours.`);
+            return false;
+        }
+
         let calculatedPrice = Math.floor(pricePerHour * Number.parseFloat(numHours));
         let minutesString = (numHours * 60).toString();
         let hours = Math.floor(numHours);
@@ -538,7 +556,7 @@ class ChargebeeService {
         chargebee.invoice.charge({
             customer_id : customerId,
             amount : calculatedPrice.toString(),
-            description : `Buy ${message} for ${planObj.name}`
+            description : `Buy ${message} for ${plan}`
         }).request(function(error,result) {
             if(error){
                 //handle error
@@ -562,6 +580,7 @@ class ChargebeeService {
                 console.log("Update time bucket due to purchase request sent")
             }
         });
+        return calculatedPrice;
     }
 }
 
