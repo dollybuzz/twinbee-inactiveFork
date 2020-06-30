@@ -16,7 +16,7 @@ let updateClient = (customerId, keyValuePairs)=>{
         if(error){
             //handle error
             console.log(error);
-            emailService.notifyAdmin(error);
+            emailService.notifyAdmin(error.toString());
         }else{
             console.log(`Client ${customerId} updated successfully`)
         }
@@ -72,7 +72,7 @@ class ClientService {
             `${customerName} added a new ${paymentType} for payments!`)
             .catch(error => {
                 console.log(error);
-                emailService.notifyAdmin(error);
+                emailService.notifyAdmin(error.toString());
                 return false;
             });
         return "Successfully notified admin";
@@ -88,7 +88,7 @@ class ClientService {
         console.log(`Updating client ${clientId} metadata with data: `);
         console.log(keyValuePairs);
         let customer = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             console.log(err)
         });
         if (!customer.meta_data) {
@@ -103,7 +103,7 @@ class ClientService {
     async deleteTimeBucket(clientId, planBucket) {
         console.log(`Updating client ${clientId}, deleting time bucket ${planBucket}...`);
         let client = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             console.log(err)
         });
         if (!client.meta_data) {
@@ -128,7 +128,7 @@ class ClientService {
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
         console.log(`Updating client ${clientId} time bucket ${planBucket} with ${minuteChange} minutes...`);
         let client = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             console.log(err)
         });
         if (!client.meta_data) {
@@ -164,7 +164,7 @@ class ClientService {
     async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone, company) {
         console.log(`Updating client ${clientId} contact info...`);
         let customer = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             console.log(err)
         });
         customer.first_name = newFirstName;
@@ -218,7 +218,7 @@ class ClientService {
      */
     async getAllClients() {
         return await clientRepo.getAllClients().catch(err => {
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             console.log(err)
         });
     }
@@ -236,7 +236,7 @@ class ClientService {
     async createNewClient(firstName, lastName, customerEmail, phoneNumber, company) {
         console.log(`Creating new client with last name ${lastName}...`);
         return await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(err => {
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             console.log(err)
         });
     }
@@ -249,7 +249,7 @@ class ClientService {
     async getClientById(id) {
         console.log(`Getting data for client ${id}...`);
         let clientData = await clientRepo.getClientById(id).catch(err => {
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             console.log(err)
         });
         return clientData;
@@ -272,7 +272,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let body = response.body;
@@ -286,7 +286,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let makerMap = {};
@@ -314,13 +314,13 @@ class ClientService {
         await this.deleteAllSubscriptions(chargebeeId)
             .catch(error => {
                 console.log(error);
-                emailService.notifyAdmin(error);
+                emailService.notifyAdmin(error.toString());
             });
         console.log(`Deleting client ${chargebeeId}...`);
         await this.deleteAllRelationships(chargebeeId)
             .catch(error => {
                 console.log(error);
-                emailService.notifyAdmin(error);
+                emailService.notifyAdmin(error.toString());
             });
         clientRepo.deleteClient(chargebeeId);
         await this.updateClientMetadata(chargebeeId, {"deleted": "true"});
@@ -347,7 +347,7 @@ class ClientService {
                     }
                 }).catch(err => {
                     console.log(err);
-                    emailService.notifyAdmin(err);
+                    emailService.notifyAdmin(err.toString());
                 });
             }
         }
@@ -368,7 +368,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let subscriptions = JSON.parse(result.body);
@@ -401,7 +401,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let subscription = JSON.parse(result.body);
@@ -431,7 +431,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let subscription = JSON.parse(result.body);
         return subscription.customer_id === clientId ? subscription : false;
@@ -456,7 +456,7 @@ class ClientService {
                 }
             }).catch(err => {
                 console.log(err);
-                emailService.notifyAdmin(err);
+                emailService.notifyAdmin(err.toString());
             });
             return result.body && result.body.length > 0;
         }
@@ -480,7 +480,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         relationshipList = JSON.parse(relationshipList.body);
         let finalList = [];
@@ -533,7 +533,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let makers = JSON.parse(response.body);
@@ -546,7 +546,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let relationships = JSON.parse(result.body);
@@ -573,7 +573,7 @@ class ClientService {
     async getAllTimeBuckets() {
         let clients = await this.getAllClients().catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let timeBuckets = [];
         for (var i = 0; i < clients.length; ++i) {
@@ -594,7 +594,7 @@ class ClientService {
     async getTimeBucketsByClientId(id) {
         let client = await this.getClientById(id).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let obj = {};
         obj.first_name = client.first_name;
@@ -624,7 +624,7 @@ class ClientService {
                 if (error) {
                     //handle error
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    emailService.notifyAdmin(error.toString());
                     reject(error);
                 } else {
                     console.log("Successfully retrieved update payment page");
@@ -663,7 +663,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
             return false;
         });
         return true;
@@ -693,7 +693,7 @@ class ClientService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let makerMap = {};
@@ -722,7 +722,7 @@ class ClientService {
                 if (error) {
                     //handle error
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    emailService.notifyAdmin(error.toString());
                     reject(error);
                 } else {
                     var hosted_page = result.hosted_page;

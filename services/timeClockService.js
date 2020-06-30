@@ -59,7 +59,7 @@ class TimeClockService {
             }
         }).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let idResponse = JSON.parse(result.body);
 
@@ -72,7 +72,7 @@ class TimeClockService {
             }
         }).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let relationship = JSON.parse(result.body);
@@ -95,7 +95,7 @@ class TimeClockService {
             }
         }).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         result = JSON.parse(result.body);
 
@@ -144,14 +144,14 @@ class TimeClockService {
             }
         }).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let idResponse = JSON.parse(result.body);
         let makerId = idResponse.id;
 
         let onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         //"clock out" online sheets
@@ -159,7 +159,7 @@ class TimeClockService {
             let currentSheet = onlineSheets[i];
             let rightNow = await this.getCurrentMoment().catch(err=>{
                 console.log(err);
-                emailService.notifyAdmin(err);
+                emailService.notifyAdmin(err.toString());
             });
             request({
                 method: 'POST',
@@ -178,7 +178,7 @@ class TimeClockService {
 
             let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow).catch(err=>{
                 console.log(err);
-                emailService.notifyAdmin(err);
+                emailService.notifyAdmin(err.toString());
             });
             request({
                 method: 'POST',
@@ -198,7 +198,7 @@ class TimeClockService {
 
         onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         console.log("Remaining online sheets: ");

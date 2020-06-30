@@ -18,7 +18,7 @@ async function getMaker(id) {
         }
     }).catch(err => {
         console.log(err);
-        emailService.notifyAdmin(err);
+        emailService.notifyAdmin(err.toString());
     });
     return JSON.parse(response.body);
 }
@@ -33,7 +33,7 @@ async function getClient(id) {
         }
     }).catch(err => {
         console.log(err);
-        emailService.notifyAdmin(err);
+        emailService.notifyAdmin(err.toString());
     });
     return JSON.parse(response.body);
 }
@@ -47,7 +47,7 @@ async function getClientMap() {
         }
     }).catch(err => {
         console.log(err);
-        emailService.notifyAdmin(err);
+        emailService.notifyAdmin(err.toString());
     });
     let clients = JSON.parse(response.body);
     let clientMap = {};
@@ -66,7 +66,7 @@ async function getMakerMap() {
         }
     }).catch(err => {
         console.log(err);
-        emailService.notifyAdmin(err);
+        emailService.notifyAdmin(err.toString());
     });
     let makers = JSON.parse(response.body);
     let makerMap = {};
@@ -117,7 +117,7 @@ class TimeReportingService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let timeSheets = JSON.parse(response.body);
