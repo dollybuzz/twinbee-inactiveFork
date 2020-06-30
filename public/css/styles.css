@@ -493,3 +493,7 @@ th {
     text-align: right;
     background-color: white;
 }
+
+#specialCase {
+    margin-bottom: -100px;
+}
