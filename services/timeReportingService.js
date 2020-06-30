@@ -81,28 +81,23 @@ class TimeReportingService {
     };
 
     /**
+     * Retrieves reporting data for a client/maker combo. If no client or maker is passed,
+     * the value is treated as a wildcard (retrieve all). Reporting data is constrained to the given
+     * timeframes
      *
-     * @returns
-     *      {
-     *          }
-     *          sheets:[
-     *              {
-     *                  id: timesheet id,
-     *                  duration: length of time worked
-     *                  clientName: client's name,
-     *                  makerName: maker's name
-     *              },
-     *              {
-     *                  id: timesheet id,
-     *                  duration: length of time worked
-     *                  clientName: client's name,
-     *                  makerName: maker's name
-     *              },...
-     *          ]
-     *          totaL: total time of all timesheets
-     *      }
+     * @param start - first day of report
+     * @param end - first day excluded from report
+     * @param makerId - id of maker to use as constraint
+     * @param clientId - id of client to use as constraint
+     * @returns {Promise<{sheets:[], duration: total time logged}>}
      */
     async getReportForClientMakerPair(start, end, makerId, clientId) {
+        if (!makerId){
+            makerId = "";
+        }
+        if (!clientId){
+            clientId = "";
+        }
         let totalTime = 0;
         let obj = {};
         let sheets = [];
