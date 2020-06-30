@@ -491,8 +491,9 @@ th {
 
 #test {
     text-align: right;
+    background-color: white;
 }
 
-tbody tr {
-    text-align: right;
+#specialCase {
+    margin-bottom: 120px;
 }
