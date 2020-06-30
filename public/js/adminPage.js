@@ -1467,7 +1467,7 @@ function timeSheetFunctionality (res) {
 
                     //Body Block content
                     createBody("Clear");
-                    $("#specialCase").append("<hr><div class='timeBottomButtons'></div>");
+                    $("#userMainContent").append("<hr><div class='timeBottomButtons'></div>");
                     $(".timeBottomButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
                     $(".timeBottomButtons").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
                     $(".timeBottomButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
@@ -1858,24 +1858,10 @@ function verifyClearSheet () {
 
 function runReportFunctionality () {
 
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#sheetsTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">Time Sheet ID</th>\n' +
-        '            <th scope="col">Freedom Maker</th>\n' +
-        '            <th scope="col">Client</th>\n' +
-        '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
-        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
-        '            <th scope="col">Task</th>\n' +
-        '            <th scope="col">Detail</th>\n' +
-        '        </thead><tbody>');
+    $("#AddButton").hide();
+    $("#ExpandButton").hide();
+    $("DeleteButton").hide();
+    $("#buttonsTop").append("<button id='BackButton' type='button' class='btn btn-default'>Back to TimeSheets</button>")
 
     $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total:</th><td>500</td></tfoot>');
 
