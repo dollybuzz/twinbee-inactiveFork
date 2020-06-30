@@ -82,18 +82,14 @@ function createBody (button) {
     }
     $("#AddButton").css("opacity", "1");
 
-    //bottom row
-    $("#userMainContent").append('\n<div class="row" id="bottomRow"></div>');
-    $("#userMainContent").append('<div id="buttonsBottom"></div>');
-    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#buttonsBottom").hide();
+    //dynamically append submit button once showBlock is called
 };
 
 function showBlock () {
     //show block after table stops moving
     setTimeout(function () {
+        $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
         $("#optionsClient").show();
-        $("#buttonsBottom").show();
         $("#AddButton").show();
         $("#ExpandButton").show();
         $("#SubmitButton").show();
@@ -115,7 +111,6 @@ function minimizeTable () {
 
 function expandTable () {
     $("#optionsClient").hide();
-    $("#buttonsBottom").hide();
     $("#DeleteButton").hide();
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
