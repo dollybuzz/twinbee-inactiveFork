@@ -1595,7 +1595,11 @@ function timeSheetFunctionality (res) {
                         runReportFunctionality();
                     });
 
-
+                    //Back to TimeSheets
+                    $("#BackButton").on('click', function() {
+                        navItemChange("reviewTimeSheets");
+                        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+                    });
 
                 },
                 error: function (innerres, innerstatus) {
@@ -1865,7 +1869,6 @@ function runReportFunctionality () {
     $("#BackButton").css("opacity", "1");
 
     $("#sheetsTable").append('<tfoot><th id="test" colspan="7">Total:</th><td>500</td></tfoot>');
-
 
 }
 
