@@ -23,7 +23,6 @@ class ClientRepository {
                     reject(error);
                 }else{
                     var customer = result.customer;
-                    var card = result.card;
 
                     console.log(`Customer ${customer.id} successfully created, adding to DB`);
                     let sql = 'INSERT INTO client(chargebee_id, email) ' +
@@ -31,8 +30,8 @@ class ClientRepository {
                     let sqlParams = [customer.id, customerEmail];
                     query(sql, sqlParams, function (err, result) {
                         if (err) {
-                            throw err;
                             reject(err);
+                            throw err;
                         }
                     });
                     console.log("Customer added to DB");

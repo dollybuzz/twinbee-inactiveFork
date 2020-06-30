@@ -14,6 +14,9 @@ class AuthRepository {
             let sqlParam = [];
             let result;
             result = await query(sql, sqlParam).catch( async e => {
+                if (numRetries === 0){
+                    reject();
+                }
                 console.log(e);
                 result = [];
                 notificationService.notifyAdmin(e.toString());

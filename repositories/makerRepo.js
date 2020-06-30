@@ -1,6 +1,8 @@
 //TODO; have errors send us notifications rather than "throw"
 
 const {query} = require("./repoMaster.js");
+const repoMaster = require('./repoMaster.js');
+const notificationService = require('../services/notificationService.js');
 class MakerRepository {
     constructor() {
     };
@@ -59,16 +61,31 @@ class MakerRepository {
         return result;
     }
 
-    async getAllMakers() {
-        let sql = 'SELECT * FROM maker';
-        let sqlParam = [];
-        let result;
-        result = await query(sql, sqlParam).catch(e => {
-            console.log(e);
-            result = [];
-        });
-        console.log("All makers retrieved from database");
-        return result;
+    async getAllMakers(numRetries) {
+        if (!numRetries){
+            numRetries = 3;
+        }
+
+        return new Promise(async (resolve, reject)=> {
+            let sql = 'SELECT * FROM maker';
+            let sqlParam = [];
+            let result;
+            result = await query(sql, sqlParam).catch(async e => {
+                if (numRetries === 0){
+                    reject();
+                }
+                console.log(e);
+                result = [];
+                notificationService.notifyAdmin(e.toString());
+                if (e.toString().includes("Cannot enqueue Query after fatal error.")) {
+                    await repoMaster.activateConnection(repoMaster, 3);
+                    console.log(`Trying to get makers again, ${numRetries} retries left`);
+                    resolve(await this.getAllMakers(numRetries - 1));
+                }
+            });
+            console.log("All makers retrieved from database");
+            resolve(result);
+        })
     }
 
     async getMakersByLastName(lastName) {
