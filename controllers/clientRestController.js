@@ -682,7 +682,7 @@ module.exports = {
      * looks for values in the body in the form:
      * {
      *     "token": requester's token,
-     *     "subscriptionId": subscription to base costs from,
+     *     "planId": plan to base costs from,
      *     "numHours": number of hours to base costs from,
      *     "auth": valid authentication
      * }
@@ -697,7 +697,7 @@ module.exports = {
       let email = await authService.getEmailFromToken(req.body.token);
       let client = await clientService.getClientByEmail(email);
       console.log(client);
-      res.send(await clientService.chargeMeNow(req.body.subscriptionId, req.body.numHours, client.id));
+      res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id));
     },
 
     /**
