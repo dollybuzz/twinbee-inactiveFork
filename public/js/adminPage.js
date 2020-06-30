@@ -1464,7 +1464,7 @@ function timeSheetFunctionality (res) {
                             '   <td>' + message + '</td></tr>');
                     });
                     $("#sheetsTable").append('\n</tbody>');
-                    $("#sheetsTable").append('<tfoot><th id="test" colspan="1">Total:</th><td>500</td></tfoot>');
+                    $("#sheetsTable").append('<tfoot><th id="test" colspan="8">Total:</th><td>500</td></tfoot>');
 
                     //Body Block content
                     createBody("Clear");
