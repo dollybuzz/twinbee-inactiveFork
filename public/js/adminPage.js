@@ -370,7 +370,7 @@ function clientFunctionality (res){
     createBody("Delete");
 
     //Event Listeners
-    //Modify Client
+    //Modify
     $(".clientRow").click(function () {
         selectedRow = $(this);
         let clientPrompt = `<h5>Please type in the Full Name to delete the selected user.</h5>` +
@@ -394,7 +394,7 @@ function clientFunctionality (res){
         });
     });
 
-    //Add Client
+    //Add
     $("#AddButton").click(function () {
         popAddForm(clientAddForm);
         $("#DeleteButton").css("opacity", "0");
@@ -691,6 +691,7 @@ function makerModForm (res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -741,6 +742,7 @@ function makerAddForm () {
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -927,6 +929,7 @@ function subscriptionModForm (res, status) {
         "<div id='pendingChanges'></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Pre-populating drop down options
     $.ajax({
@@ -1051,6 +1054,7 @@ function subscriptionAddForm () {
         "<hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Pre-populating drop down options
     $.ajax({
@@ -1278,6 +1282,7 @@ function planModForm (res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -1326,6 +1331,7 @@ function planAddForm () {
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -1657,6 +1663,7 @@ function sheetModForm(res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     if($("#modsheetdetail").val() == "null")
     {
@@ -1734,6 +1741,7 @@ function sheetAddForm () {
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     $.ajax({
         url: "/api/getAllMakers",
@@ -2016,6 +2024,7 @@ function creditModForm(res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -2098,6 +2107,7 @@ function creditAddForm() {
                         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+                    $("#SubmitButton").css("opacity", "1");
 
                     for(var client in clientres) {
                         client = clientres[client].customer;
@@ -2355,6 +2365,7 @@ function relationshipModForm(res, status) {
         "<div id='empty'></div></form>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     $.ajax({
         url: "/api/getAllMakers",
@@ -2455,6 +2466,7 @@ function relationshipAddForm() {
                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+                    $("#SubmitButton").css("opacity", "1");
 
                     for (var i = 0; i < clientres.length; ++i) {
                         $('#addClientRel').append(
