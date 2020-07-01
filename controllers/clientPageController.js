@@ -13,6 +13,7 @@ module.exports ={
         };
         let headerLinks = [
             {link: "/client", text: "Main", id:"main"},
+            {link: "", text: "Manage Available Hours", id:"manageCredits"},
             {link: "", text: "Manage My Subscriptions", id: "manageSubscriptions"},
             {link: "", text: "My Freedom Makers", id: "manageMakers"},
             {link: "", text: "Review Time Sheets", id:"reviewTimeSheets"}

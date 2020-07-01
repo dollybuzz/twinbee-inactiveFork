@@ -11,8 +11,8 @@ let navMapper = {
         location.reload();
     },
 
-    reviewTimeSheets: function () {
-        timeSheetFunctionality();
+    manageCredits: function () {
+        showFunction(timeBucketFunctionality, '/api/getAllMyTimeBuckets');
     },
 
     manageSubscriptions: function () {
@@ -21,6 +21,10 @@ let navMapper = {
 
     manageMakers: function () {
         showFunction(makerFunctionality, "/api/getMyMakers");
+    },
+
+    reviewTimeSheets: function () {
+        timeSheetFunctionality();
     }
 };//end navMapper
 
@@ -94,11 +98,6 @@ function showFunction (functionality, endpoint) {
     });
 }
 //Main Methods
-function showMain () {
-    //Contains any main tab functionality
-    showFunction(timeBucketFunctionality, '/api/getAllMyTimeBuckets');
-}
-
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
@@ -107,7 +106,6 @@ onSignIn = function (googleUser) {
     let name = TEST_ENVIRONMENT ? null : profile.getName();
     $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
 
-    showMain();
 };
 
 function openHostedPage(getPageEndpoint){
