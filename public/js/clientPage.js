@@ -611,8 +611,6 @@ function timeSheetFunctionality () {
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
-    $("#buttonsTop").append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
     $.ajax({
         method: "post",
         url: '/api/getMyTimeSheetsClient',
