@@ -210,7 +210,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
         $("#deletePrompt").append("<div id='selectionYorN'></div>");
         $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
         $("#selectionYorN").append("<button id='YesDelete' type='button' class='btn btn-default'>Yes</button>");
-        $("#SubmitButton").css("opacity", "0");
+        $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
         $("#AddButton").css("opacity", "0");
         $("#DeleteButton").css("opacity", "0");
         $("#deletePrompt").css("opacity", "1");
