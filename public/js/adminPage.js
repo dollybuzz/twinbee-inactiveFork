@@ -378,7 +378,7 @@ function clientFunctionality (res){
 
         prePopModForm("/api/getClient", clientModForm);
         $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
+
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("delete", clientPrompt,"/api/deleteClient", {
@@ -392,7 +392,6 @@ function clientFunctionality (res){
     $("#AddButton").click(function () {
         popAddForm(clientAddForm);
         $("#DeleteButton").css("opacity", "0");
-        $("#SubmitButton").css("opacity", "0");
         setTimeout(function(){
             $("#DeleteButton").hide();
         }, 500);
@@ -431,8 +430,7 @@ function clientModForm (res, status) {
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
-    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#SubmitButton").css("opacity", "1");
+    $("#SubmitButton").css("opacity", "0");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -502,7 +500,7 @@ function clientAddForm () {
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
