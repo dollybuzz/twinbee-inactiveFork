@@ -10,9 +10,9 @@
 
             <%if (i == 7){%>
             <div class="dropdown">
-             <button class="dropbtn">Test</button>
+             <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
               <div class="dropdown-content">
-                 <a href="#">Run Reports</a>
+                 <a href="#"><span id="<%=navItemsTop[i+1]["id"]%>" class="navItem"><%=navItemsTop[i+1]["text"]%></span></a>
               </div>
             </div>
             <%}%>
