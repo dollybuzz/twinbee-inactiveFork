@@ -585,7 +585,7 @@ function deleteClientSuccess (res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!<br><br>Please know, changes may take a moment to reflect.</h5>`);
     setTimeout(function() {
         showFunction(clientFunctionality, "/api/getAllClients");
-    }, 1500);
+    }, 1200);
 }
 
 function verifyDeleteClient () {
