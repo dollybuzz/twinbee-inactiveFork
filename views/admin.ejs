@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') -%>
 <script src="/js/adminPage.js"></script>
 <nav>
-    <% if (typeof navItemsTop !== "undefined"){ %>
+    <% if (typeof navItemsTop != "undefined"){ %>
         <% for (var i = 0; i < navItemsTop.length; ++i){ %>
 
             <% if (navItemsTop[i].dropdowns.length > 0){ %>
