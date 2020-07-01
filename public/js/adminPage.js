@@ -47,7 +47,7 @@ let navMapper = {
 
     runReports: function() {
         navItemChange("runReports");
-        showFunction(runReportFunctionality, "");
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     }
 
 
@@ -1493,12 +1493,6 @@ function timeSheetFunctionality (res) {
 
                     //Body Block content
                     createBody("Clear");
-                    $("#userMainContent").append("<hr><div class='timeBottomButtons'></div>");
-                    $(".timeBottomButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
-                    $(".timeBottomButtons").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
-                    $(".timeBottomButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
-                    $(".timeBottomButtons").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
-                    $(".timeBottomButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
 
                     //Event Listeners
                     //Modify
@@ -1554,73 +1548,6 @@ function timeSheetFunctionality (res) {
                     }).mouseleave(function () {
                         $(this).css('background-color', 'white');
                     });
-
-                    //Pre-populate Report drop down options
-                    $("#clientRepSearch").on("change", function () {
-                        $.ajax({
-                            url: "/api/getAllClients",
-                            method: "post",
-                            data: {
-                                auth: id_token
-                            },
-                            dataType: "json",
-                            success: function (clientres, clientstatus) {
-                                $("#clientReport").html("");
-                                for (var i = 0; i < clientres.length; ++i) {
-                                    let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
-                                    if(clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase())) {
-                                        $('#clientReport').append(
-                                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
-                                        )
-                                    };
-                                }
-                            },
-                            error: function (clientres, clientstatus) {
-                                $("#userMainContent").html("Could not get clients for drop down!");
-                            }
-                        });
-                    });
-
-                    $("#makerRepSearch").on("change", function () {
-                        $.ajax({
-                            url: "/api/getAllMakers",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                            },
-                            dataType: "json",
-                            success: function (makerres, makerstatus) {
-                                $("#makerReport").html("");
-                                for (var item of makerres) {
-                                    let deleted;
-                                    if(item.deleted)
-                                    {
-                                        deleted = "*Deleted* ";
-                                    }
-                                    else
-                                    {
-                                        deleted = "";
-                                    }
-                                    let makerName = deleted + item.firstName + " " + item.lastName;
-                                    if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
-                                    {
-                                        $('#makerReport').append(
-                                            `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
-                                        );
-                                    }
-                                }
-                            },
-                            error: function (makerres, makerstatus) {
-                                $("#userMainContent").html("Could not get makers for drop down!");
-                            }
-                        });
-                    });
-
-                    //Run Report
-                    $("#runReportButton").on('click', function () {
-                        runReport();
-                    });
-
                 },
                 error: function (innerres, innerstatus) {
                     $("#userMainContent").html("Something went wrong!");
@@ -1896,29 +1823,103 @@ function runReportFunctionality () {
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
-        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    <table id=\"reportTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
-    $("#sheetsTable").html('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">Time Sheet ID</th>\n' +
-        '            <th scope="col">Freedom Maker</th>\n' +
-        '            <th scope="col">Occupation</th>\n' +
-        '            <th scope="col">Client</th>\n' +
-        '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Shift Duration</th>\n' +
-        '        </thead><tbody>');
-    $("#sheetsTable").append('<tfoot><th id="test" colspan="4">Total Time:</th><td>?</td></tfoot>');
 
-    //CSS
-    $("#buttonsTop").append("<button id='BackButton' type='button' class='btn btn-default'>Back to TimeSheets</button>")
-    $("#BackButton").css("opacity", "1");
+    //Body Block Content
+    createBody("");
+    $("#userMainContent").append("<hr><div class='timeBottomButtons'></div>");
+    $(".timeBottomButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
+    $(".timeBottomButtons").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
+    $(".timeBottomButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".timeBottomButtons").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
+    $(".timeBottomButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+
+
+    //Pre-populate Report drop down options
+    $("#clientRepSearch").on("change", function () {
+        $.ajax({
+            url: "/api/getAllClients",
+            method: "post",
+            data: {
+                auth: id_token
+            },
+            dataType: "json",
+            success: function (clientres, clientstatus) {
+                $("#clientReport").html("");
+                for (var i = 0; i < clientres.length; ++i) {
+                    let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
+                    if(clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase())) {
+                        $('#clientReport').append(
+                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
+                        )
+                    };
+                }
+            },
+            error: function (clientres, clientstatus) {
+                $("#userMainContent").html("Could not get clients for drop down!");
+            }
+        });
+    });
+
+    $("#makerRepSearch").on("change", function () {
+        $.ajax({
+            url: "/api/getAllMakers",
+            method: "post",
+            data: {
+                auth: id_token,
+            },
+            dataType: "json",
+            success: function (makerres, makerstatus) {
+                $("#makerReport").html("");
+                for (var item of makerres) {
+                    let deleted;
+                    if(item.deleted)
+                    {
+                        deleted = "*Deleted* ";
+                    }
+                    else
+                    {
+                        deleted = "";
+                    }
+                    let makerName = deleted + item.firstName + " " + item.lastName;
+                    if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
+                    {
+                        $('#makerReport').append(
+                            `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
+                        );
+                    }
+                }
+            },
+            error: function (makerres, makerstatus) {
+                $("#userMainContent").html("Could not get makers for drop down!");
+            }
+        });
+    });
 
     //Event Listeners
     //Back to TimeSheets Functionality
     $("#BackButton").on('click', function() {
         $("#buttonsTop").html('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
+        navItemChange("reviewTimeSheets");
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    });
+
+    //Run Report
+    $("#runReportButton").on('click', function () {
+        $("#reportTable").html('\n' +
+            '        <thead class="thead">\n' +
+            '            <th scope="col">Time Sheet ID</th>\n' +
+            '            <th scope="col">Freedom Maker</th>\n' +
+            '            <th scope="col">Occupation</th>\n' +
+            '            <th scope="col">Client</th>\n' +
+            '            <th scope="col">Plan</th>\n' +
+            '            <th scope="col">Shift Duration</th>\n' +
+            '        </thead><tbody>');
+        $("#reportTable").append('<tfoot><th id="test" colspan="4">Total Time:</th><td>?</td></tfoot>');
+
+        $("#reportTable").css("opacity", "1");
     });
 
 }

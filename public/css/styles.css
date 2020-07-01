@@ -527,3 +527,8 @@ th {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+#reportTable {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
