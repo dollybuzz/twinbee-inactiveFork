@@ -54,6 +54,7 @@ let navMapper = {
 
 function navItemChange(id){
     let selectedNavMap = $(`#${id}`);
+    console.log(selectedNavMap);
     let navItemText = selectedNavMap.html();
     selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
 
