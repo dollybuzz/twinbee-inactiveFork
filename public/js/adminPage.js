@@ -582,7 +582,7 @@ function addClientSuccess (res, status) {
 }
 
 function deleteClientSuccess (res, status) {
-    $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5><br><h6>Note: Changes may take a moment to reflect.</h6>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5><hr><p>Note: Changes may take a moment to reflect.</p>`);
     setTimeout(function() {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1500);
@@ -1004,8 +1004,8 @@ function subscriptionModForm (res, status) {
                 $("#pendingChanges").css("opacity", "1");
 
                 $("#pendingChanges").html("<br><hr><p>This plan has the following scheduled change and will take effect on the next " +
-                    "renewed billing cycle.<br>" +
-                    `<h6>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h6>` +
+                    "renewed billing cycle." +
+                    `<h5>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h5>` +
                     "If you want to revoke this change,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Revoke</button> to end the change request</span>.<br>" +
                     "<div id='cancelChange'></div>");
 
