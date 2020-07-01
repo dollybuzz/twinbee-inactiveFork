@@ -82,13 +82,12 @@ function createBody (button) {
     }
     $("#AddButton").css("opacity", "1");
 
-    //dynamically append submit button once showBlock is called
+    //dynamically append submit button in each form
 };
 
 function showBlock () {
     //show block after table stops moving
     setTimeout(function () {
-        $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
         $("#optionsClient").show();
         $("#AddButton").show();
         $("#ExpandButton").show();
@@ -431,6 +430,8 @@ function clientModForm (res, status) {
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
@@ -497,6 +498,9 @@ function clientAddForm () {
         "<label for='addemail'>Email:</label>" +
         `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -679,6 +683,8 @@ function makerModForm (res, status) {
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
@@ -726,6 +732,8 @@ function makerAddForm () {
         "<label for='addemail'>Email:</label>" +
         `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 
     //Submit button function
     $("#SubmitButton").off("click");
@@ -911,6 +919,9 @@ function subscriptionModForm (res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>" +
         "<div id='pendingChanges'></div>");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
+    //Pre-populating drop down options
     $.ajax({
         url: "/api/getAllPlans",
         method: "post",
@@ -1032,6 +1043,9 @@ function subscriptionAddForm () {
         "</form><br><div><span id='errormessage' style='color:red'></span></div>\n" +
         "<hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
+    //Pre-populating drop down options
     $.ajax({
         url: "/api/getAllPlans",
         method: "post",
@@ -1256,6 +1270,8 @@ function planModForm (res, status) {
         `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
@@ -1301,6 +1317,8 @@ function planAddForm () {
         "<label for='addplandescription'>Description:</label>" +
         `<input class='form-control' type='text' id='addplandescription' name='addplandescription'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 
     //Submit button function
     $("#SubmitButton").off("click");

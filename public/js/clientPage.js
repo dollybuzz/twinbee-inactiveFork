@@ -37,7 +37,7 @@ function createBody (button) {
     $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#ExpandButton").hide();
 
-    //dynamically append submit button once showBlock is called
+    //dynamically append submit button in each form
 }
 function showBlock () {
     //show block after table stops moving
