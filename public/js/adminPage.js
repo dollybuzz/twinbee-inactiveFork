@@ -392,6 +392,7 @@ function clientFunctionality (res){
     $("#AddButton").click(function () {
         popAddForm(clientAddForm);
         $("#DeleteButton").css("opacity", "0");
+        $("#SubmitButton").css("opacity", "0");
         setTimeout(function(){
             $("#DeleteButton").hide();
         }, 500);
