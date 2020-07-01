@@ -25,15 +25,9 @@ module.exports = {
             },
             {
                 link: "", text: "Manage Billing", id: "manageBilling", dropdowns: [
-                    {
-                        link: "", text: "Manage Plans", id: "managePlans", dropdowns: []
-                    },
-                    {
-                        link: "", text: "Manage Subscriptions", id: "manageSubscriptions", dropdowns: []
-                    },
-                    {
-                        link: "", text: "Manage Available Credit", id: "manageCredit", dropdowns: []
-                    }
+                    {link: "", text: "Manage Plans", id: "managePlans"},
+                    {link: "", text: "Manage Subscriptions", id: "manageSubscriptions"},
+                    {link: "", text: "Manage Available Credit", id: "manageCredit"}
                 ]
             },
 
