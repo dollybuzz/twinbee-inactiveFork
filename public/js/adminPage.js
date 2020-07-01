@@ -219,6 +219,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
 
         setTimeout(function () {
             $("#AddButton").hide();
+            $("#DeleteButton").hide();
         }, 500);
 
         $("#NoDelete").click(function() {
