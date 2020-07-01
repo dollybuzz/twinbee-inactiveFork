@@ -1019,7 +1019,7 @@ function subscriptionModForm (res, status) {
                         },
                         dataType: "json",
                         success: function (undores, undostatus) {
-                            $("#cancelChange").append("<br><h5>Successfully revoked the change request!</h5>");
+                            $("#cancelChange").append("<h5>Successfully revoked the change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
                             }, 1000);
