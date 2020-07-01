@@ -240,6 +240,7 @@ function buyForm () {
                         "<label for='buyHours'> Enter Number of Minutes: </label>" +
                         "<input class='form-control' type='number' id='buyMin' name='buyMin'></form>\n<br>\n");
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+                    $("#SubmitButton").css("opacity", "1");
 
                     for (var item in planres.buckets) {
                         $("#buyPlan").append(
@@ -443,9 +444,11 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br><br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
-        "</form><br><div><span id='errormessage' style='color:red'></span></div>" +
-        "<div id='pendingChanges'></div>");
+        "</form><br><div><span id='errormessage' style='color:red'></span></div>");
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
+
+    $("#optionsClient").append("<div id='pendingChanges'></div>");
 
     $("#SubmitButton").on("click", function (e) {
         let monthlyHours = $("#modsubscriptionplanquantity").val();
@@ -506,7 +509,7 @@ function subscriptionModForm (res, status) {
             dataType: "json",
             success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
-                $("#pendingChanges").html("<hr><p>This plan has the following scheduled change and will take effect on the next " +
+                $("#pendingChanges").html("<br><hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
                     `<h5>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h5>` +
                     "If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +

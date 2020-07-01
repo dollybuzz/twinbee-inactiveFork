@@ -1259,7 +1259,6 @@ function subscriptionModForm (res, status) {
             dataType: "json",
             success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
-
                 $("#pendingChanges").html("<br><hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle." +
                     `<h5>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h5>` +
