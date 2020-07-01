@@ -9,7 +9,6 @@ let navMapper = {
         location.reload();
     },
 
-
     manageClients: function () {
         navItemChange("manageClients");
         showFunction(clientFunctionality, "/api/getAllClients");
@@ -20,19 +19,19 @@ let navMapper = {
         showFunction(makerFunctionality, "/api/getAllMakers");
     },
 
-    manageSubscriptions: function () {
-        navItemChange("manageSubscriptions");
-        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
-    },
-
     managePlans: function () {
         navItemChange("managePlans");
         showFunction(planFunctionality, "/api/getAllPlans");
     },
 
-    reviewTimeSheets: function () {
-        navItemChange("reviewTimeSheets");
-        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    manageSubscriptions: function () {
+        navItemChange("manageSubscriptions");
+        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
+    },
+
+    manageRelationships: function () {
+        navItemChange("manageRelationships");
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
     },
 
     manageCredit: function () {
@@ -40,9 +39,9 @@ let navMapper = {
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     },
 
-    manageRelationships: function () {
-        navItemChange("manageRelationships");
-        showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    reviewTimeSheets: function () {
+        navItemChange("reviewTimeSheets");
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     },
 
     runReports: function() {
@@ -819,6 +818,233 @@ function verifyDeleteMaker () {
     return (deleteUser == (selectedRow.children()[1].innerHTML));
 }
 
+//Plan Methods
+function planFunctionality (res) {
+    //Create table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"planTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    $("#planTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Price Per Hour</th>\n' +
+        '            <th scope="col">Description</th>\n' +
+        '        </thead><tbody>');
+
+    //Populate table
+    res.forEach(item => {
+        let plan = item.plan;
+        item = item.plan;
+        if(plan.status != "archived")
+        {
+            $("#planTable").append('\n' +
+                '<tr class="planRow">' +
+                '   <td scope="row">' + plan.id + '</td>' +
+                '   <td>$' + Number.parseInt(plan.price)/100 + '</td>' +
+                '   <td>' + plan.description + '</td></tr>'
+            );
+        }
+    });
+    $("#planTable").append('\n</tbody>');
+
+    //Body Block content
+    createBody("Delete");
+
+    //Event Listeners
+    //Modify
+    $(".planRow").click(function () {
+        selectedRow = $(this);
+        let planPrompt = `<h5>Please type in the Plan to cancel the selected plan.</h5>` +
+            `<h6>You selected Plan: ${selectedRow.children()[0].innerHTML}</h6>` +
+            "<br><div id='delete'>" +
+            "<div id='empty'></div>" +
+            "<div><label for='deleteUser'>Enter Plan:</label></div>" +
+            `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+            "<div id='empty'></div>" +
+            "</div>\n";
+
+        prePopModForm("/api/retrievePlan", planModForm);
+        $("#DeleteButton").show();
+        $("#DeleteButton").css("opacity", "1");
+        $("#DeleteButton").click(function () {
+            let planId = selectedRow.children()[0].innerHTML;
+            showDeletePrompt("delete", planPrompt, "/api/deletePlan", {
+                auth: id_token,
+                planId: planId
+            }, deletePlanSuccess, verifyDeletePlan);
+        });
+
+    });
+
+    //Add
+    $("#AddButton").click(function () {
+        popAddForm(planAddForm);
+        $("#DeleteButton").css("opacity", "0");
+        setTimeout(function () {
+            $("#DeleteButton").hide();
+        }, 500);
+    });
+
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
+
+    //Row effect
+    $(".planRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
+
+function planModForm (res, status) {
+    //Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        "<form id='modify'>\n" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='modplanid'>Plan:</label>" +
+        `<input class='form-control' type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
+        "<label for='modplaninvoicename'>Invoice Statement Title:</label>" +
+        `<input class='form-control' type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br><br>\n` +
+        "<label for='modplanprice'>Price Per Hour ($):</label>" +
+        `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        let message = "";
+        let valid = true;
+        if ($("#modplaninvoicename").val().length === 0){
+            valid = false;
+            message += "Invoice description is mandatory!<br>";
+        }
+        if ($("#modplanprice").val().length === 0){
+            valid = false;
+            message += "A Price is mandatory!<br>";
+        }
+
+
+        if (valid) {
+            $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='modsuccess'></div>");
+            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+            modSubmit("/api/updatePlan", {
+                auth: id_token,
+                planId: $("#modplanid").val(),
+                planInvoiceName: $("#modplaninvoicename").val(),
+                planPrice: Number.parseFloat($("#modplanprice").val()).toFixed(2) * 100
+            }, modPlanSuccess);
+        }
+        else{
+            $("#errormessage").html(message);
+        }
+    });
+}
+
+function planAddForm () {
+    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+        "<form id='add'>\n" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='addplanname'>Plan:</label>" +
+        `<input class='form-control' type='text' id='addplanname' name='addplanname'>\n<br>\n` +
+        "<label for='addplaninvoicename'>Invoice Statement Title:</label>" +
+        `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br><br>\n` +
+        "<label for='addplanprice'>Price Per Hour ($):</label>" +
+        `<input class='form-control' type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
+        "<label for='addplandescription'>Description:</label>" +
+        `<input class='form-control' type='text' id='addplandescription' name='addplandescription'>\n<br><br>\n` +
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
+
+    //Submit button function
+    $("#SubmitButton").off("click");
+    $("#SubmitButton").on('click', function (e) {
+        let message = "";
+        let valid = true;
+        if ($("#addplanname").val().match(/\s+/g)){
+            message += "No spaces allowed in plan names (use dashes)!<br>";
+            valid = false;
+        }
+        if ($("#addplanname").val().length === 0){
+            message += "A plan name is mandatory!<br>";
+            valid = false;
+        }
+        if ($("#addplaninvoicename").val().length === 0){
+            message += "Invoice Statement Title cannot be blank!<br>";
+            valid = false;
+        }
+        if ($("#addplanprice").val().length === 0){
+            message += "Price per hour must have a value!<br>"
+            valid = false;
+        }
+        if ($("#addplandescription").val().length === 0){
+            message += "A description is required!<br>"
+            valid = false;
+        }
+        if (valid){
+            $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='addsuccess'></div>");
+            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+            addSubmit("/api/createPlan", {
+                auth: id_token,
+                planId: $("#addplanname").val(),
+                invoiceName: $("#addplaninvoicename").val() ,
+                pricePerHour: Number.parseFloat($("#addplanprice").val()).toFixed(2) * 100,
+                planDescription: $("#addplandescription").val()
+            }, addPlanSuccess);
+        }
+        else{
+            $("#errormessage").html(message);
+        }
+    });
+}
+
+function modPlanSuccess (res, status) {
+    $("#modsuccess").html(`<br><h5>Successfully updated Plan ${$("#modplanid").val()}!</h5>`);
+
+    setTimeout(function() {
+        showFunction(planFunctionality, "/api/getAllPlans");
+    }, 1000);
+}
+
+function addPlanSuccess (res, status) {
+    $("#addsuccess").html(`<br><h5>Successfully added Plan ${res.id}!</h5>`);
+
+    setTimeout(function() {
+        showFunction(planFunctionality, "/api/getAllPlans");
+    }, 1000);
+}
+
+function deletePlanSuccess (res, status) {
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h5>`);
+    setTimeout(function () {
+        showFunction(planFunctionality, "/api/getAllPlans");
+    }, 1000);
+}
+
+function verifyDeletePlan () {
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == selectedRow.children()[0].innerHTML);
+}
+
 //Subscription Methods
 function subscriptionFunctionality (res) {
     //Create table
@@ -1174,75 +1400,479 @@ function verifyDeleteSubscription () {
     return (deleteUser == selectedRow.children()[0].innerHTML);
 }
 
-//Plan Methods
-function planFunctionality (res) {
+//Relationship Methods
+function relationshipFunctionality (res) {
+    $.ajax({
+        url: "/api/getAllClients",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (clientres, clientstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getAllPlans",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (planres, planstatus) {
+                            //Create table
+                            let clientMap = {};
+                            let makerMap = {};
+                            for(var item of clientres) {
+                                if(item.customer.first_name)
+                                {
+                                    clientMap[item.customer.id] = item.customer;
+                                }
+                            }
+                            for(var item of makerres) {
+                                makerMap[item.id] = item;
+                            }
+                            $("#userMainContent").html(
+                                "<div id=\"buttonsTop\"></div>\n" +
+                                "<div class='row' id='topRow'>\n" +
+                                "<div id=\"floor\">\n" +
+                                "    <table id=\"relationshipTable\" class=\"table\">\n" +
+                                "    </table>\n" +
+                                "</div></div>");
+                            $("#relationshipTable").append('\n' +
+                                '        <thead class="thead">\n' +
+                                '            <th scope="col">Relationship ID</th>\n' +
+                                '            <th scope="col">Client </th>\n' +
+                                '            <th scope="col">Client ID</th>\n' +
+                                '            <th scope="col">Freedom Maker</th>\n' +
+                                '            <th scope="col">Freedom Maker ID</th>\n' +
+                                '            <th scope="col">Plan</th>\n' +
+                                '            <th scope="col">Freedom Maker Role</th>\n' +
+                                '        </thead><tbody>');
+                            //Populate table
+                            res.forEach(item => {
+                                $("#relationshipTable").append('\n' +
+                                    '<tr class="relationshipRow">' +
+                                    '   <td>' + item.id + '</td>' +
+                                    '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>'+
+                                    '   <td>' + clientMap[item.clientId].id + '</td>'+
+                                    '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>'+
+                                    '   <td>' + makerMap[item.makerId].id + '</td>'+
+                                    '   <td>' + item.planId + '</td>' +
+                                    '   <td>' + item.occupation + '</td>'
+                                );
+                            });
+                            $("#relationshipTable").append('\n</tbody>');
+
+                            //Body Block content
+                            createBody("Delete");
+
+                            //Event Listeners
+                            //Modify
+                            $(".relationshipRow").click(function () {
+                                selectedRow = $(this);
+                                let relationshipPrompt = `<h5>Please type in the Relationship ID to delete the selected relationship.</h5>` +
+                                    `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
+                                    "<br><div id='delete'>" +
+                                    "<div id='empty'></div>" +
+                                    "<div><label for='deleteUser'>Enter Relationship ID:</label></div>" +
+                                    `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
+                                    "<div id='empty'></div>" +
+                                    "</div>\n";
+                                prePopModForm("/api/getRelationshipById", relationshipModForm);
+                                $("#DeleteButton").show();
+                                $("#DeleteButton").css("opacity", "1");
+                                $("#DeleteButton").click(function () {
+                                    let relationshipId = selectedRow.children()[0].innerHTML;
+                                    showDeletePrompt("delete", relationshipPrompt,"/api/deleteRelationship", {
+                                        auth: id_token,
+                                        id: relationshipId
+                                    }, deleteRelationshipSuccess, verifyDeleteRelationship);
+                                });
+
+                            });
+
+                            //Add
+                            $("#AddButton").click(function () {
+                                popAddForm(relationshipAddForm);
+                                $("#DeleteButton").css("opacity", "0");
+                                setTimeout(function(){
+                                    $("#DeleteButton").hide();
+                                }, 500);
+                            });
+
+                            //Expand Table Button
+                            $("#ExpandButton").click(function () {
+                                expandTable();
+                            });
+
+                            //Row effect
+                            $(".relationshipRow").mouseenter(function () {
+                                $(this).css('transition', 'background-color 0.5s ease');
+                                $(this).css('background-color', '#e8ecef');
+                            }).mouseleave(function () {
+                                $(this).css('background-color', 'white');
+                            });
+                        },
+                        error: function (planres, planstatus) {
+                            $("#userMainContent").html("Plan Relationship isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Maker Relationship isn't working!");
+                }
+            });
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+}
+
+function relationshipModForm(res, status) {
+//Pre-populate forms
+    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
+        `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+        "<br><form id='modify'>" +
+        "<label for='modMakerRel'>Select a Freedom Maker:</label>" +
+        "<select class='form-control' id='modMakerRel'></select>\n<br><br>" +
+        "<label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
+        "<div id='empty'></div></form>");
+
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
+
+    $.ajax({
+        url: "/api/getAllMakers",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (makerres, makerstatus) {
+            $.ajax({
+                url: "/api/getRelationshipById",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    id: selectedRow.children()[0].innerHTML
+                },
+                dataType: "json",
+                success: function (relres, relstatus) {
+                    let makerId = relres.makerId;
+                    for (var item of makerres) {
+                        if (makerId == item.id) {
+                            $('#modMakerRel').append(
+                                `<option id="${makerId}" value="${makerId}" selected>${item.firstName} ${item.lastName} - ${makerId}</option>`
+                            );
+                        } else if (!item.deleted) {
+                            $('#modMakerRel').append(
+                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName} - ${item.id}</option>`
+                            );
+                        }
+                    }
+                    ;
+
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        let message = "";
+                        let valid = true;
+                        if ($("#modMakerOcc").val().length === 0) {
+                            valid = false;
+                            message += "A Role is required!<br>";
+                        }
+
+                        if (valid) {
+                            $("#errormessage").html("");
+                            $("#SubmitButton").hide();
+                            $("#optionsClient").append("<div id='modsuccess'></div>");
+                            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                            modSubmit("/api/updateRelationship", {
+                                auth: id_token,
+                                id: selectedRow.children()[0].innerHTML,
+                                makerId: $("#modMakerRel").val(),
+                                planId: relres.planId,
+                                occupation: $("#modMakerOcc").val()
+                            }, modRelationshipSuccess);
+                        } else {
+                            $("#errormessage").html(message);
+                        }
+                    });
+                },
+                error: function (relres, relstatus) {
+                    $("#userMainContent").html("Makers isn't working!");
+                }
+            });
+        },
+        error: function (makerres, makerstatus) {
+            $("#userMainContent").html("Relationships isn't working! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+}
+
+function relationshipAddForm() {
+    $.ajax({
+        url: "/api/getAllClients",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (clientres, clientstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+                        "<form id='add'>\n" +
+                        "<label for='empty'></label>" +
+                        "<label for='empty'></label>" +
+                        "<label for='empty'></label>" +
+                        "<label for='addClientRel'> Select a Client:</label>" +
+                        "<select class='form-control' id='addClientRel'>\n</select>\n<br><br>" +
+                        "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
+                        "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
+                        "<label for='addPlanRel'> Select a Plan:</label>" +
+                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
+                        "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
+                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
+                        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+
+                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+                    $("#SubmitButton").css("opacity", "1");
+
+                    for (var i = 0; i < clientres.length; ++i) {
+                        $('#addClientRel').append(
+                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
+                        );
+                        if(i == clientres.length-1)
+                        {
+                            $.ajax({
+                                url: "/api/getTimeBucketsByClientId",
+                                method: "post",
+                                data: {
+                                    auth: id_token,
+                                    id: $("#addClientRel").val()
+                                },
+                                dataType: "json",
+                                success: function (bucketres, bucketstatus) {
+                                    $("#addPlanRel").html("");
+
+                                    for (var item of makerres) {
+                                        if (!item.deleted) {
+                                            $('#addMakerRel').append(
+                                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                            );
+                                        }
+                                    }
+
+                                    for (var item in bucketres.buckets) {
+                                        $('#addPlanRel').append(
+                                            `<option id="${item}" value="${item}">${item}</option>`
+                                        );
+
+                                    }
+
+                                },
+                                error: function (bucketres, bucketstatus) {
+                                    $("#userMainContent").html("Subscriptions isn't working!");
+                                }
+                            });
+                        }
+                    }
+
+                    $("#addClientRel").on('change', function () {
+                        $.ajax({
+                            url: "/api/getTimeBucketsByClientId",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                id: $("#addClientRel").val()
+                            },
+                            dataType: "json",
+                            success: function (bucketres, bucketstatus) {
+                                $("#addPlanRel").html("");
+                                $("#addMakerRel").html("");
+
+                                for (var item of makerres) {
+                                    if (!item.deleted) {
+                                        $('#addMakerRel').append(
+                                            `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
+                                        );
+                                    }
+                                }
+
+                                for (var item in bucketres.buckets) {
+                                    $('#addPlanRel').append(
+                                        `<option id="${item}" value="${item}">${item}</option>`
+                                    );
+
+                                }
+
+                            },
+                            error: function (bucketres, bucketstatus) {
+                                $("#userMainContent").html("Subscriptions isn't working!");
+                            }
+                        });
+                    })
+
+
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        let message = "";
+                        let valid = true;
+                        if ($("#addOccRel").val().length === 0) {
+                            valid = false;
+                            message += "A Role is required!<br>";
+                        }
+
+                        if (valid) {
+                            $("#errormessage").html("");
+                            $("#SubmitButton").hide();
+                            $("#optionsClient").append("<div id='addsuccess'></div>");
+                            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                            addSubmit("/api/createRelationship", {
+                                auth: id_token,
+                                clientId: $("#addClientRel").val(),
+                                makerId: $("#addMakerRel").val(),
+                                planId: $("#addPlanRel").val(),
+                                occupation: $("#addOccRel").val(),
+                            }, addRelationshipSuccess);
+                        } else {
+                            $("#errormessage").html(message);
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Maker Relationship isn't working!");
+                }
+            });
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+}
+
+function modRelationshipSuccess (res, status) {
+    $("#modRelSuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
+
+    setTimeout(function () {
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    }, 1000);
+}
+
+function addRelationshipSuccess (res, status) {
+    $("#addRelSuccess").html(`<br><h5>Successfully added Relationship ${res.id}!</h5>`);
+
+    setTimeout(function () {
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    }, 1000);
+}
+
+function deleteRelationshipSuccess() {
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h5>`);
+    setTimeout(function () {
+        showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    }, 1000);
+}
+
+function verifyDeleteRelationship() {
+    let deleteUser = $("#deleteUser").val();
+    return (deleteUser == (selectedRow.children()[0].innerHTML));
+}
+
+//Credit Methods
+function creditFunctionality (res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
-        "    <table id=\"planTable\" class=\"table\">\n" +
+        "    <table id=\"creditTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
-    $("#planTable").append('\n' +
+    $("#creditTable").append('\n' +
         '        <thead class="thead">\n' +
+        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Price Per Hour</th>\n' +
-        '            <th scope="col">Description</th>\n' +
+        '            <th scope="col">Available Hours</th>\n' +
         '        </thead><tbody>');
-
     //Populate table
-    res.forEach(item => {
-        let plan = item.plan;
-        item = item.plan;
-        if(plan.status != "archived")
-        {
-            $("#planTable").append('\n' +
-                '<tr class="planRow">' +
-                '   <td scope="row">' + plan.id + '</td>' +
-                '   <td>$' + Number.parseInt(plan.price)/100 + '</td>' +
-                '   <td>' + plan.description + '</td></tr>'
+    res.forEach(customer => {
+        for(var item in customer.buckets) {
+            let hours = (Number.parseFloat(customer.buckets[item])/60);
+            let minutes = (customer.buckets[item])%60;
+            let message = "";
+            if (hours >= 0) {
+                message += ` ${Math.floor(hours)} hours `;
+            }
+            if(hours <= -1)
+            {
+                hours = Math.abs(hours);
+                message += `-${Math.floor(hours)} hours `;
+            }
+            if (minutes >= 0 || minutes < 0) {
+                message += ` ${minutes} minutes `;
+            }
+            $("#creditTable").append('\n' +
+                '<tr class="creditRow">' +
+                '   <td scope="row">' + customer.id + '</td>' +
+                '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
+                '   <td>' + item + '</td>' +
+                `   <td>${message}</td>`
             );
-        }
+        };
     });
-    $("#planTable").append('\n</tbody>');
+    $("#creditTable").append('\n</tbody>');
 
     //Body Block content
     createBody("Delete");
 
     //Event Listeners
     //Modify
-    $(".planRow").click(function () {
+    $(".creditRow").click(function () {
         selectedRow = $(this);
-        let planPrompt = `<h5>Please type in the Plan to cancel the selected plan.</h5>` +
-            `<h6>You selected Plan: ${selectedRow.children()[0].innerHTML}</h6>` +
+        let creditPrompt = `<h5>Please type in the Plan to delete the selected credit.</h5>` +
+            `<h6>You selected Plan: ${selectedRow.children()[2].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
             "<br><div id='delete'>" +
             "<div id='empty'></div>" +
             "<div><label for='deleteUser'>Enter Plan:</label></div>" +
             `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
             "<div id='empty'></div>" +
-            "</div>\n";
-
-        prePopModForm("/api/retrievePlan", planModForm);
+            "</div>\n";;
+        prePopModForm("/api/getAllTimeBuckets", creditModForm);
         $("#DeleteButton").show();
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
-            let planId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("delete", planPrompt, "/api/deletePlan", {
+            let clientId = selectedRow.children()[0].innerHTML;
+            let planId = selectedRow.children()[2].innerHTML;
+            showDeletePrompt("delete", creditPrompt,"/api/deleteBucket", {
                 auth: id_token,
-                planId: planId
-            }, deletePlanSuccess, verifyDeletePlan);
+                id: clientId,
+                bucket: planId,
+            }, deleteCreditSuccess, verifyDeleteCredit);
         });
-
     });
 
     //Add
     $("#AddButton").click(function () {
-        popAddForm(planAddForm);
-        $("#DeleteButton").css("opacity", "0");
-        setTimeout(function () {
-            $("#DeleteButton").hide();
-        }, 500);
+        popAddForm(creditAddForm);
     });
 
     //Expand Table Button
@@ -1251,7 +1881,7 @@ function planFunctionality (res) {
     });
 
     //Row effect
-    $(".planRow").mouseenter(function () {
+    $(".creditRow").mouseenter(function () {
         $(this).css('transition', 'background-color 0.5s ease');
         $(this).css('background-color', '#e8ecef');
     }).mouseleave(function () {
@@ -1259,20 +1889,16 @@ function planFunctionality (res) {
     });
 }
 
-function planModForm (res, status) {
-    //Pre-populate forms
+function creditModForm(res, status) {
+//Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        "<form id='modify'>\n" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='modplanid'>Plan:</label>" +
-        `<input class='form-control' type='text' id='modplanid' name='modplanid' value='${res.plan.id}' disabled>\n<br>\n` +
-        "<label for='modplaninvoicename'>Invoice Statement Title:</label>" +
-        `<input class='form-control' type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br><br>\n` +
-        "<label for='modplanprice'>Price Per Hour ($):</label>" +
-        `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
+        "<br><br><form id='modify'>" +
+        `<div>Enter a number (+/-) to adjust hours:</div>` +
+        "<input class='form-control' type='number' id='creditmodhours' name='creditmodhours'>"+
+        `<br><br><div>Enter a number (+/-) to adjust minutes:</div>` +
+        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
+        "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
@@ -1280,125 +1906,193 @@ function planModForm (res, status) {
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
-        let message = "";
+        var hours = (Number.parseInt($("#creditmodhours").val()) * 60) || 0;
+        var minutes = Number.parseInt($("#creditmodminutes").val()) || 0;
+        var hoursPlusMin = hours + minutes;
+
         let valid = true;
-        if ($("#modplaninvoicename").val().length === 0){
+        let message = "";
+        if ($("#creditmodhours").val() == "" && $("#creditmodminutes").val() == "") {
             valid = false;
-            message += "Invoice description is mandatory!<br>";
+            message += "Please enter an amount to purchase!<br>"
         }
-        if ($("#modplanprice").val().length === 0){
+        if ($("#creditmodhours").val().includes(".")) {
             valid = false;
-            message += "A Price is mandatory!<br>";
+            message += "No decimals in hours please!<br>";
+        }
+        if ($("#creditmodminutes").val().includes(".")) {
+            valid = false;
+            message += "No decimals in minutes please!<br>"
         }
 
+        if (!valid) {
+            $("#errormessage").html(`<span style='color:red'>${message}</span>`);
+        } else {
 
-        if (valid) {
-            $("#errormessage").html("");
-            $("#SubmitButton").hide();
-            $("#optionsClient").append("<div id='modsuccess'></div>");
-            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
-            modSubmit("/api/updatePlan", {
-                auth: id_token,
-                planId: $("#modplanid").val(),
-                planInvoiceName: $("#modplaninvoicename").val(),
-                planPrice: Number.parseFloat($("#modplanprice").val()).toFixed(2) * 100
-            }, modPlanSuccess);
-        }
-        else{
-            $("#errormessage").html(message);
+            if ($("#buyHours").val() == "") {
+                $("#buyHours").val(0);
+            }
+            if ($("#buyMin").val() == "") {
+                $("#buyMin").val(0);
+            }
+
+            if (valid) {
+                $("#errormessage").html("");
+                $("#SubmitButton").hide();
+                $("#optionsClient").append("<div id='modsuccess'></div>");
+                $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                modSubmit("/api/updateClientTimeBucket", {
+                    auth: id_token,
+                    id: selectedRow.children()[0].innerHTML,
+                    planId: selectedRow.children()[2].innerHTML,
+                    minutes: hoursPlusMin,
+                }, modCreditSuccess);
+            } else {
+                $("#errormessage").html(message);
+            }
         }
     });
 }
 
-function planAddForm () {
-    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-        "<form id='add'>\n" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='empty'></label>" +
-        "<label for='addplanname'>Plan:</label>" +
-        `<input class='form-control' type='text' id='addplanname' name='addplanname'>\n<br>\n` +
-        "<label for='addplaninvoicename'>Invoice Statement Title:</label>" +
-        `<input class='form-control' type='text' id='addplaninvoicename' name='addplaninvoicename'>\n<br><br>\n` +
-        "<label for='addplanprice'>Price Per Hour ($):</label>" +
-        `<input class='form-control' type='number' id='addplanprice' name='addplanprice'>\n<br>\n` +
-        "<label for='addplandescription'>Description:</label>" +
-        `<input class='form-control' type='text' id='addplandescription' name='addplandescription'>\n<br><br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+function creditAddForm() {
+    $.ajax({
+        url: "/api/getAllClients",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (clientres, clientstatus) {
+            $.ajax({
+                url: "/api/getAllPlans",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (planres, planstatus) {
+                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+                        "<form id='add'>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<div id='empty'></div>" +
+                        "<label for='addClientCredit'> Select a Client: </label>" +
+                        "<select class='form-control' id='addClientCredit'>\n</select>\n<br>\n" +
+                        "<label for='addPlanCredit'> Select a Plan: </label>" +
+                        "<select class='form-control' id='addPlanCredit'>\n</select>\n<br><br>\n" +
+                        "<label for='addMinCredit'> Enter Number of Hours: </label>" +
+                        "<input class='form-control' type='number' id='addHourCredit' name='addHourCredit'>\n<br>"+
+                        "<label for='addMinCredit'> Enter Number of Minutes: </label>" +
+                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br><br>"+
+                        "</form><div><span id='errormessage' style='color:red'></span></div>");
 
-    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#SubmitButton").css("opacity", "1");
+                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+                    $("#SubmitButton").css("opacity", "1");
 
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        let message = "";
-        let valid = true;
-        if ($("#addplanname").val().match(/\s+/g)){
-            message += "No spaces allowed in plan names (use dashes)!<br>";
-            valid = false;
-        }
-        if ($("#addplanname").val().length === 0){
-            message += "A plan name is mandatory!<br>";
-            valid = false;
-        }
-        if ($("#addplaninvoicename").val().length === 0){
-            message += "Invoice Statement Title cannot be blank!<br>";
-            valid = false;
-        }
-        if ($("#addplanprice").val().length === 0){
-            message += "Price per hour must have a value!<br>"
-            valid = false;
-        }
-        if ($("#addplandescription").val().length === 0){
-            message += "A description is required!<br>"
-            valid = false;
-        }
-        if (valid){
-            $("#errormessage").html("");
-            $("#SubmitButton").hide();
-            $("#optionsClient").append("<div id='addsuccess'></div>");
-            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
-            addSubmit("/api/createPlan", {
-                auth: id_token,
-                planId: $("#addplanname").val(),
-                invoiceName: $("#addplaninvoicename").val() ,
-                pricePerHour: Number.parseFloat($("#addplanprice").val()).toFixed(2) * 100,
-                planDescription: $("#addplandescription").val()
-            }, addPlanSuccess);
-        }
-        else{
-            $("#errormessage").html(message);
+                    for(var client in clientres) {
+                        client = clientres[client].customer;
+                        $('#addClientCredit').append(
+                            `<option id="${client.id}" value="${client.id}">${client.first_name} ${client.last_name} - ${client.id}</option>`
+                        );
+                    }
+                    for(var item of planres) {
+                        if (item.plan.status != "archived") {
+                            $('#addPlanCredit').append(
+                                `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
+                            );
+                        }
+                    }
+
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        var hours = (Number.parseInt($("#addHourCredit").val()) * 60) || 0;
+                        var minutes = Number.parseInt($("#addMinCredit").val()) || 0;
+                        var hoursPlusMin = hours + minutes;
+                        console.log(hoursPlusMin);
+                        let valid = true;
+
+                        let message = "";
+                        if ($("#addHourCredit").val() == "" && $("#addMinCredit").val() == "") {
+                            valid = false;
+                            message += "Please enter an amount to purchase!<br>"
+                        }
+                        if ($("#addHourCredit").val().includes(".")) {
+                            valid = false;
+                            message += "No decimals in hours please!<br>";
+                        }
+                        if ($("#addMinCredit").val().includes(".")) {
+                            valid = false;
+                            message += "No decimals in minutes please!<br>"
+                        }
+
+                        if (!valid) {
+                            $("#errormessage").html(`<span style='color:red'>${message}</span>`);
+                        } else {
+
+                            if ($("#addHourCredit").val() == "") {
+                                $("#addHourCredit").val(0);
+                            }
+                            if ($("#addMinCredit").val() == "") {
+                                $("#addMinCredit").val(0);
+                            }
+
+                            if (valid) {
+                                $("#errormessage").html("");
+                                $("#SubmitButton").hide();
+                                $("#optionsClient").append("<div id='addsuccess'></div>");
+                                $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                                addSubmit("/api/updateClientTimeBucket", {
+                                    auth: id_token,
+                                    id: $("#addClientCredit").val(),
+                                    planId: $("#addPlanCredit").val(),
+                                    minutes: hoursPlusMin,
+                                }, addCreditSuccess);
+                            } else {
+                                $("#errormessage").html(message);
+                            }
+                        }
+                    });
+                },
+                error: function (planres, planstatus) {
+                    $("#userMainContent").html("Plan Credit isn't working!");
+                }
+            });
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Credit isn't working! Please refresh the page. Contact support if the problem persists.");
         }
     });
 }
 
-function modPlanSuccess (res, status) {
-    $("#modsuccess").html(`<br><h5>Successfully updated Plan ${$("#modplanid").val()}!</h5>`);
+function modCreditSuccess (res, status) {
+    $("#modCreditSuccess").html(`<br><h5>Successfully updated hours for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
-    setTimeout(function() {
-        showFunction(planFunctionality, "/api/getAllPlans");
-    }, 1000);
-}
-
-function addPlanSuccess (res, status) {
-    $("#addsuccess").html(`<br><h5>Successfully added Plan ${res.id}!</h5>`);
-
-    setTimeout(function() {
-        showFunction(planFunctionality, "/api/getAllPlans");
-    }, 1000);
-}
-
-function deletePlanSuccess (res, status) {
-    $("#verifyEntry").html(`<br><h5>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
-        showFunction(planFunctionality, "/api/getAllPlans");
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     }, 1000);
 }
 
-function verifyDeletePlan () {
+function addCreditSuccess (res, status) {
+    $("#addCreditSuccess").html(`<br><h5>Successfully added plan for ${res.first_name} ${res.last_name}!</h5>`);
+
+    setTimeout(function () {
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
+    }, 1000);
+}
+
+function deleteCreditSuccess (res, status) {
+    $("#verifyEntry").html(`<br><h5>Successfully deleted credit for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
+
+    setTimeout(function () {
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
+    }, 1000);
+}
+
+function verifyDeleteCredit() {
     let deleteUser = $("#deleteUser").val();
-    return (deleteUser == selectedRow.children()[0].innerHTML);
+    return (deleteUser == selectedRow.children()[2].innerHTML);
+
 }
 
 //TimeSheet Methods
@@ -1430,7 +2124,7 @@ function timeSheetFunctionality (res) {
                     let makerMap = {};
                     for (var i = 0; i < makerres.length; ++i) {
                         let maker = makerres[i];
-                            makerMap[maker.id] = maker;
+                        makerMap[maker.id] = maker;
                     }
 
                     //Create table
@@ -1921,701 +2615,6 @@ function runReportFunctionality () {
         $("#reportTable").css("opacity", "1");
     });
 
-}
-
-//Credit Methods
-function creditFunctionality (res) {
-    //Create table
-    $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
-        "<div class='row' id='topRow'>\n" +
-        "<div id=\"floor\">\n" +
-        "    <table id=\"creditTable\" class=\"table\">\n" +
-        "    </table>\n" +
-        "</div></div>");
-    $("#creditTable").append('\n' +
-        '        <thead class="thead">\n' +
-        '            <th scope="col">Client ID</th>\n' +
-        '            <th scope="col">Client</th>\n' +
-        '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Available Hours</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    res.forEach(customer => {
-       for(var item in customer.buckets) {
-           let hours = (Number.parseFloat(customer.buckets[item])/60);
-           let minutes = (customer.buckets[item])%60;
-           let message = "";
-           if (hours >= 0) {
-               message += ` ${Math.floor(hours)} hours `;
-           }
-           if(hours <= -1)
-           {
-               hours = Math.abs(hours);
-               message += `-${Math.floor(hours)} hours `;
-           }
-           if (minutes >= 0 || minutes < 0) {
-               message += ` ${minutes} minutes `;
-           }
-           $("#creditTable").append('\n' +
-               '<tr class="creditRow">' +
-               '   <td scope="row">' + customer.id + '</td>' +
-               '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
-               '   <td>' + item + '</td>' +
-               `   <td>${message}</td>`
-           );
-       };
-    });
-    $("#creditTable").append('\n</tbody>');
-
-    //Body Block content
-    createBody("Delete");
-
-    //Event Listeners
-    //Modify
-    $(".creditRow").click(function () {
-        selectedRow = $(this);
-        let creditPrompt = `<h5>Please type in the Plan to delete the selected credit.</h5>` +
-            `<h6>You selected Plan: ${selectedRow.children()[2].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
-            "<br><div id='delete'>" +
-            "<div id='empty'></div>" +
-            "<div><label for='deleteUser'>Enter Plan:</label></div>" +
-            `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
-            "<div id='empty'></div>" +
-            "</div>\n";;
-        prePopModForm("/api/getAllTimeBuckets", creditModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
-        $("#DeleteButton").click(function () {
-            let clientId = selectedRow.children()[0].innerHTML;
-            let planId = selectedRow.children()[2].innerHTML;
-            showDeletePrompt("delete", creditPrompt,"/api/deleteBucket", {
-                auth: id_token,
-                id: clientId,
-                bucket: planId,
-            }, deleteCreditSuccess, verifyDeleteCredit);
-        });
-    });
-
-    //Add
-    $("#AddButton").click(function () {
-        popAddForm(creditAddForm);
-    });
-
-    //Expand Table Button
-    $("#ExpandButton").click(function () {
-        expandTable();
-    });
-
-    //Row effect
-    $(".creditRow").mouseenter(function () {
-        $(this).css('transition', 'background-color 0.5s ease');
-        $(this).css('background-color', '#e8ecef');
-    }).mouseleave(function () {
-        $(this).css('background-color', 'white');
-    });
-}
-
-function creditModForm(res, status) {
-//Pre-populate forms
-    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
-        "<br><br><form id='modify'>" +
-        `<div>Enter a number (+/-) to adjust hours:</div>` +
-        "<input class='form-control' type='number' id='creditmodhours' name='creditmodhours'>"+
-        `<br><br><div>Enter a number (+/-) to adjust minutes:</div>` +
-        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
-        "</form><div><span id='errormessage' style='color:red'></span></div>");
-
-    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#SubmitButton").css("opacity", "1");
-
-    //Submit button function
-    $("#SubmitButton").off("click");
-    $("#SubmitButton").on('click', function (e) {
-        var hours = (Number.parseInt($("#creditmodhours").val()) * 60) || 0;
-        var minutes = Number.parseInt($("#creditmodminutes").val()) || 0;
-        var hoursPlusMin = hours + minutes;
-
-        let valid = true;
-        let message = "";
-        if ($("#creditmodhours").val() == "" && $("#creditmodminutes").val() == "") {
-            valid = false;
-            message += "Please enter an amount to purchase!<br>"
-        }
-        if ($("#creditmodhours").val().includes(".")) {
-            valid = false;
-            message += "No decimals in hours please!<br>";
-        }
-        if ($("#creditmodminutes").val().includes(".")) {
-            valid = false;
-            message += "No decimals in minutes please!<br>"
-        }
-
-        if (!valid) {
-            $("#errormessage").html(`<span style='color:red'>${message}</span>`);
-        } else {
-
-            if ($("#buyHours").val() == "") {
-                $("#buyHours").val(0);
-            }
-            if ($("#buyMin").val() == "") {
-                $("#buyMin").val(0);
-            }
-
-            if (valid) {
-                $("#errormessage").html("");
-                $("#SubmitButton").hide();
-                $("#optionsClient").append("<div id='modsuccess'></div>");
-                $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
-                modSubmit("/api/updateClientTimeBucket", {
-                    auth: id_token,
-                    id: selectedRow.children()[0].innerHTML,
-                    planId: selectedRow.children()[2].innerHTML,
-                    minutes: hoursPlusMin,
-                }, modCreditSuccess);
-            } else {
-                $("#errormessage").html(message);
-            }
-        }
-    });
-}
-
-function creditAddForm() {
-    $.ajax({
-        url: "/api/getAllClients",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (clientres, clientstatus) {
-            $.ajax({
-                url: "/api/getAllPlans",
-                method: "post",
-                data: {
-                    auth: id_token
-                },
-                dataType: "json",
-                success: function (planres, planstatus) {
-                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<form id='add'>" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<div id='empty'></div>" +
-                        "<label for='addClientCredit'> Select a Client: </label>" +
-                        "<select class='form-control' id='addClientCredit'>\n</select>\n<br>\n" +
-                        "<label for='addPlanCredit'> Select a Plan: </label>" +
-                        "<select class='form-control' id='addPlanCredit'>\n</select>\n<br><br>\n" +
-                        "<label for='addMinCredit'> Enter Number of Hours: </label>" +
-                        "<input class='form-control' type='number' id='addHourCredit' name='addHourCredit'>\n<br>"+
-                        "<label for='addMinCredit'> Enter Number of Minutes: </label>" +
-                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br><br>"+
-                        "</form><div><span id='errormessage' style='color:red'></span></div>");
-
-                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-                    $("#SubmitButton").css("opacity", "1");
-
-                    for(var client in clientres) {
-                        client = clientres[client].customer;
-                        $('#addClientCredit').append(
-                            `<option id="${client.id}" value="${client.id}">${client.first_name} ${client.last_name} - ${client.id}</option>`
-                        );
-                    }
-                    for(var item of planres) {
-                        if (item.plan.status != "archived") {
-                            $('#addPlanCredit').append(
-                                `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
-                            );
-                        }
-                    }
-
-                    //Submit button function
-                    $("#SubmitButton").off("click");
-                    $("#SubmitButton").on('click', function (e) {
-                        var hours = (Number.parseInt($("#addHourCredit").val()) * 60) || 0;
-                        var minutes = Number.parseInt($("#addMinCredit").val()) || 0;
-                        var hoursPlusMin = hours + minutes;
-                        console.log(hoursPlusMin);
-                        let valid = true;
-
-                        let message = "";
-                        if ($("#addHourCredit").val() == "" && $("#addMinCredit").val() == "") {
-                            valid = false;
-                            message += "Please enter an amount to purchase!<br>"
-                        }
-                        if ($("#addHourCredit").val().includes(".")) {
-                            valid = false;
-                            message += "No decimals in hours please!<br>";
-                        }
-                        if ($("#addMinCredit").val().includes(".")) {
-                            valid = false;
-                            message += "No decimals in minutes please!<br>"
-                        }
-
-                        if (!valid) {
-                            $("#errormessage").html(`<span style='color:red'>${message}</span>`);
-                        } else {
-
-                            if ($("#addHourCredit").val() == "") {
-                                $("#addHourCredit").val(0);
-                            }
-                            if ($("#addMinCredit").val() == "") {
-                                $("#addMinCredit").val(0);
-                            }
-
-                            if (valid) {
-                                $("#errormessage").html("");
-                                $("#SubmitButton").hide();
-                                $("#optionsClient").append("<div id='addsuccess'></div>");
-                                $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
-                                addSubmit("/api/updateClientTimeBucket", {
-                                    auth: id_token,
-                                    id: $("#addClientCredit").val(),
-                                    planId: $("#addPlanCredit").val(),
-                                    minutes: hoursPlusMin,
-                                }, addCreditSuccess);
-                            } else {
-                                $("#errormessage").html(message);
-                            }
-                        }
-                     });
-                },
-                error: function (planres, planstatus) {
-                    $("#userMainContent").html("Plan Credit isn't working!");
-                }
-            });
-        },
-        error: function (clientres, clientstatus) {
-            $("#userMainContent").html("Client Credit isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
-}
-
-function modCreditSuccess (res, status) {
-    $("#modCreditSuccess").html(`<br><h5>Successfully updated hours for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
-
-    setTimeout(function () {
-        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
-    }, 1000);
-}
-
-function addCreditSuccess (res, status) {
-    $("#addCreditSuccess").html(`<br><h5>Successfully added plan for ${res.first_name} ${res.last_name}!</h5>`);
-
-    setTimeout(function () {
-        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
-    }, 1000);
-}
-
-function deleteCreditSuccess (res, status) {
-    $("#verifyEntry").html(`<br><h5>Successfully deleted credit for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
-
-    setTimeout(function () {
-        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
-    }, 1000);
-}
-
-function verifyDeleteCredit() {
-    let deleteUser = $("#deleteUser").val();
-    return (deleteUser == selectedRow.children()[2].innerHTML);
-
-}
-
-//Relationship Methods
-function relationshipFunctionality (res) {
-    $.ajax({
-        url: "/api/getAllClients",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (clientres, clientstatus) {
-            $.ajax({
-                url: "/api/getAllMakers",
-                method: "post",
-                data: {
-                    auth: id_token
-                },
-                dataType: "json",
-                success: function (makerres, makerstatus) {
-                    $.ajax({
-                        url: "/api/getAllPlans",
-                        method: "post",
-                        data: {
-                            auth: id_token
-                        },
-                        dataType: "json",
-                        success: function (planres, planstatus) {
-                            //Create table
-                            let clientMap = {};
-                            let makerMap = {};
-                            for(var item of clientres) {
-                                if(item.customer.first_name)
-                                {
-                                    clientMap[item.customer.id] = item.customer;
-                                }
-                            }
-                            for(var item of makerres) {
-                                makerMap[item.id] = item;
-                            }
-                            $("#userMainContent").html(
-                                "<div id=\"buttonsTop\"></div>\n" +
-                                "<div class='row' id='topRow'>\n" +
-                                "<div id=\"floor\">\n" +
-                                "    <table id=\"relationshipTable\" class=\"table\">\n" +
-                                "    </table>\n" +
-                                "</div></div>");
-                            $("#relationshipTable").append('\n' +
-                                '        <thead class="thead">\n' +
-                                '            <th scope="col">Relationship ID</th>\n' +
-                                '            <th scope="col">Client </th>\n' +
-                                '            <th scope="col">Client ID</th>\n' +
-                                '            <th scope="col">Freedom Maker</th>\n' +
-                                '            <th scope="col">Freedom Maker ID</th>\n' +
-                                '            <th scope="col">Plan</th>\n' +
-                                '            <th scope="col">Freedom Maker Role</th>\n' +
-                                '        </thead><tbody>');
-                            //Populate table
-                            res.forEach(item => {
-                                $("#relationshipTable").append('\n' +
-                                    '<tr class="relationshipRow">' +
-                                    '   <td>' + item.id + '</td>' +
-                                    '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>'+
-                                    '   <td>' + clientMap[item.clientId].id + '</td>'+
-                                    '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>'+
-                                    '   <td>' + makerMap[item.makerId].id + '</td>'+
-                                    '   <td>' + item.planId + '</td>' +
-                                    '   <td>' + item.occupation + '</td>'
-                                );
-                            });
-                            $("#relationshipTable").append('\n</tbody>');
-
-                            //Body Block content
-                            createBody("Delete");
-
-                            //Event Listeners
-                            //Modify
-                            $(".relationshipRow").click(function () {
-                                selectedRow = $(this);
-                                let relationshipPrompt = `<h5>Please type in the Relationship ID to delete the selected relationship.</h5>` +
-                                    `<h6>You selected ID: ${selectedRow.children()[0].innerHTML}</h6>` +
-                                    "<br><div id='delete'>" +
-                                    "<div id='empty'></div>" +
-                                    "<div><label for='deleteUser'>Enter Relationship ID:</label></div>" +
-                                    `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
-                                    "<div id='empty'></div>" +
-                                    "</div>\n";
-                                prePopModForm("/api/getRelationshipById", relationshipModForm);
-                                $("#DeleteButton").show();
-                                $("#DeleteButton").css("opacity", "1");
-                                $("#DeleteButton").click(function () {
-                                    let relationshipId = selectedRow.children()[0].innerHTML;
-                                    showDeletePrompt("delete", relationshipPrompt,"/api/deleteRelationship", {
-                                        auth: id_token,
-                                        id: relationshipId
-                                    }, deleteRelationshipSuccess, verifyDeleteRelationship);
-                                });
-
-                            });
-
-                            //Add
-                            $("#AddButton").click(function () {
-                                popAddForm(relationshipAddForm);
-                                $("#DeleteButton").css("opacity", "0");
-                                setTimeout(function(){
-                                    $("#DeleteButton").hide();
-                                }, 500);
-                            });
-
-                            //Expand Table Button
-                            $("#ExpandButton").click(function () {
-                                expandTable();
-                            });
-
-                            //Row effect
-                            $(".relationshipRow").mouseenter(function () {
-                                $(this).css('transition', 'background-color 0.5s ease');
-                                $(this).css('background-color', '#e8ecef');
-                            }).mouseleave(function () {
-                                $(this).css('background-color', 'white');
-                            });
-                        },
-                        error: function (planres, planstatus) {
-                            $("#userMainContent").html("Plan Relationship isn't working!");
-                        }
-                    });
-                },
-                error: function (makerres, makerstatus) {
-                    $("#userMainContent").html("Maker Relationship isn't working!");
-                }
-            });
-        },
-        error: function (clientres, clientstatus) {
-            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
-}
-
-function relationshipModForm(res, status) {
-//Pre-populate forms
-    $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
-        "<br><form id='modify'>" +
-        "<label for='modMakerRel'>Select a Freedom Maker:</label>" +
-        "<select class='form-control' id='modMakerRel'></select>\n<br><br>" +
-        "<label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
-        "<div id='empty'></div></form>");
-
-    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#SubmitButton").css("opacity", "1");
-
-    $.ajax({
-        url: "/api/getAllMakers",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (makerres, makerstatus) {
-            $.ajax({
-                url: "/api/getRelationshipById",
-                method: "post",
-                data: {
-                    auth: id_token,
-                    id: selectedRow.children()[0].innerHTML
-                },
-                dataType: "json",
-                success: function (relres, relstatus) {
-                    let makerId = relres.makerId;
-                    for (var item of makerres) {
-                        if (makerId == item.id) {
-                            $('#modMakerRel').append(
-                                `<option id="${makerId}" value="${makerId}" selected>${item.firstName} ${item.lastName} - ${makerId}</option>`
-                            );
-                        } else if (!item.deleted) {
-                            $('#modMakerRel').append(
-                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName} - ${item.id}</option>`
-                            );
-                        }
-                    }
-                    ;
-
-                    //Submit button function
-                    $("#SubmitButton").off("click");
-                    $("#SubmitButton").on('click', function (e) {
-                        let message = "";
-                        let valid = true;
-                        if ($("#modMakerOcc").val().length === 0) {
-                            valid = false;
-                            message += "A Role is required!<br>";
-                        }
-
-                        if (valid) {
-                            $("#errormessage").html("");
-                            $("#SubmitButton").hide();
-                            $("#optionsClient").append("<div id='modsuccess'></div>");
-                            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
-                            modSubmit("/api/updateRelationship", {
-                                auth: id_token,
-                                id: selectedRow.children()[0].innerHTML,
-                                makerId: $("#modMakerRel").val(),
-                                planId: relres.planId,
-                                occupation: $("#modMakerOcc").val()
-                            }, modRelationshipSuccess);
-                        } else {
-                            $("#errormessage").html(message);
-                        }
-                    });
-                },
-                error: function (relres, relstatus) {
-                    $("#userMainContent").html("Makers isn't working!");
-                }
-            });
-        },
-        error: function (makerres, makerstatus) {
-            $("#userMainContent").html("Relationships isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
-}
-
-function relationshipAddForm() {
-    $.ajax({
-        url: "/api/getAllClients",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (clientres, clientstatus) {
-            $.ajax({
-                url: "/api/getAllMakers",
-                method: "post",
-                data: {
-                    auth: id_token
-                },
-                dataType: "json",
-                success: function (makerres, makerstatus) {
-                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<form id='add'>\n" +
-                        "<label for='empty'></label>" +
-                        "<label for='empty'></label>" +
-                        "<label for='empty'></label>" +
-                        "<label for='addClientRel'> Select a Client:</label>" +
-                        "<select class='form-control' id='addClientRel'>\n</select>\n<br><br>" +
-                        "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
-                        "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
-                        "<label for='addPlanRel'> Select a Plan:</label>" +
-                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
-                        "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
-                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
-                        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
-
-                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-                    $("#SubmitButton").css("opacity", "1");
-
-                    for (var i = 0; i < clientres.length; ++i) {
-                        $('#addClientRel').append(
-                            `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
-                        );
-                        if(i == clientres.length-1)
-                        {
-                            $.ajax({
-                                url: "/api/getTimeBucketsByClientId",
-                                method: "post",
-                                data: {
-                                    auth: id_token,
-                                    id: $("#addClientRel").val()
-                                },
-                                dataType: "json",
-                                success: function (bucketres, bucketstatus) {
-                                    $("#addPlanRel").html("");
-
-                                    for (var item of makerres) {
-                                        if (!item.deleted) {
-                                            $('#addMakerRel').append(
-                                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
-                                            );
-                                        }
-                                    }
-
-                                    for (var item in bucketres.buckets) {
-                                        $('#addPlanRel').append(
-                                            `<option id="${item}" value="${item}">${item}</option>`
-                                        );
-
-                                    }
-
-                                },
-                                error: function (bucketres, bucketstatus) {
-                                    $("#userMainContent").html("Subscriptions isn't working!");
-                                }
-                            });
-                        }
-                    }
-
-                    $("#addClientRel").on('change', function () {
-                        $.ajax({
-                            url: "/api/getTimeBucketsByClientId",
-                            method: "post",
-                            data: {
-                                auth: id_token,
-                                id: $("#addClientRel").val()
-                            },
-                            dataType: "json",
-                            success: function (bucketres, bucketstatus) {
-                                $("#addPlanRel").html("");
-                                $("#addMakerRel").html("");
-
-                                for (var item of makerres) {
-                                    if (!item.deleted) {
-                                        $('#addMakerRel').append(
-                                            `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName}  -  ${item.id}</option>`
-                                        );
-                                    }
-                                }
-
-                                for (var item in bucketres.buckets) {
-                                    $('#addPlanRel').append(
-                                        `<option id="${item}" value="${item}">${item}</option>`
-                                    );
-
-                                }
-
-                            },
-                            error: function (bucketres, bucketstatus) {
-                                $("#userMainContent").html("Subscriptions isn't working!");
-                            }
-                        });
-                    })
-
-
-                    //Submit button function
-                    $("#SubmitButton").off("click");
-                    $("#SubmitButton").on('click', function (e) {
-                        let message = "";
-                        let valid = true;
-                        if ($("#addOccRel").val().length === 0) {
-                            valid = false;
-                            message += "A Role is required!<br>";
-                        }
-
-                        if (valid) {
-                            $("#errormessage").html("");
-                            $("#SubmitButton").hide();
-                            $("#optionsClient").append("<div id='addsuccess'></div>");
-                            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
-                            addSubmit("/api/createRelationship", {
-                                auth: id_token,
-                                clientId: $("#addClientRel").val(),
-                                makerId: $("#addMakerRel").val(),
-                                planId: $("#addPlanRel").val(),
-                                occupation: $("#addOccRel").val(),
-                            }, addRelationshipSuccess);
-                        } else {
-                            $("#errormessage").html(message);
-                        }
-                    });
-                },
-                error: function (makerres, makerstatus) {
-                    $("#userMainContent").html("Maker Relationship isn't working!");
-                }
-            });
-        },
-        error: function (clientres, clientstatus) {
-            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
-}
-
-function modRelationshipSuccess (res, status) {
-    $("#modRelSuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
-
-    setTimeout(function () {
-        showFunction(relationshipFunctionality, "/api/getAllRelationships");
-    }, 1000);
-}
-
-function addRelationshipSuccess (res, status) {
-    $("#addRelSuccess").html(`<br><h5>Successfully added Relationship ${res.id}!</h5>`);
-
-    setTimeout(function () {
-        showFunction(relationshipFunctionality, "/api/getAllRelationships");
-    }, 1000);
-}
-
-function deleteRelationshipSuccess() {
-    $("#verifyEntry").html(`<br><h5>Successfully deleted Relationship ${selectedRow.children()[0].innerHTML}!</h5>`);
-    setTimeout(function () {
-        showFunction(relationshipFunctionality, "/api/getAllRelationships");
-    }, 1000);
-}
-
-function verifyDeleteRelationship() {
-    let deleteUser = $("#deleteUser").val();
-    return (deleteUser == (selectedRow.children()[0].innerHTML));
 }
 
 $(document).ready(function () {
