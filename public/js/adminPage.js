@@ -250,9 +250,8 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
                         method: "post",
                         data: object,
                         dataType: "json",
-                        success:successFunction,
+                        success: successFunction,
                         error: function (res, status) {
-                            $("#optionsClient").html("Delete user not working!");
                             $("#optionsClient").html("Delete user not working!");
                         }
                     });//end ajax
@@ -578,6 +577,7 @@ function addClientSuccess (res, status) {
 }
 
 function deleteClientSuccess (res, status) {
+    $("#SubmitButton").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
     $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
