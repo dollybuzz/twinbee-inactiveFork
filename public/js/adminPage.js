@@ -72,6 +72,13 @@ function navItemChange(id){
             $("#reportingTools").css("font-style", 'italic');
         });
     }
+    else
+    {
+        $("#reportingTools").on("mouseleave", function() {
+            $("#reportingTools").css('color', 'white');
+            $("#reportingTools").css('font-style', 'normal');
+        });
+    }
 }
 
 //Versatile Functions
