@@ -47,7 +47,7 @@ let navMapper = {
 
     runReports: function() {
         navItemChange("runReports");
-        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+        showFunction(runReportFunctionality, "/api/getAllTimeSheets");
     }
 
 
@@ -1817,7 +1817,6 @@ function verifyClearSheet () {
 
 //Run Report
 function runReportFunctionality () {
-
     //Creating the table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -1826,15 +1825,25 @@ function runReportFunctionality () {
         "    <table id=\"reportTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
+    //Populate table but do not show
+    $("#reportTable").html('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Time Sheet ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
+        '            <th scope="col">Shift Duration</th>\n' +
+        '        </thead><tbody>');
+    $("#reportTable").append('<tfoot><th id="test" colspan="4">Total Time:</th><td>?</td></tfoot>');
 
     //Body Block Content
-    createBody("");
-    $("#userMainContent").append("<hr><div class='timeBottomButtons'></div>");
-    $(".timeBottomButtons").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
-    $(".timeBottomButtons").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
-    $(".timeBottomButtons").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
-    $(".timeBottomButtons").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
-    $(".timeBottomButtons").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $("#userMainContent").append("<div class='reportOptions'></div>");
+    $(".reportOptions").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
+    $(".reportOptions").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
+    $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
+    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
 
 
     //Pre-populate Report drop down options
@@ -1908,16 +1917,6 @@ function runReportFunctionality () {
 
     //Run Report
     $("#runReportButton").on('click', function () {
-        $("#reportTable").html('\n' +
-            '        <thead class="thead">\n' +
-            '            <th scope="col">Time Sheet ID</th>\n' +
-            '            <th scope="col">Freedom Maker</th>\n' +
-            '            <th scope="col">Occupation</th>\n' +
-            '            <th scope="col">Client</th>\n' +
-            '            <th scope="col">Plan</th>\n' +
-            '            <th scope="col">Shift Duration</th>\n' +
-            '        </thead><tbody>');
-        $("#reportTable").append('<tfoot><th id="test" colspan="4">Total Time:</th><td>?</td></tfoot>');
 
         $("#reportTable").css("opacity", "1");
     });
