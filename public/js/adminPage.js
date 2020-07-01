@@ -216,6 +216,8 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
         $("#deletePrompt").css("opacity", "1");
         $("#YesDelete").css("opacity", "1");
         $("#NoDelete").css("opacity", "1");
+        $("#AddButton").css("opacity", "0");
+        $("#DeleteButton").css("opacity", "0");
 
         setTimeout(function () {
             $("#AddButton").hide();
@@ -224,6 +226,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
 
         $("#NoDelete").click(function() {
             $("#AddButton").show();
+            $("#AddButton").css("opacity", "1");
             expandTable();
         });
 
