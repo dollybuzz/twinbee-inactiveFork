@@ -1895,6 +1895,7 @@ function runReport () {
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Occupation</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
