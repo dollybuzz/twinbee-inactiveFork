@@ -120,6 +120,8 @@ function expandTable () {
     $("#SubmitButton").css("opacity", "0");
     $("#ExpandButton").css("opacity", "0");
     $("#DeleteButton").css("opacity", "0");
+
+    $("#AddButton").show();
     $("#AddButton").css("opacity", "1");
 
     setTimeout(function () {
