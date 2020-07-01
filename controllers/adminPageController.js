@@ -18,6 +18,7 @@ module.exports ={
             {link: "", text: "Manage Subscriptions", id: "manageSubscriptions"},
             {link: "", text: "Manage Relationships", id:"manageRelationships"},
             {link: "", text: "Manage Available Credit", id: "manageCredit"},
+            {link: "", text: "Reporting Tools", id:"reportingTools"},
             {link: "", text: "Review TimeSheets", id:"reviewTimeSheets"},
             {link: "", text: "Run Reports", id:"runReports"},
         ];

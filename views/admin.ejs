@@ -6,17 +6,21 @@
             <%if (i != 0){%>
                 |
             <%}%>
-            <%if (i == 7){%>
+            <%if (i == 6){%>
             <div class="dropdown">
              <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
+                <%} else if (i > 6){%>
               <div class="dropdown-content">
                  <a><span id="<%=navItemsTop[i+1]["id"]%>" class="navItem"><%=navItemsTop[i+1]["text"]%></span></a>
+                    <%if (i == 8){%>
+                  <a><span id="<%=navItemsTop[i+1]["id"]%>" class="navItem"><%=navItemsTop[i+1]["text"]%></span></a>
               </div>
             </div>
-            <%break%>
-            <%}%>
+                    <%}
+                    <%}else{%>
             <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
-        <%}%>
+            <%}%>
+    <%}%>
     <%}%>
 
 </nav>
