@@ -193,13 +193,12 @@ body a:hover {
 }
 
 #ExpandButton:hover,
-#AddButton:hover,
-#BackButton:hover {
+#AddButton:hover {
     background-color: #e8ecef;
 }
 
 #ExpandButton,
-#AddButton, #BackButton {
+#AddButton {
     background-color: #a4b6ba;
 }
 

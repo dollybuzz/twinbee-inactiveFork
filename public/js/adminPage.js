@@ -2620,14 +2620,6 @@ function runReportFunctionality () {
     });
 
     //Event Listeners
-    //Back to TimeSheets Functionality
-    $("#BackButton").on('click', function() {
-        $("#buttonsTop").html('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
-        navItemChange("reportingTools");
-        navItemChange("reviewTimeSheets");
-        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
-    });
-
     //Run Report
     $("#runReportButton").on('click', function () {
 
