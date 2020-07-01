@@ -381,6 +381,7 @@ function clientFunctionality (res){
             `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
             "<div id='empty'></div>" +
             "</div>\n" ;
+        $("#optionsClient").append("<hr><p>Note: Changes may take a moment to reflect.</p>");
 
         prePopModForm("/api/getClient", clientModForm);
         $("#DeleteButton").show();
@@ -582,7 +583,7 @@ function addClientSuccess (res, status) {
 }
 
 function deleteClientSuccess (res, status) {
-    $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5><hr><p>Note: Changes may take a moment to reflect.</p>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function() {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1500);
@@ -1053,10 +1054,10 @@ function subscriptionAddForm () {
         `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>\n");
 
+    $("#optionsClient").append("<hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
+
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
-
-    $("#optionsClient").append("<br><hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
 
     //Pre-populating drop down options
     $.ajax({
