@@ -3,13 +3,27 @@
 <nav>
     <%if (typeof navItemsTop !== "undefined"){%>
         <% for (var i = 0; i < navItemsTop.length; ++i){%>
+
+            <%if (i == 7){%>
+            |
+            <div class="dropdown">
+             <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
+                <%} else if (i > 7){%>
+              <div class="dropdown-content">
+                 <a><span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span></a>
+                    <%if (i == 9){%>
+              </div>
+            </div>
+                    <%}%>
+                    <%}else{%>
         <%if (i != 0){%>
             |
         <%}%>
-        <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
-        <%}%>
-    <%}else{%>
+            <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
+            <%}%>
     <%}%>
+    <%}%>
+
 </nav>
 <div id="userMainContent">
     <div class="row" id="adminTopRow">

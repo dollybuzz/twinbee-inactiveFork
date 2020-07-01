@@ -11,8 +11,8 @@ let navMapper = {
         location.reload();
     },
 
-    reviewTimeSheets: function () {
-        timeSheetFunctionality();
+    manageCredits: function () {
+        showFunction(timeBucketFunctionality, '/api/getAllMyTimeBuckets');
     },
 
     manageSubscriptions: function () {
@@ -21,6 +21,10 @@ let navMapper = {
 
     manageMakers: function () {
         showFunction(makerFunctionality, "/api/getMyMakers");
+    },
+
+    reviewTimeSheets: function () {
+        timeSheetFunctionality();
     }
 };//end navMapper
 
@@ -94,11 +98,6 @@ function showFunction (functionality, endpoint) {
     });
 }
 //Main Methods
-function showMain () {
-    //Contains any main tab functionality
-    showFunction(timeBucketFunctionality, '/api/getAllMyTimeBuckets');
-}
-
 //Google
 onSignIn = function (googleUser) {
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
@@ -107,7 +106,6 @@ onSignIn = function (googleUser) {
     let name = TEST_ENVIRONMENT ? null : profile.getName();
     $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
 
-    showMain();
 };
 
 function openHostedPage(getPageEndpoint){
@@ -200,7 +198,6 @@ function timeBucketFunctionality (res) {
     //Buy Hours
     $(".bucketRow").click(function () {
         selectedRow = $(this);
-        $("#optionsClient").html(`<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`)
         popBuyForm(buyForm);
     });
 
@@ -240,6 +237,7 @@ function buyForm () {
                         "<label for='buyHours'> Enter Number of Minutes: </label>" +
                         "<input class='form-control' type='number' id='buyMin' name='buyMin'></form>\n<br>\n");
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+                    $("#SubmitButton").css("opacity", "1");
 
                     for (var item in planres.buckets) {
                         $("#buyPlan").append(
@@ -378,8 +376,8 @@ function subscriptionFunctionality (res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Subscription ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Current Monthly Hours</th>\n' +
-        '            <th scope="col">Pending changes</th>\n' +
+        '            <th scope="col">Monthly Hours</th>\n' +
+        '            <th scope="col">Pending Changes</th>\n' +
         '            <th scope="col">Cancelled</th>\n' +
         '            <th scope="col">Next Billing</th>\n' +
         '            <th scope="col" id="subOptions">Option</th>\n' +
@@ -443,9 +441,11 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' id='modsubscriptionplanname' name='modsubscriptionplanname' value='${selectedRow.children()[1].innerHTML}' disabled>\n<br><br>\n` +
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
-        "</form><br><div><span id='errormessage' style='color:red'></span></div>" +
-        "<div id='pendingChanges'></div>");
+        "</form><br><div><span id='errormessage' style='color:red'></span></div>");
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
+
+    $("#optionsClient").append("<div id='pendingChanges'></div>");
 
     $("#SubmitButton").on("click", function (e) {
         let monthlyHours = $("#modsubscriptionplanquantity").val();
@@ -506,14 +506,14 @@ function subscriptionModForm (res, status) {
             dataType: "json",
             success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
-                $("#pendingChanges").html("<hr><p>This plan has the following scheduled change and will take effect on the next " +
+                $("#pendingChanges").html("<br><hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
-                    `<br><h6>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h6>` +
-                    "<br>If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
-                    "<div id='cancelChange'></div>" +
-                    "<br>Please know canceling your change request <span style='font-style:italic'>does not cancel your subscription</span>.<br>" +
+                    `<h5>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h5>` +
+                    "If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
+                    "Please know canceling your change request <span style='font-style:italic'>does not cancel your subscription</span>.<br>" +
                     "Your plan will resume its current monthly hours unless you submit another change request.<br>" +
-                    "<br>If you wish to terminate your subscription, please contact Freedom Makers.</p>");
+                    "If you wish to terminate your subscription, please contact Freedom Makers.</p>" +
+                    "<div id='cancelChange'></div>");
 
                 $("#CancelChangeButton").on("click", function() {
                     $.ajax({
@@ -527,7 +527,7 @@ function subscriptionModForm (res, status) {
                         dataType: "json",
                         success: function (undores, undostatus) {
                             $("#cancelChange").html("");
-                            $("#cancelChange").append("<br><h5>Successfully canceled change request!</h5>");
+                            $("#cancelChange").append("<h5>Successfully canceled change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                             }, 1000);
@@ -610,8 +610,6 @@ function timeSheetFunctionality () {
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
-    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
     $.ajax({
         method: "post",
         url: '/api/getMyTimeSheetsClient',
@@ -632,10 +630,6 @@ function timeSheetFunctionality () {
                     '   <td>' + item.task + '</td>'
                 );
             })
-
-            //remove loading message/gif
-            $("#buttonsTop").children()[0].remove();
-            $("#buttonsTop").children()[0].remove();
             $(".spinner-border").remove();
         },
         error: function (tokenres, tokenstatus) {
