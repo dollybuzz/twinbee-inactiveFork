@@ -198,7 +198,7 @@ function timeBucketFunctionality (res) {
     //Buy Hours
     $(".bucketRow").click(function () {
         selectedRow = $(this);
-        $("#optionsClient").html(`<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`)
+        //$("#optionsClient").html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`)
         popBuyForm(buyForm);
     });
 
@@ -511,10 +511,10 @@ function subscriptionModForm (res, status) {
                     "renewed billing cycle.<br>" +
                     `<h5>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h5>` +
                     "If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
-                    "<div id='cancelChange'></div>" +
                     "Please know canceling your change request <span style='font-style:italic'>does not cancel your subscription</span>.<br>" +
                     "Your plan will resume its current monthly hours unless you submit another change request.<br>" +
-                    "If you wish to terminate your subscription, please contact Freedom Makers.</p>");
+                    "If you wish to terminate your subscription, please contact Freedom Makers.</p>" +
+                    "<div id='cancelChange'></div>");
 
                 $("#CancelChangeButton").on("click", function() {
                     $.ajax({
@@ -528,7 +528,7 @@ function subscriptionModForm (res, status) {
                         dataType: "json",
                         success: function (undores, undostatus) {
                             $("#cancelChange").html("");
-                            $("#cancelChange").append("<br><h5>Successfully canceled change request!</h5>");
+                            $("#cancelChange").append("<h5>Successfully canceled change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                             }, 1000);
@@ -611,7 +611,7 @@ function timeSheetFunctionality () {
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
-    $("#buttonsTop").append('<span>Loading...   </span><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+    $("#buttonsTop").append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 
     $.ajax({
         method: "post",
