@@ -43,7 +43,13 @@ let navMapper = {
     manageRelationships: function () {
         navItemChange("manageRelationships");
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
+    },
+
+    runReports: function() {
+        navItemChange("runReports");
+        showFunction(runReportFunctionality, "");
     }
+
 
 };//end navMapper
 
@@ -1881,22 +1887,18 @@ function verifyClearSheet () {
     return (deleteId == selectedRow.children()[0].innerHTML);
 }
 
-function runReport () {
-    //CSS
-    $("#AddButton").hide();
-    $("#ExpandButton").hide();
-    $("DeleteButton").hide();
-    $("#buttonsTop").append("<button id='BackButton' type='button' class='btn btn-default'>Back to TimeSheets</button>")
-    $("#BackButton").css("opacity", "1");
 
-    //Event Listeners
-    //Back to TimeSheets Functionality
-    $("#BackButton").on('click', function() {
-        $("#buttonsTop").html('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
-        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
-    });
+//Run Report
+function runReportFunctionality () {
 
     //Creating the table
+    $("#userMainContent").html(
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"sheetsTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
     $("#sheetsTable").html('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
@@ -1907,6 +1909,17 @@ function runReport () {
         '            <th scope="col">Shift Duration</th>\n' +
         '        </thead><tbody>');
     $("#sheetsTable").append('<tfoot><th id="test" colspan="4">Total Time:</th><td>?</td></tfoot>');
+
+    //CSS
+    $("#buttonsTop").append("<button id='BackButton' type='button' class='btn btn-default'>Back to TimeSheets</button>")
+    $("#BackButton").css("opacity", "1");
+
+    //Event Listeners
+    //Back to TimeSheets Functionality
+    $("#BackButton").on('click', function() {
+        $("#buttonsTop").html('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
+        showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
+    });
 
 }
 
