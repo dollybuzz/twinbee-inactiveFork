@@ -925,11 +925,12 @@ function subscriptionModForm (res, status) {
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br><br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
         `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
-        "</form><div><span id='errormessage' style='color:red'></span></div>" +
-        "<div id='pendingChanges'></div>");
+        "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
+
+    $("#optionsClient").append("<div id='pendingChanges'></div>");
 
     //Pre-populating drop down options
     $.ajax({
@@ -1050,11 +1051,12 @@ function subscriptionAddForm () {
         `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select><br><br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
         `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
-        "</form><br><div><span id='errormessage' style='color:red'></span></div>\n" +
-        "<hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
+        "</form><br><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
+
+    $("optionsClient").append("<hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
 
     //Pre-populating drop down options
     $.ajax({
