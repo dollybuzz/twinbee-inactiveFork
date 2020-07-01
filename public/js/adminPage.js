@@ -582,7 +582,7 @@ function addClientSuccess (res, status) {
 }
 
 function deleteClientSuccess (res, status) {
-    $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!<br><br>Please know, changes may take a moment to reflect.</h5>`);
+    $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5><br><h6>Note: Changes may take a moment to reflect.</h6>`);
     setTimeout(function() {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1500);
