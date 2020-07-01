@@ -527,6 +527,9 @@ th {
     display: block;
 }
 
+#reportingToolsDropdown:hover #reportingToolsDropdownContent{
+    display: block;
+}
 #reportTable {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
