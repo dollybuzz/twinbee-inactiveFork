@@ -974,6 +974,9 @@ function subscriptionModForm (res, status) {
 
                 if (valid) {
                     $("#errormessage").html("");
+                    $("#SubmitButton").hide();
+                    $("#optionsClient").append("<div id='modsuccess'></div>");
+                    $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                     modSubmit("/api/updateSubscription", {
                         auth: id_token,
                         subscriptionId: $("#modsubscriptionid").val(),
@@ -1039,7 +1042,6 @@ function subscriptionModForm (res, status) {
             }
         });
     }
-
 }
 
 function subscriptionAddForm () {
@@ -1111,6 +1113,8 @@ function subscriptionAddForm () {
                         if (valid) {
                             $("#errormessage").html("");
                             $("#SubmitButton").hide();
+                            $("#optionsClient").append("<div id='addsuccess'></div>");
+                            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                             addSubmit("/api/createSubscription", {
                                 auth: id_token,
                                 planId: $("#addsubscriptionplanid").val(),
@@ -1135,8 +1139,6 @@ function subscriptionAddForm () {
 }
 
 function modSubscriptionSuccess (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Subscription ${$("#modsubscriptionid").val()}!</h5>`);
 
     setTimeout(function() {
@@ -1146,34 +1148,12 @@ function modSubscriptionSuccess (res, status) {
 }
 
 function addSubscriptionSuccess (res, status) {
-    $("#optionsClient").append("<div id='addsuccess'></div>");
-    $("#addsuccess").html('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
-    $.ajax({
-        url: '/api/getAllClients',
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (innerRes, innerStatus) {
-            let clientMap = {};
-            for (var i = 0; i < innerRes.length; ++i) {
-                let client = innerRes[i].customer;
-                if (client && client.first_name) {
-                    clientMap[client.id] = client;
-                }
-            }
-            let customer = clientMap[res.customer_id];
-            $("#addsuccess").html(`<br><h5>Successfully added Subscription ${res.id}!</h5>`);
+    $("#addsuccess").html(`<br><h5>Successfully added Subscription ${res.id}!</h5>`);
 
-            setTimeout(function() {
-                showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
-            }, 1000);
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
+    setTimeout(function() {
+        showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
+        }, 1000);
+
 }
 
 function deleteSubscriptionSuccess (res, status) {
@@ -1308,6 +1288,9 @@ function planModForm (res, status) {
 
         if (valid) {
             $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='modsuccess'></div>");
+            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             modSubmit("/api/updatePlan", {
                 auth: id_token,
                 planId: $("#modplanid").val(),
@@ -1367,6 +1350,9 @@ function planAddForm () {
         }
         if (valid){
             $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='addsuccess'></div>");
+            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>"
             addSubmit("/api/createPlan", {
                 auth: id_token,
                 planId: $("#addplanname").val(),
@@ -1382,8 +1368,6 @@ function planAddForm () {
 }
 
 function modPlanSuccess (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Plan ${$("#modplanid").val()}!</h5>`);
 
     setTimeout(function() {
@@ -1392,8 +1376,6 @@ function modPlanSuccess (res, status) {
 }
 
 function addPlanSuccess (res, status) {
-    $("#optionsClient").append("<div id='addsuccess'></div>");
-    $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Plan ${res.id}!</h5>`);
 
     setTimeout(function() {
@@ -1706,6 +1688,9 @@ function sheetModForm(res, status) {
 
                 if (valid) {
                     $("#errormessage").html("");
+                    $("#SubmitButton").hide();
+                    $("#optionsClient").append("<div id='modsuccess'></div>");
+                    $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                     modSubmit("/api/updateTimeSheet", {
                         auth: id_token,
                         id: $("#modsheetid").val(),
@@ -1746,6 +1731,7 @@ function sheetAddForm () {
         "<label for='addsheetdetail'>Detail:</label>" +
         `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+    $("#optionsClient").append("<hr><p>Note: Changes may take a moment to reflect.</p>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
@@ -1810,8 +1796,12 @@ function sheetAddForm () {
                                     message += "Please enter a reason for adding!<br>";
                                 }
 
-                                console.log(relres);
-                                if (valid) {
+                                if (valid)
+                                {
+                                    $("#errormessage").html("");
+                                    $("#SubmitButton").hide();
+                                    $("#optionsClient").append("<div id='addsuccess'></div>");
+                                    $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                                     $.ajax({
                                         url: "/api/getRelationshipById",
                                         method: "post",
@@ -1859,8 +1849,6 @@ function sheetAddForm () {
 }
 
 function modSheetSuccess (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Time Sheet ${$("#modsheetid").val()}!</h5>`);
 
     setTimeout(function() {
@@ -1869,11 +1857,8 @@ function modSheetSuccess (res, status) {
 }
 
 function addSheetSuccess (res, status) {
-    $("#optionsClient").append("<div id='addsuccess'></div>");
-    $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>` +
-        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>" +
-        "<br>Note: The table will reflect your changes once the request has completed.</p>");
+        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
 
     $("#ManageAvailCreditButton").on('click', function () {
         selectedTab = $("#manageCredit");
