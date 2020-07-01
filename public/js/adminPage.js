@@ -2513,12 +2513,21 @@ function verifyClearSheet () {
 function runReportFunctionality () {
     //Creating the table
     $("#userMainContent").html(
+        "<div class='reportOptions'></div>" +
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
         "    <table id=\"reportTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
+
+    //Report Buttons
+    $(".reportOptions").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
+    $(".reportOptions").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
+    $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
+    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
@@ -2530,15 +2539,6 @@ function runReportFunctionality () {
         '            <th scope="col">Shift Duration</th>\n' +
         '        </thead><tbody>');
     $("#reportTable").append('<tfoot><th id="test" colspan="4">Total Time:</th><td>?</td></tfoot>');
-
-    //Body Block Content
-    $("#userMainContent").append("<div class='reportOptions'></div>");
-    $(".reportOptions").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
-    $(".reportOptions").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
-    $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
-    $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
-    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
-
 
     //Pre-populate Report drop down options
     $("#clientRepSearch").on("change", function () {
