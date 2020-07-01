@@ -23,13 +23,15 @@ module.exports = {
      *                  id: timesheet id,
      *                  duration: length of time worked
      *                  clientName: client's name,
-     *                  makerName: maker's name
+     *                  makerName: maker's name,
+     *                  occupation: maker's occupation
      *              },
      *              {
      *                  id: timesheet id,
      *                  duration: length of time worked
      *                  clientName: client's name,
-     *                  makerName: maker's name
+     *                  makerName: maker's name,
+     *                  makerName: maker's occupation
      *              },...
      *          ]
      *          total: total time of all timesheets
