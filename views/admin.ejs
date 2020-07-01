@@ -1,28 +1,25 @@
 <%- include('partials/header.ejs') -%>
 <script src="/js/adminPage.js"></script>
 <nav>
-    <%if (typeof navItemsTop !== "undefined"){%>
-        <% for (var i = 0; i < navItemsTop.length; ++i){%>
+    <% if (typeof navItemsTop !== "undefined"){ %>
+        <% for (var i = 0; i < navItemsTop.length; ++i){ %>
 
-            <%if (i == 7){%>
-            |
-            <div class="dropdown">
-             <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
-                <%} else if (i > 7){%>
-              <div class="dropdown-content">
-                 <a><span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span></a>
-                    <%if (i == 9){%>
-              </div>
+        <span id="<%= navItemsTop[i]["id"] %>" class="navItem"><%= navItemsTop[i]["text"] %></span>
+        |
+        <% for (var j = 0; j < navItemsTop[i].dropdowns.length; ++j){ %>
+        <% if (j === 0){ %>
+        <div class="dropdown">
+            <div class="dropdown-content">
+                <% } %>
+                <a><span id="<%= navItemsTop[i].dropdowns[j]["id"] %>"
+                         class="navItem"><%= navItemsTop[i].dropdowns[j]["text"] %></span></a>
+                <% if (j === navItemsTop.length - 1){ %>
             </div>
-                    <%}%>
-                    <%}else{%>
-        <%if (i != 0){%>
-            |
-        <%}%>
-            <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
-            <%}%>
-    <%}%>
-    <%}%>
+        </div>
+        <% } %>
+        <% } %>
+        <% } %>
+    <% } %>
 
 </nav>
 <div id="userMainContent">
