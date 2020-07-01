@@ -44,7 +44,7 @@ let navMapper = {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     },
 
-    runReports: function() {
+    runReports: function () {
         navItemChange("runReports");
         showFunction(runReportFunctionality, "/api/getAllTimeSheets");
     }
@@ -52,37 +52,37 @@ let navMapper = {
 
 };//end navMapper
 
-function navItemChange(id){
+function navItemChange(id) {
     let selectedNavMap = $(`#${id}`);
-    console.log(selectedNavMap);
     let navItemText = selectedNavMap.html();
     selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+    let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
+    console.log(parentToChange);
 
-    $(".navItem").css('color', 'white');
-    $(".navItem").css('font-style', 'normal');
-    selectedNavMap.css("color", '#dbb459');
-    selectedNavMap.css("font-style", 'italic');
-
-    if(id == "reviewTimeSheets"|| id == "runReports")
-    {
-        $("#reportingTools").css("color", '#dbb459');
-        $("#reportingTools").css("font-style", 'italic');
-        $("#reportingTools").on("mouseleave", function() {
-            $("#reportingTools").css("color", '#dbb459');
-            $("#reportingTools").css("font-style", 'italic');
+    if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem") {
+        $(`#${parentToChange.id}`).css("color", '#dbb459')
+            .css("font-style", 'italic').on("mouseleave", function () {
+            $(`#${parentToChange.id}`).css("color", '#dbb459')
+                .css("font-style", 'italic');
         });
     }
-    else
-    {
-        $("#reportingTools").on("mouseleave", function() {
-            $("#reportingTools").css('color', 'white');
-            $("#reportingTools").css('font-style', 'normal');
+
+    else{
+        $(`#${parentToChange.id}`).css("color", 'white')
+            .css("font-style", 'normal').on("mouseleave", function () {
+            $(`#${parentToChange.id}`).css("color", 'white')
+                .css("font-style", 'normal');
         });
     }
+
+    $(".navItem").css('color', 'white')
+        .css('font-style', 'normal');
+    selectedNavMap.css("color", '#dbb459')
+        .css("font-style", 'italic');
 }
 
 //Versatile Functions
-function isEmail(val){
+function isEmail(val) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val);
 }
 
@@ -91,7 +91,7 @@ function isZip(val) {
     return strippedString.toString().length == 5 && !(strippedString.toString().includes('-'))
 }
 
-function createBody (button) {
+function createBody(button) {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
     $("#optionsClient").hide();
@@ -99,8 +99,7 @@ function createBody (button) {
     $("#buttonsTop").append("<button id='AddButton' type='button' class='btn btn-default'>+</button>");
     $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#ExpandButton").hide();
-    if(button != null)
-    {
+    if (button != null) {
         $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
     }
     $("#AddButton").css("opacity", "1");
@@ -108,7 +107,7 @@ function createBody (button) {
     //dynamically append submit button in each form
 };
 
-function showBlock () {
+function showBlock() {
     //show block after table stops moving
     setTimeout(function () {
         $("#optionsClient").show();
@@ -124,14 +123,14 @@ function showBlock () {
     }, 500)
 }
 
-function minimizeTable () {
+function minimizeTable() {
     $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#floor").css("width", "50%");
     $("#floor").css("margin-left", "0");
     $("#floor").css("margin-right", "auto");
 }
 
-function expandTable () {
+function expandTable() {
     $("#optionsClient").hide();
     $("#DeleteButton").hide();
     $("#optionsClient").css("width", "0%");
@@ -152,7 +151,7 @@ function expandTable () {
     }, 500);
 }
 
-function showFunction (functionality, endpoint) {
+function showFunction(functionality, endpoint) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -171,7 +170,7 @@ function showFunction (functionality, endpoint) {
 };
 
 //Mod
-function prePopModForm (endpoint, modForm){
+function prePopModForm(endpoint, modForm) {
     minimizeTable();
     showBlock();
     let clientId = selectedRow.children()[0].innerHTML;
@@ -192,7 +191,7 @@ function prePopModForm (endpoint, modForm){
     });//end ajax
 }
 
-function modSubmit (endpoint, object, successFunction) {
+function modSubmit(endpoint, object, successFunction) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -207,13 +206,13 @@ function modSubmit (endpoint, object, successFunction) {
 }
 
 //Add
-function popAddForm (addForm){
+function popAddForm(addForm) {
     minimizeTable();
     showBlock();
     addForm();
 }
 
-function addSubmit (endpoint, object, successFunction) {
+function addSubmit(endpoint, object, successFunction) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -227,10 +226,10 @@ function addSubmit (endpoint, object, successFunction) {
 };
 
 //Delete
-function showDeletePrompt (option, prompt, endpoint, object, successFunction, verifyDeleteUser) {
+function showDeletePrompt(option, prompt, endpoint, object, successFunction, verifyDeleteUser) {
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
-    setTimeout(function() {
+    setTimeout(function () {
         $("#deletePrompt").html("<h5>Are you sure you want to " + option + "?</h5>");
         $("#deletePrompt").append("<div id='selectionYorN'></div>");
         $("#selectionYorN").append("<button id='NoDelete' type='button' class='btn btn-default'>No</button>");
@@ -247,13 +246,13 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
             $("#DeleteButton").hide();
         }, 500);
 
-        $("#NoDelete").click(function() {
+        $("#NoDelete").click(function () {
             $("#AddButton").show();
             $("#AddButton").css("opacity", "1");
             expandTable();
         });
 
-        $("#YesDelete").click(function() {
+        $("#YesDelete").click(function () {
             $("#AddButton").show();
             $("#AddButton").css("opacity", "1");
 
@@ -268,8 +267,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
 
             $("#SubmitButton").off("click");
             $("#SubmitButton").on("click", function (e) {
-                if(verifyDeleteUser())
-                {
+                if (verifyDeleteUser()) {
                     $("#SubmitButton").hide();
                     $("#verifyEntry").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                     $.ajax({
@@ -282,23 +280,21 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
                             $("#optionsClient").html("Delete user not working!");
                         }
                     });//end ajax
-                }
-                else
-                {
+                } else {
                     $("#verifyEntry").html("<span style='color:red'>Invalid entry! Please try again.</span>");
                 }
             });
         });
-    },500);
+    }, 500);
 }
 
 //Main Methods
-function showMain () {
+function showMain() {
     //Contains any main tab functionality
     showOnlineMakers();
 }
 
-function showOnlineMakers () {
+function showOnlineMakers() {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -359,7 +355,7 @@ onSignIn = function (googleUser) {
 };
 
 //Client Methods
-function clientFunctionality (res){
+function clientFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -385,7 +381,8 @@ function clientFunctionality (res){
                 '   <td>' + item.customer.phone + '</td>' +
                 '   <td>' + item.customer.email + '</td></tr>'
             );
-        };
+        }
+        ;
     });
     $("#clientTable").append('\n</tbody>');
 
@@ -411,7 +408,7 @@ function clientFunctionality (res){
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("delete", clientPrompt,"/api/deleteClient", {
+            showDeletePrompt("delete", clientPrompt, "/api/deleteClient", {
                 auth: id_token,
                 id: clientId
             }, deleteClientSuccess, verifyDeleteClient);
@@ -422,7 +419,7 @@ function clientFunctionality (res){
     $("#AddButton").click(function () {
         popAddForm(clientAddForm);
         $("#DeleteButton").css("opacity", "0");
-        setTimeout(function(){
+        setTimeout(function () {
             $("#DeleteButton").hide();
         }, 500);
     });
@@ -441,7 +438,7 @@ function clientFunctionality (res){
     });
 }
 
-function clientModForm (res, status) {
+function clientModForm(res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
@@ -458,7 +455,7 @@ function clientModForm (res, status) {
         `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br><br>\n` +
         "<label for='modemail'>Email:</label>" +
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
-       "</form><div><span id='errormessage' style='color:red'></span></div>\n");
+        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
@@ -468,31 +465,31 @@ function clientModForm (res, status) {
     $("#SubmitButton").on('click', function (e) {
         let message = "";
         let valid = true;
-        if (!isEmail($("#modemail").val())){
+        if (!isEmail($("#modemail").val())) {
             valid = false;
             message += "Email is not valid!<br>";
         }
-        if ($("#modclientfname").val().length === 0){
+        if ($("#modclientfname").val().length === 0) {
             valid = false;
             message += "A First Name is required!<br>";
         }
-        if ($("#modclientlname").val().length === 0){
+        if ($("#modclientlname").val().length === 0) {
             valid = false;
             message += "A Last Name is required!<br>";
         }
-        if ($("#modphone").val().length === 0){
+        if ($("#modphone").val().length === 0) {
             valid = false;
             message += "A Phone Number is required!<br>";
         }
-        if ($("#modphone").val().match(/[a-z]|[A-Z]/g)){
+        if ($("#modphone").val().match(/[a-z]|[A-Z]/g)) {
             valid = false;
             message += "A Phone Number can't have letters!<br>";
         }
-        if (!$("#modphone").val().match(/[0-9]/g)){
+        if (!$("#modphone").val().match(/[0-9]/g)) {
             valid = false;
             message += "A Phone Number needs numbers!<br>";
         }
-        if ($("#modphone").val().length < 10){
+        if ($("#modphone").val().length < 10) {
             valid = false;
             message += "Phone Number not long enough!<br>";
         }
@@ -510,14 +507,13 @@ function clientModForm (res, status) {
                 phone: $("#modphone").val(),
                 email: $("#modemail").val()
             }, modClientSuccessContact);
-        }
-        else{
+        } else {
             $("#errormessage").html(message);
         }
     });
 }
 
-function clientAddForm () {
+function clientAddForm() {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
         "<label for='empty'></label>" +
@@ -542,31 +538,31 @@ function clientAddForm () {
 
         let message = "";
         let valid = true;
-        if (!isEmail($("#addemail").val())){
+        if (!isEmail($("#addemail").val())) {
             valid = false;
             message += "Email is not valid!<br>";
         }
-        if ($("#addclientfname").val().length === 0){
+        if ($("#addclientfname").val().length === 0) {
             valid = false;
             message += "A First Name is required!<br>";
         }
-        if ($("#addclientlname").val().length === 0){
+        if ($("#addclientlname").val().length === 0) {
             valid = false;
             message += "A Last Name is required!<br>";
         }
-        if ($("#addphone").val().length === 0){
+        if ($("#addphone").val().length === 0) {
             valid = false;
             message += "A Phone Number is required!<br>";
         }
-        if ($("#addphone").val().match(/[a-z]|[A-Z]/g)){
+        if ($("#addphone").val().match(/[a-z]|[A-Z]/g)) {
             valid = false;
             message += "A Phone Number can't have letters!<br>";
         }
-        if (!$("#addphone").val().match(/[0-9]/g)){
+        if (!$("#addphone").val().match(/[0-9]/g)) {
             valid = false;
             message += "A Phone Number needs numbers!<br>";
         }
-        if ($("#addphone").val().length < 10){
+        if ($("#addphone").val().length < 10) {
             valid = false;
             message += "Phone number not long enough!<br>";
         }
@@ -584,43 +580,42 @@ function clientAddForm () {
                 email: $("#addemail").val(),
                 street: $("#addaddress").val(),
             }, addClientSuccess);
-        }
-        else{
+        } else {
             $("#errormessage").html(message);
         }
     });
 }
 
-function modClientSuccessContact (res, status) {
+function modClientSuccessContact(res, status) {
     $("#modsuccess").html(`<br><h5>Successfully updated Client ${$("#modclientid").val()}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1000);
 }
 
-function addClientSuccess (res, status) {
+function addClientSuccess(res, status) {
     $("#addsuccess").html(`<br><h5>Successfully added Client ${res.id}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1000);
 }
 
-function deleteClientSuccess (res, status) {
+function deleteClientSuccess(res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
     }, 1500);
 }
 
-function verifyDeleteClient () {
+function verifyDeleteClient() {
     let deleteUser = $("#deleteUser").val();
     return (deleteUser == selectedRow.children()[1].innerHTML);
 }
 
 //Maker Methods
-function makerFunctionality (res){
+function makerFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -644,7 +639,8 @@ function makerFunctionality (res){
                 '   <td>' + item.firstName + " " + item.lastName + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
             );
-        };
+        }
+        ;
     });
     $("#makerTable").append('\n</tbody>');
 
@@ -669,7 +665,7 @@ function makerFunctionality (res){
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let makerId = selectedRow.children()[0].innerHTML;
-            showDeletePrompt("delete", makerPrompt,"/api/deleteMaker", {
+            showDeletePrompt("delete", makerPrompt, "/api/deleteMaker", {
                 auth: id_token,
                 id: makerId
             }, deleteMakerSuccess, verifyDeleteMaker);
@@ -680,7 +676,7 @@ function makerFunctionality (res){
     $("#AddButton").click(function () {
         popAddForm(makerAddForm);
         $("#DeleteButton").css("opacity", "0");
-        setTimeout(function(){
+        setTimeout(function () {
             $("#DeleteButton").hide();
         }, 500);
     });
@@ -699,7 +695,7 @@ function makerFunctionality (res){
     });
 }
 
-function makerModForm (res, status) {
+function makerModForm(res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
@@ -724,15 +720,15 @@ function makerModForm (res, status) {
     $("#SubmitButton").on('click', function (e) {
         let message = "";
         let valid = true;
-        if (!isEmail($("#modemail").val())){
+        if (!isEmail($("#modemail").val())) {
             valid = false;
             message += "Email is not valid!<br>";
         }
-        if ($("#modmakerfname").val().length === 0){
+        if ($("#modmakerfname").val().length === 0) {
             valid = false;
             message += "A First Name is required!<br>";
         }
-        if ($("#modmakerlname").val().length === 0){
+        if ($("#modmakerlname").val().length === 0) {
             valid = false;
             message += "A Last Name is required!<br>";
         }
@@ -749,14 +745,13 @@ function makerModForm (res, status) {
                 lastName: $("#modmakerlname").val(),
                 email: $("#modemail").val()
             }, modMakerSuccess);
-        }
-        else{
+        } else {
             $("#errormessage").html(message);
         }
     });
 }
 
-function makerAddForm () {
+function makerAddForm() {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
         "<label for='empty'></label>" +
@@ -778,15 +773,15 @@ function makerAddForm () {
     $("#SubmitButton").on('click', function (e) {
         let message = "";
         let valid = true;
-        if (!isEmail($("#addemail").val())){
+        if (!isEmail($("#addemail").val())) {
             valid = false;
             message += "Email is not valid!<br>";
         }
-        if ($("#addmakerfname").val().length === 0){
+        if ($("#addmakerfname").val().length === 0) {
             valid = false;
             message += "A First Name is required!<br>";
         }
-        if ($("#addmakerlname").val().length === 0){
+        if ($("#addmakerlname").val().length === 0) {
             valid = false;
             message += "A Last Name is required!<br>";
         }
@@ -802,43 +797,42 @@ function makerAddForm () {
                 lastName: $("#addmakerlname").val(),
                 email: $("#addemail").val()
             }, addMakerSuccess);
-        }
-        else{
+        } else {
             $("#errormessage").html(message);
         }
     });
 }
 
-function modMakerSuccess (res, status) {
+function modMakerSuccess(res, status) {
     $("#modsuccess").html(`<br><h5>Successfully updated Freedom Maker ${$("#modmakerid").val()}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
     }, 1000);
 }
 
-function addMakerSuccess (res, status) {
+function addMakerSuccess(res, status) {
     $("#addsuccess").html(`<br><h5>Successfully added Freedom Maker ${res.id}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
     }, 1000);
 }
 
-function deleteMakerSuccess (res, status) {
+function deleteMakerSuccess(res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted Freedom Maker ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(makerFunctionality, "/api/getAllMakers");
     }, 1000);
 }
 
-function verifyDeleteMaker () {
+function verifyDeleteMaker() {
     let deleteUser = $("#deleteUser").val();
     return (deleteUser == (selectedRow.children()[1].innerHTML));
 }
 
 //Plan Methods
-function planFunctionality (res) {
+function planFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -858,12 +852,11 @@ function planFunctionality (res) {
     res.forEach(item => {
         let plan = item.plan;
         item = item.plan;
-        if(plan.status != "archived")
-        {
+        if (plan.status != "archived") {
             $("#planTable").append('\n' +
                 '<tr class="planRow">' +
                 '   <td scope="row">' + plan.id + '</td>' +
-                '   <td>$' + Number.parseInt(plan.price)/100 + '</td>' +
+                '   <td>$' + Number.parseInt(plan.price) / 100 + '</td>' +
                 '   <td>' + plan.description + '</td></tr>'
             );
         }
@@ -922,7 +915,7 @@ function planFunctionality (res) {
     });
 }
 
-function planModForm (res, status) {
+function planModForm(res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
@@ -934,7 +927,7 @@ function planModForm (res, status) {
         "<label for='modplaninvoicename'>Invoice Statement Title:</label>" +
         `<input class='form-control' type='text' id='modplaninvoicename' name='modplaninvoicename' value='${res.plan.invoice_name}'>\n<br><br>\n` +
         "<label for='modplanprice'>Price Per Hour ($):</label>" +
-        `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price/100}'>\n<br>\n` +
+        `<input class='form-control' type='number' id='modplanprice' name='modplanprice' value='${res.plan.price / 100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -945,11 +938,11 @@ function planModForm (res, status) {
     $("#SubmitButton").on('click', function (e) {
         let message = "";
         let valid = true;
-        if ($("#modplaninvoicename").val().length === 0){
+        if ($("#modplaninvoicename").val().length === 0) {
             valid = false;
             message += "Invoice description is mandatory!<br>";
         }
-        if ($("#modplanprice").val().length === 0){
+        if ($("#modplanprice").val().length === 0) {
             valid = false;
             message += "A Price is mandatory!<br>";
         }
@@ -966,14 +959,13 @@ function planModForm (res, status) {
                 planInvoiceName: $("#modplaninvoicename").val(),
                 planPrice: Number.parseFloat($("#modplanprice").val()).toFixed(2) * 100
             }, modPlanSuccess);
-        }
-        else{
+        } else {
             $("#errormessage").html(message);
         }
     });
 }
 
-function planAddForm () {
+function planAddForm() {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
         "<label for='empty'></label>" +
@@ -997,27 +989,27 @@ function planAddForm () {
     $("#SubmitButton").on('click', function (e) {
         let message = "";
         let valid = true;
-        if ($("#addplanname").val().match(/\s+/g)){
+        if ($("#addplanname").val().match(/\s+/g)) {
             message += "No spaces allowed in plan names (use dashes)!<br>";
             valid = false;
         }
-        if ($("#addplanname").val().length === 0){
+        if ($("#addplanname").val().length === 0) {
             message += "A plan name is mandatory!<br>";
             valid = false;
         }
-        if ($("#addplaninvoicename").val().length === 0){
+        if ($("#addplaninvoicename").val().length === 0) {
             message += "Invoice Statement Title cannot be blank!<br>";
             valid = false;
         }
-        if ($("#addplanprice").val().length === 0){
+        if ($("#addplanprice").val().length === 0) {
             message += "Price per hour must have a value!<br>"
             valid = false;
         }
-        if ($("#addplandescription").val().length === 0){
+        if ($("#addplandescription").val().length === 0) {
             message += "A description is required!<br>"
             valid = false;
         }
-        if (valid){
+        if (valid) {
             $("#errormessage").html("");
             $("#SubmitButton").hide();
             $("#optionsClient").append("<div id='addsuccess'></div>");
@@ -1025,47 +1017,46 @@ function planAddForm () {
             addSubmit("/api/createPlan", {
                 auth: id_token,
                 planId: $("#addplanname").val(),
-                invoiceName: $("#addplaninvoicename").val() ,
+                invoiceName: $("#addplaninvoicename").val(),
                 pricePerHour: Number.parseFloat($("#addplanprice").val()).toFixed(2) * 100,
                 planDescription: $("#addplandescription").val()
             }, addPlanSuccess);
-        }
-        else{
+        } else {
             $("#errormessage").html(message);
         }
     });
 }
 
-function modPlanSuccess (res, status) {
+function modPlanSuccess(res, status) {
     $("#modsuccess").html(`<br><h5>Successfully updated Plan ${$("#modplanid").val()}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(planFunctionality, "/api/getAllPlans");
     }, 1000);
 }
 
-function addPlanSuccess (res, status) {
+function addPlanSuccess(res, status) {
     $("#addsuccess").html(`<br><h5>Successfully added Plan ${res.id}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(planFunctionality, "/api/getAllPlans");
     }, 1000);
 }
 
-function deletePlanSuccess (res, status) {
+function deletePlanSuccess(res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted Plan ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(planFunctionality, "/api/getAllPlans");
     }, 1000);
 }
 
-function verifyDeletePlan () {
+function verifyDeletePlan() {
     let deleteUser = $("#deleteUser").val();
     return (deleteUser == selectedRow.children()[0].innerHTML);
 }
 
 //Subscription Methods
-function subscriptionFunctionality (res) {
+function subscriptionFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -1093,19 +1084,19 @@ function subscriptionFunctionality (res) {
         item = item.subscription;
         let scheduled = subscription.has_scheduled_changes;
         let changes = "";
-        (scheduled ? changes="Yes" : changes="No");
+        (scheduled ? changes = "Yes" : changes = "No");
 
         if (item && !subscription.deleted) {
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
                 '   <td scope="row">' + subscription.id + '</td>' +
-                '   <td>' + `${customer.first_name} ${customer.last_name}`+ '</td>' +
+                '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
                 '   <td>' + subscription.customer_id + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD'))  + '</td></tr>'
+                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td></tr>'
             );
         }
     });
@@ -1163,7 +1154,7 @@ function subscriptionFunctionality (res) {
     });
 }
 
-function subscriptionModForm (res, status) {
+function subscriptionModForm(res, status) {
     //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
@@ -1179,7 +1170,7 @@ function subscriptionModForm (res, status) {
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br><br>\n` +
         "<label for='modsubscriptionprice'>Price Per Hour ($):</label>" +
-        `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "": res.plan_unit_price/100}'>\n<br>\n` +
+        `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "" : res.plan_unit_price / 100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -1196,7 +1187,7 @@ function subscriptionModForm (res, status) {
         },
         dataType: "json",
         success: function (planres, planstatus) {
-            for(var plan in planres){
+            for (var plan in planres) {
                 plan = planres[plan].plan;
                 if (selectedRow.children()[3].innerHTML == plan.id)
                     $('#modsubscriptionplanname').append(
@@ -1214,11 +1205,11 @@ function subscriptionModForm (res, status) {
                 let message = "";
                 let valid = true;
                 let monthlyHours = $("#modsubscriptionplanquantity").val();
-                if ($("#modsubscriptionplanquantity").val().length === 0 || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0 ){
+                if ($("#modsubscriptionplanquantity").val().length === 0 || $("#modsubscriptionplanquantity").val().includes(".") || $("#modsubscriptionplanquantity").val() == 0) {
                     valid = false;
                     message += "Invalid entry! Please try again.<br>";
                 }
-                if ($("#modsubscriptionprice").val().length === 0){
+                if ($("#modsubscriptionprice").val().length === 0) {
                     valid = false;
                     message += "Please indicate the price per hour for this subscription!<br>";
                 }
@@ -1235,8 +1226,7 @@ function subscriptionModForm (res, status) {
                         planQuantity: $("#modsubscriptionplanquantity").val(),
                         pricePerHour: $("#modsubscriptionprice").val()
                     }, modSubscriptionSuccess);
-                }
-                else{
+                } else {
                     $("#errormessage").html(message);
                 }
 
@@ -1248,8 +1238,7 @@ function subscriptionModForm (res, status) {
     });
 
     //Has pending changes
-    if(selectedRow.children()[5].innerHTML == "Yes")
-    {
+    if (selectedRow.children()[5].innerHTML == "Yes") {
         $.ajax({
             url: "/api/retrieveSubscriptionChanges",
             method: "post",
@@ -1266,7 +1255,7 @@ function subscriptionModForm (res, status) {
                     "If you want to revoke this change,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Revoke</button> to end the change request</span>.<br>" +
                     "<div id='cancelChange'></div>");
 
-                $("#CancelChangeButton").on("click", function() {
+                $("#CancelChangeButton").on("click", function () {
                     $.ajax({
                         url: "/api/undoSubscriptionChanges",
                         method: "post",
@@ -1294,7 +1283,7 @@ function subscriptionModForm (res, status) {
     }
 }
 
-function subscriptionAddForm () {
+function subscriptionAddForm() {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
         "<label for='empty'></label>" +
@@ -1332,20 +1321,19 @@ function subscriptionAddForm () {
                 },
                 dataType: "json",
                 success: function (clientres, clientstatus) {
-                    for(var plan in planres) {
-                            plan = planres[plan].plan;
+                    for (var plan in planres) {
+                        plan = planres[plan].plan;
                         if (plan.status != 'archived') {
                             $('#addsubscriptionplanid').append(
                                 `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
                             );
                         }
                     }
-                    for(var client in clientres) {
+                    for (var client in clientres) {
                         client = clientres[client].customer;
-                        if(client.card_status == "valid")
-                        {
+                        if (client.card_status == "valid") {
                             $('#addsubscriptioncustomerid').append(
-                              `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name + ' - ' + client.id}</option>`
+                                `<option id="${client.id}" value="${client.id}">${client.first_name + ' ' + client.last_name + ' - ' + client.id}</option>`
                             );
                         }
                     }
@@ -1368,11 +1356,10 @@ function subscriptionAddForm () {
                             addSubmit("/api/createSubscription", {
                                 auth: id_token,
                                 planId: $("#addsubscriptionplanid").val(),
-                                customerId: $("#addsubscriptioncustomerid").val() ,
+                                customerId: $("#addsubscriptioncustomerid").val(),
                                 planQuantity: $("#addsubscriptionplanquantity").val(),
                             }, addSubscriptionSuccess);
-                        }
-                        else{
+                        } else {
                             $("#errormessage").html(message);
                         }
                     });
@@ -1388,38 +1375,38 @@ function subscriptionAddForm () {
     });
 }
 
-function modSubscriptionSuccess (res, status) {
+function modSubscriptionSuccess(res, status) {
     $("#modsuccess").html(`<br><h5>Successfully updated Subscription ${$("#modsubscriptionid").val()}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     }, 1000);
 
 }
 
-function addSubscriptionSuccess (res, status) {
+function addSubscriptionSuccess(res, status) {
     $("#addsuccess").html(`<br><h5>Successfully added Subscription ${res.id}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
-        }, 1000);
+    }, 1000);
 
 }
 
-function deleteSubscriptionSuccess (res, status) {
+function deleteSubscriptionSuccess(res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted Subscription ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
     }, 1000);
 }
 
-function verifyDeleteSubscription () {
+function verifyDeleteSubscription() {
     let deleteUser = $("#deleteUser").val();
     return (deleteUser == selectedRow.children()[0].innerHTML);
 }
 
 //Relationship Methods
-function relationshipFunctionality (res) {
+function relationshipFunctionality(res) {
     $.ajax({
         url: "/api/getAllClients",
         method: "post",
@@ -1447,13 +1434,12 @@ function relationshipFunctionality (res) {
                             //Create table
                             let clientMap = {};
                             let makerMap = {};
-                            for(var item of clientres) {
-                                if(item.customer.first_name)
-                                {
+                            for (var item of clientres) {
+                                if (item.customer.first_name) {
                                     clientMap[item.customer.id] = item.customer;
                                 }
                             }
-                            for(var item of makerres) {
+                            for (var item of makerres) {
                                 makerMap[item.id] = item;
                             }
                             $("#userMainContent").html(
@@ -1478,10 +1464,10 @@ function relationshipFunctionality (res) {
                                 $("#relationshipTable").append('\n' +
                                     '<tr class="relationshipRow">' +
                                     '   <td>' + item.id + '</td>' +
-                                    '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>'+
-                                    '   <td>' + clientMap[item.clientId].id + '</td>'+
-                                    '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>'+
-                                    '   <td>' + makerMap[item.makerId].id + '</td>'+
+                                    '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
+                                    '   <td>' + clientMap[item.clientId].id + '</td>' +
+                                    '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
+                                    '   <td>' + makerMap[item.makerId].id + '</td>' +
                                     '   <td>' + item.planId + '</td>' +
                                     '   <td>' + item.occupation + '</td>'
                                 );
@@ -1508,7 +1494,7 @@ function relationshipFunctionality (res) {
                                 $("#DeleteButton").css("opacity", "1");
                                 $("#DeleteButton").click(function () {
                                     let relationshipId = selectedRow.children()[0].innerHTML;
-                                    showDeletePrompt("delete", relationshipPrompt,"/api/deleteRelationship", {
+                                    showDeletePrompt("delete", relationshipPrompt, "/api/deleteRelationship", {
                                         auth: id_token,
                                         id: relationshipId
                                     }, deleteRelationshipSuccess, verifyDeleteRelationship);
@@ -1520,7 +1506,7 @@ function relationshipFunctionality (res) {
                             $("#AddButton").click(function () {
                                 popAddForm(relationshipAddForm);
                                 $("#DeleteButton").css("opacity", "0");
-                                setTimeout(function(){
+                                setTimeout(function () {
                                     $("#DeleteButton").hide();
                                 }, 500);
                             });
@@ -1676,8 +1662,7 @@ function relationshipAddForm() {
                         $('#addClientRel').append(
                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         );
-                        if(i == clientres.length-1)
-                        {
+                        if (i == clientres.length - 1) {
                             $.ajax({
                                 url: "/api/getTimeBucketsByClientId",
                                 method: "post",
@@ -1786,7 +1771,7 @@ function relationshipAddForm() {
     });
 }
 
-function modRelationshipSuccess (res, status) {
+function modRelationshipSuccess(res, status) {
     $("#modRelSuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
     setTimeout(function () {
@@ -1794,7 +1779,7 @@ function modRelationshipSuccess (res, status) {
     }, 1000);
 }
 
-function addRelationshipSuccess (res, status) {
+function addRelationshipSuccess(res, status) {
     $("#addRelSuccess").html(`<br><h5>Successfully added Relationship ${res.id}!</h5>`);
 
     setTimeout(function () {
@@ -1815,7 +1800,7 @@ function verifyDeleteRelationship() {
 }
 
 //Credit Methods
-function creditFunctionality (res) {
+function creditFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -1833,15 +1818,14 @@ function creditFunctionality (res) {
         '        </thead><tbody>');
     //Populate table
     res.forEach(customer => {
-        for(var item in customer.buckets) {
-            let hours = (Number.parseFloat(customer.buckets[item])/60);
-            let minutes = (customer.buckets[item])%60;
+        for (var item in customer.buckets) {
+            let hours = (Number.parseFloat(customer.buckets[item]) / 60);
+            let minutes = (customer.buckets[item]) % 60;
             let message = "";
             if (hours >= 0) {
                 message += ` ${Math.floor(hours)} hours `;
             }
-            if(hours <= -1)
-            {
+            if (hours <= -1) {
                 hours = Math.abs(hours);
                 message += `-${Math.floor(hours)} hours `;
             }
@@ -1855,7 +1839,8 @@ function creditFunctionality (res) {
                 '   <td>' + item + '</td>' +
                 `   <td>${message}</td>`
             );
-        };
+        }
+        ;
     });
     $("#creditTable").append('\n</tbody>');
 
@@ -1873,14 +1858,15 @@ function creditFunctionality (res) {
             "<div><label for='deleteUser'>Enter Plan:</label></div>" +
             `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
             "<div id='empty'></div>" +
-            "</div>\n";;
+            "</div>\n";
+        ;
         prePopModForm("/api/getAllTimeBuckets", creditModForm);
         $("#DeleteButton").show();
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
             let planId = selectedRow.children()[2].innerHTML;
-            showDeletePrompt("delete", creditPrompt,"/api/deleteBucket", {
+            showDeletePrompt("delete", creditPrompt, "/api/deleteBucket", {
                 auth: id_token,
                 id: clientId,
                 bucket: planId,
@@ -1913,9 +1899,9 @@ function creditModForm(res, status) {
         `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
         "<br><br><form id='modify'>" +
         `<div>Enter a number (+/-) to adjust hours:</div>` +
-        "<input class='form-control' type='number' id='creditmodhours' name='creditmodhours'>"+
+        "<input class='form-control' type='number' id='creditmodhours' name='creditmodhours'>" +
         `<br><br><div>Enter a number (+/-) to adjust minutes:</div>` +
-        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
+        "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>" +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -1999,21 +1985,21 @@ function creditAddForm() {
                         "<label for='addPlanCredit'> Select a Plan: </label>" +
                         "<select class='form-control' id='addPlanCredit'>\n</select>\n<br><br>\n" +
                         "<label for='addMinCredit'> Enter Number of Hours: </label>" +
-                        "<input class='form-control' type='number' id='addHourCredit' name='addHourCredit'>\n<br>"+
+                        "<input class='form-control' type='number' id='addHourCredit' name='addHourCredit'>\n<br>" +
                         "<label for='addMinCredit'> Enter Number of Minutes: </label>" +
-                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br><br>"+
+                        "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br><br>" +
                         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
                     $("#SubmitButton").css("opacity", "1");
 
-                    for(var client in clientres) {
+                    for (var client in clientres) {
                         client = clientres[client].customer;
                         $('#addClientCredit').append(
                             `<option id="${client.id}" value="${client.id}">${client.first_name} ${client.last_name} - ${client.id}</option>`
                         );
                     }
-                    for(var item of planres) {
+                    for (var item of planres) {
                         if (item.plan.status != "archived") {
                             $('#addPlanCredit').append(
                                 `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
@@ -2083,7 +2069,7 @@ function creditAddForm() {
     });
 }
 
-function modCreditSuccess (res, status) {
+function modCreditSuccess(res, status) {
     $("#modCreditSuccess").html(`<br><h5>Successfully updated hours for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
     setTimeout(function () {
@@ -2091,7 +2077,7 @@ function modCreditSuccess (res, status) {
     }, 1000);
 }
 
-function addCreditSuccess (res, status) {
+function addCreditSuccess(res, status) {
     $("#addCreditSuccess").html(`<br><h5>Successfully added plan for ${res.first_name} ${res.last_name}!</h5>`);
 
     setTimeout(function () {
@@ -2099,7 +2085,7 @@ function addCreditSuccess (res, status) {
     }, 1000);
 }
 
-function deleteCreditSuccess (res, status) {
+function deleteCreditSuccess(res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully deleted credit for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
     setTimeout(function () {
@@ -2114,7 +2100,7 @@ function verifyDeleteCredit() {
 }
 
 //TimeSheet Methods
-function timeSheetFunctionality (res) {
+function timeSheetFunctionality(res) {
     $.ajax({
         url: '/api/getAllMakers',
         method: "post",
@@ -2172,21 +2158,16 @@ function timeSheetFunctionality (res) {
                             clientMap[clientIdentifier].first_name + " " + clientMap[clientIdentifier].last_name :
                             `Deleted, ID: ${clientIdentifier}`;
                         let message = null;
-                        if(item.adminNote == null)
-                        {
+                        if (item.adminNote == null) {
                             message = "";
-                        }
-                        else {
+                        } else {
                             message = item.adminNote;
                         }
 
                         let makerValue;
-                        if(makerMap[item.makerId].deleted)
-                        {
+                        if (makerMap[item.makerId].deleted) {
                             makerValue = "Deleted, ID: " + makerMap[item.makerId].id;
-                        }
-                        else
-                        {
+                        } else {
                             makerValue = makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName
                         }
 
@@ -2223,12 +2204,10 @@ function timeSheetFunctionality (res) {
                         $("#DeleteButton").show();
                         $("#DeleteButton").css("opacity", "1");
                         $("#DeleteButton").click(function () {
-                            if($("#modsheetdetail").val() == "" || $("#modsheetdetail").val() == "undefined")
-                            {
+                            if ($("#modsheetdetail").val() == "" || $("#modsheetdetail").val() == "undefined") {
                                 $("#errormessage").html("");
                                 $("#errormessage").html("Requires a detail to clear!");
-                            }
-                            else {
+                            } else {
                                 let sheetId = selectedRow.children()[0].innerHTML;
                                 showDeletePrompt("clear", timeSheetPrompt, "/api/clearTimeSheet", {
                                     auth: id_token,
@@ -2285,7 +2264,7 @@ function sheetModForm(res, status) {
         "<label for='modsheetplanname'>Plan:</label>" +
         `<input class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}' disabled>\n<br><br>\n` +
         "<label for='modsheettimein'>Time In:</label>" +
-        `<input class='form-control' type='date' id='modsheettimeindate' name='modsheettimeindate' value='${res.timeIn}'>`+
+        `<input class='form-control' type='date' id='modsheettimeindate' name='modsheettimeindate' value='${res.timeIn}'>` +
         `<input class='form-control' type='time' id='modsheettimeintime' name='modsheettimeintime' value='${res.timeIn}'>\n` +
         "<label for='modsheettimeout'>Time Out:</label>" +
         `<input class='form-control' type='date' id='modsheettimeoutdate' name='modsheettimeoutdate' value='${res.timeOut}'>` +
@@ -2299,8 +2278,7 @@ function sheetModForm(res, status) {
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
 
-    if($("#modsheetdetail").val() == "null")
-    {
+    if ($("#modsheetdetail").val() == "null") {
         $("#modsheetdetail").val("");
     }
 
@@ -2317,16 +2295,16 @@ function sheetModForm(res, status) {
             $("#SubmitButton").on('click', function (e) {
                 let message = "";
                 let valid = true;
-                if ($("#modsheettask").val().length == 0){
+                if ($("#modsheettask").val().length == 0) {
                     valid = false;
                     message += "Please add a task!<br>";
                 }
-                if ($("#modsheetdetail").val() == ""){
+                if ($("#modsheetdetail").val() == "") {
                     valid = false;
                     message += "Please add a reason for editing!<br>";
                 }
                 if ($("#modsheettimeintime").val() == "" || $("#modsheettimeindate").val() == "" ||
-                    $("#modsheettimeouttime").val() == "" || $("#modsheettimeoutdate").val() == ""){
+                    $("#modsheettimeouttime").val() == "" || $("#modsheettimeoutdate").val() == "") {
                     valid = false;
                     message += "Please correct the dates and times!<br>";
                 }
@@ -2340,13 +2318,12 @@ function sheetModForm(res, status) {
                         auth: id_token,
                         id: $("#modsheetid").val(),
                         hourlyRate: $("#modsheetplanname").val(),
-                        timeIn: `${$("#modsheettimeindate").val()} ${$("#modsheettimeintime").val()}:00` ,
-                        timeOut: `${$("#modsheettimeoutdate").val()} ${$("#modsheettimeouttime").val()}:00` ,
+                        timeIn: `${$("#modsheettimeindate").val()} ${$("#modsheettimeintime").val()}:00`,
+                        timeOut: `${$("#modsheettimeoutdate").val()} ${$("#modsheettimeouttime").val()}:00`,
                         task: $("#modsheettask").val(),
                         detail: $("#modsheetdetail").val()
                     }, modSheetSuccess);
-                }
-                else{
+                } else {
                     $("#errormessage").html(message);
                 }
             });
@@ -2357,7 +2334,7 @@ function sheetModForm(res, status) {
     });
 }
 
-function sheetAddForm () {
+function sheetAddForm() {
     $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
         "<form id='add'>\n" +
         "<label for='empty'></label>" +
@@ -2441,8 +2418,7 @@ function sheetAddForm () {
                                     message += "Please enter a reason for adding!<br>";
                                 }
 
-                                if (valid)
-                                {
+                                if (valid) {
                                     $("#errormessage").html("");
                                     $("#SubmitButton").hide();
                                     $("#optionsClient").append("<div id='addsuccess'></div>");
@@ -2493,15 +2469,15 @@ function sheetAddForm () {
     });
 }
 
-function modSheetSuccess (res, status) {
+function modSheetSuccess(res, status) {
     $("#modsuccess").html(`<br><h5>Successfully updated Time Sheet ${$("#modsheetid").val()}!</h5>`);
 
-    setTimeout(function() {
+    setTimeout(function () {
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     }, 1000);
 }
 
-function addSheetSuccess (res, status) {
+function addSheetSuccess(res, status) {
     $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>` +
         "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
 
@@ -2511,7 +2487,7 @@ function addSheetSuccess (res, status) {
     });
 }
 
-function clearSheetSuccess (res, status) {
+function clearSheetSuccess(res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>` +
         "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
 
@@ -2521,14 +2497,14 @@ function clearSheetSuccess (res, status) {
     });
 }
 
-function verifyClearSheet () {
+function verifyClearSheet() {
     let deleteId = $("#deleteUser").val();
     return (deleteId == selectedRow.children()[0].innerHTML);
 }
 
 
 //Run Report
-function runReportFunctionality () {
+function runReportFunctionality() {
     //Creating the table
     $("#userMainContent").html(
         "<div class='reportOptions'></div>" +
@@ -2571,11 +2547,12 @@ function runReportFunctionality () {
                 $("#clientReport").html("");
                 for (var i = 0; i < clientres.length; ++i) {
                     let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
-                    if(clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase())) {
+                    if (clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase())) {
                         $('#clientReport').append(
                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         )
-                    };
+                    }
+                    ;
                 }
             },
             error: function (clientres, clientstatus) {
@@ -2596,17 +2573,13 @@ function runReportFunctionality () {
                 $("#makerReport").html("");
                 for (var item of makerres) {
                     let deleted;
-                    if(item.deleted)
-                    {
+                    if (item.deleted) {
                         deleted = "*Deleted* ";
-                    }
-                    else
-                    {
+                    } else {
                         deleted = "";
                     }
                     let makerName = deleted + item.firstName + " " + item.lastName;
-                    if(makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()))
-                    {
+                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase())) {
                         $('#makerReport').append(
                             `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                         );
@@ -2633,7 +2606,7 @@ $(document).ready(function () {
         url: "/api/getEnvironment",
         method: "get",
         dataType: "json",
-        success:function (res, status) {
+        success: function (res, status) {
             TEST_ENVIRONMENT = res;
             if (TEST_ENVIRONMENT) {
                 onSignIn();
@@ -2660,9 +2633,8 @@ $(document).ready(function () {
         $(this).css("font-style", 'italic');
     });
 
-    $(".navItem").on("mouseleave", function() {
-        if (selectedTab!= $(this)[0].id)
-        {
+    $(".navItem").on("mouseleave", function () {
+        if (selectedTab != $(this)[0].id) {
             $(this).css("color", 'white');
             $(this).css("font-style", 'normal');
         }
@@ -2672,9 +2644,9 @@ $(document).ready(function () {
     $("#landingLogo").css("width", "20%");
 
     setTimeout(function () {
-        if (!GOOGLE_USER || !id_token){
+        if (!GOOGLE_USER || !id_token) {
             alert("No google user found, retrying!")
-            gapi.auth2.init().then(function(){
+            gapi.auth2.init().then(function () {
                 GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
                 id_token = GOOGLE_USER.id_token;
             })
