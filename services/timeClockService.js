@@ -132,8 +132,9 @@ class TimeClockService {
      * If multiple are online, all are clocked out.
      *
      * @param token   - token of maker to clock out
+     * @param newTask - updated task if any
      */
-    async clockOut(token){
+    async clockOut(token, newTask){
 
         let result = await request({
             method: 'POST',
@@ -169,7 +170,7 @@ class TimeClockService {
                     hourlyRate: currentSheet.hourlyRate,
                     timeIn: currentSheet.timeIn,
                     timeOut: rightNow,
-                    task: currentSheet.task,
+                    task: newTask ? newTask : currentSheet.task,
                     adminNote: currentSheet.adminNote,
                     'auth':process.env.TWINBEE_MASTER_AUTH
                 }
