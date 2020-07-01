@@ -706,6 +706,15 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
+    setTimeout(function () {
+        if (!GOOGLE_USER || !id_token){
+            alert("No google user found, retrying!")
+            gapi.auth2.init().then(function(){
+                GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+                id_token = GOOGLE_USER.id_token;
+            })
+        }
+    }, 1000);
 
     //refresh tokens before timeout
     setInterval(function () {
