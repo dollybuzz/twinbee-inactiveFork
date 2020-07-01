@@ -1506,7 +1506,7 @@ function timeSheetFunctionality (res) {
                             `<input class='form-control' type='text' id='deleteUser' name='deleteUser'>\n<br>\n` +
                             "<div id='empty'></div>" +
                             "</div>\n" +
-                            "<hr><p>Note: First please calculate the running time to credit back to the associated client.</p>";
+                            "<hr><p>Note: First please calculate the running time to credit back to the associated client.<br>Changes may take a moment to reflect.</p>";
                         prePopModForm("/api/getTimeSheet", sheetModForm);
                         $("#DeleteButton").show();
                         $("#DeleteButton").css("opacity", "1");
@@ -1868,8 +1868,7 @@ function addSheetSuccess (res, status) {
 
 function clearSheetSuccess (res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>` +
-        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>" +
-        "<br>Note: The table will reflect your changes once the request has completed.</p>");
+        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
 
     $("#ManageAvailCreditButton").on('click', function () {
         selectedTab = $("#manageCredit");
