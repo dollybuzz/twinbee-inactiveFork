@@ -10,10 +10,10 @@
             <div class="dropdown">
              <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
               <div class="dropdown-content">
-                 <a href="#"><span id="<%=navItemsTop[i+1]["id"]%>" class="navItem"><%=navItemsTop[i+1]["text"]%></span></a>
+                 <a><span id="<%=navItemsTop[i+1]["id"]%>" class="navItem"><%=navItemsTop[i+1]["text"]%></span></a>
               </div>
             </div>
-            <%++i;%>
+            <%i = navItemsTop.length;%>
             <%}%>
             <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
         <%}%>
