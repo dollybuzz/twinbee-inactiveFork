@@ -63,7 +63,7 @@ function navItemChange(id){
     selectedNavMap.css("color", '#dbb459');
     selectedNavMap.css("font-style", 'italic');
 
-    if(selectedNavMap == "reviewTimeSheets" || selectedNavMap == "runReports")
+    if(selectedNavMap == $("#reviewTimeSheets") || selectedNavMap == $("runReports"))
     {
         $("#reportingTools").css("color", '#dbb459');
         $("#reportingTools").css("font-style", 'italic');
