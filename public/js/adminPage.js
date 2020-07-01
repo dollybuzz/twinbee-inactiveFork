@@ -247,6 +247,11 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
             $("#SubmitButton").on("click", function (e) {
                 if(verifyDeleteUser())
                 {
+                    $("#SubmitButton").css("opacity", "0");
+                    setTimeout(function () {
+                        $("#SubmitButton").hide();
+                    }, 500);
+
                     $("#verifyEntry").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                     $.ajax({
                         url: endpoint,
