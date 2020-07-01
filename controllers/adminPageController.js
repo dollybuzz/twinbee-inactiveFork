@@ -21,21 +21,26 @@ module.exports = {
                 link: "", text: "Manage Freedom Makers", id: "manageMakers", dropdowns: []
             },
             {
-                link: "", text: "Manage Plans", id: "managePlans", dropdowns: []
-            },
-            {
-                link: "", text: "Manage Subscriptions", id: "manageSubscriptions", dropdowns: []
-            },
-            {
                 link: "", text: "Manage Relationships", id: "manageRelationships", dropdowns: []
             },
             {
-                link: "", text: "Manage Available Credit", id: "manageCredit", dropdowns: []
+                link: "", text: "Manage Billing", id: "manageBilling", dropdowns: [
+                    {
+                        link: "", text: "Manage Plans", id: "managePlans", dropdowns: []
+                    },
+                    {
+                        link: "", text: "Manage Subscriptions", id: "manageSubscriptions", dropdowns: []
+                    },
+                    {
+                        link: "", text: "Manage Available Credit", id: "manageCredit", dropdowns: []
+                    }
+                ]
             },
+
             {
                 link: "", text: "Reporting Tools", id: "reportingTools", dropdowns: [
                     {link: "", text: "Review TimeSheets", id: "reviewTimeSheets"},
-                    {link: "", text: "Run Reports", id: "runReports"}
+                    {link: "", text: "Time Reports", id: "runReports"}
                 ]
             }
         ];
