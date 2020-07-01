@@ -5,7 +5,7 @@
         <% for (var i = 0; i < navItemsTop.length; ++i){ %>
 
             <% if (navItemsTop[i].dropdowns.length > 0){ %>
-                <div class="dropdown">
+                <div id="<%=navItemsTop[i].dropdownId%>" class="dropdown">
                     <span id="<%= navItemsTop[i]["id"] %>"
                           class="navItem navItemParent"><%= navItemsTop[i]["text"] %></span>
                     <% for (var j = 0; j < navItemsTop[i].dropdowns.length; ++j){ %>
@@ -22,9 +22,9 @@
             <% } else{ %>
                 <span id="<%= navItemsTop[i]["id"] %>"
                       class="navItem navItemParent"><%= navItemsTop[i]["text"] %></span>
-                <% if (i != navItemsTop.length - 1){ %>
-                    |
-                <% } %>
+            <% } %>
+            <% if (i != navItemsTop.length - 1){ %>
+                |
             <% } %>
         <% } %>
     <% } %>
