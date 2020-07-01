@@ -526,6 +526,6 @@ th {
 
 .dropdown:hover .dropbtn {background-color: #3e8e41;}
 
-#runReports {
-    color: #32444e;
+nav #runReports {
+    color: #32444e !important;
 }
