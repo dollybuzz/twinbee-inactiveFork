@@ -1352,7 +1352,7 @@ function planAddForm () {
             $("#errormessage").html("");
             $("#SubmitButton").hide();
             $("#optionsClient").append("<div id='addsuccess'></div>");
-            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>"
+            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             addSubmit("/api/createPlan", {
                 auth: id_token,
                 planId: $("#addplanname").val(),
