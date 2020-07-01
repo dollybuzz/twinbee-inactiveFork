@@ -87,7 +87,7 @@ function createBody (button) {
 
 function showBlock () {
     //show block after table stops moving
-
+    setTimeout(function () {
         $("#optionsClient").show();
         $("#AddButton").show();
         $("#ExpandButton").show();
@@ -98,7 +98,7 @@ function showBlock () {
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1");
         $("#AddButton").css("opacity", "1");
-
+    }, 500)
 }
 
 function minimizeTable () {
@@ -431,6 +431,7 @@ function clientModForm (res, status) {
        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
