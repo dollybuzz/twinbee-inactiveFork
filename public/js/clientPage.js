@@ -378,8 +378,8 @@ function subscriptionFunctionality (res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Subscription ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Current Monthly Hours</th>\n' +
-        '            <th scope="col">Pending changes</th>\n' +
+        '            <th scope="col">Monthly Hours</th>\n' +
+        '            <th scope="col">Pending Changes</th>\n' +
         '            <th scope="col">Cancelled</th>\n' +
         '            <th scope="col">Next Billing</th>\n' +
         '            <th scope="col" id="subOptions">Option</th>\n' +
@@ -508,12 +508,12 @@ function subscriptionModForm (res, status) {
                 $("#pendingChanges").css("opacity", "1");
                 $("#pendingChanges").html("<hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
-                    `<br><h6>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h6>` +
-                    "<br>If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
+                    `<h5>Monthly Hours from ${selectedRow.children()[2].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[5].innerHTML}</h5>` +
+                    "If you want to keep your current monthly hours,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Cancel</button> to end your change request</span>.<br>" +
                     "<div id='cancelChange'></div>" +
-                    "<br>Please know canceling your change request <span style='font-style:italic'>does not cancel your subscription</span>.<br>" +
+                    "Please know canceling your change request <span style='font-style:italic'>does not cancel your subscription</span>.<br>" +
                     "Your plan will resume its current monthly hours unless you submit another change request.<br>" +
-                    "<br>If you wish to terminate your subscription, please contact Freedom Makers.</p>");
+                    "If you wish to terminate your subscription, please contact Freedom Makers.</p>");
 
                 $("#CancelChangeButton").on("click", function() {
                     $.ajax({
