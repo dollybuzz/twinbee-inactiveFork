@@ -380,8 +380,8 @@ function clientFunctionality (res){
             "<div><label for='deleteUser'>Enter Full Name:</label></div>" +
             `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
             "<div id='empty'></div>" +
-            "</div>\n" ;
-        $("#optionsClient").append("<hr><p>Note: Changes may take a moment to reflect.</p>");
+            "</div>\n" +
+            "<hr><p>Note: Changes may take a moment to reflect.</p>";
 
         prePopModForm("/api/getClient", clientModForm);
         $("#DeleteButton").show();
