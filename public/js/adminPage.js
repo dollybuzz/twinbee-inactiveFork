@@ -231,7 +231,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
         });
 
         $("#YesDelete").click(function() {
-            $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+            $("#deletePrompt").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
             $("#AddButton").show();
             $("#SubmitButton").css("opacity", "1");
             $("#AddButton").css("opacity", "1");
@@ -245,6 +245,7 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
             $("#SubmitButton").on("click", function (e) {
                 if(verifyDeleteUser())
                 {
+                    $("#verifyEntry").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                     $.ajax({
                         url: endpoint,
                         method: "post",
@@ -577,7 +578,6 @@ function addClientSuccess (res, status) {
 }
 
 function deleteClientSuccess (res, status) {
-    $("#verifyEntry").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
     $("#verifyEntry").html(`<br><h5>Successfully deleted Client ${selectedRow.children()[0].innerHTML}!</h5>`);
     setTimeout(function () {
         showFunction(clientFunctionality, "/api/getAllClients");
