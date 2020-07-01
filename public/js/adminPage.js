@@ -430,7 +430,7 @@ function clientModForm (res, status) {
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
-    $("#SubmitButton").css("opacity", "0");
+    $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
     $("#SubmitButton").off("click");
