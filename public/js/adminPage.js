@@ -2655,4 +2655,5 @@ $(document).ready(function () {
                 id_token = GOOGLE_USER.getAuthResponse().id_token;
             });
     }, 3300000)
+
 })
