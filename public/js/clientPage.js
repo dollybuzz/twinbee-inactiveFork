@@ -198,7 +198,6 @@ function timeBucketFunctionality (res) {
     //Buy Hours
     $(".bucketRow").click(function () {
         selectedRow = $(this);
-        //$("#optionsClient").html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`)
         popBuyForm(buyForm);
     });
 
