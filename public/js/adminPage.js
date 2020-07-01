@@ -87,7 +87,7 @@ function createBody (button) {
 
 function showBlock () {
     //show block after table stops moving
-    setTimeout(function () {
+
         $("#optionsClient").show();
         $("#AddButton").show();
         $("#ExpandButton").show();
@@ -98,7 +98,7 @@ function showBlock () {
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1");
         $("#AddButton").css("opacity", "1");
-    }, 500)
+
 }
 
 function minimizeTable () {
