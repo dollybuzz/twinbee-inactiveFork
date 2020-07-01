@@ -40,13 +40,11 @@ let navMapper = {
     },
 
     reviewTimeSheets: function () {
-        navItemChange("reportingTools");
         navItemChange("reviewTimeSheets");
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     },
 
     runReports: function() {
-        navItemChange("reportingTools");
         navItemChange("runReports");
         showFunction(runReportFunctionality, "/api/getAllTimeSheets");
     }
@@ -63,6 +61,12 @@ function navItemChange(id){
     $(".navItem").css('font-style', 'normal');
     selectedNavMap.css("color", '#dbb459');
     selectedNavMap.css("font-style", 'italic');
+
+    if(selectedNavMap == "reviewTimeSheets" || selectedNavMap == "runReports")
+    {
+        $("#reportingTools").css("color", '#dbb459');
+        $("#reportingTools").css("font-style", 'italic');
+    }
 }
 
 //Versatile Functions
