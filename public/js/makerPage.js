@@ -511,6 +511,6 @@ $(document).ready(function () {
             .then(function () {
                 id_token = GOOGLE_USER.getAuthResponse().id_token;
             });
-    }, 3300000)
+    }, 600000)
 
-})//end document ready
+});//end document ready

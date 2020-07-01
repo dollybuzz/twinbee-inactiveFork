@@ -320,6 +320,7 @@ function showOnlineMakers () {
 
 //Google
 onSignIn = function (googleUser) {
+    GOOGLE_USER = googleUser;
     id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
 
     let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
@@ -2639,5 +2640,5 @@ $(document).ready(function () {
             .then(function () {
                 id_token = GOOGLE_USER.getAuthResponse().id_token;
             });
-    }, 3300000)
+    }, 600000)
 })
