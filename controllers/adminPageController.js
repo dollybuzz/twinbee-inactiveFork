@@ -24,7 +24,7 @@ module.exports = {
                 link: "", text: "Manage Relationships", id: "manageRelationships", dropdowns: []
             },
             {
-                link: "", text: "Manage Billing", id: "manageBilling", dropdownId: "manageBillingDropdown", dropdowns: [
+                link: "", text: "Manage Billing", id: "manageBilling", dropdowns: [
                     {link: "", text: "Manage Plans", id: "managePlans"},
                     {link: "", text: "Manage Subscriptions", id: "manageSubscriptions"},
                     {link: "", text: "Manage Available Credit", id: "manageCredit"}
@@ -32,7 +32,7 @@ module.exports = {
             },
 
             {
-                link: "", text: "Reporting Tools", id: "reportingTools", dropdownId: "reportingToolsDropdown", dropdowns: [
+                link: "", text: "Reporting Tools", id: "reportingTools", dropdowns: [
                     {link: "", text: "Review TimeSheets", id: "reviewTimeSheets"},
                     {link: "", text: "Time Reports", id: "runReports"}
                 ]
