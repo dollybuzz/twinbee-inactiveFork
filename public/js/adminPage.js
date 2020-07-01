@@ -40,11 +40,13 @@ let navMapper = {
     },
 
     reviewTimeSheets: function () {
+        navItemChange("reportingTools");
         navItemChange("reviewTimeSheets");
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     },
 
     runReports: function() {
+        navItemChange("reportingTools");
         navItemChange("runReports");
         showFunction(runReportFunctionality, "/api/getAllTimeSheets");
     }
@@ -2605,6 +2607,7 @@ function runReportFunctionality () {
     //Back to TimeSheets Functionality
     $("#BackButton").on('click', function() {
         $("#buttonsTop").html('<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>');
+        navItemChange("reportingTools");
         navItemChange("reviewTimeSheets");
         showFunction(timeSheetFunctionality, "/api/getAllTimeSheets");
     });
