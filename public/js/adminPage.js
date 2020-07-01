@@ -378,7 +378,7 @@ function clientFunctionality (res){
 
         prePopModForm("/api/getClient", clientModForm);
         $("#DeleteButton").show();
-
+        $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("delete", clientPrompt,"/api/deleteClient", {
@@ -430,6 +430,7 @@ function clientModForm (res, status) {
         `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
        "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
 
     //Submit button function
