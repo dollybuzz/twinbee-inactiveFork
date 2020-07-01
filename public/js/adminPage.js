@@ -1006,7 +1006,7 @@ function subscriptionModForm (res, status) {
                 $("#pendingChanges").html("<br><hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
                     `<h6>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h6>` +
-                    "<br>If you want to revoke this change,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Revoke</button> to end the change request</span>.<br>" +
+                    "If you want to revoke this change,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Revoke</button> to end the change request</span>.<br>" +
                     "<div id='cancelChange'></div>");
 
                 $("#CancelChangeButton").on("click", function() {
@@ -1019,7 +1019,7 @@ function subscriptionModForm (res, status) {
                         },
                         dataType: "json",
                         success: function (undores, undostatus) {
-                            $("#cancelChange").append("<h5>Successfully revoked the change request!</h5>");
+                            $("#cancelChange").append("<br><h5>Successfully revoked the change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getAllSubscriptions");
                             }, 1000);
