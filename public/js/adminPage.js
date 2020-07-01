@@ -248,7 +248,6 @@ function showDeletePrompt (option, prompt, endpoint, object, successFunction, ve
                 if(verifyDeleteUser())
                 {
                     $("#SubmitButton").hide();
-
                     $("#verifyEntry").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                     $.ajax({
                         url: endpoint,
@@ -476,6 +475,9 @@ function clientModForm (res, status) {
 
         if (valid) {
             $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='modsuccess'></div>");
+            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             modSubmit("/api/updateClientContact", {
                 auth: id_token,
                 id: $("#modclientid").val(),
@@ -547,6 +549,9 @@ function clientAddForm () {
 
         if (valid) {
             $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='addsuccess'></div>");
+            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             addSubmit("/api/createClient", {
                 auth: id_token,
                 firstName: $("#addclientfname").val(),
@@ -563,8 +568,6 @@ function clientAddForm () {
 }
 
 function modClientSuccessContact (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Client ${$("#modclientid").val()}!</h5>`);
 
     setTimeout(function() {
@@ -573,8 +576,6 @@ function modClientSuccessContact (res, status) {
 }
 
 function addClientSuccess (res, status) {
-    $("#optionsClient").append("<div id='addsuccess'></div>");
-    $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Client ${res.id}!</h5>`);
 
     setTimeout(function() {
@@ -714,6 +715,9 @@ function makerModForm (res, status) {
 
         if (valid) {
             $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='modsuccess'></div>");
+            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             modSubmit("/api/updateMaker", {
                 auth: id_token,
                 id: $("#modmakerid").val(),
@@ -765,6 +769,9 @@ function makerAddForm () {
 
         if (valid) {
             $("#errormessage").html("");
+            $("#SubmitButton").hide();
+            $("#optionsClient").append("<div id='addsuccess'></div>");
+            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             addSubmit("/api/createMaker", {
                 auth: id_token,
                 firstName: $("#addmakerfname").val(),
@@ -779,8 +786,6 @@ function makerAddForm () {
 }
 
 function modMakerSuccess (res, status) {
-    $("#optionsClient").append("<div id='modsuccess'></div>");
-    $("#modsuccess").html("");
     $("#modsuccess").html(`<br><h5>Successfully updated Freedom Maker ${$("#modmakerid").val()}!</h5>`);
 
     setTimeout(function() {
@@ -789,8 +794,6 @@ function modMakerSuccess (res, status) {
 }
 
 function addMakerSuccess (res, status) {
-    $("#optionsClient").append("<div id='addsuccess'></div>");
-    $("#addsuccess").html("");
     $("#addsuccess").html(`<br><h5>Successfully added Freedom Maker ${res.id}!</h5>`);
 
     setTimeout(function() {
@@ -1107,6 +1110,7 @@ function subscriptionAddForm () {
 
                         if (valid) {
                             $("#errormessage").html("");
+                            $("#SubmitButton").hide();
                             addSubmit("/api/createSubscription", {
                                 auth: id_token,
                                 planId: $("#addsubscriptionplanid").val(),
