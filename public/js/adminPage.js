@@ -2653,7 +2653,7 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
-    })
+    });
 
     $(".navItem").hover(function () {
         $(this).css("color", '#dbb459');
@@ -2672,7 +2672,7 @@ $(document).ready(function () {
     $("#landingLogo").css("width", "20%");
 
     //refresh tokens before timeout
-    setTimeout(function () {
+    setInterval(function () {
         GOOGLE_USER.reloadAuthResponse()
             .then(function () {
                 id_token = GOOGLE_USER.getAuthResponse().id_token;

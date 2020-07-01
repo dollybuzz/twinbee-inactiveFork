@@ -506,7 +506,7 @@ $(document).ready(function () {
     $("#landingLogo").css("width", "20%");
 
     //refresh tokens before timeout
-    setTimeout(function () {
+    setInterval(function () {
         GOOGLE_USER.reloadAuthResponse()
             .then(function () {
                 id_token = GOOGLE_USER.getAuthResponse().id_token;
