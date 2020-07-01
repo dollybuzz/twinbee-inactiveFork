@@ -1610,7 +1610,7 @@ function timeSheetFunctionality (res) {
 
                     //Run Report
                     $("#runReportButton").on('click', function () {
-                        runReportFunctionality();
+                        runReport();
                     });
 
                 },
@@ -1649,10 +1649,13 @@ function sheetModForm(res, status) {
         `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
     if($("#modsheetdetail").val() == "null")
     {
         $("#modsheetdetail").val("");
     }
+
     $.ajax({
         url: "/api/getAllPlans",
         method: "post",
@@ -1723,114 +1726,114 @@ function sheetAddForm () {
         `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
+    $.ajax({
+        url: "/api/getAllMakers",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (makerres, makerstatus) {
             $.ajax({
-                url: "/api/getAllMakers",
+                url: "/api/getAllClients",
                 method: "post",
                 data: {
                     auth: id_token
                 },
                 dataType: "json",
-                success: function (makerres, makerstatus) {
+                success: function (clientres, clientstatus) {
                     $.ajax({
-                        url: "/api/getAllClients",
+                        url: "/api/getAllRelationships",
                         method: "post",
                         data: {
-                            auth: id_token
+                            auth: id_token,
                         },
                         dataType: "json",
-                        success: function (clientres, clientstatus) {
-                            $.ajax({
-                                url: "/api/getAllRelationships",
-                                method: "post",
-                                data: {
-                                    auth: id_token,
-                                },
-                                dataType: "json",
-                                success: function (relres, relstatus) {
-                                    let clientMap = {};
-                                    let makerMap = {};
+                        success: function (relres, relstatus) {
+                            let clientMap = {};
+                            let makerMap = {};
 
-                                    for(var client of clientres){
-                                        clientMap[client.customer.id] = client;
-                                    }
+                            for (var client of clientres) {
+                                clientMap[client.customer.id] = client;
+                            }
 
-                                    for(var maker of makerres){
-                                        makerMap[maker.id] = maker;
-                                    }
+                            for (var maker of makerres) {
+                                makerMap[maker.id] = maker;
+                            }
 
-                                    for(var item of relres)
-                                    {
-                                        $('#addsheetgroup').append(
-                                            `<option value="${item.id}">${makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + " - " + clientMap[item.clientId].customer.first_name + " " + clientMap[item.clientId].customer.last_name + " - " + item.planId}</option>`
-                                        );
-                                    }
+                            for (var item of relres) {
+                                $('#addsheetgroup').append(
+                                    `<option value="${item.id}">${makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + " - " + clientMap[item.clientId].customer.first_name + " " + clientMap[item.clientId].customer.last_name + " - " + item.planId}</option>`
+                                );
+                            }
 
-                                    //Submit button function
-                                    $("#SubmitButton").off("click");
-                                    $("#SubmitButton").on('click', function (e) {
-                                        let message = "";
-                                        let valid = true;
-                                        if ($("#addsheettimeintime").val() == "" || $("#addsheettimeindate").val() == "" ||
-                                            $("#addsheettimeouttime").val() == "" || $("#addsheettimeoutdate").val() == ""){
-                                            valid = false;
-                                            message += "Please correct the dates and times!<br>";
-                                        }
-                                        if ($("#addsheettask").val().length === 0){
-                                            valid = false;
-                                            message += "Task must be added!<br>";
-                                        }
-                                        if ($("#addsheetdetail").val().length === 0){
-                                            valid = false;
-                                            message += "Please enter a reason for adding!<br>";
-                                        }
+                            //Submit button function
+                            $("#SubmitButton").off("click");
+                            $("#SubmitButton").on('click', function (e) {
+                                let message = "";
+                                let valid = true;
+                                if ($("#addsheettimeintime").val() == "" || $("#addsheettimeindate").val() == "" ||
+                                    $("#addsheettimeouttime").val() == "" || $("#addsheettimeoutdate").val() == "") {
+                                    valid = false;
+                                    message += "Please correct the dates and times!<br>";
+                                }
+                                if ($("#addsheettask").val().length === 0) {
+                                    valid = false;
+                                    message += "Task must be added!<br>";
+                                }
+                                if ($("#addsheetdetail").val().length === 0) {
+                                    valid = false;
+                                    message += "Please enter a reason for adding!<br>";
+                                }
 
-                                        console.log(relres);
-                                        if (valid) {
-                                            $.ajax({
-                                                url: "/api/getRelationshipById",
-                                                method: "post",
-                                                data: {
-                                                    auth: id_token,
-                                                    id: $("#addsheetgroup").val()
-                                                },
-                                                dataType: "json",
-                                                success: function (subrelres, subrelstatus) {
-                                                    $("#errormessage").html("");
-                                                    addSubmit("/api/createTimeSheet", {
-                                                        auth: id_token,
-                                                        makerId: subrelres.makerId,
-                                                        hourlyRate: subrelres.planId,
-                                                        clientId: subrelres.clientId,
-                                                        timeIn: `${$("#addsheettimeindate").val()} ${$("#addsheettimeintime").val()}:00`,
-                                                        timeOut: `${$("#addsheettimeoutdate").val()} ${$("#addsheettimeouttime").val()}:00`,
-                                                        task: $("#addsheettask").val(),
-                                                        detail: $("#addsheetdetail").val()
-                                                    }, addSheetSuccess);
-                                                },
-                                                error: function (subrelres, subrelstatus) {
-                                                    $("#userMainContent").html("Submit relationship isn't working!");
-                                                }
-                                            });
-                                        }
-                                        else{
-                                            $("#errormessage").html(message);
+                                console.log(relres);
+                                if (valid) {
+                                    $.ajax({
+                                        url: "/api/getRelationshipById",
+                                        method: "post",
+                                        data: {
+                                            auth: id_token,
+                                            id: $("#addsheetgroup").val()
+                                        },
+                                        dataType: "json",
+                                        success: function (subrelres, subrelstatus) {
+                                            $("#errormessage").html("");
+                                            addSubmit("/api/createTimeSheet", {
+                                                auth: id_token,
+                                                makerId: subrelres.makerId,
+                                                hourlyRate: subrelres.planId,
+                                                clientId: subrelres.clientId,
+                                                timeIn: `${$("#addsheettimeindate").val()} ${$("#addsheettimeintime").val()}:00`,
+                                                timeOut: `${$("#addsheettimeoutdate").val()} ${$("#addsheettimeouttime").val()}:00`,
+                                                task: $("#addsheettask").val(),
+                                                detail: $("#addsheetdetail").val()
+                                            }, addSheetSuccess);
+                                        },
+                                        error: function (subrelres, subrelstatus) {
+                                            $("#userMainContent").html("Submit relationship isn't working!");
                                         }
                                     });
-                                },
-                                error: function (relres, relstatus) {
-                                    $("#userMainContent").html("All relationships isn't working!");
+                                } else {
+                                    $("#errormessage").html(message);
                                 }
                             });
                         },
-                        error: function (clientres, clientstatus) {
-                            $("#userMainContent").html("Plans isn't working!");
+                        error: function (relres, relstatus) {
+                            $("#userMainContent").html("All relationships isn't working!");
                         }
                     });
                 },
-                error: function (makerres, makerstatus) {
-                    $("#userMainContent").html("Plans isn't working! Please refresh the page. Contact support if the problem persists.");
+                error: function (clientres, clientstatus) {
+                    $("#userMainContent").html("Plans isn't working!");
                 }
             });
+        },
+        error: function (makerres, makerstatus) {
+            $("#userMainContent").html("Plans isn't working! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
 }
 
 function modSheetSuccess (res, status) {
@@ -1872,7 +1875,7 @@ function verifyClearSheet () {
     return (deleteId == selectedRow.children()[0].innerHTML);
 }
 
-function runReportFunctionality () {
+function runReport () {
     //CSS
     $("#AddButton").hide();
     $("#ExpandButton").hide();
@@ -2004,6 +2007,8 @@ function creditModForm(res, status) {
         "<input class='form-control' type='number' id='creditmodminutes' name='creditmodminutes'>"+
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
     //Submit button function
     $("#SubmitButton").off("click");
     $("#SubmitButton").on('click', function (e) {
@@ -2083,6 +2088,8 @@ function creditAddForm() {
                         "<label for='addMinCredit'> Enter Number of Minutes: </label>" +
                         "<input class='form-control' type='number' id='addMinCredit' name='addMinCredit'>\n<br><br>"+
                         "</form><div><span id='errormessage' style='color:red'></span></div>");
+
+                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 
                     for(var client in clientres) {
                         client = clientres[client].customer;
@@ -2338,75 +2345,76 @@ function relationshipModForm(res, status) {
         "<label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
         `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
         "<div id='empty'></div></form>");
+
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+
+    $.ajax({
+        url: "/api/getAllMakers",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (makerres, makerstatus) {
             $.ajax({
-                url: "/api/getAllMakers",
+                url: "/api/getRelationshipById",
                 method: "post",
                 data: {
-                    auth: id_token
+                    auth: id_token,
+                    id: selectedRow.children()[0].innerHTML
                 },
                 dataType: "json",
-                success: function (makerres, makerstatus) {
-                    $.ajax({
-                        url: "/api/getRelationshipById",
-                        method: "post",
-                        data: {
-                            auth: id_token,
-                            id: selectedRow.children()[0].innerHTML
-                        },
-                        dataType: "json",
-                        success: function (relres, relstatus) {
-                            let makerId = relres.makerId;
-                            for(var item of makerres) {
-                                if(makerId == item.id) {
-                                    $('#modMakerRel').append(
-                                        `<option id="${makerId}" value="${makerId}" selected>${item.firstName} ${item.lastName} - ${makerId}</option>`
-                                    );
-                                }
-                                else if(!item.deleted) {
-                                    $('#modMakerRel').append(
-                                        `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName} - ${item.id}</option>`
-                                    );
-                                }
-                            };
+                success: function (relres, relstatus) {
+                    let makerId = relres.makerId;
+                    for (var item of makerres) {
+                        if (makerId == item.id) {
+                            $('#modMakerRel').append(
+                                `<option id="${makerId}" value="${makerId}" selected>${item.firstName} ${item.lastName} - ${makerId}</option>`
+                            );
+                        } else if (!item.deleted) {
+                            $('#modMakerRel').append(
+                                `<option id="${item.id}" value="${item.id}">${item.firstName} ${item.lastName} - ${item.id}</option>`
+                            );
+                        }
+                    }
+                    ;
 
-                            //Submit button function
-                            $("#SubmitButton").off("click");
-                            $("#SubmitButton").on('click', function (e) {
-                                let message = "";
-                                let valid = true;
-                                if ($("#modMakerOcc").val().length === 0){
-                                    valid = false;
-                                    message += "A Role is required!<br>";
-                                }
+                    //Submit button function
+                    $("#SubmitButton").off("click");
+                    $("#SubmitButton").on('click', function (e) {
+                        let message = "";
+                        let valid = true;
+                        if ($("#modMakerOcc").val().length === 0) {
+                            valid = false;
+                            message += "A Role is required!<br>";
+                        }
 
-                                if (valid) {
-                                    $("#errormessage").html("");
-                                    modSubmit("/api/updateRelationship", {
-                                        auth: id_token,
-                                        id: selectedRow.children()[0].innerHTML,
-                                        makerId: $("#modMakerRel").val(),
-                                        planId: relres.planId,
-                                        occupation: $("#modMakerOcc").val()
-                                    }, modRelationshipSuccess);
-                                }
-                                else{
-                                    $("#errormessage").html(message);
-                                }
-                            });
-                        },
-                        error: function (relres, relstatus) {
-                            $("#userMainContent").html("Makers isn't working!");
+                        if (valid) {
+                            $("#errormessage").html("");
+                            modSubmit("/api/updateRelationship", {
+                                auth: id_token,
+                                id: selectedRow.children()[0].innerHTML,
+                                makerId: $("#modMakerRel").val(),
+                                planId: relres.planId,
+                                occupation: $("#modMakerOcc").val()
+                            }, modRelationshipSuccess);
+                        } else {
+                            $("#errormessage").html(message);
                         }
                     });
                 },
-                error: function (makerres, makerstatus) {
-                    $("#userMainContent").html("Relationships isn't working! Please refresh the page. Contact support if the problem persists.");
+                error: function (relres, relstatus) {
+                    $("#userMainContent").html("Makers isn't working!");
                 }
             });
+        },
+        error: function (makerres, makerstatus) {
+            $("#userMainContent").html("Relationships isn't working! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
 }
 
 function relationshipAddForm() {
-
     $.ajax({
         url: "/api/getAllClients",
         method: "post",
@@ -2438,6 +2446,7 @@ function relationshipAddForm() {
                         "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
+                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
 
                     for (var i = 0; i < clientres.length; ++i) {
                         $('#addClientRel').append(
