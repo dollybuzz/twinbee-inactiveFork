@@ -5,9 +5,10 @@
         <% for (var i = 0; i < navItemsTop.length; ++i){%>
 
             <%if (i == 7){%>
+            |
             <div class="dropdown">
              <span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span>
-                <%} else if (i > 6){%>
+                <%} else if (i > 7){%>
               <div class="dropdown-content">
                  <a><span id="<%=navItemsTop[i]["id"]%>" class="navItem"><%=navItemsTop[i]["text"]%></span></a>
                     <%if (i == 9){%>
