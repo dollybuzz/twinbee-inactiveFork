@@ -63,10 +63,14 @@ function navItemChange(id){
     selectedNavMap.css("color", '#dbb459');
     selectedNavMap.css("font-style", 'italic');
 
-    if(selectedNavMap == $("#reviewTimeSheets") || selectedNavMap == $("runReports"))
+    if(id == "reviewTimeSheets"|| id == "runReports")
     {
         $("#reportingTools").css("color", '#dbb459');
         $("#reportingTools").css("font-style", 'italic');
+        $("#reportingTools").on("mouseleave", function() {
+            $("#reportingTools").css("color", '#dbb459');
+            $("#reportingTools").css("font-style", 'italic');
+        });
     }
 }
 
