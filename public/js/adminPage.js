@@ -2052,6 +2052,9 @@ function creditModForm(res, status) {
 
             if (valid) {
                 $("#errormessage").html("");
+                $("#SubmitButton").hide();
+                $("#optionsClient").append("<div id='modsuccess'></div>");
+                $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                 modSubmit("/api/updateClientTimeBucket", {
                     auth: id_token,
                     id: selectedRow.children()[0].innerHTML,
@@ -2150,6 +2153,9 @@ function creditAddForm() {
 
                             if (valid) {
                                 $("#errormessage").html("");
+                                $("#SubmitButton").hide();
+                                $("#optionsClient").append("<div id='addsuccess'></div>");
+                                $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                                 addSubmit("/api/updateClientTimeBucket", {
                                     auth: id_token,
                                     id: $("#addClientCredit").val(),
@@ -2174,8 +2180,6 @@ function creditAddForm() {
 }
 
 function modCreditSuccess (res, status) {
-    $("#optionsClient").append("<div id='modCreditSuccess'></div>");
-    $("#modCreditSuccess").html("");
     $("#modCreditSuccess").html(`<br><h5>Successfully updated hours for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
     setTimeout(function () {
@@ -2184,8 +2188,6 @@ function modCreditSuccess (res, status) {
 }
 
 function addCreditSuccess (res, status) {
-    $("#optionsClient").append("<div id='addCreditSuccess'></div>");
-    $("#addCreditSuccess").html("");
     $("#addCreditSuccess").html(`<br><h5>Successfully added plan for ${res.first_name} ${res.last_name}!</h5>`);
 
     setTimeout(function () {
@@ -2206,7 +2208,6 @@ function verifyDeleteCredit() {
     return (deleteUser == selectedRow.children()[2].innerHTML);
 
 }
-
 
 //Relationship Methods
 function relationshipFunctionality (res) {
@@ -2401,6 +2402,9 @@ function relationshipModForm(res, status) {
 
                         if (valid) {
                             $("#errormessage").html("");
+                            $("#SubmitButton").hide();
+                            $("#optionsClient").append("<div id='modsuccess'></div>");
+                            $("#modsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                             modSubmit("/api/updateRelationship", {
                                 auth: id_token,
                                 id: selectedRow.children()[0].innerHTML,
@@ -2546,6 +2550,10 @@ function relationshipAddForm() {
                         }
 
                         if (valid) {
+                            $("#errormessage").html("");
+                            $("#SubmitButton").hide();
+                            $("#optionsClient").append("<div id='addsuccess'></div>");
+                            $("#addsuccess").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                             addSubmit("/api/createRelationship", {
                                 auth: id_token,
                                 clientId: $("#addClientRel").val(),
@@ -2570,8 +2578,6 @@ function relationshipAddForm() {
 }
 
 function modRelationshipSuccess (res, status) {
-    $("#optionsClient").append("<div id='modRelSuccess'></div>");
-    $("#modRelSuccess").html("");
     $("#modRelSuccess").html(`<br><h5>Successfully updated Relationship for Client ${selectedRow.children()[1].innerHTML}!</h5>`);
 
     setTimeout(function () {
@@ -2580,8 +2586,6 @@ function modRelationshipSuccess (res, status) {
 }
 
 function addRelationshipSuccess (res, status) {
-    $("#optionsClient").append("<div id='addRelSuccess'></div>");
-    $("#addRelSuccess").html("");
     $("#addRelSuccess").html(`<br><h5>Successfully added Relationship ${res.id}!</h5>`);
 
     setTimeout(function () {
