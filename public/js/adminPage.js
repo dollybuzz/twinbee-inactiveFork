@@ -1005,7 +1005,7 @@ function subscriptionModForm (res, status) {
 
                 $("#pendingChanges").html("<br><hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle.<br>" +
-                    `<br><h6>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h6>` +
+                    `<h6>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h6>` +
                     "<br>If you want to revoke this change,<br>please click <button id='CancelChangeButton' type='button' class='btn btn-default'>Revoke</button> to end the change request</span>.<br>" +
                     "<div id='cancelChange'></div>");
 
