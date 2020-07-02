@@ -2524,7 +2524,7 @@ function runReportFunctionality() {
                         $('#clientReport').append(
                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         )
-                    }else{
+                    }else if($("clientRepSearch").val() == ""){
                         $("#clientReport").html("");
                     }
                 }
@@ -2556,7 +2556,7 @@ function runReportFunctionality() {
                         $('#makerReport').append(
                             `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                         );
-                    }else{
+                    }else if($("makerRepSearch").val() == ""){
                         $("#makerReport").html("");
                     }
                 }
