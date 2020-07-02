@@ -4,7 +4,8 @@ const TimeSheet = require('../domain/entity/timeSheet.js');
 const emailService = require('./notificationService.js');
 
 class TimeSheetService {
-    constructor(){};
+    constructor() {
+    };
 
     /**
      * Instantiates and returns a timesheet object.
@@ -21,10 +22,10 @@ class TimeSheetService {
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail) {
         detail = `Added by admin: ${detail}`;
         let id = await timeSheetRepo.createSheet(makerId, clientId,
-            hourlyRate, timeIn, timeOut, task, detail).catch(err=>{
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
+            hourlyRate, timeIn, timeOut, task, detail).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
         return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, detail);
     }
 
@@ -39,11 +40,11 @@ class TimeSheetService {
      * @param task      - entry for maker task
      * @param detail    - entry for admin note on mod change
      */
-    updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail){
+    updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail) {
         if (detail) {
             detail = `Modified by admin: ${detail}`;
         }
-        timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut,  task, detail);
+        timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
     }
 
     /**
@@ -51,7 +52,7 @@ class TimeSheetService {
      * @param id    id of sheet to be cleared
      * @param detail   reason for clearing
      */
-    clearTimeSheet(id, detail){
+    clearTimeSheet(id, detail) {
         detail = `Cleared by admin: ${detail}`;
         return timeSheetRepo.clearSheet(id, detail);
     }
@@ -61,13 +62,18 @@ class TimeSheetService {
      *
      * @returns {Promise<[timesheet]>}
      */
-    async getOnlineMakerSheets(){
+    async getOnlineMakerSheets() {
         let onlineUsers = [];
-        let sheets = await timeSheetRepo.getAllSheets().catch(err=>{console.log(err)});
-        for (var i = 0; i < sheets.length; ++i){
-            if (sheets[i].end_time === '0000-00-00 00:00:00')
-            {
-                let refinedSheet = await createSheetFromRow(sheets[i]).catch(err=>{console.log(err)});
+        let sheets = await timeSheetRepo.getAllSheets().catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+        for (var i = 0; i < sheets.length; ++i) {
+            if (sheets[i].end_time === '0000-00-00 00:00:00') {
+                let refinedSheet = await createSheetFromRow(sheets[i]).catch(err => {
+                    console.log(err);
+                    emailService.notifyAdmin(err.toString());
+                });
                 onlineUsers.push(refinedSheet);
             }
         }
@@ -79,14 +85,17 @@ class TimeSheetService {
      *
      * @returns {Promise<[timesheet]>}
      */
-    async getAllTimeSheets(){
+    async getAllTimeSheets() {
         let refinedSheets = [];
-        let sheets = await timeSheetRepo.getAllSheets().catch(err=>{console.log(err)});
-        for (var i = 0; i < sheets.length; ++i){
-                let refinedSheet = await createSheetFromRow(sheets[i]).catch(err=>{
-                    console.log(err);
-                    emailService.notifyAdmin(err.toString());
-                });
+        let sheets = await timeSheetRepo.getAllSheets().catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+        for (var i = 0; i < sheets.length; ++i) {
+            let refinedSheet = await createSheetFromRow(sheets[i]).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
             refinedSheets.push(refinedSheet);
         }
         return refinedSheets;
@@ -97,11 +106,11 @@ class TimeSheetService {
      *
      * @returns {Promise<void>}
      */
-    async getTimeSheet(id){
+    async getTimeSheet(id) {
         console.log(`Getting timesheet ${id}...`);
         let sheets = await this.getAllTimeSheets();
-        for (var i = 0; i < sheets.length; ++i){
-            if (sheets[i].id == id){
+        for (var i = 0; i < sheets.length; ++i) {
+            if (sheets[i].id.toString() === id.toString()) {
                 console.log(sheets[i]);
                 return sheets[i];
             }
@@ -113,14 +122,14 @@ class TimeSheetService {
      * @param id    - id of the desired maker
      * @returns {Promise<[]>} containing time_sheet objects
      */
-    async getSheetsByMaker(id){
-        let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err=>{
+    async getSheetsByMaker(id) {
+        let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
         let makerSheets = [];
-        await sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row).catch(err=>{
+        await sheets.forEach(async row => {
+            let refinedSheet = await createSheetFromRow(row).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
@@ -134,14 +143,14 @@ class TimeSheetService {
      * @param id    - id of the desired client
      * @returns {Promise<[]>} containing timeSheet objects
      */
-    async getSheetsByClient(id){
-        let sheets = await timeSheetRepo.getSheetsByClient(id).catch(err=>{
+    async getSheetsByClient(id) {
+        let sheets = await timeSheetRepo.getSheetsByClient(id).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
         let clientSheets = [];
-        await sheets.forEach(async row=>{
-            let refinedSheet = await createSheetFromRow(row).catch(err=>{
+        await sheets.forEach(async row => {
+            let refinedSheet = await createSheetFromRow(row).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
