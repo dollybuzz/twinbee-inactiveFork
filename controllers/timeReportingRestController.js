@@ -43,7 +43,7 @@ module.exports = {
         console.log(req.body);
         res.send(await timeReportingService
             .getReportForClientMakerPair(req.body.start, req.body.end, req.body.makerId, req.body.clientId)
-            .catch(error => {
+            .catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
             }));

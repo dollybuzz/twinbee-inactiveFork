@@ -1,5 +1,6 @@
 
 const relationshipService = require('../services/relationshipService');
+const {notifyAdmin} = require("../services/notificationService");
 
 module.exports = {
 
@@ -33,7 +34,7 @@ module.exports = {
             +` client ${req.body.clientId} from REST`);
         console.log(req.body);
         res.send(await relationshipService.createRelationship(req.body.makerId,
-            req.body.clientId, req.body.planId, req.body.occupation).catch(error => {
+            req.body.clientId, req.body.planId, req.body.occupation).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
@@ -64,7 +65,7 @@ module.exports = {
     getRelationshipsByMakerId: async (req, res) =>{
         console.log(`Getting relationships for maker ${req.body.id}`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipsByMakerId(req.body.id).catch(error => {
+        res.send(await relationshipService.getRelationshipsByMakerId(req.body.id).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
@@ -95,7 +96,7 @@ module.exports = {
     getRelationshipsByClientId: async (req, res) =>{
         console.log(`Getting relationships for client ${req.body.id}`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipsByClientId(req.body.id).catch(error => {
+        res.send(await relationshipService.getRelationshipsByClientId(req.body.id).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
@@ -124,7 +125,7 @@ module.exports = {
     getRelationshipById: async (req, res) =>{
         console.log(`Attempting to retrieve relationship ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipById(req.body.id).catch(error => {
+        res.send(await relationshipService.getRelationshipById(req.body.id).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
@@ -161,7 +162,7 @@ module.exports = {
     getAllRelationships: async (req, res) =>{
         console.log("Attempting to get all relationships from REST");
         console.log(req.body);
-        res.send(await relationshipService.getAllRelationships().catch(error => {
+        res.send(await relationshipService.getAllRelationships().catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
@@ -183,7 +184,7 @@ module.exports = {
         console.log(`Attempting to delete relationship ${req.body.id} from REST`);
         console.log(req.body);
         console.log(req.body);
-        res.send(await relationshipService.deleteRelationship(req.body.id).catch(error => {
+        res.send(await relationshipService.deleteRelationship(req.body.id).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
@@ -215,7 +216,7 @@ module.exports = {
     updateRelationship: async (req, res) =>{
         console.log(`Attempting to update relationship ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId).catch(error => {
+        res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));

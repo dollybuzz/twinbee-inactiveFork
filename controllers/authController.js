@@ -9,23 +9,38 @@ const adminPageController = require('./adminPageController.js');
 const makerPageController = require('./makerPageController');
 const clientPageController = require('./clientPageController.js');
 const landingPageController = require('./landingPageController.js');
+const {notifyAdmin} = require("../services/notificationService");
 const TEST_ENVIRONMENT = process.env.TWINBEE_ENVIRONMENT_FLAG === 'test';
 
 module.exports = {
 
     tokenToEmail: async(req, res)=>{
         let token = req.body.token;
-        let email = await authService.getEmailFromToken(token);
+        let email = await authService.getEmailFromToken(token).catch(error => {
+            console.log(error);
+            notifyAdmin(error.toString());
+        });
         res.send(email);
     },
 
     clientMatchesSubscription: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async (req, res, next) =>{
         console.log("Attempting to authorize client on subscription is requester...");
-        let email = await authService.getEmailFromToken(req.body.auth);
-        let client = await clientService.getClientByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.auth).catch(error => {
+            console.log(error);
+            notifyAdmin(error.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(error => {
+            console.log(error);
+            notifyAdmin(error.toString());
+        });
 
+        let isClient = await authService.accessorIsClient(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
         if (req[process.env.TWINBEE_IS_OK] ||
-            (await authService.accessorIsClient(req.body.auth) && req.body.id === client.id)){
+            (isClient && req.body.id === client.id)){
             req[process.env.TWINBEE_IS_OK] = true;
             console.log(`Match! requester was ${client.id} and suscriber was ${req.body.id}`);
             next();
@@ -44,7 +59,17 @@ module.exports = {
 
     authorizeClient: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async (req, res, next) =>{
         console.log("Attempting to authorize client...");
-      if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsMaster(req.body.auth) || await authService.accessorIsClient(req.body.auth)){
+        let isMaster = await authService.accessorIsMaster(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+        let isClient = await authService.accessorIsClient(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+      if (req[process.env.TWINBEE_IS_OK] || isMaster || isClient){
           req[process.env.TWINBEE_IS_OK] = true;
           next();
       }
@@ -61,7 +86,18 @@ module.exports = {
     },
     authorizeMaker: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize maker...");
-        if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaster(req.body.auth) || await authService.accessorIsMaker(req.body.auth)) {
+
+        let isMaster = await authService.accessorIsMaster(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+        let isMaker = await authService.accessorIsMaker(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+        if (req[process.env.TWINBEE_IS_OK]  || isMaster || isMaker) {
             req[process.env.TWINBEE_IS_OK]  = true;
             next();
         }
@@ -73,14 +109,23 @@ module.exports = {
             else {
                 res.send('nope');
             }
-            //TODO: res.render(accessNotAllowed)
         }
     },
 
     authorizeAdmin: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize admin...");
         console.log(req.body);
-        if (req[process.env.TWINBEE_IS_OK] || await authService.accessorIsMaster(req.body.auth) || await authService.accessorIsAdmin(req.body.auth)) {
+        let isMaster = await authService.accessorIsMaster(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+        let isAdmin = await authService.accessorIsAdmin(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+        if (req[process.env.TWINBEE_IS_OK] || isMaster || isAdmin) {
             req[process.env.TWINBEE_IS_OK] = true;
             console.log("Passed auth check");
             console.log(authService.accessorIsAdmin(req.body.auth));
@@ -93,15 +138,19 @@ module.exports = {
                 next()
             }
             else {
-                console.log("All routes failed to authenticate")
+                console.log("All routes failed to authenticate");
                 res.send('nope');
             }
-            //TODO: res.render(accessNotAllowed)
         }
     },
     authorizeMaster: TEST_ENVIRONMENT ? (req, res, next)=>{console.log("Test env, skipping auth");next()} : async(req, res, next) =>{
         console.log("Attempting to authorize Master...");
-        if (req[process.env.TWINBEE_IS_OK]  || await authService.accessorIsMaster(req.body.auth)) {
+        let isMaster = await authService.accessorIsMaster(req.body.auth)
+            .catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+        if (req[process.env.TWINBEE_IS_OK]  || isMaster) {
             req[process.env.TWINBEE_IS_OK]  = true;
             console.log("Passed auth check");
             next();
