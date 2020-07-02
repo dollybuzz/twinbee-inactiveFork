@@ -2517,8 +2517,8 @@ function runReportFunctionality() {
         '            <th scope="col">Occupation</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
-        '        </thead><tbody><tr class="reportRow"></tr>' +
-        '        <tfoot id="reportTotal"></tfoot>' +
+        '        </thead><tbody><tr class="reportRow">' +
+        '        <tfoot id="reportTotal">' +
         '</tbody>');
 
     //Pre-populate Report drop down options
@@ -2620,7 +2620,7 @@ function runReportFunctionality() {
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + item.plan + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
-                        `   <td> ${message}</td>`);
+                        `   <td> ${message}</td></tr>`);
                };
 
                let totalhours = timeres.total/60;
@@ -2638,7 +2638,7 @@ function runReportFunctionality() {
                 }
                 $("#reportTotal").html("");
                 $("#reportTotal").append('<th id="repTotal" colspan="4">Total Time:</th>' +
-                `<td>${totalmessage}</td>`);
+                `<td>${totalmessage}</td></tfoot>`);
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
