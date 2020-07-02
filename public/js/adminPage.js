@@ -2524,8 +2524,6 @@ function runReportFunctionality() {
                         $('#clientReport').append(
                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         )
-                    }else{
-                        $("#clientReport").html("");
                     }
                 }
             },
@@ -2544,8 +2542,8 @@ function runReportFunctionality() {
             dataType: "json",
             success: function (makerres, makerstatus) {
                 $("#makerReport").html("");
-                let makerName = item.firstName + " " + item.lastName;
                 for (var item of makerres) {
+                    let makerName = item.firstName + " " + item.lastName;
                     if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()) && $("#makerRepSearch").val() != ""){
                         if(item.deleted)
                         {
@@ -2558,8 +2556,6 @@ function runReportFunctionality() {
                                 `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                             );
                         }
-                    }else{
-                        $("#makerReport").html("");
                     }
                 }
             },
