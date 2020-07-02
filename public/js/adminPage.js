@@ -60,21 +60,6 @@ function navItemChange(id) {
     let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
     console.log(parentToChange);
 
-    if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem") {
-        $(`#${parentToChange.id}`).css("color", '#dbb459')
-            .css("font-style", 'italic').on("mouseleave", function () {
-            $(`#${parentToChange.id}`).css("color", '#dbb459')
-                .css("font-style", 'italic');
-        });
-    }
-
-    else if (parentToChange.classList[0] && parentToChange.classList[0].toString() !== "navItem"){
-        $(`#${parentToChange.id}`).css("color", 'white')
-            .css("font-style", 'normal').on("mouseleave", function () {
-            $(`#${parentToChange.id}`).css("color", 'white')
-                .css("font-style", 'normal');
-        });
-    }
 
     $(".navItem").css('color', 'white')
         .css('font-style', 'normal');
