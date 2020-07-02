@@ -124,7 +124,10 @@ module.exports = {
     getRelationshipById: async (req, res) =>{
         console.log(`Attempting to retrieve relationship ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipById(req.body.id));
+        res.send(await relationshipService.getRelationshipById(req.body.id).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -158,7 +161,10 @@ module.exports = {
     getAllRelationships: async (req, res) =>{
         console.log("Attempting to get all relationships from REST");
         console.log(req.body);
-        res.send(await relationshipService.getAllRelationships());
+        res.send(await relationshipService.getAllRelationships().catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -177,7 +183,10 @@ module.exports = {
         console.log(`Attempting to delete relationship ${req.body.id} from REST`);
         console.log(req.body);
         console.log(req.body);
-        res.send(await relationshipService.deleteRelationship(req.body.id))
+        res.send(await relationshipService.deleteRelationship(req.body.id).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -206,6 +215,9 @@ module.exports = {
     updateRelationship: async (req, res) =>{
         console.log(`Attempting to update relationship ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId));
+        res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 };
