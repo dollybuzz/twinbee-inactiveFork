@@ -83,7 +83,7 @@ class TimeReportingService {
     /**
      * Retrieves reporting data for a client/maker combo. If no client or maker is passed,
      * the value is treated as a wildcard (retrieve all). Reporting data is constrained to the given
-     * timeframes
+     * timeframes. If no start time is provided, 2020-01-01 is used. If no end time is provided, "now" is used.
      *
      * @param start - first day of report
      * @param end - first day excluded from report
@@ -97,6 +97,12 @@ class TimeReportingService {
         }
         if (!clientId){
             clientId = "";
+        }
+        if (!start){
+            start = "2020-01-01 00:00:00";
+        }
+        if (!end){
+            end = moment();
         }
         let totalTime = 0;
         let obj = {};
