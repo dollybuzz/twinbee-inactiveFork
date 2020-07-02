@@ -247,6 +247,7 @@ module.exports ={
      * {
      *     "firstName": maker's first name,
      *     "lastName": maker's last name,
+     *     "unique" : identifying descriptor for maker,
      *     "email": maker's email,
      *     "auth": authentication credentials; either master or token
      * }
@@ -255,6 +256,7 @@ module.exports ={
      *     "id": maker's new database id,
      *     "firstName": maker's first name,
      *     "lastName": maker's last name,
+     *     "unique" : identifying descriptor for maker,
      *     "email": maker's email
      * }
      * @returns {Promise<maker>}
@@ -262,7 +264,7 @@ module.exports ={
     createMaker: async (req, res) =>{
         console.log("Attempting to create a maker from REST: ");
         console.log(req.body);
-        let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName, req.body.email)
+        let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName, req.body.email, req.body.unique)
             .catch(err=>{console.log(err)});
         res.send(newMaker);
     },
@@ -274,6 +276,7 @@ module.exports ={
      *     "id": maker's database id,
      *     "firstName": maker's new first name,
      *     "lastName": maker's new last name,
+     *     "unique" : identifying descriptor for maker,
      *     "email": maker's new email,
      *     "auth": authentication credentials; either master or token
      * }
@@ -282,6 +285,7 @@ module.exports ={
      *     "id": maker's database id,
      *     "firstName": maker's new first name,
      *     "lastName": maker's new last name,
+     *     "unique" : identifying descriptor for maker,
      *     "email": maker's new email
      * }
      * @returns {Promise<maker>}
@@ -289,7 +293,7 @@ module.exports ={
     updateMaker: async (req, res) =>{
         console.log("Attempting to update a maker from REST: ");
         console.log(req.body);
-        let maker = await makerService.updateMaker(req.body.id, req.body.firstName, req.body.lastName, req.body.email)
+        let maker = await makerService.updateMaker(req.body.id, req.body.firstName, req.body.lastName, req.body.email, req.body.unique)
             .catch(err=>{console.log(err)});
         res.send(maker);
     },

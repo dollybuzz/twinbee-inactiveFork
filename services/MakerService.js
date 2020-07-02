@@ -20,7 +20,7 @@ class MakerService {
             emailService.notifyAdmin(err.toString());
         });
         repoResult.forEach(item => {
-            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted);
+            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted, item.unique);
 
             makers.push(newObj);
         });
@@ -34,11 +34,12 @@ class MakerService {
      * @param firstName - first name of new maker
      * @param lastName  - last name of new maker
      * @param email     - email of new maker
+     * @param unique    - identifying descriptor for maker
      * @returns {Promise<maker>}
      */
-    async createNewMaker(firstName, lastName, email){
+    async createNewMaker(firstName, lastName, email, unique){
         console.log("Creating new maker...");
-        await makerRepo.createMaker(firstName, lastName, email).catch(err=>{
+        await makerRepo.createMaker(firstName, lastName, email, unique).catch(err=>{
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
@@ -48,7 +49,7 @@ class MakerService {
         });
         console.log(id);
         emailService.sendWelcome(email);
-        return new Maker(id, firstName, lastName, email);
+        return new Maker(id, firstName, lastName, email, unique);
     }
 
     /**
@@ -65,9 +66,9 @@ class MakerService {
             emailService.notifyAdmin(err.toString());
         });
         retrieved.forEach(item => {
-            let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email);
+            let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email, item.unique);
             onliners.push(online);
-        })
+        });
         return onliners;
     }
 
@@ -87,11 +88,12 @@ class MakerService {
      * @param firstName - new first name of the maker
      * @param lastName  - new last name of the maker
      * @param email     - new email of the maker
+     * @param unique    - descriptor for maker
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
-    async updateMaker(id, firstName, lastName, email){
+    async updateMaker(id, firstName, lastName, email, unique){
         console.log(`Updating maker ${id}...`);
-        await makerRepo.updateMaker(id, firstName, lastName, email).catch(err=>{
+        await makerRepo.updateMaker(id, firstName, lastName, email, unique).catch(err=>{
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
@@ -383,7 +385,7 @@ class MakerService {
 
         if (result[0]) {
             let maker = result[0];
-            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email, maker.deleted);
+            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email, maker.deleted, maker.unique);
         }
         return 'not found';
     }
