@@ -2598,7 +2598,7 @@ function runReportFunctionality() {
             },
             dataType: "json",
             success: function (timeres, timestatus) {
-               for(var item in timeres.sheets) {
+               for(var item of timeres.sheets) {
                     $("#reportTable").append('\n' +
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
@@ -2607,7 +2607,7 @@ function runReportFunctionality() {
                         '   <td>' + item.clientName + '</td>' +
                         '   <td>' + item.duration + '</td></tr>');
                };
-                $("#reportTable").append('<tfoot><th id="reportTotal" colspan="3">Total Time:</th>' +
+                $("#reportTable").append('<tfoot><th id="reportTotal" colspan="4">Total Time:</th>' +
                 '<td>' + timeres.total + '</td></tfoot>');
             },
             error: function (timeres, timestatus) {
