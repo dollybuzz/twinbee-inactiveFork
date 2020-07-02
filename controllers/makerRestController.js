@@ -262,9 +262,18 @@ module.exports ={
     getMyClients: async (req, res) =>{
         console.log("Getting client list for maker from REST");
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let makerId = await makerService.getMakerIdByEmail(email);
-        res.send(await makerService.getClientListForMakerId(makerId));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let makerId = await makerService.getMakerIdByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await makerService.getClientListForMakerId(makerId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -281,9 +290,18 @@ module.exports ={
     getMyTimeSheets: async(req, res)=>{
         console.log(`Maker with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let id = await makerService.getMakerIdByEmail(email);
-        res.send(await makerService.getSheetsByMaker(id));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let id = await makerService.getMakerIdByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await makerService.getSheetsByMaker(id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -310,8 +328,12 @@ module.exports ={
     createMaker: async (req, res) =>{
         console.log("Attempting to create a maker from REST: ");
         console.log(req.body);
-        let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName, req.body.email, req.body.unique)
-            .catch(err=>{console.log(err)});
+        let newMaker = await makerService.createNewMaker(req.body.firstName, req.body.lastName,
+            req.body.email, req.body.unique)
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(newMaker);
     },
 
@@ -339,8 +361,12 @@ module.exports ={
     updateMaker: async (req, res) =>{
         console.log("Attempting to update a maker from REST: ");
         console.log(req.body);
-        let maker = await makerService.updateMaker(req.body.id, req.body.firstName, req.body.lastName, req.body.email, req.body.unique)
-            .catch(err=>{console.log(err)});
+        let maker = await makerService.updateMaker(req.body.id, req.body.firstName,
+            req.body.lastName, req.body.email, req.body.unique)
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(maker);
     },
 
