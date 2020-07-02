@@ -1,5 +1,5 @@
-
 const timeSheetService = require('../services/timeSheetService.js');
+const {notifyAdmin} = require("../services/notificationService");
 
 module.exports = {
 
@@ -23,9 +23,12 @@ module.exports = {
      *
      * @returns {Promise<[timeSheet]>}
      */
-    getAllTimeSheets: async (req,res) => {
+    getAllTimeSheets: async (req, res) => {
         console.log("Attempting to get all timesheets from REST");
-        let timeSheets = await timeSheetService.getAllTimeSheets().catch(err=>{console.log(err)});
+        let timeSheets = await timeSheetService.getAllTimeSheets().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString())
+        });
         res.send(timeSheets);
     },
 
@@ -53,7 +56,10 @@ module.exports = {
         console.log("Attempting to get sheets by client from REST");
         console.log(req.body);
         let id = req.body.id;
-        let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err=>{console.log(err)});
+        let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString())
+        });
         res.send(clientTimeSheets)
     },
 
@@ -82,8 +88,15 @@ module.exports = {
         console.log("Attempting to get a time sheet from REST");
         console.log(req.body);
         let id = req.body.id;
-        let sheet = await timeSheetService.getTimeSheet(id).catch(err=>{console.log(err)});
-        console.log(await timeSheetService.getTimeSheet(id));
+        let sheet = await timeSheetService.getTimeSheet(id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString())
+        });
+        console.log(await timeSheetService.getTimeSheet(id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString())
+            })
+        );
         res.send(sheet)
     },
 
@@ -111,7 +124,10 @@ module.exports = {
         console.log("Attempting to get sheets by maker from REST");
         console.log(req.body);
         let id = req.body.id;
-        let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err=>{console.log(err)});
+        let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString())
+        });
         res.send(makerTimeSheet);
     },
 
@@ -130,7 +146,7 @@ module.exports = {
      *
      * @returns {Promise<void>}
      */
-    updateTimeSheetsById: async (req, res) =>{
+    updateTimeSheetsById: async (req, res) => {
         console.log("Attempting to update timesheet by id from REST");
         console.log(req.body);
         timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
@@ -176,8 +192,11 @@ module.exports = {
         console.log("Attempting to create a timesheet");
         console.log(req.body);
         let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
-            req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail).catch(err=>{console.log(err)});
-        if (!createdSheet.id){
+            req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString())
+        });
+        if (!createdSheet.id) {
             res.send(undefined);
         }
         res.send(createdSheet);

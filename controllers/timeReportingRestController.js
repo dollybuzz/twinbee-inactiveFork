@@ -34,7 +34,7 @@ module.exports = {
      *                  makerName: maker's occupation
      *              },...
      *          ]
-     *          total: total time of all timesheets
+     *          duration: total time of all timesheets
      *      }
      */
     getTimeForMakerClientPair: async (req, res)=>{
