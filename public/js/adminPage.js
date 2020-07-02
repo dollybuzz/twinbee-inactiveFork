@@ -1667,6 +1667,7 @@ function relationshipAddForm() {
                                     }
 
                                     for (var item of planres) {
+                                        if(item.plan.status != "archived")
                                         $('#addPlanRel').append(
                                             `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
                                         );
