@@ -1,4 +1,5 @@
 const chargebeeService = require('../services/chargebeeService.js');
+const {notifyAdmin} = require("../services/notificationService");
 
 module.exports = {
 
@@ -28,7 +29,10 @@ module.exports = {
     getAllPlans: async function(req, res){
         console.log("Attempting to get all plans from REST: ");
         console.log(req.body);
-        let plans = await chargebeeService.getAllPlans().catch(e=>console.log(e));
+        let plans = await chargebeeService.getAllPlans().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send(plans);
     },
 
@@ -47,7 +51,10 @@ module.exports = {
         console.log("Attempting to create a plan from REST: ");
         console.log(req.body);
         res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
-            req.body.pricePerHour, req.body.planDescription));
+            req.body.pricePerHour, req.body.planDescription).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -65,7 +72,10 @@ module.exports = {
         console.log("Attempting to retrieve a plan from REST: ");
         console.log(req.body);
         let planActual = await chargebeeService.retrievePlan(req.body.planId)
-            .catch(err=>console.log(err));
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send({plan: planActual});
     },
 
@@ -131,7 +141,10 @@ module.exports = {
         console.log("Attempting to get all subscriptions from REST: ");
         console.log(req.body);
         let subscriptions = await chargebeeService.getAllSubscriptions().catch(e=>console.log(e))
-            .catch(e=>console.log(e));
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(subscriptions);
     },
 
@@ -152,7 +165,10 @@ module.exports = {
         console.log("Attempting to create a subscription from REST: ");
         console.log(req.body);
         let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId, req.body.planQuantity)
-            .catch(e=>console.log(e));
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(sub);
     },
 
@@ -171,7 +187,10 @@ module.exports = {
         console.log("Attempting to retrieve one subscription from REST: ");
         console.log(req.body);
         let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
-            .catch(e=>console.log(e));
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(subscription);
     },
 
@@ -190,7 +209,10 @@ module.exports = {
         console.log("Attempting to retrieve one subscription's scheduled changes from REST: ");
         console.log(req.body);
         let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
-            .catch(e=>console.log(e));
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(subscription);
     },
 
@@ -210,7 +232,10 @@ module.exports = {
         console.log(`Attempting to revert scheduled changes for a subscription...`);
         console.log(req.body);
         let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
-            .catch(e=>console.log(e));
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(subscription);
     },
 
@@ -234,7 +259,11 @@ module.exports = {
         console.log("Attempting to update subscription from REST: ");
         console.log(req.body);
         let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
-            req.body.planQuantity, req.body.pricePerHour);
+            req.body.planQuantity, req.body.pricePerHour)
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(subscription);
     },
 
@@ -305,7 +334,10 @@ module.exports = {
     getSubscriptionsByClient: async function (req, res) {
         console.log(`Attempting to get subscriptions for client ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.getSubscriptionsByClient(req.body.id));
+        res.send(await chargebeeService.getSubscriptionsByClient(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -324,7 +356,10 @@ module.exports = {
     pauseSubscription: async function(req, res){
         console.log(`Attempting to pause subscription ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.pauseSubscription(req.body.id));
+        res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -343,6 +378,9 @@ module.exports = {
     resumePausedSubscription: async function(req, res){
         console.log(`Attempting to resume subscription ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.resumePausedSubscription(req.body.id));
+        res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     }
 };
