@@ -2483,6 +2483,7 @@ function addSheetSuccess(res, status) {
 
     $("#ManageAvailCreditButton").on('click', function () {
         navItemChange("manageCredit");
+        selectedTab = $("#manageCredit")[0].id;
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     });
 }
@@ -2493,6 +2494,7 @@ function clearSheetSuccess(res, status) {
 
     $("#ManageAvailCreditButton").on('click', function () {
         navItemChange("manageCredit");
+        selectedTab = $("#manageCredit")[0].id;
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     });
 }
