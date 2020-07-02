@@ -3,24 +3,37 @@
 const {query} = require("./repoMaster.js");
 const repoMaster = require('./repoMaster.js');
 const notificationService = require('../services/notificationService.js');
+
 class MakerRepository {
     constructor() {
     };
 
     async createMaker(firstName, lastName, email, unique) {
+        if (!unique) {
+            unique = "";
+        }
         let sql = 'INSERT INTO maker(first_name, last_name, email, unique) VALUES (?, ?, ?, ?)';
         let sqlParams = [firstName, lastName, email, unique];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err.toString());
+            }
         });
         console.log(`Maker with last name ${lastName} created`)
     }
 
     async updateMaker(id, firstName, lastName, email, unique) {
+        if (!unique) {
+            unique = "";
+        }
         let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ?, unique = ? WHERE id = ?';
         let sqlParams = [firstName, lastName, email, unique, id];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err.toString());
+            }
         });
         console.log(`Maker ${id} updated`);
     }
@@ -29,7 +42,10 @@ class MakerRepository {
         let sql = 'UPDATE maker SET deleted = true where id = ?';
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err.toString());
+            }
         });
         console.log(`Maker ${id} marked as deleted`);
     }
@@ -62,16 +78,16 @@ class MakerRepository {
     }
 
     async getAllMakers(numRetries) {
-        if (!numRetries){
+        if (!numRetries) {
             numRetries = 3;
         }
 
-        return new Promise(async (resolve, reject)=> {
+        return new Promise(async (resolve, reject) => {
             let sql = 'SELECT * FROM maker';
             let sqlParam = [];
             let result;
             result = await query(sql, sqlParam).catch(async e => {
-                if (numRetries === 0){
+                if (numRetries === 0) {
                     reject();
                 }
                 console.log(e);
@@ -95,6 +111,7 @@ class MakerRepository {
             'GROUP BY maker.id';
         let sqlParam = [lastName];
         let result = await query(sql, sqlParam).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });
@@ -108,6 +125,7 @@ class MakerRepository {
         let sql = 'SELECT id FROM maker WHERE email = ?';
         let sqlParam = [email];
         let result = await query(sql, sqlParam).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });
@@ -125,6 +143,7 @@ class MakerRepository {
         let sqlParam = [client];
         let result = await query(sql, sqlParam).catch(e => {
             console.log(e);
+            notificationService.notifyAdmin(e.toString());
             result = [];
         });
         console.log(`Makers retrieved with hourly rate of ${rate}`);
