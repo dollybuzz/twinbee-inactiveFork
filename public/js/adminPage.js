@@ -2616,7 +2616,7 @@ function runReportFunctionality() {
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
-                        '   <td>' + item.occupation + '</td>' +
+                        '   <td>' + item.plan + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
                         `   <td> ${message}</td></tr>`);
                };
