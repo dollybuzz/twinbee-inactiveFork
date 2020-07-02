@@ -67,7 +67,7 @@ function navItemChange(id) {
         });
     }
 
-    else{
+    else if (parentToChange.classList[0] && parentToChange.classList[0].toString() !== "navItem"){
         $(`#${parentToChange.id}`).css("color", 'white')
             .css("font-style", 'normal').on("mouseleave", function () {
             $(`#${parentToChange.id}`).css("color", 'white')
