@@ -2544,17 +2544,20 @@ function runReportFunctionality() {
             dataType: "json",
             success: function (makerres, makerstatus) {
                 $("#makerReport").html("");
-                let makerName;
+                let makerName = item.firstName + " " + item.lastName;
                 for (var item of makerres) {
-                    if (item.deleted) {
-                        makerName = "*Deleted* " + item.firstName + " " + item.lastName;
-                    } else {
-                        makerName = item.firstName + " " + item.lastName;
-                    }
                     if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()) && $("#makerRepSearch").val() != ""){
-                        $('#makerReport').append(
-                            `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
-                        );
+                        if(item.deleted)
+                        {
+                            $('#makerReport').append(
+                                `<option id="${item.id}" value="${item.id}">*Deleted* ` + makerName + ` -  ${item.id}</option>`
+                            );
+                        }
+                        else{
+                            $('#makerReport').append(
+                                `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
+                            );
+                        }
                     }else{
                         $("#makerReport").html("");
                     }
