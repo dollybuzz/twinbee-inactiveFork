@@ -7,7 +7,7 @@ module.exports = {
      * Retrieves all plans from the {TEST} environment as chargebee entries.
      * Note that in order to access meaningful data, an intermediate object is
      * accessed.  E.g, to access "pricing_model", given that "returnedValue" is the
-     * result of this funciton, use:
+     * result of this function, use:
      *  returnedValue[0].plan.pricing_model
      *  returns data as follows:
      *  [

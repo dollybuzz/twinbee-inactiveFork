@@ -58,7 +58,6 @@ function navItemChange(id) {
     let navItemText = selectedNavMap.html();
     selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
     let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
-    console.log(parentToChange);
 
     $(".navItem").css('color', 'white')
         .css('font-style', 'normal');
@@ -1649,14 +1648,13 @@ function relationshipAddForm() {
                         );
                         if (i == clientres.length - 1) {
                             $.ajax({
-                                url: "/api/getTimeBucketsByClientId",
+                                url: "/api/getAllPlans",
                                 method: "post",
                                 data: {
-                                    auth: id_token,
-                                    id: $("#addClientRel").val()
+                                    auth: id_token
                                 },
                                 dataType: "json",
-                                success: function (bucketres, bucketstatus) {
+                                success: function (planres, planstatus) {
                                     $("#addPlanRel").html("");
 
                                     for (var item of makerres) {
@@ -1667,15 +1665,16 @@ function relationshipAddForm() {
                                         }
                                     }
 
-                                    for (var item in bucketres.buckets) {
+                                    for (var item of planres) {
+                                        if(item.plan.status != "archived")
                                         $('#addPlanRel').append(
-                                            `<option id="${item}" value="${item}">${item}</option>`
+                                            `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
                                         );
 
                                     }
 
                                 },
-                                error: function (bucketres, bucketstatus) {
+                                error: function (planres, planstatus) {
                                     $("#userMainContent").html("Subscriptions isn't working!");
                                 }
                             });
@@ -1692,7 +1691,6 @@ function relationshipAddForm() {
                             },
                             dataType: "json",
                             success: function (bucketres, bucketstatus) {
-                                $("#addPlanRel").html("");
                                 $("#addMakerRel").html("");
 
                                 for (var item of makerres) {
@@ -1702,14 +1700,6 @@ function relationshipAddForm() {
                                         );
                                     }
                                 }
-
-                                for (var item in bucketres.buckets) {
-                                    $('#addPlanRel').append(
-                                        `<option id="${item}" value="${item}">${item}</option>`
-                                    );
-
-                                }
-
                             },
                             error: function (bucketres, bucketstatus) {
                                 $("#userMainContent").html("Subscriptions isn't working!");
@@ -2502,8 +2492,8 @@ function runReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptions").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
-    $(".reportOptions").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
+    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
     $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
     $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
@@ -2512,7 +2502,7 @@ function runReportFunctionality() {
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
-        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
         '        </thead><tbody id="reportContent">' +
@@ -2626,9 +2616,9 @@ function runReportFunctionality() {
                 if (totalminutes >= 0 || totalminutes < 0) {
                     totalmessage += ` ${totalminutes} minutes `;
                 }
-                console.log(totalmessage)
+
                 $("#reportContent").append('<tfoot><th id="repTotal" colspan="4">Total Time:</th>' +
-                    `<td>${totalmessage}</td></tfoot>`);
+                    '<td>' + totalmessage + '</td></tfoot>');
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
