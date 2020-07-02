@@ -80,7 +80,7 @@ class RelationshipService {
     async updateRelationship(relationshipId, planId, occupation, makerId) {
         console.log(`Updating relationship ${relationshipId}...`);
         await relationshipRepo.updateRelationship(relationshipId, planId,
-            occupation, makerId).catch(err => {
+            occupation, makerId).catche(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });

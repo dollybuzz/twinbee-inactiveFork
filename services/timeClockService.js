@@ -114,7 +114,10 @@ class TimeClockService {
                 'makerId': relationship.makerId,
                 'hourlyRate': relationship.planId,
                 'clientId': relationship.clientId,
-                timeIn: await this.getCurrentMoment(),
+                timeIn: await this.getCurrentMoment().catch(err=>{
+                    console.log(err);
+                    emailService.notifyAdmin(err.toString());
+                }),
                 timeOut: '0000-00-00 00:00:00',
                 'task': task,
                 'auth':process.env.TWINBEE_MASTER_AUTH
