@@ -2516,10 +2516,8 @@ function runReportFunctionality() {
         '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Occupation</th>\n' +
         '            <th scope="col">Client</th>\n' +
-        '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
         '        </thead><tbody>');
-    $("#reportTable").append('<tfoot><th id="test" colspan="4">Total Time:</th><td>?</td></tfoot>');
 
     //Pre-populate Report drop down options
     $("#clientRepSearch").on("change", function () {
@@ -2584,6 +2582,39 @@ function runReportFunctionality() {
     $("#runReportButton").on('click', function () {
 
         $("#reportTable").css("opacity", "1");
+
+        console.log($("#startDate").val());
+        console.log($("#endDate").val());
+
+        $.ajax({
+            url: "/api/getTimeForMakerClientPair",
+            method: "post",
+            data: {
+                auth: id_token,
+                makerId: $("#makerReport").val(),
+                clientId: $("#clientReport").val(),
+                start: $("#startDate").val(),
+                end: $("#endDate").val()
+            },
+            dataType: "json",
+            success: function (timeres, timestatus) {
+               for(var item of timeres.sheets) {
+                    $("#reportTable").append('\n' +
+                        '<tr class="reportRow">' +
+                        '   <td scope="row">' + item.id + '</td>' +
+                        '   <td>' + item.makerName + '</td>' +
+                        '   <td>' + item.occupation + '</td>' +
+                        '   <td>' + item.clientName + '</td>' +
+                        '   <td>' + item.duration + '</td></tr>');
+               };
+                $("#reportTable").append('<tfoot><th id="reportTotal" colspan="4">Total Time:</th>' +
+                '<td>' + timeres.total + '</td></tfoot>');
+            },
+            error: function (timeres, timestatus) {
+                $("#userMainContent").html("Run Reports isn't working!");
+            }
+        });
+
     });
 
 }
