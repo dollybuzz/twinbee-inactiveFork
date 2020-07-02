@@ -2551,7 +2551,7 @@ function runReportFunctionality() {
                     } else {
                         makerName = item.firstName + " " + item.lastName;
                     }
-                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()) && $("#clientRepSearch").val() != ""){
+                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()) && $("#makerRepSearch").val() != ""){
                         $('#makerReport').append(
                             `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                         );
