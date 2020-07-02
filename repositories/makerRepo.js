@@ -7,18 +7,18 @@ class MakerRepository {
     constructor() {
     };
 
-    async createMaker(firstName, lastName, email) {
-        let sql = 'INSERT INTO maker(first_name, last_name, email) VALUES (?, ?, ?)';
-        let sqlParams = [firstName, lastName, email];
+    async createMaker(firstName, lastName, email, unique) {
+        let sql = 'INSERT INTO maker(first_name, last_name, email, unique) VALUES (?, ?, ?, ?)';
+        let sqlParams = [firstName, lastName, email, unique];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         });
         console.log(`Maker with last name ${lastName} created`)
     }
 
-    async updateMaker(id, firstName, lastName, email) {
-        let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ? WHERE id = ?';
-        let sqlParams = [firstName, lastName, email, id];
+    async updateMaker(id, firstName, lastName, email, unique) {
+        let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ?, unique = ? WHERE id = ?';
+        let sqlParams = [firstName, lastName, email, unique, id];
         query(sql, sqlParams, function (err, result) {
             if (err) throw err;
         });
