@@ -26,7 +26,7 @@ const dbOptions = {
     user: process.env.TWINBEE_DB_USERNAME,
     password: process.env.TWINBEE_DB_PASS,
     database: process.env.TWINBEE_DB_SCHEMA
-}
+};
 
 class DbMaster {
     constructor() {
