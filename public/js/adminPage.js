@@ -2550,8 +2550,7 @@ function runReportFunctionality() {
                             $('#makerReport').append(
                                 `<option id="${item.id}" value="${item.id}">*Deleted* ` + makerName + ` -  ${item.id}</option>`
                             );
-                        }
-                        else{
+                        } else {
                             $('#makerReport').append(
                                 `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                             );
