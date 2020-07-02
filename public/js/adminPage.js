@@ -2544,15 +2544,14 @@ function runReportFunctionality() {
             dataType: "json",
             success: function (makerres, makerstatus) {
                 $("#makerReport").html("");
+                let makerName;
                 for (var item of makerres) {
-                    let deleted;
                     if (item.deleted) {
-                        deleted = "*Deleted* ";
+                        makerName = "*Deleted* " + item.firstName + " " + item.lastName;
                     } else {
-                        deleted = "";
+                        makerName = item.firstName + " " + item.lastName;
                     }
-                    let makerName = deleted + item.firstName + " " + item.lastName;
-                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase())  && $("#makerRepSearch").val() != "") {
+                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()) && $("#clientRepSearch").val() != ""){
                         $('#makerReport').append(
                             `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                         );
