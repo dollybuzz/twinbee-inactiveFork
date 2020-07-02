@@ -16,7 +16,10 @@ module.exports = {
         console.log('Attempting to clock in user from REST:');
         console.log(req.body);
         res.send(await timeClockService.clockIn(req.body.auth, req.body.task,
-            req.body.relationshipId));
+            req.body.relationshipId).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -37,6 +40,9 @@ module.exports = {
     clockOut: async (req, res) => {
         console.log('Attempting to clock out user from REST:');
         console.log(req.body);
-        res.send(await timeClockService.clockOut(req.body.auth, req.body.newTask));
+        res.send(await timeClockService.clockOut(req.body.auth, req.body.newTask).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     }
 }

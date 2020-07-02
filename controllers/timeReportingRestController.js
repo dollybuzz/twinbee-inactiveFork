@@ -1,5 +1,6 @@
 
 const timeReportingService = require('../services/timeReportingService.js');
+const {notifyAdmin} = require("../services/notificationService");
 
 module.exports = {
 
@@ -41,6 +42,10 @@ module.exports = {
         console.log("Attempting to grab time report for client/maker pair from REST...");
         console.log(req.body);
         res.send(await timeReportingService
-            .getReportForClientMakerPair(req.body.start, req.body.end, req.body.makerId, req.body.clientId));
+            .getReportForClientMakerPair(req.body.start, req.body.end, req.body.makerId, req.body.clientId)
+            .catch(error => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
     }
 };
