@@ -60,6 +60,10 @@ function navItemChange(id) {
     let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
     console.log(parentToChange);
 
+    if (selectedDropdown){
+        $(`#${selectedDropdown}`).css("color", '#dbb459')
+            .css("font-style", 'italic');
+    }
 
     $(".navItem").css('color', 'white')
         .css('font-style', 'normal');
