@@ -11,6 +11,7 @@ class EventRepository {
             let sqlParams = [eventId];
             query(sql, sqlParams, function (err, result) {
                 if (err) {
+                    notificationService.notifyAdmin(err.toString());
                     console.log(`Duplicate Event not created: Event ${eventId}`);
                     resolve(false);
                 }
