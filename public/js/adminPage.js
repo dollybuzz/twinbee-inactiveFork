@@ -2599,16 +2599,43 @@ function runReportFunctionality() {
             dataType: "json",
             success: function (timeres, timestatus) {
                for(var item of timeres.sheets) {
+                   let hours = item.duration/60;
+                   let minutes = item.duration%60;
+                   let message = "";
+                   if (hours >= 0) {
+                       message += ` ${Math.floor(hours)} hours `;
+                   }
+                   if (hours <= -1) {
+                       hours = Math.abs(hours);
+                       message += `-${Math.floor(hours)} hours `;
+                   }
+                   if (minutes >= 0 || minutes < 0) {
+                       message += ` ${minutes} minutes `;
+                   }
                     $("#reportTable").append('\n' +
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + item.occupation + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
-                        '   <td>' + item.duration + '</td></tr>');
+                        `   <td> ${message}</td></tr>`);
                };
+
+               let totalhours = timeres.total/60;
+               let totalminutes = timeres.total%60;
+               let totalmessage = "";
+                if (totalhours >= 0) {
+                    totalmessage += ` ${Math.floor(totalhours)} hours `;
+                }
+                if (totalhours <= -1) {
+                    totalhours = Math.abs(totalhours);
+                    totalmessage += `-${Math.floor(totalhours)} hours `;
+                }
+                if (totalminutes >= 0 || totalminutes < 0) {
+                    totalmessage += ` ${totalminutes} minutes `;
+                }
                 $("#reportTable").append('<tfoot><th id="reportTotal" colspan="4">Total Time:</th>' +
-                '<td>' + timeres.total + '</td></tfoot>');
+                `<td>${totalmessage}</td></tfoot>`);
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
