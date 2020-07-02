@@ -3,22 +3,19 @@
 <nav>
     <% if (typeof navItemsTop != "undefined"){ %>
         <% for (var i = 0; i < navItemsTop.length; ++i){ %>
-
             <% if (navItemsTop[i].dropdowns.length > 0){ %>
                 <div class="dropdown">
-                    <span id="<%= navItemsTop[i]["id"] %>"
-                          class="navItem navItemParent"><%= navItemsTop[i]["text"] %></span>
+                    <span id="<%= navItemsTop[i]["id"] %>" class="navItem navItemParent"><%= navItemsTop[i]["text"] %></span>
                     <% for (var j = 0; j < navItemsTop[i].dropdowns.length; ++j){ %>
                         <% if (j == 0){ %>
-                        <div class="dropdown-content">
-                            <% } %>
-                            <a><span id="<%= navItemsTop[i].dropdowns[j]["id"] %>"
-                                     class="navItem"><%= navItemsTop[i].dropdowns[j]["text"] %></span></a>
-                            <% if (j == navItemsTop[i].dropdowns[j].length - 1){ %>
-                        </div>
+                            <div class="dropdown-content">
                         <% } %>
-                </div>
+                        <a><span id="<%= navItemsTop[i].dropdowns[j]["id"] %>" class="navItem"><%= navItemsTop[i].dropdowns[j]["text"] %></span></a>
+                        <% if (j == navItemsTop[i].dropdowns[j].length - 1){ %>
+                            </div>
+                        <% } %>
                     <% } %>
+                </div>
             <% } else{ %>
                 <span id="<%= navItemsTop[i]["id"] %>"
                       class="navItem navItemParent"><%= navItemsTop[i]["text"] %></span>
