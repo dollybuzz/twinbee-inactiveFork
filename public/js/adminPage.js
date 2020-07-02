@@ -2492,8 +2492,8 @@ function runReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptions").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
-    $(".reportOptions").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
+    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
     $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
     $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
@@ -2616,7 +2616,7 @@ function runReportFunctionality() {
                 if (totalminutes >= 0 || totalminutes < 0) {
                     totalmessage += ` ${totalminutes} minutes `;
                 }
-                console.log(totalmessage)
+
                 $("#reportContent").append('<tfoot><th id="repTotal" colspan="4">Total Time:</th>' +
                     '<td>' + totalmessage + '</td></tfoot>');
             },
