@@ -92,16 +92,16 @@ class TimeReportingService {
      * @returns {Promise<{sheets:[], duration: total time logged}>}
      */
     async getReportForClientMakerPair(start, end, makerId, clientId) {
-        if (!makerId){
+        if (!makerId) {
             makerId = "";
         }
-        if (!clientId){
+        if (!clientId) {
             clientId = "";
         }
-        if (!start){
+        if (!start) {
             start = "2020-01-01 00:00:00";
         }
-        if (!end){
+        if (!end) {
             end = moment();
         }
         let totalTime = 0;
@@ -128,22 +128,35 @@ class TimeReportingService {
 
         console.log(timeSheets.length);
         for (var sheet of timeSheets) {
+            let filter = await makerIdFilter(makerId, sheet.makerId).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
             if (sheet.timeIn[0].toString() !== "0" && sheet.timeOut.toString() !== "0"
-                && sheet.clientId.includes(clientId) && await makerIdFilter(makerId, sheet.makerId)) {
+                && sheet.clientId.includes(clientId) && filter) {
 
                 let startMoment = moment(sheet.timeIn);
                 let endMoment = moment(sheet.timeOut);
 
 
                 if (endMoment.isBetween(preferredStart, preferredEnd)) {
-                    let duration = await this.getMinutesBetweenMoments(startMoment, endMoment);
+                    let duration = await this.getMinutesBetweenMoments(startMoment, endMoment).catch(err => {
+                        console.log(err);
+                        emailService.notifyAdmin(err.toString());
+                    });
                     totalTime += duration;
                     let client = clientMap[sheet.clientId];
                     let maker = makerMap[sheet.makerId];
 
                     let clientName = clientMap[sheet.clientId] ? `${client.first_name} ${client.last_name}` : `Deleted client ${sheet.clientId}`;
                     let makerName = makerMap[sheet.makerId] ? `${maker.firstName} ${maker.lastName}` : `Deleted maker ${sheet.makerId}`;
-                    sheets.push({id: sheet.id, duration: duration, clientName: clientName, makerName: makerName, plan: sheet.hourlyRate});
+                    sheets.push({
+                        id: sheet.id,
+                        duration: duration,
+                        clientName: clientName,
+                        makerName: makerName,
+                        plan: sheet.hourlyRate
+                    });
                 }
             }
         }
