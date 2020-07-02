@@ -2517,10 +2517,9 @@ function runReportFunctionality() {
         '            <th scope="col">Occupation</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
-        '<span id="reportContent"></span>' +
-        '        </thead><tbody>' +
-        '<span id="reportTotal"></span>');
-);
+        '        </thead><tbody><span id="reportContent"></span>' +
+        '        <span id="reportTotal"></span>' +
+        '</tbody>');
 
     //Pre-populate Report drop down options
     $("#clientRepSearch").on("change", function () {
