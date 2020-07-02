@@ -2600,7 +2600,7 @@ function runReportFunctionality() {
             },
             dataType: "json",
             success: function (timeres, timestatus) {
-                $("#reportRow").html("");
+                $(".reportRow").html("");
                for(var item of timeres.sheets) {
                    let hours = item.duration/60;
                    let minutes = item.duration%60;
@@ -2615,7 +2615,7 @@ function runReportFunctionality() {
                    if (minutes >= 0 || minutes < 0) {
                        message += ` ${minutes} minutes `;
                    }
-                    $("#reportRow").append(
+                    $(".reportRow").append(
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + item.plan + '</td>' +
