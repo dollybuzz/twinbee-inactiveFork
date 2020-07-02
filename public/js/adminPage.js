@@ -2520,11 +2520,11 @@ function runReportFunctionality() {
                 $("#clientReport").html("");
                 for (var i = 0; i < clientres.length; ++i) {
                     let clientName = clientres[i].customer.first_name + " " + clientres[i].customer.last_name;
-                    if (clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase())) {
+                    if (clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase()) && $("#clientRepSearch").val() != "") {
                         $('#clientReport').append(
                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         )
-                    }else if($("clientRepSearch").val() == ""){
+                    }else{
                         $("#clientReport").html("");
                     }
                 }
@@ -2552,11 +2552,11 @@ function runReportFunctionality() {
                         deleted = "";
                     }
                     let makerName = deleted + item.firstName + " " + item.lastName;
-                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase())) {
+                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase())  && $("#makerRepSearch").val() != "") {
                         $('#makerReport').append(
                             `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                         );
-                    }else if($("makerRepSearch").val() == ""){
+                    }else{
                         $("#makerReport").html("");
                     }
                 }
