@@ -1649,14 +1649,13 @@ function relationshipAddForm() {
                         );
                         if (i == clientres.length - 1) {
                             $.ajax({
-                                url: "/api/getTimeBucketsByClientId",
+                                url: "/api/getAllPlans",
                                 method: "post",
                                 data: {
-                                    auth: id_token,
-                                    id: $("#addClientRel").val()
+                                    auth: id_token
                                 },
                                 dataType: "json",
-                                success: function (bucketres, bucketstatus) {
+                                success: function (planres, planstatus) {
                                     $("#addPlanRel").html("");
 
                                     for (var item of makerres) {
@@ -1667,15 +1666,15 @@ function relationshipAddForm() {
                                         }
                                     }
 
-                                    for (var item in bucketres.buckets) {
+                                    for (var item of planres) {
                                         $('#addPlanRel').append(
-                                            `<option id="${item}" value="${item}">${item}</option>`
+                                            `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
                                         );
 
                                     }
 
                                 },
-                                error: function (bucketres, bucketstatus) {
+                                error: function (planres, planstatus) {
                                     $("#userMainContent").html("Subscriptions isn't working!");
                                 }
                             });
@@ -1692,7 +1691,6 @@ function relationshipAddForm() {
                             },
                             dataType: "json",
                             success: function (bucketres, bucketstatus) {
-                                $("#addPlanRel").html("");
                                 $("#addMakerRel").html("");
 
                                 for (var item of makerres) {
@@ -1702,14 +1700,6 @@ function relationshipAddForm() {
                                         );
                                     }
                                 }
-
-                                for (var item in bucketres.buckets) {
-                                    $('#addPlanRel').append(
-                                        `<option id="${item}" value="${item}">${item}</option>`
-                                    );
-
-                                }
-
                             },
                             error: function (bucketres, bucketstatus) {
                                 $("#userMainContent").html("Subscriptions isn't working!");
