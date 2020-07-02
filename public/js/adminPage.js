@@ -2524,6 +2524,8 @@ function runReportFunctionality() {
                         $('#clientReport').append(
                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         )
+                    }else if($("clientRepSearch").val() == ""){
+                        $("#clientReport").html("");
                     }
                 }
             },
@@ -2554,6 +2556,8 @@ function runReportFunctionality() {
                         $('#makerReport').append(
                             `<option id="${item.id}" value="${item.id}">` + makerName + ` -  ${item.id}</option>`
                         );
+                    }else if($("makerRepSearch").val() == ""){
+                        $("#makerReport").html("");
                     }
                 }
             },
@@ -2617,7 +2621,7 @@ function runReportFunctionality() {
                     totalmessage += ` ${totalminutes} minutes `;
                 }
 
-                $("#reportContent").append('<tfoot><th id="repTotal" colspan="4">Total Time:</th>' +
+                $("#reportContent").append('<tfoot><th id="repTotal">Total Time:</th>' +
                     '<td>' + totalmessage + '</td></tfoot>');
             },
             error: function (timeres, timestatus) {
