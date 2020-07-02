@@ -1,6 +1,7 @@
 const clientService = require('../services/ClientService.js');
 const authService = require('../services/authService.js');
 const chargebeeService = require('../services/chargebeeService.js');
+const {notifyAdmin} = require("../services/notificationService");
 //TODO Add validation before action
 module.exports = {
 
@@ -18,7 +19,10 @@ module.exports = {
         console.log("Attempting to get client by id from REST: ");
         console.log(req.body);
         let id = req.body.id;
-        let client = await clientService.getClientById(id);
+        let client = await clientService.getClientById(id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send(client);
     },
 
@@ -36,9 +40,18 @@ module.exports = {
     getMyTimeSheets: async(req, res)=>{
         console.log(`Client with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getSheetsByClient(client.id));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.getSheetsByClient(client.id)).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
     },
 
     /**
@@ -58,14 +71,26 @@ module.exports = {
     updateMySubscription: async function(req, res){
         console.log("Attempting to update subscription from  REST by client request: ");
         console.log(req.body);
-        let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId);
-        let clientEmail = await authService.getEmailFromToken(req.body.auth);
-        let client= await clientService.getClientByEmail(clientEmail);
+        let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let clientEmail = await authService.getEmailFromToken(req.body.auth).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client= await clientService.getClientByEmail(clientEmail).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         console.log(client.id);
-        console.log(subscriptionOwner.id)
+        console.log(subscriptionOwner.id);
         if (client.id === subscriptionOwner.id) {
             res.send(await chargebeeService.updateSubscriptionForCustomer(req.body.subscriptionId,
-                req.body.planQuantity));
+                req.body.planQuantity).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
         }
         else
             res.send(false);
@@ -101,9 +126,18 @@ module.exports = {
     getMySubscriptions: async(req, res)=>{
         console.log(`Client with token...\n${req.body.token}\n...is requesting their subscriptions from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getSubscriptionsForClient(client.id));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.getSubscriptionsForClient(client.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -122,9 +156,18 @@ module.exports = {
     getMySubscriptionChanges: async(req, res)=>{
         console.log(`Client with token...\n${req.body.token}\n...is requesting their changes to subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getMySubscriptionChanges(client.id, req.body.subscriptionId));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.getMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -142,9 +185,18 @@ module.exports = {
     retrieveMySubscription: async(req, res)=>{
         console.log(`Client with token...\n${req.body.token}\n...is requesting their subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getMySubscription(client.id, req.body.subscriptionId));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.getMySubscription(client.id, req.body.subscriptionId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -162,9 +214,18 @@ module.exports = {
     getMyTimeBucket: async(req, res)=>{
       console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
       console.log(req.body);
-      let email = await authService.getEmailFromToken(req.body.token);
-      let client = await clientService.getClientByEmail(email);
-      res.send(await clientService.getTimeBucket(client.id, req.body.bucket));
+      let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
+      let client = await clientService.getClientByEmail(email).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
+      res.send(await clientService.getTimeBucket(client.id, req.body.bucket).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      }));
     },
 
     /**
@@ -191,9 +252,18 @@ module.exports = {
     getAllMyTimeBuckets: async(req, res)=>{
         console.log(`Client with token...\n${req.body.token}\n...is requesting their time buckets from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getTimeBucketsByClientId(client.id));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.getTimeBucketsByClientId(client.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -212,9 +282,18 @@ module.exports = {
     undoMySubscriptionChanges: async(req, res)=>{
         console.log(`Client with token...\n${req.body.token}\n...is requesting to revert their changes to subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.undoMySubscriptionChanges(client.id, req.body.subscriptionId));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.undoMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -240,7 +319,10 @@ module.exports = {
 
         let censoredClient = {};
         let id = req.body['relationshipObj[clientId]'];
-        let client = await clientService.getClientById(id);
+        let client = await clientService.getClientById(id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         censoredClient.id = client.id;
         censoredClient.name = client.first_name + " " + client.last_name;
         censoredClient.relId = req.body['relationshipObj[id]'];
@@ -338,7 +420,10 @@ module.exports = {
     async getAllTimeBuckets(req, res) {
         console.log("Attempting to get all time buckets from REST");
         console.log(req.body);
-        res.send(await clientService.getAllTimeBuckets());
+        res.send(await clientService.getAllTimeBuckets().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
 
@@ -368,7 +453,10 @@ module.exports = {
     async getTimeBucketsByClientId(req, res) {
         console.log(`Attempting to get a time bucket for client ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await clientService.getTimeBucketsByClientId(req.body.id));
+        res.send(await clientService.getTimeBucketsByClientId(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -387,8 +475,9 @@ module.exports = {
         console.log(req.body);
 
         res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
-            .catch(error => {
-                console.log(error)
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
             }));
     },
 
@@ -410,8 +499,9 @@ module.exports = {
         console.log(req.body);
 
         res.send(await clientService.deleteTimeBucket(req.body.id, req.body.bucket)
-            .catch(error => {
-                console.log(error)
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
             }));
     },
 
@@ -435,7 +525,8 @@ module.exports = {
         let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
             req.body.email, req.body.phone, req.body.company)
             .catch(err => {
-                console.log(err)
+                console.log(err);
+                notifyAdmin(err.toString());
             });
         res.send(client);
     },
@@ -451,7 +542,10 @@ module.exports = {
     deleteClient: async (req, res) => {
         console.log("Attempting to delete a client from REST: ");
         console.log(req.body);
-        await clientService.deleteClientById(req.body.id);
+        await clientService.deleteClientById(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send({});
     },
 
@@ -480,7 +574,8 @@ module.exports = {
     getAllClients: async (req, res) => {
         console.log("Attempting to grab all clients from REST");
         res.send(await clientService.getAllClients().catch(err => {
-            console.log(err)
+            console.log(err);
+            notifyAdmin(err.toString());
         }));
     },
 
@@ -500,7 +595,10 @@ module.exports = {
     getMakersForClient: async (req, res) => {
         console.log("Attempting to get makers for client from rest: ");
         console.log(req.body);
-        res.send(await clientService.getMakersForClient(req.body.id));
+        res.send(await clientService.getMakersForClient(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
 
@@ -520,8 +618,14 @@ module.exports = {
     getClientByToken: async (req, res) => {
         console.log("Attempting to get client by token from REST: ");
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        res.send(await clientService.getClientByEmail(email));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -539,7 +643,10 @@ module.exports = {
         if (req.body.event_type == "subscription_renewed") {
             console.log("Client subscription renewed; updating from REST");
             console.log(req.body);
-            res.send(await clientService.subscriptionRenewed(req.body));
+            res.send(await clientService.subscriptionRenewed(req.body).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
         }
     },
 
@@ -560,7 +667,10 @@ module.exports = {
         console.log(clientService.webHookBucketUpdate);
         let possible = clientService.webhookMap[req.body.event_type];
         if (possible) {
-            res.send(await possible(req.body));
+            res.send(await possible(req.body).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
         } else {
             res.send("Unsupported Event");
         }
@@ -580,7 +690,10 @@ module.exports = {
     getUpdatePaymentPage: async (req, res) => {
         console.log("Attempting to get a hosted page for payment source update: ");
         console.log(req.body);
-        let page = await clientService.getUpdatePaymentPage(req.body.id);
+        let page = await clientService.getUpdatePaymentPage(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send({url: page.url});
     },
 
@@ -599,9 +712,18 @@ module.exports = {
     getMyUpdatePaymentPage: async (req, res) =>{
       console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
       console.log(req.body);
-      let email =await authService.getEmailFromToken(req.body.token);
-      let client = await clientService.getClientByEmail(email);
-      res.send(await clientService.getUpdatePaymentPage(client.id));
+      let email =await authService.getEmailFromToken(req.body.token).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
+      let client = await clientService.getClientByEmail(email).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
+      res.send(await clientService.getUpdatePaymentPage(client.id).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      }));
     },
 
     /**
@@ -618,7 +740,10 @@ module.exports = {
     getClientPayInvoicesPage: async (req, res) => {
         console.log("Attempting to get a hosted page for client pay invoices from REST");
         console.log(req.body);
-        let page = await clientService.getOutstandingPaymentsPage(req.body.id);
+        let page = await clientService.getOutstandingPaymentsPage(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send({url: page.url});
     },
 
@@ -637,9 +762,18 @@ module.exports = {
     getMyPayInvoicesPage: async (req, res) => {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        let page = await clientService.getOutstandingPaymentsPage(client.id);
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let page = await clientService.getOutstandingPaymentsPage(client.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send({url: page.url});
     },
 
@@ -671,9 +805,18 @@ module.exports = {
     getAllMyRelationships: async (req, res) =>{
         console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getAllMyRelationships(client.id));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await clientService.getAllMyRelationships(client.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -694,10 +837,19 @@ module.exports = {
     chargeMeNow: async (req, res) =>{
       console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
       console.log(req.body);
-      let email = await authService.getEmailFromToken(req.body.token);
-      let client = await clientService.getClientByEmail(email);
+      let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
+      let client = await clientService.getClientByEmail(email).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
       console.log(client);
-      res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id));
+      res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      }));
     },
 
     /**
@@ -716,10 +868,19 @@ module.exports = {
     getMyMakers: async (req, res) =>{
         console.log(`Attempting to retrieve makers for client with token...\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let client = await clientService.getClientByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         console.log(client);
-        res.send(await clientService.getMakersForClient(client.id));
+        res.send(await clientService.getMakersForClient(client.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -739,6 +900,9 @@ module.exports = {
     getTimeBucket: async (req, res) => {
         console.log("Attempting to get a timebucket for client");
         console.log(req.body);
-        res.send(await clientService.getTimeBucket(req.body.id, req.body.planId));
+        res.send(await clientService.getTimeBucket(req.body.id, req.body.planId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     }
 };
