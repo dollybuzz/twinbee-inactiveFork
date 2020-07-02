@@ -58,7 +58,6 @@ function navItemChange(id) {
     let navItemText = selectedNavMap.html();
     selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
     let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
-    console.log(parentToChange);
 
     $(".navItem").css('color', 'white')
         .css('font-style', 'normal');
@@ -2503,7 +2502,7 @@ function runReportFunctionality() {
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
-        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
         '        </thead><tbody id="reportContent">' +
@@ -2619,7 +2618,7 @@ function runReportFunctionality() {
                 }
                 console.log(totalmessage)
                 $("#reportContent").append('<tfoot><th id="repTotal" colspan="4">Total Time:</th>' +
-                    `<td>${totalmessage}</td></tfoot>`);
+                    '<td>' + totalmessage + '</td></tfoot>');
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
