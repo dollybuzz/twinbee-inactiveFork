@@ -82,7 +82,8 @@ exports.notifyAdmin = content => {
 
 /**
  * Sends an email to the Freedom Makers admins
- * @param content
+ * @param subject - email subject
+ * @param content - email content
  * @returns {Promise<>}
  */
 exports.emailFMAdmin = (subject, content) => new Promise((resolve, reject) => {
