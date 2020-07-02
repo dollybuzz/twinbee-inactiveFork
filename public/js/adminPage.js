@@ -60,11 +60,6 @@ function navItemChange(id) {
     let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
     console.log(parentToChange);
 
-    if (selectedDropdown){
-        $(`#${selectedDropdown}`).css("color", '#dbb459')
-            .css("font-style", 'italic');
-    }
-
     $(".navItem").css('color', 'white')
         .css('font-style', 'normal');
     selectedNavMap.css("color", '#dbb459')
@@ -2653,6 +2648,10 @@ $(document).ready(function () {
         let parentToChange = $(this).parent().parent().parent().children()[0];
         if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem"){
             selectedDropdown = parentToChange.id;
+        }
+        if (selectedDropdown){
+            $(`#${selectedDropdown}`).css("color", '#dbb459')
+                .css("font-style", 'italic');
         }
     });
 
