@@ -162,7 +162,7 @@ class TimeReportingService {
         }
 
         obj.sheets = sheets;
-        obj.duration = totalTime;
+        obj.total = totalTime;
         return obj;
     }
 

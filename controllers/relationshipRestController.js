@@ -33,7 +33,10 @@ module.exports = {
             +` client ${req.body.clientId} from REST`);
         console.log(req.body);
         res.send(await relationshipService.createRelationship(req.body.makerId,
-            req.body.clientId, req.body.planId, req.body.occupation));
+            req.body.clientId, req.body.planId, req.body.occupation).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -61,7 +64,10 @@ module.exports = {
     getRelationshipsByMakerId: async (req, res) =>{
         console.log(`Getting relationships for maker ${req.body.id}`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipsByMakerId(req.body.id));
+        res.send(await relationshipService.getRelationshipsByMakerId(req.body.id).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -89,7 +95,10 @@ module.exports = {
     getRelationshipsByClientId: async (req, res) =>{
         console.log(`Getting relationships for client ${req.body.id}`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipsByClientId(req.body.id));
+        res.send(await relationshipService.getRelationshipsByClientId(req.body.id).catch(error => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
