@@ -2,6 +2,7 @@
 let selectedRow = null;
 let id_token = null;
 let selectedTab = null;
+let selectedDropdown = null;
 let TEST_ENVIRONMENT = false;
 
 let navMapper = {
@@ -2628,6 +2629,11 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
+        selectedDropdown = null;
+        let parentToChange = $(this).parent().parent().parent().children()[0];
+        if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem"){
+            selectedDropdown = parentToChange.id;
+        }
     });
 
     $(".navItem").hover(function () {
@@ -2636,7 +2642,7 @@ $(document).ready(function () {
     });
 
     $(".navItem").on("mouseleave", function () {
-        if (selectedTab != $(this)[0].id) {
+        if (selectedTab != $(this)[0].id && selectedDropdown != $(this)[0].id) {
             $(this).css("color", 'white');
             $(this).css("font-style", 'normal');
         }
