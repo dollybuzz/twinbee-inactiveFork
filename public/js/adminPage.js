@@ -2501,14 +2501,12 @@ function runReportFunctionality() {
         "    <table id=\"reportTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
-
     //Report Buttons
     $(".reportOptions").append("<div><label for='startdate'>Start Date:</label><input class='form-control' type='date' id='startdate' name='startdate'></div>");
     $(".reportOptions").append("<div><label for='enddate'>End Date:</label><input class='form-control' type='date' id='enddate' name='enddate'></div>");
     $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
     $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
-
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
@@ -2517,10 +2515,8 @@ function runReportFunctionality() {
         '            <th scope="col">Occupation</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
-        '        </thead><tbody><tr class="reportRow">' +
-        '        <tfoot id="reportTotal">' +
+        '        </thead><tbody id="reportContent">' +
         '</tbody>');
-
     //Pre-populate Report drop down options
     $("#clientRepSearch").on("change", function () {
         $.ajax({
@@ -2539,7 +2535,6 @@ function runReportFunctionality() {
                             `<option id="${clientres[i].customer.id}" value="${clientres[i].customer.id}">${clientres[i].customer.first_name} ${clientres[i].customer.last_name} - ${clientres[i].customer.id}</option>`
                         )
                     }
-                    ;
                 }
             },
             error: function (clientres, clientstatus) {
@@ -2547,7 +2542,6 @@ function runReportFunctionality() {
             }
         });
     });
-
     $("#makerRepSearch").on("change", function () {
         $.ajax({
             url: "/api/getAllMakers",
@@ -2578,16 +2572,12 @@ function runReportFunctionality() {
             }
         });
     });
-
     //Event Listeners
     //Run Report
     $("#runReportButton").on('click', function () {
-
         $("#reportTable").css("opacity", "1");
-
         console.log($("#startDate").val());
         console.log($("#endDate").val());
-
         $.ajax({
             url: "/api/getTimeForMakerClientPair",
             method: "post",
@@ -2600,32 +2590,32 @@ function runReportFunctionality() {
             },
             dataType: "json",
             success: function (timeres, timestatus) {
-                $(".reportRow").html("");
-               for(var item of timeres.sheets) {
-                   let hours = item.duration/60;
-                   let minutes = item.duration%60;
-                   let message = "";
-                   if (hours >= 0) {
-                       message += ` ${Math.floor(hours)} hours `;
-                   }
-                   if (hours <= -1) {
-                       hours = Math.abs(hours);
-                       message += `-${Math.floor(hours)} hours `;
-                   }
-                   if (minutes >= 0 || minutes < 0) {
-                       message += ` ${minutes} minutes `;
-                   }
-                    $(".reportRow").append(
+                $("#reportContent").html("");
+                for(var item of timeres.sheets) {
+                    let hours = item.duration/60;
+                    let minutes = item.duration%60;
+                    let message = "";
+                    if (hours >= 0) {
+                        message += ` ${Math.floor(hours)} hours `;
+                    }
+                    if (hours <= -1) {
+                        hours = Math.abs(hours);
+                        message += `-${Math.floor(hours)} hours `;
+                    }
+                    if (minutes >= 0 || minutes < 0) {
+                        message += ` ${minutes} minutes `;
+                    }
+                    $("#reportContent").append('\n' +
+                        '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + item.plan + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
                         `   <td> ${message}</td></tr>`);
-               };
-
-               let totalhours = timeres.total/60;
-               let totalminutes = timeres.total%60;
-               let totalmessage = "";
+                };
+                let totalhours = Number.parseInt(timeres.total)/60;
+                let totalminutes = Number.parseInt(timeres.total)%60;
+                let totalmessage = "";
                 if (totalhours >= 0) {
                     totalmessage += ` ${Math.floor(totalhours)} hours `;
                 }
@@ -2636,17 +2626,15 @@ function runReportFunctionality() {
                 if (totalminutes >= 0 || totalminutes < 0) {
                     totalmessage += ` ${totalminutes} minutes `;
                 }
-                $("#reportTotal").html("");
-                $("#reportTotal").append('<th id="repTotal" colspan="4">Total Time:</th>' +
-                `<td>${totalmessage}</td></tfoot>`);
+                console.log(totalmessage)
+                $("#reportContent").append('<tfoot><th id="repTotal" colspan="4">Total Time:</th>' +
+                    `<td>${totalmessage}</td></tfoot>`);
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
             }
         });
-
     });
-
 }
 
 $(document).ready(function () {
