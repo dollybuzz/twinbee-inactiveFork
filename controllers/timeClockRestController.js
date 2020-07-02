@@ -1,4 +1,5 @@
 const timeClockService = require('../services/timeClockService.js');
+const {notifyAdmin} = require("../services/notificationService");
 module.exports = {
 
     /**
@@ -15,7 +16,7 @@ module.exports = {
         console.log('Attempting to clock in user from REST:');
         console.log(req.body);
         res.send(await timeClockService.clockIn(req.body.auth, req.body.task,
-            req.body.relationshipId).catch(error => {
+            req.body.relationshipId).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
@@ -39,7 +40,7 @@ module.exports = {
     clockOut: async (req, res) => {
         console.log('Attempting to clock out user from REST:');
         console.log(req.body);
-        res.send(await timeClockService.clockOut(req.body.auth, req.body.newTask).catch(error => {
+        res.send(await timeClockService.clockOut(req.body.auth, req.body.newTask).catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));

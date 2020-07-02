@@ -1,5 +1,6 @@
 const makerService = require('../services/MakerService.js');
 const authService = require('../services/authService.js');
+const {notifyAdmin} = require("../services/notificationService");
 
 module.exports ={
 
@@ -29,7 +30,10 @@ module.exports ={
      */
     getOnlineMakers: async (req, res) => {
         console.log("Attempting to get online makers from REST");
-        let onliners = await makerService.getOnlineMakers().catch(err=>{console.log(err)});
+        let onliners = await makerService.getOnlineMakers().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send(onliners);
     },
 
@@ -48,9 +52,18 @@ module.exports ={
     getMyRelationshipBucket: async (req, res) => {
         console.log(`Attempting to get time bucket for relationship ${req.body.relationshipId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let id = await makerService.getMakerIdByEmail(email);
-        res.send(await makerService.getMyRelationshipBucket(id, req.body.relationshipId));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let id = await makerService.getMakerIdByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await makerService.getMyRelationshipBucket(id, req.body.relationshipId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -68,9 +81,18 @@ module.exports ={
     getAllMyRelationships: async (req, res) =>{
       console.log(`Attempting to get all relationships for maker with token...\n${req.body.token}\n... from REST`);
       console.log(req.body);
-      let email = await authService.getEmailFromToken(req.body.token);
-      let id = await  makerService.getMakerIdByEmail(email);
-          res.send(await makerService.getRelationshipsForMaker(id));
+      let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
+      let id = await  makerService.getMakerIdByEmail(email).catch(err => {
+          console.log(err);
+          notifyAdmin(err.toString());
+      });
+          res.send(await makerService.getRelationshipsForMaker(id).catch(err => {
+              console.log(err);
+              notifyAdmin(err.toString());
+          }));
     },
 
     /**
@@ -89,9 +111,18 @@ module.exports ={
         console.log(`Attempting to get "my" relationship for maker` +
             ` with token...\n${req.body.token}\n...with relationship id ${req.body.relationshipId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let id = await makerService.getMakerIdByEmail(email);
-        res.send(await makerService.getMyRelationship(id, req.body.relationshipId));
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let id = await makerService.getMakerIdByEmail(email).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        res.send(await makerService.getMyRelationship(id, req.body.relationshipId).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
     /**
@@ -121,7 +152,10 @@ module.exports ={
      */
     getAllMakers: async (req, res) => {
         console.log("Attempting to get all makers from REST");
-        let makers = await makerService.getAllMakers().catch(err=>{console.log(err)});
+        let makers = await makerService.getAllMakers().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send(makers);
     },
 
@@ -147,7 +181,10 @@ module.exports ={
         console.log("Attempting to get maker by ID from REST: ");
         console.log(req.body);
         let id = req.body.id;
-        let result = await makerService.getMakerById(id).catch(err=>{console.log(err)});
+        let result = await makerService.getMakerById(id).catch(err=>{console.log(err)}).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
 
         res.send(result);
     },
@@ -169,8 +206,14 @@ module.exports ={
     getMakerIdByToken: async (req, res)=>{
         console.log("Attempting to get maker by ID from REST: ");
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let result = await makerService.getMakerIdByEmail(email).catch(err=>{console.log(err)});
+        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
+        let result = await makerService.getMakerIdByEmail(email).catch(err=>{console.log(err)}).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send({id:result.toString()});
     },
 
@@ -193,7 +236,10 @@ module.exports ={
     getClientsForMaker: async (req, res) =>{
         console.log("Getting client list for maker from REST");
         console.log(req.body);
-        res.send(await makerService.getClientListForMakerId(req.body.id));
+        res.send(await makerService.getClientListForMakerId(req.body.id).catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
 
