@@ -1,3 +1,5 @@
+import moment from "moment";
+
 var chargebee = require("chargebee");
 chargebee.configure({
     site: process.env.CHARGEBEE_SITE,
@@ -195,20 +197,28 @@ class ChargebeeService {
 
     /**
      * Creates a new subscription for an existing customer.
-     * Note that auto_collection is ALWAYS ON.
+     * Note that auto_collection is ALWAYS ON. If a start date is omitted,
+     * the request is processed immediately
      *
      * @param planId    - id of the plan to subscribe to
      * @param customerId- id of the customer that is subscribing
      * @param planQuantity- number of hours per month
+     * @param startDate - desired start date in moment-readable format
      */
-    createSubscription(planId, customerId, planQuantity) {
+    createSubscription(planId, customerId, planQuantity, startDate) {
+        let startMoment = moment(startDate);
+        let startTimeStamp = startMoment.unix();
         console.log(`Creating subscription for customer ${customerId} with plan ${planId}...`);
         return new Promise((resolve, reject) => {
-            chargebee.subscription.create_for_customer(customerId, {
+            let subscriptionConfig = {
                 plan_id: planId,
                 plan_quantity: planQuantity,
                 auto_collection: "on"
-            }).request(function (error, result) {
+            };
+            if (startDate){
+                subscriptionConfig.start_date = startTimeStamp;
+            }
+            chargebee.subscription.create_for_customer(customerId, subscriptionConfig).request(function (error, result) {
                 if (error) {
                     console.log(error);
                     notifyAdmin(error.toString());

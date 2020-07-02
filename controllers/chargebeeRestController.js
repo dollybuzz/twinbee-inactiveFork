@@ -156,6 +156,7 @@ module.exports = {
      *     "planId": id of the plan to subscribe to,
      *     "customerId": id of the subscribing customer,
      *     "planQuantity": initial number of hours to subscribe to,
+     *     "startDate": date to start subscription,
      *     "auth": authentication credentials; either master or token
      * }
      *
@@ -164,7 +165,8 @@ module.exports = {
     createSubscription: async function(req, res){
         console.log("Attempting to create a subscription from REST: ");
         console.log(req.body);
-        let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId, req.body.planQuantity)
+        let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId,
+            req.body.planQuantity, req.body.startDate)
             .catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
