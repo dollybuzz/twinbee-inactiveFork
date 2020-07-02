@@ -19,18 +19,18 @@
 const mysql = require("mysql");
 const util = require('util');
 const notificationService = require('../services/notificationService.js');
+const dbOptions = {
+    multipleStatements: true,
+    host: process.env.TWINBEE_DB_HOST,
+    port: process.env.TWINBEE_DB_PORT,
+    user: process.env.TWINBEE_DB_USERNAME,
+    password: process.env.TWINBEE_DB_PASS,
+    database: process.env.TWINBEE_DB_SCHEMA
+}
 
 class DbMaster {
-    constructor(){
-        this.conn = mysql.createConnection({
-            multipleStatements: true,
-            host: process.env.TWINBEE_DB_HOST,
-            port:process.env.TWINBEE_DB_PORT,
-            user: process.env.TWINBEE_DB_USERNAME,
-            password: process.env.TWINBEE_DB_PASS,
-            database: process.env.TWINBEE_DB_SCHEMA
-        });
-
+    constructor() {
+        this.conn = mysql.createConnection(dbOptions);
         this.query = util.promisify(this.conn.query).bind(this.conn);
         this.activateConnection(this, 20);
     }
@@ -41,20 +41,33 @@ class DbMaster {
                 if (err && err.toString().includes("ECONNREFUSED")) {
                     console.log(err);
                     notificationService.notifyAdmin(err.toString());
-                    if (numRetries === 0){
+                    if (numRetries === 0) {
                         console.log("Failed all reconnect attempts.");
                         notificationService.notifyAdmin("Failed all reconnect attempts!");
                         reject();
                     }
                     setTimeout(function () {
                         notificationService.notifyAdmin(`Retrying connection, ${numRetries} left...`);
-                        this.activateConnection(dbMaster, numRetries - 1)
+                        dbMaster.activateConnection(dbMaster, numRetries - 1)
                     }, 5000)
-                }
-                else{
+                } else {
                     resolve();
                 }
             });
+            dbMaster.conn.on('error', function (err) {
+                notifyAdmin(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
+                console.log(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
+                if (err.code.toString() === 'PROTOCOL_CONNECTION_LOST') {
+                    notifyAdmin("Attempting to recover.");
+                    console.log("Attempting to recover.");
+                    dbMaster.conn.createConnection(dbOptions);
+                    dbMaster.activateConnection(dbMaster, numRetries);
+                } else {
+                    notifyAdmin("Unable to recover.");
+                    console.log("Unable to recover.");
+                    throw new Error(err);
+                }
+            })
         })
     }
 }
