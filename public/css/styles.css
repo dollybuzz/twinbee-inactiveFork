@@ -523,13 +523,10 @@ th {
     background-color: #32444e;
 }
 
-#manageBillingDropdown:hover #manageBillingDropdownContent{
+.dropdown:hover .dropdown-content {
     display: block;
 }
 
-#reportingToolsDropdown:hover #reportingToolsDropdownContent{
-    display: block;
-}
 #reportTable {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
