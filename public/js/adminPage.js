@@ -2482,8 +2482,8 @@ function addSheetSuccess(res, status) {
         "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
 
     $("#ManageAvailCreditButton").on('click', function () {
-        selectedTab = $("#manageCredit");
-        navMapper["manageCredit"]();
+        navItemChange("manageCredit");
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     });
 }
 
@@ -2492,8 +2492,8 @@ function clearSheetSuccess(res, status) {
         "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
 
     $("#ManageAvailCreditButton").on('click', function () {
-        selectedTab = $("#manageCredit");
-        navMapper["manageCredit"]();
+        navItemChange("manageCredit");
+        showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     });
 }
 
