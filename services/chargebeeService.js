@@ -1,4 +1,4 @@
-import moment from "moment";
+var moment = require('moment');
 
 var chargebee = require("chargebee");
 chargebee.configure({
