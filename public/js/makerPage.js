@@ -52,7 +52,7 @@ function createBody() {
     $("#buttonsBottom").hide();
 };
 
-//Main Clock Methods
+//Time Clock Methods
 function timeClockFunctionality() {
     //Create page
     $("#userMainContent").html(
@@ -137,6 +137,7 @@ function timeClockFunctionality() {
                         $("#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
+                        $("#makerSelectedClient").hide();
                     }, 3000)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = true;
@@ -232,6 +233,7 @@ function setClockOutFunctionality() {
     $("#availcredit").css("opacity", "0");
 
     setTimeout(function () {
+        $("#makerSelectedClient").hide();
         $("#clientRole").hide();
         $("#clientCredit").hide();
         $("#availcredit").hide();
@@ -285,6 +287,7 @@ function setClockOutFunctionality() {
                             $("#clientCredit").show();
                             $("#clientRole").show();
                             $("#availcredit").show();
+                            $("#makerSelectedClient").show();
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
