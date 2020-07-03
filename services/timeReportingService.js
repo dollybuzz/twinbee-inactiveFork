@@ -82,7 +82,6 @@ class TimeReportingService {
 
 
     async timePeriodToUnix(start, end){
-
         if (!start) {
             start = "2020-01-01 00:00:00";
         }
@@ -91,7 +90,6 @@ class TimeReportingService {
         }
         let preferredStart = moment(start);
         let preferredEnd = moment(end);
-
         return {start: preferredStart, end: preferredEnd};
     }
 
@@ -114,17 +112,10 @@ class TimeReportingService {
         if (!clientId) {
             clientId = "";
         }
-        if (!start) {
-            start = "2020-01-01 00:00:00";
-        }
-        if (!end) {
-            end = moment();
-        }
         let totalTime = 0;
         let obj = {};
         let sheets = [];
-        let preferredStart = moment(start);
-        let preferredEnd = moment(end);
+        let timePeriod = await this.timePeriodToUnix(start, end);
 
         let response = await request({
             method: 'POST',
@@ -154,7 +145,7 @@ class TimeReportingService {
                 let startMoment = moment(sheet.timeIn);
                 let endMoment = moment(sheet.timeOut);
 
-                if (endMoment.isBetween(preferredStart, preferredEnd)) {
+                if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
                     let duration = await this.getMinutesBetweenMoments(startMoment, endMoment).catch(err => {
                         console.log(err);
                         emailService.notifyAdmin(err.toString());
