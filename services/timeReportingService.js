@@ -80,6 +80,9 @@ class TimeReportingService {
     constructor() {
     };
 
+
+
+
     /**
      * Retrieves reporting data for a client/maker combo. If no client or maker is passed,
      * the value is treated as a wildcard (retrieve all). Reporting data is constrained to the given
@@ -137,7 +140,6 @@ class TimeReportingService {
 
                 let startMoment = moment(sheet.timeIn);
                 let endMoment = moment(sheet.timeOut);
-
 
                 if (endMoment.isBetween(preferredStart, preferredEnd)) {
                     let duration = await this.getMinutesBetweenMoments(startMoment, endMoment).catch(err => {

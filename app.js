@@ -350,7 +350,7 @@ app.post("/api/getTimeForMakerClientPair",
 app.post("/api/getAllTransactions",
     authController.authorizeAdmin,
     authController.authorizeMaster,
-    chargebeeRestController.getAllTransactions());
+    chargebeeRestController.getAllTransactions);
 
 
 app.get("/api/getEnvironment",
