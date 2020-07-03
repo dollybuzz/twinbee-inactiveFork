@@ -347,6 +347,10 @@ app.post("/api/getTimeForMakerClientPair",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     timeReportingRestController.getTimeForMakerClientPair);
+app.post("/api/getAllTransactions",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.getAllTransactions());
 
 
 app.get("/api/getEnvironment",
