@@ -2597,7 +2597,7 @@ function runReportFunctionality() {
                     }
                     $("#reportContent").append('\n' +
                         '<tr class="reportRow">' +
-                        '   <td>' + item.id + '</td>' +
+                        '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + item.plan + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
@@ -2624,6 +2624,14 @@ function runReportFunctionality() {
                 $("#userMainContent").html("Run Reports isn't working!");
             }
         });
+    });
+
+    //Row effect
+    $(".reportRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
     });
 }
 
