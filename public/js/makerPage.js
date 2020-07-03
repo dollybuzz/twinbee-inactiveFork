@@ -206,11 +206,11 @@ function setClockInFunctionality() {
                         $("#makerText2").css("opacity", "0");
                         $("#taskBlock").hide();
                         $("#taskEntry").hide();
-                    }, 3000);
+                    }, 1000);
 
                     setTimeout(function () {
                         $("#makerText2").html("");
-                    }, 6000);
+                    }, 2000);
 
                 } else {
                     $("#makerText2").html("<br><h5>Could not clock in!</h5>");
@@ -291,12 +291,12 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
-                            }, 3000);
+                            }, 1000);
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
                                 $("#clockPrompt").html("");
-                            }, 6000);
+                            }, 2000);
                         } else {
                             $("#makerText2").html("<br><h5>Could not clock out!</h5>");
                         }
