@@ -45,34 +45,35 @@ class AuthService {
     }
 
     async accessorIsClient(creds) {
-        let email = await this.getEmailFromToken(creds).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
-        let response = await request({
-            method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
-            form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
-            }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        if (creds !== process.env.TWINBEE_MASTER_AUTH) {
+            let email = await this.getEmailFromToken(creds).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
+            let response = await request({
+                method: 'POST',
+                uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
+                form: {
+                    'auth': process.env.TWINBEE_MASTER_AUTH
+                }
+            }).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
 
-        let body = response.body;
-        let clients = JSON.parse(body);
+            let body = response.body;
+            let clients = JSON.parse(body);
 
-        for (var i = 0; i < clients.length; ++i) {
-            if (clients[i].customer.email === email) {
-                return true
+            for (var i = 0; i < clients.length; ++i) {
+                if (clients[i].customer.email === email) {
+                    return true
+                }
             }
         }
         return false;
     }
 
     async accessorIsAdmin(creds) {
-        if (creds !== process.env.TWINBEE_MASTER_AUTH) {
             console.log("Is the accessor admin?");
             let adminList = await authRepo.getAdmins().catch(err => {
                 console.log(err);
