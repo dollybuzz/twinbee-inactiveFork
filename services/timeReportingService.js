@@ -81,6 +81,19 @@ class TimeReportingService {
     };
 
 
+    async timePeriodToUnix(start, end){
+
+        if (!start) {
+            start = "2020-01-01 00:00:00";
+        }
+        if (!end) {
+            end = moment();
+        }
+        let preferredStart = moment(start);
+        let preferredEnd = moment(end);
+
+        return {start: preferredStart, end: preferredEnd};
+    }
 
 
     /**
