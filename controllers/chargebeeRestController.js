@@ -384,5 +384,26 @@ module.exports = {
             console.log(err);
             notifyAdmin(err.toString());
         }));
+    },
+
+    /**
+     * ENDPOINT: /api/getAllTransactions
+     *
+     * Retrieves all transactions. Looks for data in the body in
+     * the form:
+     * {
+     *     "auth" : valid auth token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getAllTransactions: async function(req, res){
+        console.log(`Attempting to retrieve all transactions from REST`);
+        console.log(req.body);
+        res.send(await chargebeeService.getAllTransactions().catch(err=>{
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     }
 };

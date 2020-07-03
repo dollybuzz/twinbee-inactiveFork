@@ -25,10 +25,10 @@ class ChargebeeService {
     };
 
     /**
-     * Retrieves all plans from the {TEST} environment as chargebee entries.
+     * Retrieves all plans from the environment as chargebee entries.
      * Note that in order to access meaningful data, an intermediate object is
      * accessed.  E.g, to access "pricing_model", given that "returnedValue" is the
-     * result of this funciton, use:
+     * result of this function, use:
      *  returnedValue[0].plan.pricing_model
      * @returns {Promise<[{entry:plan{}}]>}
      */
@@ -56,7 +56,7 @@ class ChargebeeService {
     }
 
     /**
-     * Creates a new plan in the {TEST} environment.
+     * Creates a new plan in the  environment.
      *
      * @param planId      - desired name of the plan
      * @param invoiceName   - desired name of the plan as displayed on an invoice
@@ -517,6 +517,39 @@ class ChargebeeService {
                 }
             });
         }))
+    }
+
+
+    /**
+     * Retrieves all transactions from the environment as chargebee entries.
+     * Note that in order to access meaningful data, an intermediate object is
+     * accessed. E.g, to access "status", given that "returnedValue" is the
+     * result of this function, use: returnedValue[0].transaction.status
+     * @returns {Promise<*>}
+     */
+    async getAllTransactions(){
+        let listObject = await chargebee.transaction.list({
+            limit : 100,
+            "status[is]" : "success",
+            "sort_by[asc]" : "date"
+        }).request().catch(error=> {
+                notifyAdmin(error.toString());
+                console.log(error);
+        });
+        let list = listObject.list;
+        while (listObject.next_offset) {
+            listObject = await chargebee.transaction.list({
+                limit: 100,
+                offset: listObject.next_offset
+            }).request().catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+            for (var item of listObject.list) {
+                list.push(item);
+            }
+        }
+        return list;
     }
 
     /**

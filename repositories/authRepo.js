@@ -13,6 +13,7 @@ class AuthRepository {
             let sql = 'SELECT * FROM admin';
             let sqlParam = [];
             let result;
+            console.log("getting admins");
             result = await query(sql, sqlParam).catch( async e => {
                 if (numRetries === 0){
                     reject();
@@ -26,6 +27,7 @@ class AuthRepository {
                     resolve(await this.getAdmins(numRetries - 1));
                 }
             });
+            console.log("admins received");
             resolve(result);
         });
     }
