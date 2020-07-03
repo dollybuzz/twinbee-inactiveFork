@@ -2567,7 +2567,7 @@ function runReportFunctionality() {
     //Run Report
     $("#runReportButton").on('click', function () {
         $("#reportTable").css("opacity", "1");
-        //$("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
         console.log($("#startDate").val());
         console.log($("#endDate").val());
         $.ajax({
