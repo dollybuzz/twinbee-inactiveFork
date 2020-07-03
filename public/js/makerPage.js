@@ -210,7 +210,7 @@ function setClockInFunctionality() {
 
                     setTimeout(function () {
                         $("#makerText2").html("");
-                    }, 1000);
+                    }, 2000);
 
                 } else {
                     $("#makerText2").html("<br><h5>Could not clock in!</h5>");
@@ -296,7 +296,7 @@ function setClockOutFunctionality() {
                             setTimeout(function () {
                                 $("#makerText2").html("");
                                 $("#clockPrompt").html("");
-                            }, 1000);
+                            }, 2000);
                         } else {
                             $("#makerText2").html("<br><h5>Could not clock out!</h5>");
                         }
