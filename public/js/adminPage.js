@@ -1399,6 +1399,7 @@ function relationshipFunctionality(res) {
         },
         dataType: "json",
         success: function (clientres, clientstatus) {
+            $("#manageRelationships").append("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             $.ajax({
                 url: "/api/getAllMakers",
                 method: "post",
@@ -1507,6 +1508,8 @@ function relationshipFunctionality(res) {
                             }).mouseleave(function () {
                                 $(this).css('background-color', 'white');
                             });
+
+                            $(".spinner-border").remove();
                         },
                         error: function (planres, planstatus) {
                             $("#userMainContent").html("Plan Relationship isn't working!");
