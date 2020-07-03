@@ -2667,6 +2667,7 @@ $(document).ready(function () {
         let parentToChange = $(this).parent().parent().parent().children()[0];
         if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem"){
             selectedDropdown = parentToChange.id;
+            $(`#${parentToChange.id}`).append("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
         }
         if (selectedDropdown){
             $(`#${selectedDropdown}`).css("color", '#dbb459')
