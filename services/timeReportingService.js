@@ -81,7 +81,7 @@ class TimeReportingService {
     };
 
 
-    async timePeriodToUnix(start, end){
+    async timePeriodToMoments(start, end) {
         if (!start) {
             start = "2020-01-01 00:00:00";
         }
@@ -91,6 +91,41 @@ class TimeReportingService {
         let preferredStart = moment(start);
         let preferredEnd = moment(end);
         return {start: preferredStart, end: preferredEnd};
+    }
+
+
+    async getReportForClientTransactions(start, end, clientId) {
+        if (!clientId) {
+            clientId = "";
+        }
+        let timePeriod = await this.timePeriodToMoments(start, end);
+        let obj = {
+            list: [],
+            total: 0
+        };
+
+        let response = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getAllTransactions`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        let entries = JSON.parse(response.body);
+
+        for (var entry of entries) {
+            let transaction = entry.transaction;
+            let date = moment.unix(transaction.date);
+            if (date.isBetween(timePeriod.start, timePeriod.end) && transaction.customer_id.includes(clientId)) {
+                obj.list.push(transaction);
+                obj.total += transaction.amount;
+            }
+        }
+        return obj;
     }
 
 
@@ -115,7 +150,7 @@ class TimeReportingService {
         let totalTime = 0;
         let obj = {};
         let sheets = [];
-        let timePeriod = await this.timePeriodToUnix(start, end);
+        let timePeriod = await this.timePeriodToMoments(start, end);
 
         let response = await request({
             method: 'POST',
