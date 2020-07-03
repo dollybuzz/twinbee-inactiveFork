@@ -16,28 +16,30 @@ class AuthService {
     }
 
     async accessorIsMaker(creds) {
-        console.log("Let's see if you are a Freedom Maker...");
-        let email = await this.getEmailFromToken(creds).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
-        let response = await request({
-            method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
-            form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
-            }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        if (creds !== process.env.TWINBEE_MASTER_AUTH) {
+            console.log("Let's see if you are a Freedom Maker...");
+            let email = await this.getEmailFromToken(creds).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
+            let response = await request({
+                method: 'POST',
+                uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
+                form: {
+                    'auth': process.env.TWINBEE_MASTER_AUTH
+                }
+            }).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
 
-        let body = response.body;
-        let makers = JSON.parse(body);
+            let body = response.body;
+            let makers = JSON.parse(body);
 
-        for (var i = 0; i < makers.length; ++i) {
-            if (makers[i].email === email) {
-                return true
+            for (var i = 0; i < makers.length; ++i) {
+                if (makers[i].email === email) {
+                    return true
+                }
             }
         }
         console.log("Not a Freedom Maker");
@@ -70,6 +72,7 @@ class AuthService {
                 }
             }
         }
+        console.log("Not a client");
         return false;
     }
 
