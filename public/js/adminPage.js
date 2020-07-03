@@ -2625,6 +2625,14 @@ function runReportFunctionality() {
             }
         });
     });
+
+    //Row effect
+    $(".reportRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
 }
 
 $(document).ready(function () {
