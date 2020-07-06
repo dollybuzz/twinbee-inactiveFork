@@ -67,6 +67,7 @@ class DbMaster {
                     console.log("Attempting to recover.");
                     dbMaster.conn = mysql.createConnection(dbOptions);
                     dbMaster.activateConnection(dbMaster, numRetries);
+                    dbMaster.query = util.promisify(dbMaster.conn.query).bind(dbMaster.conn);
                 } else {
                     notifyAdmin("Unable to recover.");
                     console.log("Unable to recover.");
