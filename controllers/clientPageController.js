@@ -25,4 +25,4 @@ module.exports ={
 
         res.render("client", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
-}
+};
