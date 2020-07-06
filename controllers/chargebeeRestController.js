@@ -479,10 +479,16 @@ module.exports = {
     getSubscriptionsByClient: async function (req, res) {
         console.log(`Attempting to get subscriptions for client ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.getSubscriptionsByClient(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+        if (!req.body.id) {
+            let responseObject = {error: "Bad Request", code: 400, details: "id was not valid."};
+            res.status(400).send(responseObject);
+        }
+        else {
+            res.send(await chargebeeService.getSubscriptionsByClient(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -501,10 +507,16 @@ module.exports = {
     pauseSubscription: async function (req, res) {
         console.log(`Attempting to pause subscription ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+        if (!req.body.id) {
+            let responseObject = {error: "Bad Request", code: 400, details: "id was not valid."};
+            res.status(400).send(responseObject);
+        }
+        else {
+            res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -523,10 +535,16 @@ module.exports = {
     resumePausedSubscription: async function (req, res) {
         console.log(`Attempting to resume subscription ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+        if (!req.body.id) {
+            let responseObject = {error: "Bad Request", code: 400, details: "id was not valid."};
+            res.status(400).send(responseObject);
+        }
+        else {
+            res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
