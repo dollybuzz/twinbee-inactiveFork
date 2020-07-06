@@ -351,16 +351,26 @@ function clientFunctionality(res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
+        let company = "";
+        if(item.customer.company == 'undefined')
+        {
+            company = "";
+        }else{
+            company = item.customer.company;
+        }
+
         if (item.customer && !item.customer.deleted) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
                 '   <td scope="row">' + item.customer.id + '</td>' +
                 '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
+                '   <td>' + company + '</td>' +
                 '   <td>' + item.customer.phone + '</td>' +
                 '   <td>' + item.customer.email + '</td></tr>'
             );
@@ -434,6 +444,8 @@ function clientModForm(res, status) {
         `<input class='form-control' type='text' id='modclientfname' name='modclientfname' value='${res.first_name}'>\n<br><br>\n` +
         "<label for='modclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
+        "<label for='modclientlname'>Company:</label>" +
+        `<input class='form-control' type='text' id='modcompany' name='modcompany' value='${res.company}'>\n<br>\n` +
         "<label for='modphone'>Phone:</label>" +
         `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br><br>\n` +
         "<label for='modemail'>Email:</label>" +
@@ -487,6 +499,7 @@ function clientModForm(res, status) {
                 id: $("#modclientid").val(),
                 firstName: $("#modclientfname").val(),
                 lastName: $("#modclientlname").val(),
+                company: $("#modcompany").val(),
                 phone: $("#modphone").val(),
                 email: $("#modemail").val()
             }, modClientSuccessContact);
@@ -506,6 +519,8 @@ function clientAddForm() {
         `<input class='form-control' type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
         "<label for='addclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br><br>\n` +
+        "<label for='modclientlname'>Copmany:</label>" +
+        `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br>\n` +
         "<label for='addphone'>Phone:</label>" +
         `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
@@ -559,6 +574,7 @@ function clientAddForm() {
                 auth: id_token,
                 firstName: $("#addclientfname").val(),
                 lastName: $("#addclientlname").val(),
+                company: $("#addcompany").val(),
                 phone: $("#addphone").val(),
                 email: $("#addemail").val(),
                 street: $("#addaddress").val(),
