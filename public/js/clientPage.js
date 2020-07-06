@@ -714,7 +714,7 @@ $(document).ready(function () {
                 location.reload();
             })
         }
-    }, 1000);
+    }, 2000);
 
     //refresh tokens before timeout
     setInterval(function () {
