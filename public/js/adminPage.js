@@ -2702,7 +2702,8 @@ $(document).ready(function () {
         id_token = GOOGLE_USER.id_token;
 
         //refresh tokens before timeout
-        setInterval(refreshGoogle, GOOGLE_USER.expires_in-30);
+        var timeToRefresh = Math.max(GOOGLE_USER.expires_in-30000, 1000);
+        setInterval(refreshGoogle, timeToRefresh);
 });
 
 

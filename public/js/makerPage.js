@@ -515,6 +515,7 @@ $(document).ready(function () {
     $("#landingLogo").css("width", "20%");
 
 
-    setInterval(refreshGoogle, GOOGLE_USER.expires_in-30);
+    var timeToRefresh = Math.max(GOOGLE_USER.expires_in-30000, 1000);
+    setInterval(refreshGoogle, timeToRefresh);
 
 });//end document ready
