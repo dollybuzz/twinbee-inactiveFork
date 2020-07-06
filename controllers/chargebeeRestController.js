@@ -1,5 +1,6 @@
 const chargebeeService = require('../services/chargebeeService.js');
 const {notifyAdmin} = require("../services/notificationService");
+const moment = require('moment');
 
 module.exports = {
 
@@ -26,7 +27,7 @@ module.exports = {
      *  }
      * @returns [{entry:plan{}},...]
      */
-    getAllPlans: async function(req, res){
+    getAllPlans: async function (req, res) {
         console.log("Attempting to get all plans from REST: ");
         console.log(req.body);
         let plans = await chargebeeService.getAllPlans().catch(err => {
@@ -47,22 +48,23 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    createPlan: async function(req, res){
+    createPlan: async function (req, res) {
         console.log("Attempting to create a plan from REST: ");
         console.log(req.body);
+
         if (!req.body.planId || req.body.planId.includes(" ") || !req.body.invoiceName || !req.body.pricePerHour ||
-        !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || !req.body.planDescription){
+            !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || !req.body.planDescription) {
             let responseObject = {error: "Bad Request", code: 400, details: ""};
-            if (!req.body.planId || req.body.planId.includes(" ") ){
+            if (!req.body.planId || req.body.planId.includes(" ")) {
                 responseObject.details += "planId was not valid.  ";
             }
-            if (!req.body.invoiceName){
+            if (!req.body.invoiceName) {
                 responseObject.details += "invoiceName was not valid.  ";
             }
-            if (!req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".")){
+            if (!req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".")) {
                 responseObject.details += "pricePerHour was not valid.  ";
             }
-            if (!req.body.planDescription){
+            if (!req.body.planDescription) {
                 responseObject.details += "planDescription was not valid.";
             }
             res.status(400).send(responseObject);
@@ -87,7 +89,7 @@ module.exports = {
      *
      * @returns plan{}
      */
-    retrievePlan: async function(req, res){
+    retrievePlan: async function (req, res) {
         console.log("Attempting to retrieve a plan from REST: ");
         console.log(req.body);
         let planActual = await chargebeeService.retrievePlan(req.body.planId)
@@ -110,22 +112,23 @@ module.exports = {
      *
      * }
      */
-    updatePlan: function(req, res){
+    updatePlan: function (req, res) {
         console.log("Attempting to update a plan from REST: ");
         console.log(req.body);
+
         if (!req.body.planId || req.body.planId.includes(" ") || !req.body.planInvoiceName || !req.body.planPrice ||
-            !Number.parseInt(req.body.planPrice) || req.body.planPrice.includes(".")){
+            !Number.parseInt(req.body.planPrice) || req.body.planPrice.includes(".")) {
             let responseObject = {error: "Bad Request", code: 400, details: ""};
-            if (!req.body.planId || req.body.planId.includes(" ") ){
+            if (!req.body.planId || req.body.planId.includes(" ")) {
                 responseObject.details += "planId was not valid.  ";
             }
-            if (!req.body.planInvoiceName){
+            if (!req.body.planInvoiceName) {
                 responseObject.details += "planInvoiceName was not valid.  ";
             }
-            if (!req.body.planPrice || !Number.parseInt(req.body.planPrice) || req.body.planPrice.includes(".")){
+            if (!req.body.planPrice || !Number.parseInt(req.body.planPrice) || req.body.planPrice.includes(".")) {
                 responseObject.details += "planPrice was not valid.  ";
             }
-            if (!req.body.planDescription){
+            if (!req.body.planDescription) {
                 responseObject.details += "planDescription was not valid.";
             }
             res.status(400).send(responseObject);
@@ -133,7 +136,7 @@ module.exports = {
         else {
             chargebeeService.updatePlan(req.body.planId, req.body.planId,
                 req.body.planInvoiceName, req.body.planPrice);
-            res.send({});
+            res.send({status: "update request processed"});
         }
     },
 
@@ -145,11 +148,16 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    deletePlan: function(req, res){
+    deletePlan: function (req, res) {
         console.log("Attempting to delete a plan from REST: ");
         console.log(req.body);
-        chargebeeService.deletePlan(req.body.planId);
-        res.send({});
+        if (!req.body.planId || req.body.planId.includes(" ")) {
+            let responseObject = {error: "Bad Request", code: 400, details: "planId was not valid."};
+            res.status(400).send(responseObject);
+        } else {
+            chargebeeService.deletePlan(req.body.planId);
+            res.send({status: "delete request processed"});
+        }
     },
 
     /**
@@ -175,10 +183,10 @@ module.exports = {
      * }
      * @returns [{"customer":{},"subscription":{},"card":{}},...]
      */
-    getAllSubscriptions: async function(req, res){
+    getAllSubscriptions: async function (req, res) {
         console.log("Attempting to get all subscriptions from REST: ");
         console.log(req.body);
-        let subscriptions = await chargebeeService.getAllSubscriptions().catch(e=>console.log(e))
+        let subscriptions = await chargebeeService.getAllSubscriptions().catch(e => console.log(e))
             .catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
@@ -200,16 +208,38 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    createSubscription: async function(req, res){
+    createSubscription: async function (req, res) {
         console.log("Attempting to create a subscription from REST: ");
         console.log(req.body);
-        let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId,
-            req.body.planQuantity, req.body.startDate)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            });
-        res.send(sub);
+
+        if (!req.body.planId || req.body.planId.includes(" ")
+            || !req.body.customerId
+            || !req.body.planQuantity || !Number.parseInt(req.body.planQuantity)
+            || !req.body.startDate || !moment(req.body.startDate).isValid()) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.planId || req.body.planId.includes(" ")) {
+                responseObject.details += "planId was not valid.  ";
+            }
+            if (!req.body.customerId) {
+                responseObject.details += "customerId was not valid.  ";
+            }
+            if (!req.body.planQuantity || !Number.parseInt(req.body.planQuantity)) {
+                responseObject.details += "planQuantity was not valid.  ";
+            }
+            if (!req.body.startDate || !moment(req.body.startDate).isValid()) {
+                responseObject.details += "startDate was not valid.";
+            }
+            res.status(400).send(responseObject);
+        }
+        else {
+            let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId,
+                req.body.planQuantity, req.body.startDate)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(sub);
+        }
     },
 
     /**
@@ -223,7 +253,7 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    retrieveSubscription: async function(req, res){
+    retrieveSubscription: async function (req, res) {
         console.log("Attempting to retrieve one subscription from REST: ");
         console.log(req.body);
         let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
@@ -245,7 +275,7 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    retrieveSubscriptionChanges: async function(req, res){
+    retrieveSubscriptionChanges: async function (req, res) {
         console.log("Attempting to retrieve one subscription's scheduled changes from REST: ");
         console.log(req.body);
         let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
@@ -268,7 +298,7 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    undoSubscriptionChanges: async function(req, res){
+    undoSubscriptionChanges: async function (req, res) {
         console.log(`Attempting to revert scheduled changes for a subscription...`);
         console.log(req.body);
         let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
@@ -295,7 +325,7 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    updateSubscription: async function(req, res){
+    updateSubscription: async function (req, res) {
         console.log("Attempting to update subscription from REST: ");
         console.log(req.body);
         let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
@@ -316,7 +346,7 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    cancelSubscription: function(req, res){
+    cancelSubscription: function (req, res) {
         console.log("Attempting to cancel subscription from REST: ");
         console.log(req.body);
         chargebeeService.cancelSubscription(req.body.subscriptionId);
@@ -393,7 +423,7 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    pauseSubscription: async function(req, res){
+    pauseSubscription: async function (req, res) {
         console.log(`Attempting to pause subscription ${req.body.id} from REST`);
         console.log(req.body);
         res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => {
@@ -415,7 +445,7 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    resumePausedSubscription: async function(req, res){
+    resumePausedSubscription: async function (req, res) {
         console.log(`Attempting to resume subscription ${req.body.id} from REST`);
         console.log(req.body);
         res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => {
@@ -436,10 +466,10 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getAllTransactions: async function(req, res){
+    getAllTransactions: async function (req, res) {
         console.log(`Attempting to retrieve all transactions from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.getAllTransactions().catch(err=>{
+        res.send(await chargebeeService.getAllTransactions().catch(err => {
             console.log(err);
             notifyAdmin(err.toString());
         }));
