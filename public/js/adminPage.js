@@ -2637,6 +2637,14 @@ function runReportFunctionality() {
     });
 }
 
+function refreshGoogle() {
+    gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse()
+        .then(function () {
+            GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+            id_token = GOOGLE_USER.getAuthResponse().id_token;
+        });
+}
+
 $(document).ready(function () {
 
     //Adding logout Button
@@ -2680,13 +2688,9 @@ $(document).ready(function () {
         id_token = GOOGLE_USER.id_token;
 
         //refresh tokens before timeout
-        setInterval(function () {
-            GOOGLE_USER.reloadAuthResponse()
-                .then(function () {
-                    id_token = GOOGLE_USER.getAuthResponse().id_token;
-                });
-        }, 600000)
-    });
-
-
+        setInterval(refreshGoogle, GOOGLE_USER.expires_in-30);
 });
+
+
+})
+;

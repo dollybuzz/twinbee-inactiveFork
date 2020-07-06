@@ -173,7 +173,7 @@ class ClientService {
         customer.email = newEmail;
         customer.phone = newPhone;
         customer.company = company;
-        updateClient(clientId, customer)
+        updateClient(clientId, customer);
         clientRepo.updateClient(clientId, newFirstName, newLastName, newEmail, newPhone, company);
     }
 
