@@ -1453,11 +1453,10 @@ function relationshipFunctionality(res) {
                                 '        <thead class="thead">\n' +
                                 '            <th scope="col">Relationship ID</th>\n' +
                                 '            <th scope="col">Client </th>\n' +
-                                '            <th scope="col">Client ID</th>\n' +
+                                '            <th scope="col">Company</th>\n' +
                                 '            <th scope="col">Freedom Maker</th>\n' +
-                                '            <th scope="col">Freedom Maker ID</th>\n' +
-                                '            <th scope="col">Plan</th>\n' +
                                 '            <th scope="col">Freedom Maker Role</th>\n' +
+                                '            <th scope="col">Plan</th>\n' +
                                 '        </thead><tbody>');
                             //Populate table
                             res.forEach(item => {
@@ -1465,11 +1464,10 @@ function relationshipFunctionality(res) {
                                     '<tr class="relationshipRow">' +
                                     '   <td>' + item.id + '</td>' +
                                     '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
-                                    '   <td>' + clientMap[item.clientId].id + '</td>' +
+                                    '   <td>' + clientMap[item.clientId].company + '</td>' +
                                     '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
-                                    '   <td>' + makerMap[item.makerId].id + '</td>' +
-                                    '   <td>' + item.planId + '</td>' +
-                                    '   <td>' + item.occupation + '</td>'
+                                    '   <td>' + item.occupation + '</td>' +
+                                    '   <td>' + item.planId + '</td>'
                                 );
                             });
                             $("#relationshipTable").append('\n</tbody>');
@@ -1651,10 +1649,10 @@ function relationshipAddForm() {
                         "<select class='form-control' id='addClientRel'>\n</select>\n<br><br>" +
                         "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
                         "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
-                        "<label for='addPlanRel'> Select a Plan:</label>" +
-                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
                         "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
                         "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
+                        "<label for='addPlanRel'> Select a Plan:</label>" +
+                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
