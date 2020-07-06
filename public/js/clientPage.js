@@ -28,13 +28,12 @@ let navMapper = {
 };//end navMapper
 
 //Versatile Helper Functions
-function createBody (button) {
+function createBody(button) {
     //top row
     $("#topRow").append('\n<div id="optionsClient"></div>');
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
-    if(button != null)
-    {
+    if (button != null) {
         $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
     }
     $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
@@ -42,7 +41,8 @@ function createBody (button) {
 
     //dynamically append submit button in each form
 }
-function showBlock () {
+
+function showBlock() {
     //show block after table stops moving
     setTimeout(function () {
         $("#optionsClient").show();
@@ -55,14 +55,15 @@ function showBlock () {
         $("#ExpandButton").css("opacity", "1")
     }, 500);
 }
-function minimizeTable () {
+
+function minimizeTable() {
     $("#floor").css("transition", "width 0.5s ease-in-out");
     $("#floor").css("width", "50%");
     $("#floor").css("margin-left", "0");
     $("#floor").css("margin-right", "auto");
 }
 
-function expandTable () {
+function expandTable() {
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
@@ -78,7 +79,8 @@ function expandTable () {
     }, 500);
 
 }
-function showFunction (functionality, endpoint) {
+
+function showFunction(functionality, endpoint) {
     $.ajax({
         url: endpoint,
         method: "post",
@@ -96,6 +98,7 @@ function showFunction (functionality, endpoint) {
         }
     });
 }
+
 //Main Methods
 //Google
 onSignIn = function (googleUser) {
@@ -107,7 +110,7 @@ onSignIn = function (googleUser) {
 
 };
 
-function openHostedPage(getPageEndpoint){
+function openHostedPage(getPageEndpoint) {
 
     $.ajax({
         url: getPageEndpoint,
@@ -129,13 +132,13 @@ function openHostedPage(getPageEndpoint){
 }
 
 //Buy Hours Methods
-function popBuyForm (form) { //not a versatile method
+function popBuyForm(form) { //not a versatile method
     minimizeTable();
     showBlock();
     form();
 }
 
-function timeBucketFunctionality (res) {
+function timeBucketFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -151,15 +154,14 @@ function timeBucketFunctionality (res) {
         '            <th scope="col" id="subOptions">Option</th>\n' +
         '        </thead><tbody>');
     //Populate table
-    for(var plan in res.buckets) {
+    for (var plan in res.buckets) {
         let hours = (Number.parseInt(res.buckets[plan]) / 60);
         let minutes = (Number.parseInt(res.buckets[plan])) % 60;
         let message = "";
         if (hours >= 0) {
             message += ` ${Math.floor(hours)} hours `;
         }
-        if(hours <= -1)
-        {
+        if (hours <= -1) {
             hours = Math.abs(hours);
             message += `-${Math.floor(hours)} hours `;
         }
@@ -179,7 +181,7 @@ function timeBucketFunctionality (res) {
     $("#userMainContent").prepend("<div class='altTopButtons'></div>");
     $(".altTopButtons").append("<div id='empty'></div>");
     $(".altTopButtons").append("<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"updatePaymentButton\">Update Payment Method</button>" +
-   "<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
+        "<button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"revInvoicesButton\">Review Invoices</button>");
     $(".altTopButtons").append("<div id='empty'></div>");
 
 
@@ -215,134 +217,132 @@ function timeBucketFunctionality (res) {
 
 }
 
-function buyForm () {
+function buyForm() {
     let rowData = selectedRow.children()[0].innerHTML;
-            $.ajax({
-                url: "/api/getMyTimeBucket",
-                method: "post",
-                data: {
-                    auth: id_token,
-                   token: id_token,
-                    bucket: rowData
-                },
-                dataType: "json",
-                success: function (planres, planstatus) {
-                    $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
-                        "<form id='add'>" +
-                        "<label for='buyPlan'> Plan: </label>" +
-                        `<input class='form-control' id='buyPlan' value='${selectedRow.children()[0].innerHTML}' disabled></input>\n<br>\n` +
-                        "<label for='buyHours'> Enter Number of Hours: </label>" +
-                        "<input class='form-control' type='number' id='buyHours' name='buyHours'>\n<br><br>\n" +
-                        "<label for='buyHours'> Enter Number of Minutes: </label>" +
-                        "<input class='form-control' type='number' id='buyMin' name='buyMin'></form>\n<br>\n");
-                    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-                    $("#SubmitButton").css("opacity", "1");
+    $.ajax({
+        url: "/api/getMyTimeBucket",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+            bucket: rowData
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+            $("#optionsClient").html("<h5>Add data into the following fields</h5><br>" +
+                "<form id='add'>" +
+                "<label for='buyPlan'> Plan: </label>" +
+                `<input class='form-control' id='buyPlan' value='${selectedRow.children()[0].innerHTML}' disabled></input>\n<br>\n` +
+                "<label for='buyHours'> Enter Number of Hours: </label>" +
+                "<input class='form-control' type='number' id='buyHours' name='buyHours'>\n<br><br>\n" +
+                "<label for='buyHours'> Enter Number of Minutes: </label>" +
+                "<input class='form-control' type='number' id='buyMin' name='buyMin'></form>\n<br>\n");
+            $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+            $("#SubmitButton").css("opacity", "1");
 
-                    for (var item in planres.buckets) {
-                        $("#buyPlan").append(
-                            `<option id="${item}" value="${item}">${item}</option>`
-                        );
+            for (var item in planres.buckets) {
+                $("#buyPlan").append(
+                    `<option id="${item}" value="${item}">${item}</option>`
+                );
+            }
+
+            $("#optionsClient").append("<div id='verifyHourEntry'></div>");
+            $("#SubmitButton").off("click");
+            $("#SubmitButton").on("click", function (e) {
+                let valid = true;
+                let message = "";
+                if ($("#buyHours").val() == "" && $("#buyMin").val() == "") {
+                    valid = false;
+                    message += "Please enter an amount to purchase!<br>"
+                }
+                if ($("#buyHours").val().includes("-")) {
+                    valid = false;
+                    message += "Hours must be positive!<br>"
+                }
+                if ($("#buyHours").val().includes(".")) {
+                    valid = false;
+                    message += "No decimals in hours please!<br>";
+                }
+
+                if ($("#buyMin").val().includes("-")) {
+                    valid = false;
+                    message += "Minutes must be positive!<br>";
+                }
+                if ($("#buyMin").val().includes(".")) {
+                    valid = false;
+                    message += "No decimals in minutes please!<br>"
+                }
+
+                if (!valid) {
+                    $("#verifyHourEntry").html(`<span style='color:red'>${message}</span>`);
+                } else {
+
+                    if ($("#buyHours").val() == "") {
+                        $("#buyHours").val(0);
+                    }
+                    if ($("#buyMin").val() == "") {
+                        $("#buyMin").val(0);
+                    }
+                    let numHours = Number.parseInt($("#buyHours").val());
+                    let numMin = Number.parseInt($("#buyMin").val());
+                    let timeInMinutes = numHours * 60 + numMin;
+                    let planSelect = $("#buyPlan").val();
+
+                    $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) and ${$("#buyMin").val()} minute(s) for your plan ${$("#buyPlan").val()}?</h5>`);
+                    $("#optionsClient").append("<div id='selectionYorN'></div>");
+                    $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
+                    $("#selectionYorN").append("<button id='YesBuy' type='button' class='btn btn-default'>Yes</button>");
+                    $("#SubmitButton").css("opacity", "0");
+                    $("#SubmitButton").hide();
+                    $("#optionsClient").css("opacity", "1");
+                    $("#YesBuy").css("opacity", "1");
+                    $("#NoBuy").css("opacity", "1");
+
+                    $("#NoBuy").click(function () {
+                        $("#SubmitButton").show();
+                        expandTable();
+                    });
+                    let message = "";
+                    if (numHours > 0) {
+                        message += `${numHours} hour(s) `;
+                    }
+                    if (numMin > 0) {
+                        message += `${numMin} minute(s) `;
                     }
 
-                    $("#optionsClient").append("<div id='verifyHourEntry'></div>");
-                    $("#SubmitButton").off("click");
-                    $("#SubmitButton").on("click", function (e) {
-                        let valid = true;
-                        let message = "";
-                        if ($("#buyHours").val() == "" && $("#buyMin").val() == ""){
-                            valid = false;
-                            message += "Please enter an amount to purchase!<br>"
-                        }
-                        if ($("#buyHours").val().includes("-")){
-                            valid = false;
-                            message += "Hours must be positive!<br>"
-                        }
-                        if ($("#buyHours").val().includes(".")){
-                            valid = false;
-                            message += "No decimals in hours please!<br>";
-                        }
-
-                        if ($("#buyMin").val().includes("-")){
-                            valid = false;
-                            message += "Minutes must be positive!<br>";
-                        }
-                        if ($("#buyMin").val().includes(".")){
-                            valid = false;
-                            message += "No decimals in minutes please!<br>"
-                        }
-
-                        if (!valid) {
-                            $("#verifyHourEntry").html(`<span style='color:red'>${message}</span>`);
-                        } else {
-
-                            if($("#buyHours").val() == "")
-                            {
-                                $("#buyHours").val(0);
+                    $("#YesBuy").click(function () {
+                        $.ajax({
+                            url: "/api/chargeMeNow",
+                            method: "post",
+                            data: {
+                                auth: id_token,
+                                token: id_token,
+                                planId: planSelect,
+                                numHours: timeInMinutes / 60
+                            },
+                            dataType: "json",
+                            success: function (res, status) {
+                                $("#optionsClient").html("<br><h5>Successfully purchased " + message + " for Plan " + planSelect + "!</h5>" +
+                                    "<br><h6>Note: Due to processing, delays may occur. Please contact Freedom Makers<br>if your purchase does not reflect " +
+                                    "in your account after 5 minutes.</h6>");
+                            },
+                            error: function (res, status) {
+                                $("#userMainContent").html("Buy Credit isn't working!");
                             }
-                            if($("#buyMin").val() == "")
-                            {
-                                $("#buyMin").val(0);
-                            }
-                            let numHours = Number.parseInt($("#buyHours").val());
-                            let numMin = Number.parseInt($("#buyMin").val());
-                            let timeInMinutes = numHours * 60 + numMin;
-                            let planSelect = $("#buyPlan").val();
-
-                            $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) and ${$("#buyMin").val()} minute(s) for your plan ${$("#buyPlan").val()}?</h5>`);
-                            $("#optionsClient").append("<div id='selectionYorN'></div>");
-                            $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
-                            $("#selectionYorN").append("<button id='YesBuy' type='button' class='btn btn-default'>Yes</button>");
-                            $("#SubmitButton").css("opacity", "0");
-                            $("#SubmitButton").hide();
-                            $("#optionsClient").css("opacity", "1");
-                            $("#YesBuy").css("opacity", "1");
-                            $("#NoBuy").css("opacity", "1");
-
-                            $("#NoBuy").click(function () {
-                                $("#SubmitButton").show();
-                                expandTable();
-                            });
-                            let message = "";
-                            if (numHours > 0){
-                                message += `${numHours} hour(s) `;
-                            }
-                            if (numMin > 0){
-                                message += `${numMin} minute(s) `;
-                            }
-
-                            $("#YesBuy").click(function () {
-                                $.ajax({
-                                    url: "/api/chargeMeNow",
-                                    method: "post",
-                                    data: {
-                                        auth: id_token,
-                                        token: id_token,
-                                        planId: planSelect,
-                                        numHours: timeInMinutes/60
-                                    },
-                                    dataType: "json",
-                                    success: function (res, status) {
-                                        $("#optionsClient").html("<br><h5>Successfully purchased " + message + " for Plan " + planSelect + "!</h5>" +
-                                            "<br><h6>Note: Due to processing, delays may occur. Please contact Freedom Makers<br>if your purchase does not reflect " +
-                                            "in your account after 5 minutes.</h6>");
-                                    },
-                                    error: function (res, status) {
-                                        $("#userMainContent").html("Buy Credit isn't working!");
-                                    }
-                                });
-                            });
-                        }
+                        });
                     });
-
-                },
-                error: function (planres, planstatus) {
-                    $("#userMainContent").html("Plan isn't working!");
                 }
             });
+
+        },
+        error: function (planres, planstatus) {
+            $("#userMainContent").html("Plan isn't working!");
+        }
+    });
 }
 
 //Subscription Methods
-function prePopModForm (endpoint, modForm) { //not a versatile method
+function prePopModForm(endpoint, modForm) { //not a versatile method
     minimizeTable();
     showBlock();
     let subscriptionId = selectedRow.children()[0].innerHTML;
@@ -362,7 +362,7 @@ function prePopModForm (endpoint, modForm) { //not a versatile method
     });//end ajax
 }
 
-function subscriptionFunctionality (res) {
+function subscriptionFunctionality(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -404,31 +404,31 @@ function subscriptionFunctionality (res) {
     });
     $("#subscriptionTable").append('\n</tbody>');
 
-        //Body Block content
-        createBody(null);
+    //Body Block content
+    createBody(null);
 
-        //Event Listeners
-        //Change Subscription
-        $(".subscriptionRow").click(function () {
-            selectedRow = $(this);
-            prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
-        });
+    //Event Listeners
+    //Change Subscription
+    $(".subscriptionRow").click(function () {
+        selectedRow = $(this);
+        prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
+    });
 
-        //Expand Table Button
-        $("#ExpandButton").click(function () {
-            expandTable();
-        });
+    //Expand Table Button
+    $("#ExpandButton").click(function () {
+        expandTable();
+    });
 
-        //Row effect
-        $(".subscriptionRow").mouseenter(function () {
-            $(this).css('transition', 'background-color 0.5s ease');
-            $(this).css('background-color', '#e8ecef');
-        }).mouseleave(function () {
-            $(this).css('background-color', 'white');
-        });
+    //Row effect
+    $(".subscriptionRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
 }
 
-function subscriptionModForm (res, status) {
+function subscriptionModForm(res, status) {
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
         "<label for='empty'></label>" +
@@ -492,8 +492,7 @@ function subscriptionModForm (res, status) {
     });
 
     //Has pending changes
-    if(selectedRow.children()[3].innerHTML == "Yes")
-    {
+    if (selectedRow.children()[3].innerHTML == "Yes") {
         $.ajax({
             url: "/api/getMySubscriptionChanges",
             method: "post",
@@ -514,7 +513,7 @@ function subscriptionModForm (res, status) {
                     "If you wish to terminate your subscription, please contact Freedom Makers.</p>" +
                     "<div id='cancelChange'></div>");
 
-                $("#CancelChangeButton").on("click", function() {
+                $("#CancelChangeButton").on("click", function () {
                     $.ajax({
                         url: "/api/undoMySubscriptionChanges",
                         method: "post",
@@ -545,7 +544,7 @@ function subscriptionModForm (res, status) {
 }
 
 //Maker Methods
-function makerFunctionality (res) {
+function makerFunctionality(res) {
 
     //Create table
     $("#userMainContent").html(
@@ -562,16 +561,16 @@ function makerFunctionality (res) {
         '            <th scope="col">Email</th>\n' +
         '            <th scope="col">Role</th>\n' +
         '        </thead><tbody>');
-            //Populate table
-            for(var item of res){
-                $("#makerTable").append('\n' +
-                    '<tr class="makerRow">' +
-                    '   <td>' + item.maker.id + '</td>' +
-                    '   <td>' + item.maker.firstName + " " + item.maker.lastName + '</td>' +
-                    '   <td>' + item.maker.email + '</td>' +
-                    '   <td>' + item.occupation + '</td></tr>'
-                );
-            }
+    //Populate table
+    for (var item of res) {
+        $("#makerTable").append('\n' +
+            '<tr class="makerRow">' +
+            '   <td>' + item.maker.id + '</td>' +
+            '   <td>' + item.maker.firstName + " " + item.maker.lastName + '</td>' +
+            '   <td>' + item.maker.email + '</td>' +
+            '   <td>' + item.occupation + '</td></tr>'
+        );
+    }
     $("#makerTable").append('\n</tbody>');
     //Body Block content
     createBody(null);
@@ -589,7 +588,7 @@ function makerFunctionality (res) {
 }
 
 //TimeSheet Methods
-function timeSheetFunctionality () {
+function timeSheetFunctionality() {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -613,7 +612,7 @@ function timeSheetFunctionality () {
         method: "post",
         url: '/api/getMyTimeSheetsClient',
         data: {
-            auth:  id_token,
+            auth: id_token,
             token: id_token
         },
         success: function (tokenres, tokenstatus) {
@@ -621,10 +620,10 @@ function timeSheetFunctionality () {
                 $("#sheetsTable").append('\n' +
                     '<tr class="sheetsRow">' +
                     '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.makerId + '</td>'+
-                    '   <td>' + item.makerName + '</td>'+
-                    '   <td>' + item.hourlyRate + '</td>'+
-                    '   <td>' + item.timeIn + '</td>'+
+                    '   <td>' + item.makerId + '</td>' +
+                    '   <td>' + item.makerName + '</td>' +
+                    '   <td>' + item.hourlyRate + '</td>' +
+                    '   <td>' + item.timeIn + '</td>' +
                     '   <td>' + item.timeOut + '</td>' +
                     '   <td>' + item.task + '</td>'
                 );
@@ -661,7 +660,7 @@ $(document).ready(function () {
         url: "/api/getEnvironment",
         method: "get",
         dataType: "json",
-        success:function (res, status) {
+        success: function (res, status) {
             TEST_ENVIRONMENT = res;
             if (TEST_ENVIRONMENT) {
                 onSignIn();
@@ -695,9 +694,8 @@ $(document).ready(function () {
         $(this).css("font-style", 'italic');
     });
 
-    $(".navItem").on("mouseleave", function() {
-        if (selectedTab!= $(this)[0].id)
-        {
+    $(".navItem").on("mouseleave", function () {
+        if (selectedTab != $(this)[0].id) {
             $(this).css("color", 'white');
             $(this).css("font-style", 'normal');
         }
@@ -705,20 +703,17 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
-    setTimeout(function () {
-        if (!GOOGLE_USER || !id_token){
-            gapi.auth2.init().then(function(){
-                GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-                id_token = GOOGLE_USER.id_token;
-            })
-        }
-    }, 1000);
+    gapi.auth2.init().then(function () {
+        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+        id_token = GOOGLE_USER.id_token;
 
-    //refresh tokens before timeout
-    setInterval(function () {
-        GOOGLE_USER.reloadAuthResponse()
-            .then(function () {
-                id_token = GOOGLE_USER.getAuthResponse().id_token;
-            });
-    }, 600000)
+        //refresh tokens before timeout
+        setInterval(function () {
+            GOOGLE_USER.reloadAuthResponse()
+                .then(function () {
+                    id_token = GOOGLE_USER.getAuthResponse().id_token;
+                });
+        }, 600000)
+    })
+
 });//end document ready
