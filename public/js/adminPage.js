@@ -1,6 +1,5 @@
 //global variable
 let selectedRow = null;
-let id_token = null;
 let selectedTab = null;
 let selectedDropdown = null;
 let TEST_ENVIRONMENT = false;

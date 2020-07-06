@@ -1,5 +1,4 @@
 let selectedTab = null;
-let id_token = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;

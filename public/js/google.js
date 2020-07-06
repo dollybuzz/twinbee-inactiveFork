@@ -1,5 +1,5 @@
 var GOOGLE_USER = null;
-
+var id_token = null;
 
 
 
@@ -21,7 +21,7 @@ function signOut() {
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     GOOGLE_USER = googleUser;
-    var id_token = GOOGLE_USER.getAuthResponse().id_token;
+    id_token = GOOGLE_USER.getAuthResponse().id_token;
     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
     console.log('Name: ' + profile.getName());
     console.log('Image URL: ' + profile.getImageUrl());
