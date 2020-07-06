@@ -519,7 +519,7 @@ function clientAddForm() {
         `<input class='form-control' type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
         "<label for='addclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br><br>\n` +
-        "<label for='modclientlname'>Copmany:</label>" +
+        "<label for='modclientlname'>Company:</label>" +
         `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br>\n` +
         "<label for='addphone'>Phone:</label>" +
         `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
