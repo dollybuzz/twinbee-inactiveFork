@@ -394,8 +394,14 @@ module.exports = {
     cancelSubscription: function (req, res) {
         console.log("Attempting to cancel subscription from REST: ");
         console.log(req.body);
-        chargebeeService.cancelSubscription(req.body.subscriptionId);
-        res.send({});
+        if (!req.body.subscriptionId) {
+            let responseObject = {error: "Bad Request", code: 400, details: "subscriptionId was not valid."};
+            res.status(400).send(responseObject);
+        }
+        else {
+            chargebeeService.cancelSubscription(req.body.subscriptionId);
+            res.send({status: `subscription cancellation request sent for subscription: ${req.body.subscriptionId}`});
+        }
     },
 
     /**
@@ -417,8 +423,32 @@ module.exports = {
     chargeCustomerNow: function (req, res) {
         console.log("Attempting to charge customer from REST: ");
         console.log(req.body);
-        chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId);
-        res.send({});
+
+        if (!req.body.planId || req.body.planId.includes(" ")
+            || !req.body.numHours || !Number.parseInt(req.body.numHours)
+            || !req.body.customerId) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.planId || req.body.planId.includes(" ")) {
+                responseObject.details += "planId was not valid.  ";
+            }
+            if (!req.body.subscriptionId){
+                responseObject.details += "subscriptionId was not valid.  ";
+            }
+            if (!req.body.numHours || !Number.parseInt(req.body.numHours)) {
+                responseObject.details += "numHours was not valid.  ";
+            }
+            if (!req.body.customerId) {
+                responseObject.details += "customerId was not valid.  ";
+            }
+            res.status(400).send(responseObject);
+        }
+        else {
+            chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({});
+        }
     },
 
     /**
