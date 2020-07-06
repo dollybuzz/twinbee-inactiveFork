@@ -1650,9 +1650,9 @@ function relationshipAddForm() {
                         "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
                         "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
                         "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
-                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
+                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>\n<br><br>\n" +
                         "<label for='addPlanRel'> Select a Plan:</label>" +
-                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
+                        "<select class='form-control' id='addPlanRel'>\n</select>" +
                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
