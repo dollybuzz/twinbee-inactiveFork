@@ -331,8 +331,7 @@ function availableCredits() {
             if (hours >= 0) {
                 message += ` ${Math.floor(hours)} hours `;
             }
-            if(hours <= -1)
-            {
+            if (hours <= -1) {
                 hours = Math.abs(hours);
                 message += `-${Math.floor(hours)} hours `;
             }
@@ -507,22 +506,18 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
-    setTimeout(function () {
-        if (!GOOGLE_USER || !id_token){
-            gapi.auth2.init().then(function(){
-                GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-                id_token = GOOGLE_USER.id_token;
-                location.reload();
-            })
-        }
-    }, 1000);
+    gapi.auth2.init().then(function () {
+        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+        id_token = GOOGLE_USER.id_token;
+        location.reload();
 
-    //refresh tokens before timeout
-    setInterval(function () {
-        GOOGLE_USER.reloadAuthResponse()
-            .then(function () {
-                id_token = GOOGLE_USER.getAuthResponse().id_token;
-            });
-    }, 600000)
+        //refresh tokens before timeout
+        setInterval(function () {
+            GOOGLE_USER.reloadAuthResponse()
+                .then(function () {
+                    id_token = GOOGLE_USER.getAuthResponse().id_token;
+                });
+        }, 600000)
+    })
 
 });//end document ready
