@@ -315,12 +315,19 @@ module.exports = {
     undoSubscriptionChanges: async function (req, res) {
         console.log(`Attempting to revert scheduled changes for a subscription...`);
         console.log(req.body);
-        let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            });
-        res.send(subscription);
+
+        if (!req.body.subscriptionId) {
+            let responseObject = {error: "Bad Request", code: 400, details: "subscriptionId was not valid."};
+            res.status(400).send(responseObject);
+        }
+        else {
+            let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
 
     /**
