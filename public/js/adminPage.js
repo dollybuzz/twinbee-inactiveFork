@@ -1548,7 +1548,7 @@ function relationshipModForm(res, status) {
         "<label for='modMakerRel'>Select a Freedom Maker:</label>" +
         "<select class='form-control' id='modMakerRel'></select>\n<br><br>" +
         "<label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[4].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
         "<div id='empty'></div></form>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
