@@ -77,6 +77,9 @@ exports.notifyAdmin = content => {
         web.chat.postMessage({
             text: content,
             channel: channel,
+        }).catch(err=>{
+            console.log(err)
+            exports.notifyAdmin(err.toString())
         });
 };
 

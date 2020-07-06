@@ -52,8 +52,10 @@ module.exports = {
         console.log("Attempting to create a plan from REST: ");
         console.log(req.body);
 
-        if (!req.body.planId || req.body.planId.includes(" ") || !req.body.invoiceName || !req.body.pricePerHour ||
-            !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || !req.body.planDescription) {
+        if (!req.body.planId || req.body.planId.includes(" ")
+            || !req.body.invoiceName
+            || !req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || req.body.pricePerHour.includes("-")
+            || !req.body.planDescription) {
             let responseObject = {error: "Bad Request", code: 400, details: ""};
             if (!req.body.planId || req.body.planId.includes(" ")) {
                 responseObject.details += "planId was not valid.  ";
@@ -61,7 +63,7 @@ module.exports = {
             if (!req.body.invoiceName) {
                 responseObject.details += "invoiceName was not valid.  ";
             }
-            if (!req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".")) {
+            if (!req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || req.body.pricePerHour.includes("-")) {
                 responseObject.details += "pricePerHour was not valid.  ";
             }
             if (!req.body.planDescription) {
@@ -349,13 +351,35 @@ module.exports = {
     updateSubscription: async function (req, res) {
         console.log("Attempting to update subscription from REST: ");
         console.log(req.body);
-        let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
-            req.body.planQuantity, req.body.pricePerHour)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            });
-        res.send(subscription);
+
+        if (!req.body.planId || req.body.planId.includes(" ")
+            || !req.body.subscriptionId
+            || !req.body.planQuantity || !Number.parseInt(req.body.planQuantity)
+            || !req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || req.body.pricePerHour.includes("-")) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.planId || req.body.planId.includes(" ")) {
+                responseObject.details += "planId was not valid.  ";
+            }
+            if (!req.body.subscriptionId){
+                responseObject.details += "subscriptionId was not valid.  ";
+            }
+            if (!req.body.planQuantity || !Number.parseInt(req.body.planQuantity)) {
+                responseObject.details += "planQuantity was not valid.  ";
+            }
+            if (!req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || req.body.pricePerHour.includes("-")) {
+                responseObject.details += "pricePerHour was not valid.  ";
+            }
+            res.status(400).send(responseObject);
+        }
+        else {
+            let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
+                req.body.planQuantity, req.body.pricePerHour)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
 
     /**
