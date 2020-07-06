@@ -113,9 +113,28 @@ module.exports = {
     updatePlan: function(req, res){
         console.log("Attempting to update a plan from REST: ");
         console.log(req.body);
-        chargebeeService.updatePlan(req.body.planId, req.body.planId,
-            req.body.planInvoiceName, req.body.planPrice);
-        res.send({});
+        if (!req.body.planId || req.body.planId.includes(" ") || !req.body.planInvoiceName || !req.body.planPrice ||
+            !Number.parseInt(req.body.planPrice) || req.body.planPrice.includes(".")){
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.planId || req.body.planId.includes(" ") ){
+                responseObject.details += "planId was not valid.  ";
+            }
+            if (!req.body.planInvoiceName){
+                responseObject.details += "planInvoiceName was not valid.  ";
+            }
+            if (!req.body.planPrice || !Number.parseInt(req.body.planPrice) || req.body.planPrice.includes(".")){
+                responseObject.details += "planPrice was not valid.  ";
+            }
+            if (!req.body.planDescription){
+                responseObject.details += "planDescription was not valid.";
+            }
+            res.status(400).send(responseObject);
+        }
+        else {
+            chargebeeService.updatePlan(req.body.planId, req.body.planId,
+                req.body.planInvoiceName, req.body.planPrice);
+            res.send({});
+        }
     },
 
     /**
