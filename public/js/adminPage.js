@@ -1668,10 +1668,10 @@ function relationshipAddForm() {
                                     }
 
                                     for (var item of planres) {
-                                        if(item.plan.status != "archived")
-                                        $('#addPlanRel').append(
-                                            `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
-                                        );
+                                        if (item.plan.status != "archived")
+                                            $('#addPlanRel').append(
+                                                `<option id="${item.plan.id}" value="${item.plan.id}">${item.plan.id}</option>`
+                                            );
 
                                     }
 
@@ -2546,9 +2546,8 @@ function runReportFunctionality() {
                 $("#makerReport").html("");
                 for (var item of makerres) {
                     let makerName = item.firstName + " " + item.lastName;
-                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()) && $("#makerRepSearch").val() != ""){
-                        if(item.deleted)
-                        {
+                    if (makerName.toLowerCase().includes($("#makerRepSearch").val().toLowerCase()) && $("#makerRepSearch").val() != "") {
+                        if (item.deleted) {
                             $('#makerReport').append(
                                 `<option id="${item.id}" value="${item.id}">*Deleted* ` + makerName + ` -  ${item.id}</option>`
                             );
@@ -2583,9 +2582,9 @@ function runReportFunctionality() {
             dataType: "json",
             success: function (timeres, timestatus) {
                 $("#reportContent").html("");
-                for(var item of timeres.sheets) {
-                    let hours = item.duration/60;
-                    let minutes = item.duration%60;
+                for (var item of timeres.sheets) {
+                    let hours = item.duration / 60;
+                    let minutes = item.duration % 60;
                     let message = "";
                     if (hours >= 0) {
                         message += ` ${Math.floor(hours)} hours `;
@@ -2604,9 +2603,10 @@ function runReportFunctionality() {
                         '   <td>' + item.plan + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
                         `   <td> ${message}</td></tr>`);
-                };
-                let totalhours = Number.parseInt(timeres.total)/60;
-                let totalminutes = Number.parseInt(timeres.total)%60;
+                }
+                ;
+                let totalhours = Number.parseInt(timeres.total) / 60;
+                let totalminutes = Number.parseInt(timeres.total) % 60;
                 let totalmessage = "";
                 if (totalhours >= 0) {
                     totalmessage += ` ${Math.floor(totalhours)} hours `;
@@ -2638,41 +2638,11 @@ function runReportFunctionality() {
 }
 
 $(document).ready(function () {
-    $.ajax({
-        url: "/api/getEnvironment",
-        method: "get",
-        dataType: "json",
-        success: function (res, status) {
-            TEST_ENVIRONMENT = res;
-            if (TEST_ENVIRONMENT) {
-                onSignIn();
-            }
-        },
-        error: function (clientres, clientstatus) {
-            TEST_ENVIRONMENT = true;
-            onSignIn();
-        }
-    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
 
-    //Event Listeners for other nav menu items
-    $(".navItem").click(function (e) {
-        navMapper[e.target.id]();
-        selectedTab = $(this)[0].id;
-        selectedDropdown = null;
-        let parentToChange = $(this).parent().parent().parent().children()[0];
-        if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem"){
-            selectedDropdown = parentToChange.id;
-            $(`#${parentToChange.id}`).append("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
-        }
-        if (selectedDropdown){
-            $(`#${selectedDropdown}`).css("color", '#dbb459')
-                .css("font-style", 'italic');
-        }
-    });
 
     $(".navItem").hover(function () {
         $(this).css("color", '#dbb459');
@@ -2689,21 +2659,53 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
-    setTimeout(function () {
-        if (!GOOGLE_USER || !id_token) {
-            gapi.auth2.init().then(function () {
-                GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-                id_token = GOOGLE_USER.id_token;
-                location.reload();
-            })
-        }
-    }, 1000);
 
-    //refresh tokens before timeout
-    setInterval(function () {
-        GOOGLE_USER.reloadAuthResponse()
-            .then(function () {
-                id_token = GOOGLE_USER.getAuthResponse().id_token;
-            });
-    }, 600000)
+    gapi.auth2.init().then(function () {
+        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+        id_token = GOOGLE_USER.id_token;
+
+
+        $.ajax({
+            url: "/api/getEnvironment",
+            method: "get",
+            dataType: "json",
+            success: function (res, status) {
+                TEST_ENVIRONMENT = res;
+                if (TEST_ENVIRONMENT) {
+                    onSignIn();
+                }
+            },
+            error: function (clientres, clientstatus) {
+                TEST_ENVIRONMENT = true;
+                onSignIn();
+            }
+        });
+
+        //Event Listeners for other nav menu items
+        $(".navItem").click(function (e) {
+            navMapper[e.target.id]();
+            selectedTab = $(this)[0].id;
+            selectedDropdown = null;
+            let parentToChange = $(this).parent().parent().parent().children()[0];
+            if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem") {
+                selectedDropdown = parentToChange.id;
+                $(`#${parentToChange.id}`).append("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
+            }
+            if (selectedDropdown) {
+                $(`#${selectedDropdown}`).css("color", '#dbb459')
+                    .css("font-style", 'italic');
+            }
+        });
+
+
+        //refresh tokens before timeout
+        setInterval(function () {
+            GOOGLE_USER.reloadAuthResponse()
+                .then(function () {
+                    id_token = GOOGLE_USER.getAuthResponse().id_token;
+                });
+        }, 600000)
+    });
+
+
 })
