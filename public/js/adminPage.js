@@ -1192,7 +1192,7 @@ function subscriptionModForm(res, status) {
                     $('#modsubscriptionplanname').append(
                         `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
                     );
-                else
+                else if(plan.status != 'archived')
                     $('#modsubscriptionplanname').append(
                         `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
                     );
