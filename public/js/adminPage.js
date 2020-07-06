@@ -447,9 +447,9 @@ function clientModForm(res, status) {
         "<label for='modclientlname'>Company:</label>" +
         `<input class='form-control' type='text' id='modcompany' name='modcompany' value='${res.company}'>\n<br><br>\n` +
         "<label for='modphone'>Phone:</label>" +
-        `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
-        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -520,9 +520,9 @@ function clientAddForm() {
         "<label for='addclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br><br>\n` +
         "<label for='modclientlname'>Company:</label>" +
-        `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br>\n` +
         "<label for='addphone'>Phone:</label>" +
-        `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br><br>\n` +
         "<label for='addemail'>Email:</label>" +
         `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
