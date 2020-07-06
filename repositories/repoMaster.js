@@ -65,7 +65,7 @@ class DbMaster {
                 if (err.code.toString() === 'PROTOCOL_CONNECTION_LOST') {
                     notifyAdmin("Attempting to recover.");
                     console.log("Attempting to recover.");
-                    dbMaster.conn.createConnection(dbOptions);
+                    dbMaster.conn = mysql.createConnection(dbOptions);
                     dbMaster.activateConnection(dbMaster, numRetries);
                 } else {
                     notifyAdmin("Unable to recover.");
