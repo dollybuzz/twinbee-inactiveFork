@@ -33,7 +33,7 @@ class DbMaster {
     constructor() {
         this.conn = mysql.createConnection(dbOptions);
         this.query = util.promisify(this.conn.query).bind(this.conn);
-        this.activateConnection(this, 20).catch(error => {
+        this.activateConnection(this, 5).catch(error => {
             console.log(error);
             notificationService.notifyAdmin(error.toString());
         });
@@ -60,19 +60,21 @@ class DbMaster {
                 }
             });
             dbMaster.conn.on('error', function (err) {
-                notifyAdmin(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
-                console.log(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
-                if (err.code.toString() === 'PROTOCOL_CONNECTION_LOST') {
-                    notifyAdmin("Attempting to recover.");
-                    console.log("Attempting to recover.");
-                    dbMaster.conn = mysql.createConnection(dbOptions);
-                    dbMaster.activateConnection(dbMaster, numRetries);
-                    dbMaster.query = util.promisify(dbMaster.conn.query).bind(dbMaster.conn);
-                } else {
-                    notifyAdmin("Unable to recover.");
-                    console.log("Unable to recover.");
-                    throw new Error(err);
-                }
+                setTimeout(function () {
+                    notifyAdmin(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
+                    console.log(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
+                    if (err.code.toString() === 'PROTOCOL_CONNECTION_LOST') {
+                        notifyAdmin("Attempting to recover.");
+                        console.log("Attempting to recover.");
+                        dbMaster.conn = mysql.createConnection(dbOptions);
+                        dbMaster.activateConnection(dbMaster, numRetries);
+                        dbMaster.query = util.promisify(dbMaster.conn.query).bind(dbMaster.conn);
+                    } else {
+                        notifyAdmin("Unable to recover.");
+                        console.log("Unable to recover.");
+                        throw new Error(err);
+                    }
+                }, 3000)
             })
         })
     }

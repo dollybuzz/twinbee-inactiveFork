@@ -7,7 +7,7 @@ class AuthRepository {
 
     async getAdmins(numRetries) {
         if (!numRetries){
-            numRetries = 0;
+            numRetries = 1;
         }
         return new Promise(async (resolve, reject)=>{
             let sql = 'SELECT * FROM admin';
