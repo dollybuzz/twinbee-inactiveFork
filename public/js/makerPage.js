@@ -459,7 +459,7 @@ function refreshGoogle() {
     gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse()
         .then(function () {
             GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-            id_token = GOOGLE_USER.getAuthResponse().id_token;
+            id_token = GOOGLE_USER.id_token;
         });
 }
 
@@ -515,7 +515,13 @@ $(document).ready(function () {
     $("#landingLogo").css("width", "20%");
 
 
-    var timeToRefresh = Math.max(GOOGLE_USER.expires_in-30000, 1000);
-    setInterval(refreshGoogle, timeToRefresh);
+    gapi.auth2.init().then(function () {
+        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+        id_token = GOOGLE_USER.id_token;
+
+        //refresh tokens before timeout
+        var timeToRefresh = Math.max(GOOGLE_USER.expires_in-30000, 1000);
+        setInterval(refreshGoogle, timeToRefresh);
+    })
 
 });//end document ready
