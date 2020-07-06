@@ -445,7 +445,7 @@ function clientModForm(res, status) {
         "<label for='modclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='modclientlname' name='modclientlname' value='${res.last_name}'>\n<br>\n` +
         "<label for='modclientlname'>Company:</label>" +
-        `<input class='form-control' type='text' id='modcompany' name='modcompany' value='${res.company}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modcompany' name='modcompany' value='${res.company}'>\n<br><br>\n` +
         "<label for='modphone'>Phone:</label>" +
         `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br><br>\n` +
         "<label for='modemail'>Email:</label>" +
@@ -519,8 +519,8 @@ function clientAddForm() {
         `<input class='form-control' type='text' id='addclientfname' name='addclientfname'>\n<br>\n` +
         "<label for='addclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br><br>\n` +
-        "<label for='modclientlname'>Copmany:</label>" +
-        `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br>\n` +
+        "<label for='modclientlname'>Company:</label>" +
+        `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br><br>\n` +
         "<label for='addphone'>Phone:</label>" +
         `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
         "<label for='addemail'>Email:</label>" +
@@ -1650,9 +1650,9 @@ function relationshipAddForm() {
                         "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
                         "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
                         "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
-                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>" +
+                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>\n<br><br>\n" +
                         "<label for='addPlanRel'> Select a Plan:</label>" +
-                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>\n" +
+                        "<select class='form-control' id='addPlanRel'>\n</select>" +
                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
