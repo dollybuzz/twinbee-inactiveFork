@@ -50,11 +50,30 @@ module.exports = {
     createPlan: async function(req, res){
         console.log("Attempting to create a plan from REST: ");
         console.log(req.body);
-        res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
-            req.body.pricePerHour, req.body.planDescription).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+        if (!req.body.planId || req.body.planId.includes(" ") || !req.body.invoiceName || !req.body.pricePerHour ||
+        !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".") || !req.body.planDescription){
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.planId || req.body.planId.includes(" ") ){
+                responseObject.details += "planId was not valid.  ";
+            }
+            if (!req.body.invoiceName){
+                responseObject.details += "invoiceName was not valid.  ";
+            }
+            if (!req.body.pricePerHour || !Number.parseInt(req.body.pricePerHour) || req.body.pricePerHour.includes(".")){
+                responseObject.details += "pricePerHour was not valid.  ";
+            }
+            if (!req.body.planDescription){
+                responseObject.details += "planDescription was not valid.";
+            }
+            res.status(400).send(responseObject);
+        }
+        else {
+            res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
+                req.body.pricePerHour, req.body.planDescription).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**

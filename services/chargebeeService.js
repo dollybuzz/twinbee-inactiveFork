@@ -81,7 +81,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     //handle error
-                    notifyAdmin(error.toString());
+                    notifyAdmin(error);
                     console.log(error);
                     reject(error);
                 } else {
@@ -106,7 +106,7 @@ class ChargebeeService {
             chargebee.plan.retrieve(planId).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin(error);
                     reject(error);
                 } else {
                     console.log(`Plan ${planId} retrieved`);
@@ -137,7 +137,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin(error);
                     reject(error);
                 } else {
                     console.log(`Plan ${planId} updated. New name: ${planId}, ` +
@@ -158,7 +158,7 @@ class ChargebeeService {
         chargebee.plan.delete(planId).request(function (error, result) {
             if (error) {
                 console.log(error);
-                notifyAdmin(error.toString());
+                notifyAdmin(error);
             } else {
                 var plan = result.plan;
             }
@@ -179,7 +179,10 @@ class ChargebeeService {
             limit: 100,
             include_deleted: true,
             "sort_by[desc]": "created_at"
-        }).request().catch(error => console.log(error));
+        }).request().catch(error => {
+            console.log(error);
+            notifyAdmin(error)
+        });
         let list = listObject.list;
         while (listObject.next_offset) {
             listObject = await chargebee.subscription.list({
@@ -187,7 +190,10 @@ class ChargebeeService {
                 include_deleted: true,
                 "sort_by[desc]": "created_at",
                 offset: listObject.next_offset
-            }).request().catch(error => console.log(error));
+            }).request().catch(error => {
+                console.log(error);
+                notifyAdmin(error)
+            });
             for (var item of listObject.list) {
                 list.push(item);
             }
@@ -215,13 +221,13 @@ class ChargebeeService {
                 plan_quantity: planQuantity,
                 auto_collection: "on"
             };
-            if (startDate){
+            if (startDate) {
                 subscriptionConfig.start_date = startTimeStamp;
             }
             chargebee.subscription.create_for_customer(customerId, subscriptionConfig).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin(error);
                     reject(error);
                 } else {
                     var subscription = result.subscription;
@@ -239,7 +245,7 @@ class ChargebeeService {
                         }
                     }).catch(err => {
                         console.log(err);
-                        notifyAdmin(error.toString());
+                        notifyAdmin(error);
                     });
                     console.log("Update time bucket due to purchase request sent")
                 }
@@ -258,7 +264,7 @@ class ChargebeeService {
             chargebee.subscription.retrieve(subscriptionId).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin(error);
                     reject(error);
                 } else {
                     var subscription = result.subscription;
@@ -280,7 +286,7 @@ class ChargebeeService {
             chargebee.subscription.remove_scheduled_changes(subscriptionId).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin(error);
                     reject(error);
                 } else {
                     var subscription = result.subscription;
@@ -304,7 +310,7 @@ class ChargebeeService {
             chargebee.subscription.retrieve_with_scheduled_changes(subscriptionId).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin();
                     reject(error);
                 } else {
                     var subscription = result.subscription;
@@ -338,7 +344,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin();
                     reject(error);
                 } else {
                     console.log("Subscription updated.");
@@ -359,7 +365,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin();
                     reject(error);
                 } else {
                     console.log("Subscription updated.");
@@ -392,7 +398,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin();
                     reject(error);
                 } else {
                     console.log("Subscription updated.");
@@ -422,7 +428,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin();
                     reject(error);
                 } else {
                     resolve(result.list);
@@ -461,7 +467,7 @@ class ChargebeeService {
         }).request(function (error, result) {
             if (error) {
                 console.log(error);
-                notifyAdmin(error.toString());
+                notifyAdmin();
             } else {
                 var subscription = result.subscription;
                 var customer = result.customer;
@@ -485,7 +491,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin();
                 } else {
                     const subscription = result.subscription;
                     resolve(subscription);
@@ -509,7 +515,7 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    notifyAdmin(error.toString());
+                    notifyAdmin();
                     reject(error);
                 } else {
                     const subscription = result.subscription;
@@ -527,14 +533,14 @@ class ChargebeeService {
      * result of this function, use: returnedValue[0].transaction.status
      * @returns {Promise<*>}
      */
-    async getAllTransactions(){
+    async getAllTransactions() {
         let listObject = await chargebee.transaction.list({
-            limit : 100,
-            "status[is]" : "success",
-            "sort_by[asc]" : "date"
-        }).request().catch(error=> {
-                notifyAdmin(error.toString());
-                console.log(error);
+            limit: 100,
+            "status[is]": "success",
+            "sort_by[asc]": "date"
+        }).request().catch(error => {
+            notifyAdmin();
+            console.log(error);
         });
         let list = listObject.list;
         while (listObject.next_offset) {
@@ -543,7 +549,7 @@ class ChargebeeService {
                 offset: listObject.next_offset
             }).request().catch(error => {
                 console.log(error);
-                notifyAdmin(error.toString());
+                notifyAdmin();
             });
             for (var item of listObject.list) {
                 list.push(item);
@@ -574,7 +580,10 @@ class ChargebeeService {
             }
         }
         if (!pricePerHour) {
-            let planObj = await this.retrievePlan(plan);
+            let planObj = await this.retrievePlan(plan).catch(err=>{
+                console.log(err);
+                notifyAdmin(err);
+            });
             pricePerHour = Number.parseFloat(planObj.price);
         }
         if (!pricePerHour) {
@@ -602,7 +611,7 @@ class ChargebeeService {
         }).request(function (error, result) {
             if (error) {
                 console.log(error);
-                notifyAdmin(error.toString());
+                notifyAdmin();
             } else {
                 console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
@@ -616,7 +625,7 @@ class ChargebeeService {
                     }
                 }).catch(err => {
                     console.log(err);
-                    notifyAdmin(error.toString());
+                    notifyAdmin(err.toString());
                 });
                 console.log("Update time bucket due to purchase request sent")
             }
