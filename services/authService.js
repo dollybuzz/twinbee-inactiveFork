@@ -37,7 +37,7 @@ class AuthService {
         let makers = JSON.parse(body);
 
         for (var i = 0; i < makers.length; ++i) {
-            if (makers[i].email === email) {
+            if (makers[i].email.toLowerCase() === email.toLowerCase()) {
                 return true
             }
         }
@@ -68,7 +68,7 @@ class AuthService {
         let clients = JSON.parse(body);
 
         for (var i = 0; i < clients.length; ++i) {
-            if (clients[i].customer.email === email) {
+            if (clients[i].customer.email.toLowerCase() === email.toLowerCase()) {
                 return true
             }
         }
@@ -95,7 +95,7 @@ class AuthService {
         });
         console.log("Let's see if you're on the list...");
         for (var i = 0; i < adminList.length; ++i){
-            let emailsMatch = await compare(email, adminList[i].admin).catch(err => {
+            let emailsMatch = await compare(email.toLowerCase(), adminList[i].admin).catch(err => {
                if (err.toString().includes("data and hash must be strings")){
                     console.log(`Bcrypt threw 'data and hash must be strings' with data: ${creds} `)
                 }
