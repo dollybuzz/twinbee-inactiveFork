@@ -19,6 +19,7 @@
 const mysql = require("mysql");
 const util = require('util');
 const notificationService = require('../services/notificationService.js');
+const {notifyAdmin} = require("../services/notificationService");
 const dbOptions = {
     multipleStatements: true,
     host: process.env.TWINBEE_DB_HOST,
@@ -32,10 +33,14 @@ class DbMaster {
     constructor() {
         this.conn = mysql.createConnection(dbOptions);
         this.query = util.promisify(this.conn.query).bind(this.conn);
-        this.activateConnection(this, 20);
+        this.activateConnection(this, 20).catch(error => {
+            console.log(error);
+            notificationService.notifyAdmin(error.toString());
+        });
     }
 
     async activateConnection(dbMaster, numRetries) {
+        notificationService.notifyAdmin("Activating dbconnection");
         return new Promise((resolve, reject) => {
             dbMaster.conn.connect(function (err) {
                 if (err && err.toString().includes("ECONNREFUSED")) {

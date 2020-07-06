@@ -67,9 +67,8 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
 });
 
 /**
- * Sends a notification to the admins
+ *
  * @param content
- * @returns {Promise<>}
  */
 exports.notifyAdmin = content => {
     let channel = process.env.TWINBEE_LIVE ? "C0163S58V0D" : "C015TU1QG0P";
@@ -78,7 +77,7 @@ exports.notifyAdmin = content => {
             text: content,
             channel: channel,
         }).catch(err=>{
-            console.log(err)
+            console.log(err);
             exports.notifyAdmin(err.toString())
         });
 };
