@@ -357,10 +357,10 @@ function clientFunctionality(res) {
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
-        let company = "";
+        let company;
         if(item.customer.company == 'undefined')
         {
-            company = "";
+            company = "No Company";
         }else{
             company = item.customer.company;
         }
@@ -1068,7 +1068,7 @@ function subscriptionFunctionality(res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Subscription ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
-        '            <th scope="col">Client ID</th>\n' +
+        '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Current Monthly Hours</th>\n' +
         '            <th scope="col">Pending changes</th>\n' +
@@ -1090,7 +1090,7 @@ function subscriptionFunctionality(res) {
                 '<tr class="subscriptionRow">' +
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
-                '   <td>' + subscription.customer_id + '</td>' +
+                '   <td>' + customer.company + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
@@ -1804,6 +1804,7 @@ function creditFunctionality(res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Client ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Available Hours</th>\n' +
         '        </thead><tbody>');
@@ -1827,6 +1828,7 @@ function creditFunctionality(res) {
                 '<tr class="creditRow">' +
                 '   <td scope="row">' + customer.id + '</td>' +
                 '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
+                '   <td>' + customer.company + '</td>' +
                 '   <td>' + item + '</td>' +
                 `   <td>${message}</td>`
             );
@@ -2517,9 +2519,10 @@ function runReportFunctionality() {
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
-        '            <th scope="col">Freedom Maker</th>\n' +
-        '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Company</th>\n' +
+        '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
         '        </thead><tbody id="reportContent">' +
         '</tbody>');
@@ -2613,9 +2616,10 @@ function runReportFunctionality() {
                     $("#reportContent").append('\n' +
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
-                        '   <td>' + item.makerName + '</td>' +
-                        '   <td>' + item.plan + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
+                        '   <td>' + item.makerName + '</td>' +
+                        '   <td>' + item.company + '</td>' +
+                        '   <td>' + item.plan + '</td>' +
                         `   <td> ${message}</td></tr>`);
                 }
                 ;
