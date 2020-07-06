@@ -190,11 +190,13 @@ class TimeReportingService {
                     let maker = makerMap[sheet.makerId];
 
                     let clientName = clientMap[sheet.clientId] ? `${client.first_name} ${client.last_name}` : `Deleted client ${sheet.clientId}`;
+                    let clientCompany = clientMap[sheet.clientId] ? `${client.company || "No Company"}` : `Deleted Client`;
                     let makerName = makerMap[sheet.makerId] ? `${maker.firstName} ${maker.lastName}` : `Deleted maker ${sheet.makerId}`;
                     sheets.push({
                         id: sheet.id,
                         duration: duration,
                         clientName: clientName,
+                        company: clientCompany,
                         makerName: makerName,
                         plan: sheet.hourlyRate
                     });
