@@ -704,11 +704,11 @@ function makerModForm(res, status) {
         "<label for='modmakerid'>Freedom Maker ID:</label>" +
         `<input class='form-control' type='text' id='modmakerid' name='modmakerid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modmakerfname'>First Name:</label>" +
-        `<input class='form-control' type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br><br>\n` +
         "<label for='modmakerlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='modmakerlname' name='modmakerlname' value='${res.lastName}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
-        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -759,7 +759,7 @@ function makerAddForm() {
         "<label for='addmakerfname'>First Name:</label>" +
         `<input class='form-control' type='text' id='addmakerfname' name='addmakerfname'>\n<br>\n` +
         "<label for='addmakerlname'>Last Name:</label>" +
-        `<input class='form-control' type='text' id='addmakerlname' name='addmakerlname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addmakerlname' name='addmakerlname'>\n<br><br>\n` +
         "<label for='addemail'>Email:</label>" +
         `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
