@@ -256,12 +256,19 @@ module.exports = {
     retrieveSubscription: async function (req, res) {
         console.log("Attempting to retrieve one subscription from REST: ");
         console.log(req.body);
-        let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            });
-        res.send(subscription);
+
+        if (!req.body.subscriptionId) {
+            let responseObject = {error: "Bad Request", code: 400, details: "subscriptionId was not valid."};
+            res.status(400).send(responseObject);
+        }
+        else {
+            let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
 
     /**
@@ -278,12 +285,19 @@ module.exports = {
     retrieveSubscriptionChanges: async function (req, res) {
         console.log("Attempting to retrieve one subscription's scheduled changes from REST: ");
         console.log(req.body);
-        let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            });
-        res.send(subscription);
+
+        if (!req.body.subscriptionId) {
+            let responseObject = {error: "Bad Request", code: 400, details: "subscriptionId was not valid."};
+            res.status(400).send(responseObject);
+        }
+        else {
+            let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
 
     /**
