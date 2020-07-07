@@ -18,12 +18,18 @@ module.exports = {
     getClientById: async (req, res) => {
         console.log("Attempting to get client by id from REST: ");
         console.log(req.body);
-        let id = req.body.id;
-        let client = await clientService.getClientById(id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(client);
+
+        if (!req.body.customerId) {
+            let responseObject = {error: "Bad Request", code: 400, details: "id was not valid."};
+            res.status(400).send(responseObject);
+        } else {
+            let id = req.body.id;
+            let client = await clientService.getClientById(id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(client);
+        }
     },
 
     /**
@@ -37,21 +43,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyTimeSheets: async(req, res)=>{
+    getMyTimeSheets: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.getSheetsByClient(client.id)).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
+        if (!req.body.token) {
+
+            let responseObject = {error: "Bad Request", code: 400, details: "token was not valid."};
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getSheetsByClient(client.id)).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+        }
     },
 
     /**
@@ -68,32 +80,45 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    updateMySubscription: async function(req, res){
+    updateMySubscription: async function (req, res) {
         console.log("Attempting to update subscription from  REST by client request: ");
         console.log(req.body);
-        let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let clientEmail = await authService.getEmailFromToken(req.body.auth).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client= await clientService.getClientByEmail(clientEmail).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        console.log(client.id);
-        console.log(subscriptionOwner.id);
-        if (client.id === subscriptionOwner.id) {
-            res.send(await chargebeeService.updateSubscriptionForCustomer(req.body.subscriptionId,
-                req.body.planQuantity).catch(err => {
+
+        let planQuantityIsBad = !req.body.planQuantity || !Number.parseInt(req.body.planQuantity) || req.body.planQuantity.inclues("-");
+
+        if (!req.body.subscriptionId || planQuantityIsBad) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.subscriptionId) {
+                responseObject.details += "subscriptionId was not valid.  ";
+            }
+            if (planQuantityIsBad) {
+                responseObject.details += "planQuantity was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
-            }));
+            });
+            let clientEmail = await authService.getEmailFromToken(req.body.auth).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(clientEmail).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            console.log(client.id);
+            console.log(subscriptionOwner.id);
+            if (client.id === subscriptionOwner.id) {
+                res.send(await chargebeeService.updateSubscriptionForCustomer(req.body.subscriptionId,
+                    req.body.planQuantity).catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                }));
+            } else
+                res.send(false);
         }
-        else
-            res.send(false);
     },
 
 
@@ -123,21 +148,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMySubscriptions: async(req, res)=>{
+    getMySubscriptions: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their subscriptions from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.getSubscriptionsForClient(client.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.token) {
+            let responseObject = {error: "Bad Request", code: 400, details: "token was not valid"};
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getSubscriptionsForClient(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -153,21 +184,33 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMySubscriptionChanges: async(req, res)=>{
+    getMySubscriptionChanges: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their changes to subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.getMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.subscriptionId || !req.body.token) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.subscriptionId) {
+                responseObject.details += "subscriptionId was not valid.  ";
+            }
+            if (!req.body.token) {
+                responseObject.details += "token was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -182,21 +225,33 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    retrieveMySubscription: async(req, res)=>{
+    retrieveMySubscription: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.getMySubscription(client.id, req.body.subscriptionId).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.subscriptionId || !req.body.token) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.subscriptionId) {
+                responseObject.details += "subscriptionId was not valid.  ";
+            }
+            if (!req.body.token) {
+                responseObject.details += "token was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getMySubscription(client.id, req.body.subscriptionId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -211,21 +266,34 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyTimeBucket: async(req, res)=>{
-      console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
-      console.log(req.body);
-      let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      });
-      let client = await clientService.getClientByEmail(email).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      });
-      res.send(await clientService.getTimeBucket(client.id, req.body.bucket).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      }));
+    getMyTimeBucket: async (req, res) => {
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
+        console.log(req.body);
+
+        let bucketIsBad = !req.body.bucket || req.body.bucket.includes(" ");
+        if (bucketIsBad || !req.body.token) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (bucketIsBad) {
+                responseObject.details += "bucket was not valid.  ";
+            }
+            if (!req.body.token) {
+                responseObject.details += "token was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getTimeBucket(client.id, req.body.bucket).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -249,21 +317,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getAllMyTimeBuckets: async(req, res)=>{
+    getAllMyTimeBuckets: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their time buckets from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.getTimeBucketsByClientId(client.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.token) {
+            let responseObject = {error: "Bad Request", code: 400, details: "token was invalid"};
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getTimeBucketsByClientId(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -279,21 +353,33 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    undoMySubscriptionChanges: async(req, res)=>{
+    undoMySubscriptionChanges: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting to revert their changes to subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.undoMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.subscriptionId || !req.body.token) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.subscriptionId) {
+                responseObject.details += "subscriptionId was not valid.  ";
+            }
+            if (!req.body.token) {
+                responseObject.details += "token was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.undoMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -317,17 +403,22 @@ module.exports = {
         console.log("Attempting to get client by id from REST: ");
         console.log(req.body);
 
-        let censoredClient = {};
-        let id = req.body['relationshipObj[clientId]'];
-        let client = await clientService.getClientById(id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        censoredClient.id = client.id;
-        censoredClient.name = client.first_name + " " + client.last_name;
-        censoredClient.company = client.company;
-        censoredClient.relId = req.body['relationshipObj[id]'];
-        res.send(censoredClient);
+        if (!req.body.relationshipObj) {
+            let responseObject = {error: "Bad Request", code: 400, details: "relationshipObj was invalid"};
+            res.status(400).send(responseObject);
+        } else {
+            let censoredClient = {};
+            let id = req.body['relationshipObj[clientId]'];
+            let client = await clientService.getClientById(id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            censoredClient.id = client.id;
+            censoredClient.name = client.first_name + " " + client.last_name;
+            censoredClient.company = client.company;
+            censoredClient.relId = req.body['relationshipObj[id]'];
+            res.send(censoredClient);
+        }
     },
 
     /**
@@ -347,9 +438,39 @@ module.exports = {
     updateClientBilling: (req, res) => {
         console.log("Attempting to update client billing from REST: ");
         console.log(req.body);
-        clientService.updateClientBilling(req.body.id, req.body.firstName, req.body.lastName,
-            req.body.street, req.body.city, req.body.state, req.body.zip);
-        res.send({});
+
+        if (!req.body.id
+            || !req.body.firstName
+            || !req.body.lastName
+            || !req.body.street
+            || !req.body.city
+            || !req.body.state
+            || !req.body.zip) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.firstName) {
+                responseObject.details += "details was not valid.  ";
+            }
+            if (!req.body.lastName) {
+                responseObject.details += "lastName was not valid.";
+            }
+            if (!req.body.street) {
+                responseObject.details += "street was not valid.";
+            }
+            if (!req.body.city) {
+                responseObject.details += "city was not valid.";
+            }
+            if (!req.body.state) {
+                responseObject.details += "state was not valid.";
+            }
+            if (!req.body.zip) {
+                responseObject.details += "zip was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            clientService.updateClientBilling(req.body.id, req.body.firstName, req.body.lastName,
+                req.body.street, req.body.city, req.body.state, req.body.zip);
+            res.send({status: "Request processed"});
+        }
     },
 
 
@@ -369,9 +490,34 @@ module.exports = {
     updateClientContact: (req, res) => {
         console.log("Attempting to update client contact info from REST: ");
         console.log(req.body);
-        clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName,
-            req.body.email, req.body.phone, req.body.company);
-        res.send({});
+
+        if (!req.body.id
+            || !req.body.firstName
+            || !req.body.lastName
+            || !req.body.email
+            || !req.body.phone) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.firstName) {
+                responseObject.details += "details was not valid.  ";
+            }
+            if (!req.body.lastName) {
+                responseObject.details += "lastName was not valid.";
+            }
+            if (!req.body.email) {
+                responseObject.details += "email was not valid.";
+            }
+            if (!req.body.phone) {
+                responseObject.details += "phone was not valid.";
+            }
+            if (!req.body.id) {
+                responseObject.details += "id was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName,
+                req.body.email, req.body.phone, req.body.company);
+            res.send({status: "Request processed"});
+        }
     },
 
     /**
@@ -390,8 +536,22 @@ module.exports = {
     updateClientMetadata: (req, res) => {
         console.log("Attempting to update client meta data from REST: ");
         console.log(req.body);
-        clientService.updateClientMetadata(req.body.id, req.body.metadata);
-        res.send({});
+
+        if (!req.body.id
+            || !req.body.id
+            || !req.body.metadata) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.id) {
+                responseObject.details += "id was not valid.  ";
+            }
+            if (!req.body.metadata) {
+                responseObject.details += "metadata was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            clientService.updateClientMetadata(req.body.id, req.body.metadata);
+            res.send({status: "Request processed"});
+        }
     },
 
     /**
@@ -454,10 +614,15 @@ module.exports = {
     async getTimeBucketsByClientId(req, res) {
         console.log(`Attempting to get a time bucket for client ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await clientService.getTimeBucketsByClientId(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.id) {
+            res.status(400).send({error: "Bad Request", code: 400, details: "id was invalid"});
+        } else {
+            res.send(await clientService.getTimeBucketsByClientId(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -475,11 +640,28 @@ module.exports = {
         console.log("Attempting to update client from REST: ");
         console.log(req.body);
 
-        res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+        let minutesVariableIsBad = !req.body.minutes || !Number.parseInt(req.body.minutes) || req.body.minutes.toString() === "0";
+        if (!req.body.id
+            || !req.body.planId
+            || minutesVariableIsBad) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.id) {
+                responseObject.details += "id was not valid.  ";
+            }
+            if (!req.body.planId) {
+                responseObject.details += "planId was not valid.";
+            }
+            if (minutesVariableIsBad) {
+                responseObject.details += "minutes was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                }));
+        }
     },
 
     /**
@@ -499,11 +681,24 @@ module.exports = {
         console.log(`Attempting to delete client ${req.body.id} time bucket ${req.body.bucket} from REST: `);
         console.log(req.body);
 
-        res.send(await clientService.deleteTimeBucket(req.body.id, req.body.bucket)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+        let bucketIsBad = !req.body.bucket || req.body.bucket.includes(" ");
+        if (!req.body.id
+            || bucketIsBad) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.id) {
+                responseObject.details += "id was not valid.  ";
+            }
+            if (bucketIsBad) {
+                responseObject.details += "bucket was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            res.send(await clientService.deleteTimeBucket(req.body.id, req.body.bucket)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                }));
+        }
     },
 
     /**
@@ -523,13 +718,34 @@ module.exports = {
     createClient: async (req, res) => {
         console.log("Attempting to create a client from REST: ");
         console.log(req.body);
-        let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
-            req.body.email, req.body.phone, req.body.company)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            });
-        res.send(client);
+
+        if (!req.body.firstName
+            || !req.body.lastName
+            || !req.body.email
+            || !req.body.phone) {
+            let responseObject = {error: "Bad Request", code: 400, details: ""};
+            if (!req.body.firstName) {
+                responseObject.details += "details was not valid.  ";
+            }
+            if (!req.body.lastName) {
+                responseObject.details += "lastName was not valid.";
+            }
+            if (!req.body.email) {
+                responseObject.details += "email was not valid.";
+            }
+            if (!req.body.phone) {
+                responseObject.details += "phone was not valid.";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
+                req.body.email, req.body.phone, req.body.company)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(client);
+        }
     },
 
     /**
@@ -543,11 +759,16 @@ module.exports = {
     deleteClient: async (req, res) => {
         console.log("Attempting to delete a client from REST: ");
         console.log(req.body);
-        await clientService.deleteClientById(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send({});
+
+        if (!req.body.id) {
+            res.status(400).send({error: "Bad request", code: 400, details: "id was not valid"});
+        } else {
+            await clientService.deleteClientById(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({status: "Request processed"});
+        }
     },
 
     /**
@@ -580,6 +801,7 @@ module.exports = {
         }));
     },
 
+
     /**
      * ENDPOINT: /api/getMakersForClient
      * Retrieves a list of all makers for a given client.
@@ -596,10 +818,15 @@ module.exports = {
     getMakersForClient: async (req, res) => {
         console.log("Attempting to get makers for client from rest: ");
         console.log(req.body);
-        res.send(await clientService.getMakersForClient(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.id) {
+            res.status(400).send({error: "Bad request", code: 400, details: "id was not valid"});
+        } else {
+            res.send(await clientService.getMakersForClient(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
 
@@ -619,14 +846,19 @@ module.exports = {
     getClientByToken: async (req, res) => {
         console.log("Attempting to get client by token from REST: ");
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.token) {
+            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -641,13 +873,16 @@ module.exports = {
      */
     subscriptionRenewed: async (req, res) => {
         console.log(`Webhook hit for ${req.body.event_type}`);
-        if (req.body.event_type == "subscription_renewed") {
+        if (req.body.event_type.toString() === "subscription_renewed") {
             console.log("Client subscription renewed; updating from REST");
             console.log(req.body);
             res.send(await clientService.subscriptionRenewed(req.body).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
             }));
+        }
+        else {
+            res.status(400).send({error: "Bad request", code: 400, details: "Webhook not supported"});
         }
     },
 
@@ -666,6 +901,7 @@ module.exports = {
         console.log(req.body);
         console.log(`Webhook hit for ${req.body.event_type}`);
         console.log(clientService.webHookBucketUpdate);
+
         let possible = clientService.webhookMap[req.body.event_type];
         if (possible) {
             res.send(await possible(req.body).catch(err => {
@@ -673,9 +909,10 @@ module.exports = {
                 notifyAdmin(err.toString());
             }));
         } else {
-            res.send("Unsupported Event");
+            res.send({error: "Bad request", code: 400, details: "Webhook not supported"});
         }
     },
+
 
     /**
      * ENDPOINT: /api/getUpdatePaymentURL
@@ -691,11 +928,16 @@ module.exports = {
     getUpdatePaymentPage: async (req, res) => {
         console.log("Attempting to get a hosted page for payment source update: ");
         console.log(req.body);
-        let page = await clientService.getUpdatePaymentPage(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send({url: page.url});
+
+        if (!req.body.id) {
+            res.status(400).send({error: "Bad request", code: 400, details: "id was not valid"});
+        } else {
+            let page = await clientService.getUpdatePaymentPage(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({url: page.url});
+        }
     },
 
     /**
@@ -710,21 +952,26 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyUpdatePaymentPage: async (req, res) =>{
-      console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
-      console.log(req.body);
-      let email =await authService.getEmailFromToken(req.body.token).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      });
-      let client = await clientService.getClientByEmail(email).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      });
-      res.send(await clientService.getUpdatePaymentPage(client.id).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      }));
+    getMyUpdatePaymentPage: async (req, res) => {
+        console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
+        console.log(req.body);
+
+        if (!req.body.token) {
+            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getUpdatePaymentPage(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -741,11 +988,16 @@ module.exports = {
     getClientPayInvoicesPage: async (req, res) => {
         console.log("Attempting to get a hosted page for client pay invoices from REST");
         console.log(req.body);
-        let page = await clientService.getOutstandingPaymentsPage(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send({url: page.url});
+
+        if (!req.body.id) {
+            res.status(400).send({error: "Bad request", code: 400, details: "id was not valid"});
+        } else {
+            let page = await clientService.getOutstandingPaymentsPage(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({url: page.url});
+        }
     },
 
     /**
@@ -763,19 +1015,24 @@ module.exports = {
     getMyPayInvoicesPage: async (req, res) => {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let page = await clientService.getOutstandingPaymentsPage(client.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send({url: page.url});
+
+        if (!req.body.token) {
+            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let page = await clientService.getOutstandingPaymentsPage(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({url: page.url});
+        }
     },
 
     /**
@@ -803,21 +1060,26 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getAllMyRelationships: async (req, res) =>{
+    getAllMyRelationships: async (req, res) => {
         console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        res.send(await clientService.getAllMyRelationships(client.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        if (!req.body.token) {
+            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getAllMyRelationships(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -835,22 +1097,42 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    chargeMeNow: async (req, res) =>{
-      console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
-      console.log(req.body);
-      let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      });
-      let client = await clientService.getClientByEmail(email).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      });
-      console.log(client);
-      res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id).catch(err => {
-          console.log(err);
-          notifyAdmin(err.toString());
-      }));
+    chargeMeNow: async (req, res) => {
+        console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
+        console.log(req.body);
+
+        let planIdIsBad = !req.body.planId || req.body.planId.includes(" ");
+        let numHoursIsBad = !req.body.numHours || !Number.parseInt(req.body.numHours) || req.body.numHours.includes("-");
+        if (!req.body.token
+        || planIdIsBad
+        || numHoursIsBad) {
+            let responseObject = {error: "Bad request", code: 400, details: ""};
+
+            if (!req.body.token){
+                responseObject.details += "token was not valid.  ";
+            }
+            if (planIdIsBad){
+                responseObject.details += "planId was not valid.  ";
+            }
+            if (numHoursIsBad){
+                responseObject.details += "numHours was not valid.  ";
+            }
+            res.status(400).send(responseObject);
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            console.log(client);
+            res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -866,22 +1148,26 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyMakers: async (req, res) =>{
+    getMyMakers: async (req, res) => {
         console.log(`Attempting to retrieve makers for client with token...\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        let client = await clientService.getClientByEmail(email).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        });
-        console.log(client);
-        res.send(await clientService.getMakersForClient(client.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+        if (!req.body.token) {
+            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            console.log(client);
+            res.send(await clientService.getMakersForClient(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -901,9 +1187,27 @@ module.exports = {
     getTimeBucket: async (req, res) => {
         console.log("Attempting to get a timebucket for client");
         console.log(req.body);
-        res.send(await clientService.getTimeBucket(req.body.id, req.body.planId).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        let planIdIsBad = !req.body.planId || req.body.planId.includes(" ");
+        if (!req.body.token
+            || !req.body.id
+            || planIdIsBad) {
+            let responseObject = {};
+            if (!req.body.token){
+                responseObject.details += "token was not valid.  ";
+            }
+            if (!req.body.id){
+                responseObject.details += "id was not valid.  ";
+            }
+            if (planIdIsBad){
+                responseObject.details += "planId was not valid."
+            }
+            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        } else {
+            res.send(await clientService.getTimeBucket(req.body.id, req.body.planId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     }
 };
