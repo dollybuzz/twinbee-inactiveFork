@@ -168,13 +168,20 @@ class ClientService {
             emailService.notifyAdmin(err.toString());
             console.log(err)
         });
-        customer.first_name = newFirstName;
-        customer.last_name = newLastName;
-        customer.email = newEmail;
-        customer.phone = newPhone;
-        customer.company = company;
-        updateClient(clientId, customer);
-        clientRepo.updateClient(clientId, newFirstName, newLastName, newEmail, newPhone, company);
+        if (customer) {
+            customer.first_name = newFirstName;
+            customer.last_name = newLastName;
+            customer.email = newEmail;
+            customer.phone = newPhone;
+            customer.company = company;
+            updateClient(clientId, customer);
+            clientRepo.updateClient(clientId, newFirstName, newLastName, newEmail, newPhone, company);
+        }
+        else{
+            let err = `Error updating client: \n${clientId}\n${newFirstName}\n${newLastName}\n${newEmail}\n${newPhone}\n${company}`;
+            console.log(err);
+            emailService.notifyAdmin(err);
+        }
     }
 
     /**

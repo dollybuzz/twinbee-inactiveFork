@@ -2,8 +2,127 @@ const clientService = require('../services/ClientService.js');
 const authService = require('../services/authService.js');
 const chargebeeService = require('../services/chargebeeService.js');
 const {notifyAdmin} = require("../services/notificationService");
-//TODO Add validation before action
+
+
+let validatorMap = {
+    "present": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString]){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveIntegerOnly": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseInt(body[keyString]
+                || body[keyString].includes("-") || body[keyString].includes("."))){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "noSpaces": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || body[keyString].includes(" ")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveDecimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseInt(body[keyString])
+                || body[keyString].includes("-")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "decimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseInt(body[keyString])){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+};
+
+/**
+ *  validates parameters
+ * @param paramArrayMap - object in form:
+ * {
+ *      present: array of string keys that should be present
+ *      positiveIntegerOnly: array of string keys that should parse to positive integers only,
+ *      noSpaces: array of string keys that should not have spaces
+ * }
+ *
+ * @param body request body to validate
+ * @returns object in the form:
+ * {
+ *      isValid: a boolean indicating whether or not the parameters were valid
+ *      message: a string description of the result
+ * }
+ */
+async function validateParams(paramArrayMap, body){
+    let validator = {isValid: true, message: ""};
+    let paramsTypesToScan = ["present", "positiveIntegerOnly", "noSpaces", "positiveDecimalAllowed", "decimalAllowed"];
+    for (var paramName of paramsTypesToScan){
+        let keyArray = paramArrayMap[paramName];
+        if (keyArray) {
+            let result = await validatorMap[paramName](keyArray, body);
+            if (!result.isValid) {
+                validator.isValid = false;
+                validator.message += result.message;
+            }
+        }
+    }
+    if (!validator.message){
+        validator.message = "Valid";
+    }
+    return validator;
+}
+
+
 module.exports = {
+
+    /**
+     * ENDPOINT: /api/updateClientContact
+     * Updates a client's contact info. looks for data in the body in the form:
+     * {
+     *     "id": id of customer to update,
+     *     "firstName": new first name,
+     *     "lastName": new last name,
+     *     "email": new email,
+     *     "phone": new phone,
+     *     "company": new company name
+     *     "auth": authentication credentials; either master or token
+     * }
+     */
+    updateClientContact: async (req, res) => {
+        console.log("Attempting to update client contact info from REST: ");
+        console.log(req.body);
+        let validationResult = await validateParams({"present": ["id", "firstName", "lastName", "email", "phone"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName,
+                req.body.email, req.body.phone, req.body.company);
+            res.send({status: "Request processed"});
+        }
+    },
 
     /**
      * ENDPOINT: /api/getClient
@@ -19,9 +138,10 @@ module.exports = {
         console.log("Attempting to get client by id from REST: ");
         console.log(req.body);
 
-        if (!req.body.customerId) {
-            let responseObject = {error: "Bad Request", code: 400, details: "id was not valid."};
-            res.status(400).send(responseObject);
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let id = req.body.id;
             let client = await clientService.getClientById(id).catch(err => {
@@ -46,10 +166,11 @@ module.exports = {
     getMyTimeSheets: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
         console.log(req.body);
-        if (!req.body.token) {
 
-            let responseObject = {error: "Bad Request", code: 400, details: "token was not valid."};
-            res.status(400).send(responseObject);
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let email = await authService.getEmailFromToken(req.body.token).catch(err => {
                 console.log(err);
@@ -84,17 +205,14 @@ module.exports = {
         console.log("Attempting to update subscription from  REST by client request: ");
         console.log(req.body);
 
-        let planQuantityIsBad = !req.body.planQuantity || !Number.parseInt(req.body.planQuantity) || req.body.planQuantity.inclues("-");
-
-        if (!req.body.subscriptionId || planQuantityIsBad) {
-            let responseObject = {error: "Bad Request", code: 400, details: ""};
-            if (!req.body.subscriptionId) {
-                responseObject.details += "subscriptionId was not valid.  ";
-            }
-            if (planQuantityIsBad) {
-                responseObject.details += "planQuantity was not valid.";
-            }
-            res.status(400).send(responseObject);
+        let validationResult = await validateParams(
+            {
+                "present": ["subscriptionId", "auth"],
+                "positiveDecimalAllowed": ["planQuantity"]
+            },req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId).catch(err => {
                 console.log(err);
@@ -473,52 +591,6 @@ module.exports = {
         }
     },
 
-
-    /**
-     * ENDPOINT: /api/updateClientContact
-     * Updates a client's contact info. looks for data in the body in the form:
-     * {
-     *     "id": id of customer to update,
-     *     "firstName": new first name,
-     *     "lastName": new last name,
-     *     "email": new email,
-     *     "phone": new phone,
-     *     "company": new company name
-     *     "auth": authentication credentials; either master or token
-     * }
-     */
-    updateClientContact: (req, res) => {
-        console.log("Attempting to update client contact info from REST: ");
-        console.log(req.body);
-
-        if (!req.body.id
-            || !req.body.firstName
-            || !req.body.lastName
-            || !req.body.email
-            || !req.body.phone) {
-            let responseObject = {error: "Bad Request", code: 400, details: ""};
-            if (!req.body.firstName) {
-                responseObject.details += "details was not valid.  ";
-            }
-            if (!req.body.lastName) {
-                responseObject.details += "lastName was not valid.";
-            }
-            if (!req.body.email) {
-                responseObject.details += "email was not valid.";
-            }
-            if (!req.body.phone) {
-                responseObject.details += "phone was not valid.";
-            }
-            if (!req.body.id) {
-                responseObject.details += "id was not valid.";
-            }
-            res.status(400).send(responseObject);
-        } else {
-            clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName,
-                req.body.email, req.body.phone, req.body.company);
-            res.send({status: "Request processed"});
-        }
-    },
 
     /**
      * ENDPOINT: /api/updateClientMetadata
