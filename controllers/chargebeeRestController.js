@@ -3,7 +3,7 @@ const {notifyAdmin} = require("../services/notificationService");
 const moment = require('moment');
 
 
-
+//TODO: find a home for the validator
 let validatorMap = {
     "present": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
@@ -90,6 +90,10 @@ async function validateParams(paramArrayMap, body){
     }
     if (!validator.message){
         validator.message = "Valid";
+    }
+    if (!validator.isValid){
+        console.log(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
+        notifyAdmin(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
     }
     return validator;
 }
