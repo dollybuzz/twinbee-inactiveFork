@@ -715,7 +715,7 @@ $(document).ready(function () {
         id_token = GOOGLE_USER.id_token;
 
         //refresh tokens before timeout
-        var timeToRefresh = Math.max(GOOGLE_USER.expires_in-30000, 1000);
+        var timeToRefresh = Math.max((GOOGLE_USER.expires_in-30) * 1000, 1000);
         setInterval(refreshGoogle, timeToRefresh);
     })
 
