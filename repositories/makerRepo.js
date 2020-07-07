@@ -1,4 +1,3 @@
-//TODO; have errors send us notifications rather than "throw"
 
 const {query} = require("./repoMaster.js");
 const repoMaster = require('./repoMaster.js');
