@@ -19,7 +19,7 @@ let validatorMap = {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate){
             if (!body[keyString] || !Number.parseInt(body[keyString])
-                || body[keyString].includes("-") || body[keyString].includes(".")){
+                || body[keyString].includes("-") || body[keyString].includes(" ") || body[keyString].includes(".")){
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
