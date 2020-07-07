@@ -593,7 +593,7 @@ class ChargebeeService {
         }
 
         let calculatedPrice = Math.floor(pricePerHour * Number.parseFloat(numHours));
-        let minutesString = (numHours * 60).toString();
+        let minutesString = (Math.floor(Number.parseFloat(numHours) * 60)).toString();
         let hours = Math.floor(numHours);
         let minutes = Math.floor(Number.parseInt(minutesString) % 60);
         let message = "";

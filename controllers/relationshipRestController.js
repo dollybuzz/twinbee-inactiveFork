@@ -2,6 +2,96 @@
 const relationshipService = require('../services/relationshipService');
 const {notifyAdmin} = require("../services/notificationService");
 
+let validatorMap = {
+    "present": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate) {
+            if (!body[keyString]) {
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveIntegerOnly": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate) {
+            if (!body[keyString] || !Number.parseInt(body[keyString])
+                || body[keyString].includes("-") || body[keyString].includes(" ") || body[keyString].includes(".")) {
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "noSpaces": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate) {
+            if (!body[keyString] || body[keyString].includes(" ")) {
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveDecimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate) {
+            if (!body[keyString] || !Number.parseInt(body[keyString])
+                || body[keyString].includes("-")) {
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "decimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate) {
+            if (!body[keyString] || !Number.parseInt(body[keyString])) {
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+};
+
+/**
+ *  validates parameters
+ * @param paramArrayMap - object in form:
+ * {
+ *      present: array of string keys that should be present
+ *      positiveIntegerOnly: array of string keys that should parse to positive integers only,
+ *      noSpaces: array of string keys that should not have spaces
+ * }
+ *
+ * @param body request body to validate
+ * @returns object in the form:
+ * {
+ *      isValid: a boolean indicating whether or not the parameters were valid
+ *      message: a string description of the result
+ * }
+ */
+async function validateParams(paramArrayMap, body) {
+    let validator = {isValid: true, message: ""};
+    let paramsTypesToScan = ["present", "positiveIntegerOnly", "noSpaces", "positiveDecimalAllowed", "decimalAllowed"];
+    for (var paramName of paramsTypesToScan) {
+        let keyArray = paramArrayMap[paramName];
+        if (keyArray) {
+            let result = await validatorMap[paramName](keyArray, body);
+            if (!result.isValid) {
+                validator.isValid = false;
+                validator.message += result.message;
+            }
+        }
+    }
+    if (!validator.message) {
+        validator.message = "Valid";
+    }
+    return validator;
+}
+
 module.exports = {
 
     /**
@@ -33,11 +123,25 @@ module.exports = {
         console.log(`Creating relationship for maker ${req.body.makerId} with`
             +` client ${req.body.clientId} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.createRelationship(req.body.makerId,
-            req.body.clientId, req.body.planId, req.body.occupation).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        let validationResult = await validateParams(
+            {
+                "present": [, "occupation"],
+                "positiveIntegerOnly": ["makerId"],
+                "noSpaces": ["clientId", "planId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await relationshipService.createRelationship(req.body.makerId,
+                req.body.clientId, req.body.planId, req.body.occupation).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -65,10 +169,24 @@ module.exports = {
     getRelationshipsByMakerId: async (req, res) =>{
         console.log(`Getting relationships for maker ${req.body.id}`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipsByMakerId(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": ["id"],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await relationshipService.getRelationshipsByMakerId(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -96,11 +214,26 @@ module.exports = {
     getRelationshipsByClientId: async (req, res) =>{
         console.log(`Getting relationships for client ${req.body.id}`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipsByClientId(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["id"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await relationshipService.getRelationshipsByClientId(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
+
 
     /**
      * ENDPOINT: /api/getRelationshipById
@@ -125,10 +258,24 @@ module.exports = {
     getRelationshipById: async (req, res) =>{
         console.log(`Attempting to retrieve relationship ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.getRelationshipById(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": ["id"],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await relationshipService.getRelationshipById(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -184,10 +331,24 @@ module.exports = {
         console.log(`Attempting to delete relationship ${req.body.id} from REST`);
         console.log(req.body);
         console.log(req.body);
-        res.send(await relationshipService.deleteRelationship(req.body.id).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": ["id"],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await relationshipService.deleteRelationship(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -216,9 +377,23 @@ module.exports = {
     updateRelationship: async (req, res) =>{
         console.log(`Attempting to update relationship ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId).catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+
+        let validationResult = await validateParams(
+            {
+                "present": ["occupation"],
+                "positiveIntegerOnly": ["id", "makerId"],
+                "noSpaces": ["clientId", "planId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 };

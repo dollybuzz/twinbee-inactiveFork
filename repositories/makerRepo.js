@@ -10,7 +10,7 @@ class MakerRepository {
 
     async createMaker(firstName, lastName, email, unique) {
         if (!unique) {
-            unique = "";
+            unique = "No Identifier";
         }
         let sql = 'INSERT INTO maker(first_name, last_name, email, unique) VALUES (?, ?, ?, ?)';
         let sqlParams = [firstName, lastName, email, unique];
@@ -25,7 +25,7 @@ class MakerRepository {
 
     async updateMaker(id, firstName, lastName, email, unique) {
         if (!unique) {
-            unique = "";
+            unique = "No Identifier";
         }
         let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ?, unique = ? WHERE id = ?';
         let sqlParams = [firstName, lastName, email, unique, id];
