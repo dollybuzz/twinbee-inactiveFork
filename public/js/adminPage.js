@@ -1845,7 +1845,7 @@ function creditFunctionality(res) {
     $(".creditRow").click(function () {
         selectedRow = $(this);
         let creditPrompt = `<h5>Please type in the Plan to delete the selected credit.</h5>` +
-            `<h6>You selected Plan: ${selectedRow.children()[2].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+            `<h6>You selected Plan: ${selectedRow.children()[3].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
             "<br><div id='delete'>" +
             "<div id='empty'></div>" +
             "<div><label for='deleteUser'>Enter Plan:</label></div>" +
@@ -1858,7 +1858,7 @@ function creditFunctionality(res) {
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
-            let planId = selectedRow.children()[2].innerHTML;
+            let planId = selectedRow.children()[3].innerHTML;
             showDeletePrompt("delete", creditPrompt, "/api/deleteBucket", {
                 auth: id_token,
                 id: clientId,
@@ -1889,7 +1889,7 @@ function creditFunctionality(res) {
 function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
+        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[3].innerHTML}</h6>` +
         "<br><br><form id='modify'>" +
         `<div>Enter a number (+/-) to adjust hours:</div>` +
         "<input class='form-control' type='number' id='creditmodhours' name='creditmodhours'>" +
@@ -1941,7 +1941,7 @@ function creditModForm(res, status) {
                 modSubmit("/api/updateClientTimeBucket", {
                     auth: id_token,
                     id: selectedRow.children()[0].innerHTML,
-                    planId: selectedRow.children()[2].innerHTML,
+                    planId: selectedRow.children()[3].innerHTML,
                     minutes: hoursPlusMin,
                 }, modCreditSuccess);
             } else {
