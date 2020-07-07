@@ -1184,7 +1184,7 @@ function subscriptionModForm(res, status) {
                     $('#modsubscriptionplanname').append(
                         `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
                     );
-                else if(plan.status != 'archived')
+                else if (plan.status != 'archived')
                     $('#modsubscriptionplanname').append(
                         `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
                     );
@@ -2658,6 +2658,18 @@ function refreshGoogle() {
         });
 }
 
+function init(){
+    console.log("Google initializing...");
+    gapi.auth2.init().then(function () {
+        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+        id_token = GOOGLE_USER.id_token;
+
+        //refresh tokens before timeout
+        var timeToRefresh = Math.max((GOOGLE_USER.expires_in - 30) * 1000, 1000);
+        setTimeout(refreshGoogle, timeToRefresh);
+    });
+}
+
 $(document).ready(function () {
 
     //Adding logout Button
@@ -2695,16 +2707,7 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
+    init();
 
-    gapi.auth2.init().then(function () {
-        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-        id_token = GOOGLE_USER.id_token;
 
-        //refresh tokens before timeout
-        var timeToRefresh = Math.max((GOOGLE_USER.expires_in-30) * 1000, 1000);
-        setTimeout(refreshGoogle, timeToRefresh);
 });
-
-
-})
-;

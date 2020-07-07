@@ -663,6 +663,18 @@ function refreshGoogle() {
         });
 }
 
+function init(){
+    gapi.auth2.init().then(function () {
+        console.log("Google initializing...");
+        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+        id_token = GOOGLE_USER.id_token;
+
+        //refresh tokens before timeout
+        var timeToRefresh = Math.max((GOOGLE_USER.expires_in - 30) * 1000, 1000);
+        setTimeout(refreshGoogle, timeToRefresh);
+    });
+}
+
 $(document).ready(function () {
     $.ajax({
         url: "/api/getEnvironment",
@@ -711,13 +723,6 @@ $(document).ready(function () {
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 
-    gapi.auth2.init().then(function () {
-        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-        id_token = GOOGLE_USER.id_token;
-
-        //refresh tokens before timeout
-        var timeToRefresh = Math.max((GOOGLE_USER.expires_in-30) * 1000, 1000);
-        setTimeout(refreshGoogle, timeToRefresh);
-    })
+    init();
 
 });//end document ready
