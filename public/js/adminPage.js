@@ -362,7 +362,7 @@ function clientFunctionality(res) {
                 '<tr class="clientRow">' +
                 '   <td scope="row">' + item.customer.id + '</td>' +
                 '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
-                '   <td>' + item.customer.company || 'No Company' + '</td>' +
+                '   <td>' + (item.customer.company || 'No Company') + '</td>' +
                 '   <td>' + item.customer.phone + '</td>' +
                 '   <td>' + item.customer.email + '</td></tr>'
             );
@@ -1082,7 +1082,7 @@ function subscriptionFunctionality(res) {
                 '<tr class="subscriptionRow">' +
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
-                '   <td>' + customer.company || 'No Company' + '</td>' +
+                '   <td>' + (customer.company || 'No Company') + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
@@ -1452,11 +1452,12 @@ function relationshipFunctionality(res) {
                                 '        </thead><tbody>');
                             //Populate table
                             res.forEach(item => {
+                                console.log(item);
                                 $("#relationshipTable").append('\n' +
                                     '<tr class="relationshipRow">' +
                                     '   <td>' + item.id + '</td>' +
                                     '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
-                                    '   <td>' + clientMap[item.clientId].company || 'No Company' + '</td>' +
+                                    '   <td>' + (clientMap[item.clientId].company || 'No Company') + '</td>' +
                                     '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
                                     '   <td>' + item.occupation + '</td>' +
                                     '   <td>' + item.planId + '</td>'
@@ -1822,7 +1823,7 @@ function creditFunctionality(res) {
                 '<tr class="creditRow">' +
                 '   <td scope="row">' + customer.id + '</td>' +
                 '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
-                '   <td>' + customer.company || 'No Company' + '</td>' +
+                '   <td>' + (customer.company || 'No Company') + '</td>' +
                 '   <td>' + item + '</td>' +
                 `   <td>${message}</td>`
             );
@@ -2612,7 +2613,7 @@ function runReportFunctionality() {
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
-                        '   <td>' + item.company || 'No Company' + '</td>' +
+                        '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
                         `   <td> ${message}</td></tr>`);
                 }
