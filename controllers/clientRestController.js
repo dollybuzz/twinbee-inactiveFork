@@ -3,7 +3,6 @@ const authService = require('../services/authService.js');
 const chargebeeService = require('../services/chargebeeService.js');
 const {notifyAdmin} = require("../services/notificationService");
 
-
 let validatorMap = {
     "present": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
@@ -951,9 +950,10 @@ module.exports = {
     getClientPayInvoicesPage: async (req, res) => {
         console.log("Attempting to get a hosted page for client pay invoices from REST");
         console.log(req.body);
-
-        if (!req.body.id) {
-            res.status(400).send({error: "Bad request", code: 400, details: "id was not valid"});
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let page = await clientService.getOutstandingPaymentsPage(req.body.id).catch(err => {
                 console.log(err);
@@ -978,9 +978,10 @@ module.exports = {
     getMyPayInvoicesPage: async (req, res) => {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
         console.log(req.body);
-
-        if (!req.body.token) {
-            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let email = await authService.getEmailFromToken(req.body.token).catch(err => {
                 console.log(err);
@@ -999,6 +1000,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getAllMyRelationshipsClient
      * Retrieves all relationships for the requester. Looks for data in the body in the form:
      * {
      *      "token": requester's token,
@@ -1026,9 +1028,10 @@ module.exports = {
     getAllMyRelationships: async (req, res) => {
         console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
         console.log(req.body);
-
-        if (!req.body.token) {
-            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let email = await authService.getEmailFromToken(req.body.token).catch(err => {
                 console.log(err);
@@ -1063,24 +1066,10 @@ module.exports = {
     chargeMeNow: async (req, res) => {
         console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
         console.log(req.body);
-
-        let planIdIsBad = !req.body.planId || req.body.planId.includes(" ");
-        let numHoursIsBad = !req.body.numHours || !Number.parseInt(req.body.numHours) || req.body.numHours.includes("-");
-        if (!req.body.token
-        || planIdIsBad
-        || numHoursIsBad) {
-            let responseObject = {error: "Bad request", code: 400, details: ""};
-
-            if (!req.body.token){
-                responseObject.details += "token was not valid.  ";
-            }
-            if (planIdIsBad){
-                responseObject.details += "planId was not valid.  ";
-            }
-            if (numHoursIsBad){
-                responseObject.details += "numHours was not valid.  ";
-            }
-            res.status(400).send(responseObject);
+        let validationResult = await validateParams({"present": ["token", "planId", "numHours"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let email = await authService.getEmailFromToken(req.body.token).catch(err => {
                 console.log(err);
@@ -1114,8 +1103,10 @@ module.exports = {
     getMyMakers: async (req, res) => {
         console.log(`Attempting to retrieve makers for client with token...\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        if (!req.body.token) {
-            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let email = await authService.getEmailFromToken(req.body.token).catch(err => {
                 console.log(err);
@@ -1134,7 +1125,6 @@ module.exports = {
     },
 
     /**
-     * May have to redo to account for relationship and authentication security
      * ENDPOINT: /api/getTimeBucket
      * {
      *      "auth": valid auth token,
@@ -1150,22 +1140,10 @@ module.exports = {
     getTimeBucket: async (req, res) => {
         console.log("Attempting to get a timebucket for client");
         console.log(req.body);
-
-        let planIdIsBad = !req.body.planId || req.body.planId.includes(" ");
-        if (!req.body.token
-            || !req.body.id
-            || planIdIsBad) {
-            let responseObject = {};
-            if (!req.body.token){
-                responseObject.details += "token was not valid.  ";
-            }
-            if (!req.body.id){
-                responseObject.details += "id was not valid.  ";
-            }
-            if (planIdIsBad){
-                responseObject.details += "planId was not valid."
-            }
-            res.status(400).send({error: "Bad request", code: 400, details: "token was not valid"});
+        let validationResult = await validateParams({"present": ["id", "planId"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await clientService.getTimeBucket(req.body.id, req.body.planId).catch(err => {
                 console.log(err);
