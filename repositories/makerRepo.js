@@ -130,7 +130,8 @@ class MakerRepository {
             result = [];
         });
         console.log(`Maker ID retrieved for maker with email ${email}`);
-        return result[0].id;
+        console.log(result);
+        return result.id;
     }
 
 
