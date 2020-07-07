@@ -420,6 +420,7 @@ function clientFunctionality(res) {
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
@@ -429,6 +430,7 @@ function clientFunctionality(res) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
                 '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
+                '   <td>' + item.company + '</td>' +
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
             );
