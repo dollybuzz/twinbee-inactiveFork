@@ -27,7 +27,7 @@ class TimeClockService {
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i){
             let currentSheet = sheetsForMaker[i];
-            if (currentSheet.timeIn[0] != "0" && currentSheet.timeOut[0] == "0"){
+            if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0"){
                 onlineSheets.push(currentSheet);
             }
         }
