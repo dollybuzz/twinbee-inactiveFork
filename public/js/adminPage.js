@@ -2654,6 +2654,7 @@ function refreshGoogle() {
         .then(function () {
             GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
             id_token = GOOGLE_USER.id_token;
+            setTimeout(refreshGoogle, 1200000);
         });
 }
 
@@ -2701,7 +2702,7 @@ $(document).ready(function () {
 
         //refresh tokens before timeout
         var timeToRefresh = Math.max((GOOGLE_USER.expires_in-30) * 1000, 1000);
-        setInterval(refreshGoogle, timeToRefresh);
+        setTimeout(refreshGoogle, timeToRefresh);
 });
 
 
