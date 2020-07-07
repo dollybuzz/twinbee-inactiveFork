@@ -92,7 +92,7 @@ function timeClockFunctionality() {
             $("#makerSelectedClient").html("");
             for (var i = 0; i < relres.length; ++i) {
                 $("#makerSelectedClient").append(
-                    `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
+                    `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].company + " - " + relres[i].occupation}</option>`);
 
                 if (i == relres.length - 1) {
                     //Getting available credits by client selected

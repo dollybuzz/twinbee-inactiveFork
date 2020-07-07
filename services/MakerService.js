@@ -162,12 +162,16 @@ class MakerService {
         }
         for (var relationship of relationshipList) {
             let clientName;
+            let company;
             if (clientMap[relationship.clientId]) {
                 clientName = `${clientMap[relationship.clientId].first_name} ${clientMap[relationship.clientId].last_name}`;
+                company = `${clientMap[relationship.clientId].company}`;
             } else {
                 clientName = "Deleted Client";
+                company = "No Company";
             }
             relationship.clientName = clientName;
+            relationship.company = company;
         }
         return relationshipList;
     }
