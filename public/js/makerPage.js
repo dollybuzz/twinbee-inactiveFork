@@ -346,14 +346,6 @@ function availableCredits() {
     });
 }
 
-//Google
-onSignIn = function (googleUser) {
-    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
-    GOOGLE_USER = googleUser;
-    let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
-    let name = TEST_ENVIRONMENT ? null : profile.getName();
-    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
-};
 
 //Previous Hours Methods
 function timeSheetFunctionality(res) {
@@ -459,27 +451,6 @@ function clientFunctionality(res) {
     });
 }
 
-function refreshGoogle() {
-    gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse()
-        .then(function () {
-            GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-            id_token = GOOGLE_USER.id_token;
-            setTimeout(refreshGoogle, 2400000);
-        });
-}
-
-function init(){
-    console.log("Google initializing...");
-    gapi.auth2.init().then(function () {
-        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
-        id_token = GOOGLE_USER.id_token;
-
-        //refresh tokens before timeout
-        var timeToRefresh = Math.max((GOOGLE_USER.expires_in - 30) * 1000, 1000);
-        setTimeout(refreshGoogle, timeToRefresh);
-    });
-}
-
 $(document).ready(function () {
     $.ajax({
         url: "/api/getEnvironment",
@@ -530,8 +501,4 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-
-
-    init();
-
 });//end document ready
