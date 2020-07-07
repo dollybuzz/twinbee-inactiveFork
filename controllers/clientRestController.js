@@ -74,6 +74,7 @@ let validatorMap = {
  *      message: a string description of the result
  * }
  */
+
 async function validateParams(paramArrayMap, body){
     let validator = {isValid: true, message: ""};
     let paramsTypesToScan = ["present", "positiveIntegerOnly", "noSpaces", "positiveDecimalAllowed", "decimalAllowed"];
