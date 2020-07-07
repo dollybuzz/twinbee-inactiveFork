@@ -325,6 +325,7 @@ module.exports = {
         });
         censoredClient.id = client.id;
         censoredClient.name = client.first_name + " " + client.last_name;
+        censoredClient.company = client.company;
         censoredClient.relId = req.body['relationshipObj[id]'];
         res.send(censoredClient);
     },

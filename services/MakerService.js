@@ -364,6 +364,7 @@ class MakerService {
                 censoredClient.first_name = client.first_name;
                 censoredClient.last_name = client.last_name;
                 censoredClient.id = client.id;
+                censoredClient.company = client.company || "No Company";
                 censoredClient.phone = client.phone;
                 censoredClient.email = client.email;
                 makersClients.push(censoredClient);
