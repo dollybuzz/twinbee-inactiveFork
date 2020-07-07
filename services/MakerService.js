@@ -21,7 +21,7 @@ class MakerService {
             emailService.notifyAdmin(err.toString());
         });
         repoResult.forEach(item => {
-            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted, item.unique);
+            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted, item.unique_descriptor);
 
             makers.push(newObj);
         });
@@ -67,7 +67,7 @@ class MakerService {
             emailService.notifyAdmin(err.toString());
         });
         retrieved.forEach(item => {
-            let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email, item.unique);
+            let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email, item.unique_descriptor);
             onliners.push(online);
         });
         return onliners;
@@ -398,7 +398,7 @@ class MakerService {
 
         if (result[0]) {
             let maker = result[0];
-            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email, maker.deleted, maker.unique);
+            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email, maker.deleted, maker.unique_descriptor);
         }
         return 'not found';
     }
