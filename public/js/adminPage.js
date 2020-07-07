@@ -1452,7 +1452,6 @@ function relationshipFunctionality(res) {
                                 '        </thead><tbody>');
                             //Populate table
                             res.forEach(item => {
-                                console.log(item);
                                 $("#relationshipTable").append('\n' +
                                     '<tr class="relationshipRow">' +
                                     '   <td>' + item.id + '</td>' +
