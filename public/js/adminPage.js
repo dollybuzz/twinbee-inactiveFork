@@ -357,20 +357,12 @@ function clientFunctionality(res) {
         '        </thead><tbody>');
     //Populate table
     res.forEach(item => {
-        let company;
-        if(item.customer.company == 'undefined')
-        {
-            company = "No Company";
-        }else{
-            company = item.customer.company;
-        }
-
         if (item.customer && !item.customer.deleted) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
                 '   <td scope="row">' + item.customer.id + '</td>' +
                 '   <td>' + `${item.customer.first_name} ${item.customer.last_name}` + '</td>' +
-                '   <td>' + company + '</td>' +
+                '   <td>' + item.customer.company || 'No Company' + '</td>' +
                 '   <td>' + item.customer.phone + '</td>' +
                 '   <td>' + item.customer.email + '</td></tr>'
             );
@@ -1090,7 +1082,7 @@ function subscriptionFunctionality(res) {
                 '<tr class="subscriptionRow">' +
                 '   <td scope="row">' + subscription.id + '</td>' +
                 '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
-                '   <td>' + customer.company + '</td>' +
+                '   <td>' + customer.company || 'No Company' + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
                 "   <td>" + changes + "</td>" +
@@ -1464,7 +1456,7 @@ function relationshipFunctionality(res) {
                                     '<tr class="relationshipRow">' +
                                     '   <td>' + item.id + '</td>' +
                                     '   <td>' + clientMap[item.clientId].first_name + " " + clientMap[item.clientId].last_name + '</td>' +
-                                    '   <td>' + clientMap[item.clientId].company + '</td>' +
+                                    '   <td>' + clientMap[item.clientId].company || 'No Company' + '</td>' +
                                     '   <td>' + makerMap[item.makerId].firstName + " " + makerMap[item.makerId].lastName + '</td>' +
                                     '   <td>' + item.occupation + '</td>' +
                                     '   <td>' + item.planId + '</td>'
@@ -1824,11 +1816,13 @@ function creditFunctionality(res) {
             if (minutes >= 0 || minutes < 0) {
                 message += ` ${minutes} minutes `;
             }
+
+
             $("#creditTable").append('\n' +
                 '<tr class="creditRow">' +
                 '   <td scope="row">' + customer.id + '</td>' +
                 '   <td scope="row">' + customer.first_name + ' ' + customer.last_name + '</td>' +
-                '   <td>' + customer.company + '</td>' +
+                '   <td>' + customer.company || 'No Company' + '</td>' +
                 '   <td>' + item + '</td>' +
                 `   <td>${message}</td>`
             );
@@ -2618,7 +2612,7 @@ function runReportFunctionality() {
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
-                        '   <td>' + item.company + '</td>' +
+                        '   <td>' + item.company || 'No Company' + '</td>' +
                         '   <td>' + item.plan + '</td>' +
                         `   <td> ${message}</td></tr>`);
                 }

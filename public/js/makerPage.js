@@ -370,6 +370,7 @@ function timeSheetFunctionality(res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Timesheet ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
         '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
         '            <th scope="col">Task</th>\n' +
@@ -377,7 +378,7 @@ function timeSheetFunctionality(res) {
     //Populate table
     for (var item in res) {
         if (res[item].clientName == null) {
-            var clientIdentifier = `Deleted client ${res[item].clientName}`;
+            var clientIdentifier = `Deleted, Client ${res[item].clientName}`;
         } else {
             clientIdentifier = res[item].clientName;
         }
@@ -387,6 +388,7 @@ function timeSheetFunctionality(res) {
             '<tr class="sheetRow">' +
             '   <td>' + res[item].id + '</td>' +
             '   <td>' + clientIdentifier + '</td>' +
+            '   <td>' +  res[item].company + '</td>' +
             '   <td>' + res[item].timeIn + '</td>' +
             '   <td>' + res[item].timeOut + '</td>' +
             '   <td>' + res[item].task + '</td></tr>'

@@ -165,10 +165,10 @@ class MakerService {
             let company;
             if (clientMap[relationship.clientId]) {
                 clientName = `${clientMap[relationship.clientId].first_name} ${clientMap[relationship.clientId].last_name}`;
-                company = `${clientMap[relationship.clientId].company}`;
+                company = `${clientMap[relationship.clientId].company || 'No Company'}`;
             } else {
                 clientName = "Deleted Client";
-                company = "No Company";
+                company = "Deleted Client";
             }
             relationship.clientName = clientName;
             relationship.company = company;
@@ -244,8 +244,11 @@ class MakerService {
         for (var sheet of sheets) {
             if (!clientMap[sheet.clientId]) {
                 sheet.clientName = "Deleted Client";
-            } else {
+                sheet.company = `Deleted Client`;
+            }
+             else {
                 sheet.clientName = `${clientMap[sheet.clientId].first_name} ${clientMap[sheet.clientId].last_name}`;
+                sheet.company = `${clientMap[sheet.clientId].company || 'No Company'}`;
             }
         }
         return sheets;
