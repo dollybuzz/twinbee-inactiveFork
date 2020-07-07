@@ -582,6 +582,7 @@ class ClientService {
                 let obj = {};
                 obj.first_name = client.first_name;
                 obj.last_name = client.last_name;
+                obj.company = client.company;
                 obj.id = client.id;
                 obj.buckets = client.meta_data;
                 timeBuckets.push(obj);

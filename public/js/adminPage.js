@@ -447,9 +447,9 @@ function clientModForm(res, status) {
         "<label for='modclientlname'>Company:</label>" +
         `<input class='form-control' type='text' id='modcompany' name='modcompany' value='${res.company}'>\n<br><br>\n` +
         "<label for='modphone'>Phone:</label>" +
-        `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='modphone' name='modphone' value='${res.phone}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
-        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -520,11 +520,11 @@ function clientAddForm() {
         "<label for='addclientlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='addclientlname' name='addclientlname'>\n<br><br>\n` +
         "<label for='modclientlname'>Company:</label>" +
-        `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='addcompany' name='addcompany'>\n<br>\n` +
         "<label for='addphone'>Phone:</label>" +
-        `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addphone' name='addphone'>\n<br><br>\n` +
         "<label for='addemail'>Email:</label>" +
-        `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -704,11 +704,11 @@ function makerModForm(res, status) {
         "<label for='modmakerid'>Freedom Maker ID:</label>" +
         `<input class='form-control' type='text' id='modmakerid' name='modmakerid' value='${res.id}' disabled>\n<br>\n` +
         "<label for='modmakerfname'>First Name:</label>" +
-        `<input class='form-control' type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modmakerfname' name='modmakerfname' value='${res.firstName}'>\n<br><br>\n` +
         "<label for='modmakerlname'>Last Name:</label>" +
         `<input class='form-control' type='text' id='modmakerlname' name='modmakerlname' value='${res.lastName}'>\n<br>\n` +
         "<label for='modemail'>Email:</label>" +
-        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modemail' name='modemail' value='${res.email}'>\n<br><br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -759,7 +759,7 @@ function makerAddForm() {
         "<label for='addmakerfname'>First Name:</label>" +
         `<input class='form-control' type='text' id='addmakerfname' name='addmakerfname'>\n<br>\n` +
         "<label for='addmakerlname'>Last Name:</label>" +
-        `<input class='form-control' type='text' id='addmakerlname' name='addmakerlname'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addmakerlname' name='addmakerlname'>\n<br><br>\n` +
         "<label for='addemail'>Email:</label>" +
         `<input class='form-control' type='text' id='addemail' name='addemail'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
@@ -1192,7 +1192,7 @@ function subscriptionModForm(res, status) {
                     $('#modsubscriptionplanname').append(
                         `<option id="${plan.id}" value="${plan.id}" selected>${plan.id}</option>`
                     );
-                else
+                else if(plan.status != 'archived')
                     $('#modsubscriptionplanname').append(
                         `<option id="${plan.id}" value="${plan.id}">${plan.id}</option>`
                     );
@@ -1548,7 +1548,7 @@ function relationshipModForm(res, status) {
         "<label for='modMakerRel'>Select a Freedom Maker:</label>" +
         "<select class='form-control' id='modMakerRel'></select>\n<br><br>" +
         "<label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[6].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[4].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
         "<div id='empty'></div></form>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -1845,7 +1845,7 @@ function creditFunctionality(res) {
     $(".creditRow").click(function () {
         selectedRow = $(this);
         let creditPrompt = `<h5>Please type in the Plan to delete the selected credit.</h5>` +
-            `<h6>You selected Plan: ${selectedRow.children()[2].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
+            `<h6>You selected Plan: ${selectedRow.children()[3].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
             "<br><div id='delete'>" +
             "<div id='empty'></div>" +
             "<div><label for='deleteUser'>Enter Plan:</label></div>" +
@@ -1858,7 +1858,7 @@ function creditFunctionality(res) {
         $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
-            let planId = selectedRow.children()[2].innerHTML;
+            let planId = selectedRow.children()[3].innerHTML;
             showDeletePrompt("delete", creditPrompt, "/api/deleteBucket", {
                 auth: id_token,
                 id: clientId,
@@ -1889,7 +1889,7 @@ function creditFunctionality(res) {
 function creditModForm(res, status) {
 //Pre-populate forms
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
-        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[2].innerHTML}</h6>` +
+        `<h6>You selected Client: ${selectedRow.children()[1].innerHTML}<br>Client ID: ${selectedRow.children()[0].innerHTML}<br>Plan: ${selectedRow.children()[3].innerHTML}</h6>` +
         "<br><br><form id='modify'>" +
         `<div>Enter a number (+/-) to adjust hours:</div>` +
         "<input class='form-control' type='number' id='creditmodhours' name='creditmodhours'>" +
@@ -1941,7 +1941,7 @@ function creditModForm(res, status) {
                 modSubmit("/api/updateClientTimeBucket", {
                     auth: id_token,
                     id: selectedRow.children()[0].innerHTML,
-                    planId: selectedRow.children()[2].innerHTML,
+                    planId: selectedRow.children()[3].innerHTML,
                     minutes: hoursPlusMin,
                 }, modCreditSuccess);
             } else {
