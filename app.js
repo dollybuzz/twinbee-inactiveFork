@@ -14,6 +14,7 @@ const timeSheetRestController = require('./controllers/timeSheetRestController.j
 const timeClockRestController = require('./controllers/timeClockRestController.js');
 const relationshipRestController = require('./controllers/relationshipRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
+const timeReportingRestController = require('./controllers/timeReportingRestController.js');
 const authController = require('./controllers/authController.js');
 const app = express();
 const bodyParser = require('body-parser');
@@ -22,6 +23,8 @@ const es = require('./services/notificationService.js');
 const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
 const chargebeeservice = require('./services/chargebeeService.js');
+const timeReportingService = require('./services/timeReportingService.js');
+
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
@@ -68,10 +71,6 @@ app.post("/api/updateClientContact",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     clientRestController.updateClientContact);
-app.post("/api/updateClientBilling",
-    authController.authorizeAdmin,
-    authController.authorizeMaster,
-    clientRestController.updateClientBilling);
 app.post("/api/updateClientMetadata",
     authController.authorizeAdmin,
     authController.authorizeMaster,
@@ -81,9 +80,7 @@ app.post("/api/updateClientTimeBucket",
     authController.authorizeMaster,
     clientRestController.updateClientTimeBucket);
 app.post("/api/getMaker",
-    authController.authorizeMaker,
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     makerRestController.getMakerById);
 app.post("/api/createMaker",
@@ -100,11 +97,9 @@ app.post("/api/deleteMaker",
     makerRestController.deleteMaker);
 app.post("/api/getTimeSheetsByClientId",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     timeSheetRestController.getTimeSheetsByClientId);
 app.post("/api/getTimeSheetsByMakerId",
-    authController.authorizeMaker,
     authController.authorizeAdmin,
     authController.authorizeMaster,
     timeSheetRestController.getTimeSheetsByMakerId);
@@ -142,17 +137,14 @@ app.post("/api/updatePlan",
     chargebeeRestController.updatePlan);
 app.post("/api/getSubscriptionsByClient",
     authController.authorizeAdmin,
-    authController.clientMatchesSubscription,
     authController.authorizeMaster,
     chargebeeRestController.getSubscriptionsByClient);
 app.post("/api/retrieveSubscriptionChanges",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.retrieveSubscriptionChanges);
 app.post("/api/undoSubscriptionChanges",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.undoSubscriptionChanges);
 app.post("/api/deletePlan",
@@ -169,12 +161,10 @@ app.post("/api/getAllSubscriptions",
     chargebeeRestController.getAllSubscriptions);
 app.post("/api/createSubscription",
     authController.authorizeAdmin,
-    authController.authorizeAdmin,
     authController.authorizeMaster,
     chargebeeRestController.createSubscription);
 app.post("/api/updateSubscription",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.updateSubscription);
 app.post("/api/cancelSubscription",
@@ -183,7 +173,6 @@ app.post("/api/cancelSubscription",
     chargebeeRestController.cancelSubscription);
 app.post("/api/retrieveSubscription",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.retrieveSubscription);
 app.post("/api/clockIn",
@@ -198,17 +187,14 @@ app.post("/api/clockOut",
     timeClockRestController.clockOut);
 app.post("/api/creditNow",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     chargebeeRestController.chargeCustomerNow);
 app.post("/api/getMakersForClient",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     clientRestController.getMakersForClient);
 app.post("/api/getUpdatePaymentURL",
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     clientRestController.getUpdatePaymentPage);
 app.post("/api/getTimeSheet",
@@ -221,15 +207,11 @@ app.post("/api/getClientByToken",
     authController.authorizeMaster,
     clientRestController.getClientByToken);
 app.post("/api/getClientsForMaker",
-    authController.authorizeMaker,
     authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     makerRestController.getClientsForMaker);
 app.post("/api/getMakerIdByToken",
     authController.authorizeMaker,
-    authController.authorizeAdmin,
-    authController.authorizeClient,
     authController.authorizeMaster,
     makerRestController.getMakerIdByToken);
 app.post("/api/getAllTimeBuckets",
@@ -356,6 +338,16 @@ app.post("/api/getMyMakers",
 app.post("/api/getAllMyTimeBuckets",
     authController.authorizeClient,
     clientRestController.getAllMyTimeBuckets);
+
+app.post("/api/getTimeForMakerClientPair",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeReportingRestController.getTimeForMakerClientPair);
+app.post("/api/getAllTransactions",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.getAllTransactions);
+
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

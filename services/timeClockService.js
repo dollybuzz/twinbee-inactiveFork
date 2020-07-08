@@ -1,4 +1,3 @@
-const makerRepo = require('../repositories/makerRepo.js');
 const moment = require('moment');
 const util = require('util')
 const request = util.promisify(require('request'));
@@ -28,7 +27,7 @@ class TimeClockService {
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i){
             let currentSheet = sheetsForMaker[i];
-            if (currentSheet.timeIn[0] != "0" && currentSheet.timeOut[0] == "0"){
+            if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0"){
                 onlineSheets.push(currentSheet);
             }
         }
@@ -45,28 +44,64 @@ class TimeClockService {
 
     /**
      * Clocks a given user in with the
-     * @param makerId       - maker to clock in
-     * @param hourlyRate    - chargebee plan id indicating hourly bill rate
-     * @param clientId      - client to be billed for maker hours
+     * @param token         - token of the requesting maker
+     * @param relationshipId- relationship between maker and paying client
      * @param task          - maker's task for the session
      * @returns {Promise<boolean>} indicating whether the clock-in was received and processed successfully
      */
-    async clockIn(makerId, hourlyRate, clientId, task){
+    async clockIn(token, task, relationshipId){
         let result = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'token':token
+            }
+        }).catch(err=>{
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+        let idResponse = JSON.parse(result.body);
+
+        result = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'id':relationshipId
+            }
+        }).catch(err=>{
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        let relationship = JSON.parse(result.body);
+
+        if (idResponse.id.toString() !== relationship.makerId.toString()){
+            console.log("Maker attempted to clock into external relationship.");
+            emailService.notifyAdmin(`Maker attempted to clock into external relationship.
+            Maker: ${idResponse.id}
+            Relationship: ${relationshipId}
+            Task: ${task}`);
+            return false;
+        }
+
+        result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByMakerId`,
             form: {
                 'auth':process.env.TWINBEE_MASTER_AUTH,
-                'id':makerId.toString()
+                'id':relationship.makerId.toString()
             }
         }).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         result = JSON.parse(result.body);
+
         for (var sheet of result){
-            if (sheet.timeOut == '0000-00-00 00:00:00'){
-                console.log(`User ${makerId} bad clock in attempt; already clocked in`);
+            if (sheet.timeOut.toString() === '0000-00-00 00:00:00'){
+                console.log(`User ${relationship.makerId} bad clock in attempt; already clocked in`);
                 return true; //attempt successful, a clock-in exists.
             }
         }
@@ -76,10 +111,13 @@ class TimeClockService {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/createTimeSheet`,
             form: {
-                'makerId': makerId,
-                'hourlyRate': hourlyRate,
-                'clientId': clientId,
-                timeIn: await this.getCurrentMoment(),
+                'makerId': relationship.makerId,
+                'hourlyRate': relationship.planId,
+                'clientId': relationship.clientId,
+                timeIn: await this.getCurrentMoment().catch(err=>{
+                    console.log(err);
+                    emailService.notifyAdmin(err.toString());
+                }),
                 timeOut: '0000-00-00 00:00:00',
                 'task': task,
                 'auth':process.env.TWINBEE_MASTER_AUTH
@@ -87,22 +125,37 @@ class TimeClockService {
         });
         let body = JSON.parse(result.body);
 
-        console.log(`Clock-in request sent for ${makerId} at time ${rightNow}`);
+        console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
         return Number.isInteger(body.id);
     }
 
     /**
-     * "Clocks out" a maker by id
+     * "Clocks out" a maker by token
      * NOTE: This assumes only one sheet should be 'online' at a time.
      * If multiple are online, all are clocked out.
      *
-     * @param makerId   - id of maker to clock out
+     * @param token   - token of maker to clock out
+     * @param newTask - updated task if any
      */
-    async clockOut(makerId){
+    async clockOut(token, newTask){
+
+        let result = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
+            form: {
+                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'token':token
+            }
+        }).catch(err=>{
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+        let idResponse = JSON.parse(result.body);
+        let makerId = idResponse.id;
 
         let onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         //"clock out" online sheets
@@ -110,7 +163,7 @@ class TimeClockService {
             let currentSheet = onlineSheets[i];
             let rightNow = await this.getCurrentMoment().catch(err=>{
                 console.log(err);
-                emailService.notifyAdmin(err);
+                emailService.notifyAdmin(err.toString());
             });
             request({
                 method: 'POST',
@@ -120,8 +173,8 @@ class TimeClockService {
                     hourlyRate: currentSheet.hourlyRate,
                     timeIn: currentSheet.timeIn,
                     timeOut: rightNow,
-                    task: currentSheet.task,
-                    adminNote: currentSheet.adminNote,
+                    task: newTask ? newTask : currentSheet.task,
+                    detail: currentSheet.adminNote,
                     'auth':process.env.TWINBEE_MASTER_AUTH
                 }
             });
@@ -129,7 +182,7 @@ class TimeClockService {
 
             let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow).catch(err=>{
                 console.log(err);
-                emailService.notifyAdmin(err);
+                emailService.notifyAdmin(err.toString());
             });
             request({
                 method: 'POST',
@@ -149,8 +202,8 @@ class TimeClockService {
 
         onlineSheets = await this.getOnlineSheets(makerId).catch(err=>{
             console.log(err);
-            emailService.notifyAdmin(err);
-        });;
+            emailService.notifyAdmin(err.toString());
+        });
 
         console.log("Remaining online sheets: ");
         console.log(onlineSheets);

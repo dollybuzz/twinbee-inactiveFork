@@ -1,5 +1,5 @@
 var GOOGLE_USER = null;
-
+var id_token = null;
 
 
 
@@ -13,21 +13,14 @@ function signOut() {
     });
 }
 
-/**
- * used by google's api.  Adds users to the database for wishlist use as a default.
- * @param googleUser a Google-api-specific object passed when a user uses a google
- * sign-in
- */
-function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
+//Google
+onSignIn = function (googleUser) {
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
     GOOGLE_USER = googleUser;
-    var id_token = GOOGLE_USER.getAuthResponse().id_token;
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-    console.log(`ID token: ${id_token}`);
-}
+    let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
+    let name = TEST_ENVIRONMENT ? null : profile.getName();
+    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
+};
 
 /**
  * Wrapper for the google token verification process. Limited use;
@@ -52,11 +45,24 @@ function googleUserAction(route, callback = null,) {
     })
 }
 
+function refreshGoogle() {
+    gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse()
+        .then(function () {
+            GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+            id_token = GOOGLE_USER.id_token;
+            setTimeout(refreshGoogle, 2400000);
+        });
+}
 
-function init() {
-    gapi.load('auth2', function () {
-        console.log("Google init success")
 
+function init(){
+    gapi.auth2.init().then(function () {
+        console.log("Google initializing...");
+        GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+        id_token = GOOGLE_USER.id_token;
 
-    })
+        //refresh tokens before timeout
+        var timeToRefresh = Math.max((GOOGLE_USER.expires_in - 30) * 1000, 1000);
+        setTimeout(refreshGoogle, timeToRefresh);
+    });
 }

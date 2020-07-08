@@ -5,22 +5,23 @@ const Maker = require('../domain/entity/maker.js');
 const emailService = require('./notificationService.js');
 
 class MakerService {
-    constructor(){};
+    constructor() {
+    };
 
     /**
      * Retrives a list of all makers.
      *
      * @returns {Promise<[Maker]>}
      */
-    async getAllMakers(){
+    async getAllMakers() {
         console.log("Getting all makers...");
         let makers = [];
-        let repoResult = await makerRepo.getAllMakers().catch(err=>{
+        let repoResult = await makerRepo.getAllMakers().catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         repoResult.forEach(item => {
-            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted);
+            let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted, item.unique_descriptor);
 
             makers.push(newObj);
         });
@@ -34,21 +35,22 @@ class MakerService {
      * @param firstName - first name of new maker
      * @param lastName  - last name of new maker
      * @param email     - email of new maker
+     * @param unique    - identifying descriptor for maker
      * @returns {Promise<maker>}
      */
-    async createNewMaker(firstName, lastName, email){
+    async createNewMaker(firstName, lastName, email, unique) {
         console.log("Creating new maker...");
-        await makerRepo.createMaker(firstName, lastName, email).catch(err=>{
+        await makerRepo.createMaker(firstName, lastName, email, unique).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
-        let id = await makerRepo.getMakerIdByEmail(email).catch(err=>{
+        let id = await makerRepo.getMakerIdByEmail(email).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         console.log(id);
         emailService.sendWelcome(email);
-        return new Maker(id, firstName, lastName, email);
+        return new Maker(id, firstName, lastName, email, unique);
     }
 
     /**
@@ -60,14 +62,14 @@ class MakerService {
     async getOnlineMakers() {
         console.log("Getting online makers...");
         let onliners = [];
-        let retrieved = await makerRepo.getOnlineMakers().catch(err=>{
+        let retrieved = await makerRepo.getOnlineMakers().catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         retrieved.forEach(item => {
-            let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email);
+            let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email, item.unique_descriptor);
             onliners.push(online);
-        })
+        });
         return onliners;
     }
 
@@ -76,8 +78,11 @@ class MakerService {
      *
      * @returns {Promise<unknown>}
      */
-    async getMakerIdByEmail(email){
-        return await makerRepo.getMakerIdByEmail(email).catch(err=>{console.log(err)});
+    async getMakerIdByEmail(email) {
+        return await makerRepo.getMakerIdByEmail(email).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
     }
 
     /**
@@ -87,13 +92,14 @@ class MakerService {
      * @param firstName - new first name of the maker
      * @param lastName  - new last name of the maker
      * @param email     - new email of the maker
+     * @param unique    - descriptor for maker
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
-    async updateMaker(id, firstName, lastName, email){
+    async updateMaker(id, firstName, lastName, email, unique) {
         console.log(`Updating maker ${id}...`);
-        await makerRepo.updateMaker(id, firstName, lastName, email).catch(err=>{
+        await makerRepo.updateMaker(id, firstName, lastName, email, unique).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         return this.getMakerById(id);
     }
@@ -102,9 +108,12 @@ class MakerService {
      * Deletes a maker by their id
      * @param id    - maker to be deleted
      */
-    async deleteMaker(id){
+    async deleteMaker(id) {
         console.log(`Deleting maker ${id}...`);
-        await this.deleteAllRelationships(id);
+        await this.deleteAllRelationships(id).catch(err=>{
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });;
         makerRepo.deleteMaker(id);
     }
 
@@ -114,7 +123,7 @@ class MakerService {
      * @param makerId  -   maker whose relationships are to be retrieved
      * @returns {Promise<[Relationship]>}
      */
-    async getRelationshipsForMaker(makerId){
+    async getRelationshipsForMaker(makerId) {
         console.log(`Checking for relationships related to ${makerId}...`);
         let result = await request({
             method: 'POST',
@@ -124,13 +133,13 @@ class MakerService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let relationshipList = JSON.parse(result.body);
         let newRelationshipList = [];
-        for (var ship of relationshipList){
-            if (ship.makerId == makerId){
+        for (var ship of relationshipList) {
+            if (ship.makerId == makerId) {
                 newRelationshipList.push(ship)
             }
         }
@@ -139,29 +148,31 @@ class MakerService {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         clients = JSON.parse(clients.body);
         let clientMap = {};
 
-        for (var entry of clients){
+        for (var entry of clients) {
             clientMap[entry.customer.id] = entry.customer;
         }
-        for (var relationship of relationshipList){
+        for (var relationship of relationshipList) {
             let clientName;
-            if (clientMap[relationship.clientId]){
+            let company;
+            if (clientMap[relationship.clientId]) {
                 clientName = `${clientMap[relationship.clientId].first_name} ${clientMap[relationship.clientId].last_name}`;
-            }
-            else{
+                company = `${clientMap[relationship.clientId].company || 'No Company'}`;
+            } else {
                 clientName = "Deleted Client";
+                company = "Deleted Client";
             }
             relationship.clientName = clientName;
+            relationship.company = company;
         }
-
         return relationshipList;
     }
 
@@ -171,13 +182,13 @@ class MakerService {
      * @param maker  - maker whose relationships are to be deleted
      * @returns {Promise<void>}
      */
-    async deleteAllRelationships(maker){
+    async deleteAllRelationships(maker) {
         console.log(`Attempting to delete relationships for ${maker}`);
         let relationshipList = await this.getRelationshipsForMaker(maker);
         console.log(relationshipList);
-        for await (var relationship of relationshipList){
+        for await (var relationship of relationshipList) {
             console.log(relationship);
-            if (relationship.makerId == maker){
+            if (relationship.makerId.toString() === maker.toString()) {
                 console.log("Relationship found.");
                 request({
                     method: 'POST',
@@ -190,24 +201,24 @@ class MakerService {
             }
         }
     }
-    
+
     /**
      * Retrieves all time sheets for a given maker.
      * @param id    - id of the desired maker
      * @returns {Promise<[]>} containing timeSheet objects
      */
-    async getSheetsByMaker(id){
+    async getSheetsByMaker(id) {
         console.log(`Getting sheets for maker ${id}...`);
-        let result =  await request({
+        let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByMakerId`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH,
-                'id':id
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'id': id
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let sheets = JSON.parse(result.body);
@@ -217,44 +228,46 @@ class MakerService {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let clients = JSON.parse(result.body);
         let clientMap = {};
 
-        for (var entry of clients){
+        for (var entry of clients) {
             clientMap[entry.customer.id] = entry.customer;
         }
-        for (var sheet of sheets){
-            if (!clientMap[sheet.clientId]){
+        for (var sheet of sheets) {
+            if (!clientMap[sheet.clientId]) {
                 sheet.clientName = "Deleted Client";
+                sheet.company = `Deleted Client`;
             }
-            else {
+             else {
                 sheet.clientName = `${clientMap[sheet.clientId].first_name} ${clientMap[sheet.clientId].last_name}`;
+                sheet.company = `${clientMap[sheet.clientId].company || 'No Company'}`;
             }
         }
         return sheets;
     }
 
-    async getMyRelationship(makerId, relationshipId){
+    async getMyRelationship(makerId, relationshipId) {
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id': relationshipId
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let relationship = JSON.parse(result.body);
-        if (relationship.makerId !== makerId){
+        if (relationship.makerId !== makerId) {
             return false;
         }
 
@@ -262,33 +275,33 @@ class MakerService {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getClientName`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'auth': process.env.TWINBEE_MASTER_AUTH,
                 'relationshipObj': relationship
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let client = JSON.parse(result.body);
         relationship.clientName = client.name;
         return relationship;
     }
 
-    async getMyRelationshipBucket(makerId, relationshipId){
+    async getMyRelationshipBucket(makerId, relationshipId) {
 
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH,
+                'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id': relationshipId
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let body = JSON.parse(result.body);
-        if (body.makerId !== makerId){
+        if (body.makerId !== makerId) {
             return false;
         }
         let occupation = body.occupation;
@@ -296,13 +309,13 @@ class MakerService {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeBucket`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH,
-                'id':body.clientId,
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'id': body.clientId,
                 'planId': body.planId
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         body = JSON.parse(result.body);
         body.occupation = occupation;
@@ -315,17 +328,17 @@ class MakerService {
      * @param id - id of the maker to perform the search for
      * @returns {Promise<[Customer]>}
      */
-    async getClientListForMakerId(id){
+    async getClientListForMakerId(id) {
         console.log(`Getting client list for maker ${id}...`);
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         let clients = JSON.parse(result.body);
@@ -334,29 +347,31 @@ class MakerService {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
-                'auth':process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
         let relationships = JSON.parse(result.body);
         let clientMap = {};
         let alreadyOnList = {};
         let makersClients = [];
 
-        for (var i = 0; i < clients.length; ++i){
+        for (var i = 0; i < clients.length; ++i) {
             clientMap[clients[i].customer.id] = clients[i].customer;
         }
 
-        for (var i = 0; i < relationships.length; ++i){
+        for (var i = 0; i < relationships.length; ++i) {
             let clientOnSheet = relationships[i].clientId;
-            if (clientMap[clientOnSheet] && !alreadyOnList[clientOnSheet] && relationships[i].makerId == id){
+            if (clientMap[clientOnSheet] && !alreadyOnList[clientOnSheet]
+                && relationships[i].makerId.toString() === id.toString()) {
                 let client = clientMap[clientOnSheet];
                 let censoredClient = {};
                 censoredClient.first_name = client.first_name;
                 censoredClient.last_name = client.last_name;
                 censoredClient.id = client.id;
+                censoredClient.company = client.company || "No Company";
                 censoredClient.phone = client.phone;
                 censoredClient.email = client.email;
                 makersClients.push(censoredClient);
@@ -374,16 +389,16 @@ class MakerService {
      * @param id    - id of the desired maker
      * @returns {Promise<maker>} or {Promise<"not found">}
      */
-    async getMakerById(id){
+    async getMakerById(id) {
         console.log(`Getting maker data for maker ${id}`);
-        let result = await  makerRepo.getMakerById(id).catch(err=>{
+        let result = await makerRepo.getMakerById(id).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err);
+            emailService.notifyAdmin(err.toString());
         });
 
         if (result[0]) {
             let maker = result[0];
-            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email, maker.deleted);
+            return new Maker(maker.id, maker.first_name, maker.last_name, maker.email, maker.deleted, maker.unique_descriptor);
         }
         return 'not found';
     }

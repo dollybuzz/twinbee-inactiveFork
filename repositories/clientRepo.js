@@ -1,9 +1,8 @@
 const {query} = require('./repoMaster');
-const request = require('request');
 var chargebee = require("chargebee");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
     api_key : process.env.CHARGEBEE_API_KEY});
-const emailService = require('../services/notificationService.js');
+const notificationService = require('../services/notificationService.js');
 
 class ClientRepository {
     constructor() {
@@ -19,12 +18,11 @@ class ClientRepository {
                 phone: phoneNumber,
             }).request(function(error,result) {
                 if(error){
-                    //TODO handle error... email us?
+                    notificationService.notifyAdmin(error.toString());
                     console.log(error);
                     reject(error);
                 }else{
                     var customer = result.customer;
-                    var card = result.card;
 
                     console.log(`Customer ${customer.id} successfully created, adding to DB`);
                     let sql = 'INSERT INTO client(chargebee_id, email) ' +
@@ -32,12 +30,12 @@ class ClientRepository {
                     let sqlParams = [customer.id, customerEmail];
                     query(sql, sqlParams, function (err, result) {
                         if (err) {
-                            throw err;
+                            notificationService.notifyAdmin(err.toString());
                             reject(err);
                         }
                     });
                     console.log("Customer added to DB");
-                    emailService.sendWelcome(customerEmail);
+                    notificationService.sendWelcome(customerEmail);
                     resolve(customer);
                 }
             });
@@ -53,7 +51,7 @@ class ClientRepository {
                 company: company
             }).request(function(error,result) {
                 if(error){
-                    //TODO handle error
+                    notificationService.notifyAdmin(error.toString());
                     console.log(`Failed to update ${clientId}`);
                     console.log(error);
                 }else{
@@ -63,8 +61,8 @@ class ClientRepository {
                     let sqlParams = [customerEmail, customer.id];
                     query(sql, sqlParams, function (err, result) {
                         if (err) {
+                            notificationService.notifyAdmin(err.toString());
                             reject(err);
-                            throw err;
                         }
                         console.log(`Updated ${customer.id}`);
                         resolve(customer);
@@ -78,7 +76,10 @@ class ClientRepository {
         let sql = 'DELETE FROM client WHERE chargebee_id = ?';
         let sqlParams = [chargebeeId];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err.toString());
+            }
         });
 
 
@@ -87,6 +88,7 @@ class ClientRepository {
             if(error){
                 console.log(`Failed to delete ${chargebeeId}`);
                 console.log(error);
+                notificationService.notifyAdmin(error.toString());
             }else{
                 console.log(`Deleted ${chargebeeId}. Will update shortly.`);
             }
@@ -97,7 +99,8 @@ class ClientRepository {
         let listObject = await chargebee.customer.list({
             "limit": "100"
         }).request().catch(error => {
-            console.log(error)
+            console.log(error);
+            notificationService.notifyAdmin(err.toString());
         });
         let list = listObject.list;
         while (listObject.next_offset) {
@@ -119,7 +122,7 @@ class ClientRepository {
                 "email[is]": email
             }).request(function (error, result) {
                 if (error) {
-                    //email us?
+                    notificationService.notifyAdmin(error.toString());
                     console.log(error);
                     reject(error);
                 } else {
@@ -137,7 +140,7 @@ class ClientRepository {
         return new Promise((resolve, reject)=>{
             chargebee.customer.retrieve(id).request(function(error,result) {
                 if(error){
-                    //email us?
+                    notificationService.notifyAdmin(error.toString());
                     console.log(`Could not find customer with id ${id}`);
                     console.log(error);
                     reject(error);

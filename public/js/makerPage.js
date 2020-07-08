@@ -1,15 +1,13 @@
 let selectedTab = null;
-let id_token = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
-
 let navMapper = {
     main: function () {
         location.reload();
     },
 
-    timeclock: function() {
+    timeclock: function () {
         timeClockFunctionality();
     },
 
@@ -53,7 +51,7 @@ function createBody() {
     $("#buttonsBottom").hide();
 };
 
-//Main Clock Methods
+//Time Clock Methods
 function timeClockFunctionality() {
     //Create page
     $("#userMainContent").html(
@@ -92,9 +90,9 @@ function timeClockFunctionality() {
         dataType: "json",
         success: function (relres, status) {
             $("#makerSelectedClient").html("");
-            for(var i = 0; i < relres.length; ++i) {
+            for (var i = 0; i < relres.length; ++i) {
                 $("#makerSelectedClient").append(
-                    `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
+                    `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].company + " - " + relres[i].occupation}</option>`);
 
                 if (i == relres.length - 1) {
                     //Getting available credits by client selected
@@ -138,7 +136,8 @@ function timeClockFunctionality() {
                         $("#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
-                    }, 3000)
+                        $("#makerSelectedClient").hide();
+                    }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = true;
                     $("#taskBlock").css("opacity", "1");
@@ -178,69 +177,43 @@ function setClockInFunctionality() {
 
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-
         $.ajax({
-            url: "api/getMyRelationship",
+            url: "api/clockIn",
             method: "post",
             data: {
                 auth: id_token,
-                token: id_token,
-                relationshipId: $("#makerSelectedClient").val()
+                relationshipId: $("#makerSelectedClient").val(),
+                task: $("#taskEntry").val()
             },
             dataType: "json",
-            success: function (relres, status) {
-                $.ajax({
-                    url: "api/clockIn",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        makerId: relres.makerId,
-                        hourlyRate: relres.planId,
-                        clientId: relres.clientId,
-                        task: $("#taskEntry").val()
-                    },
-                    dataType: "json",
-                    success: function (clockres, status) {
-                        if (clockres) {
-                            setClockOutFunctionality();
-                            $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
-                            $("#makerText2").css("opacity", "1");
+            success: function (clockres, status) {
+                if (clockres) {
+                    setClockOutFunctionality();
+                    $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
+                    $("#makerText2").css("opacity", "1");
 
 
-                            $("#clockPrompt").html("<h5>Time is running . . .</h5>");
-                            $("#clockPrompt").css("opacity", "1");
+                    $("#clockPrompt").html("<h5>Time is running . . .</h5>");
+                    $("#clockPrompt").css("opacity", "1");
 
-                            $("#taskBlock").css("opacity", "0");
-                            $("#taskEntry").css("opacity", "0");
-                            $("#taskBlock").css("transition", "opacity 0.5s ease-out");
-                            $("#taskEntry").css("transition", "opacity 0.5s ease-out");
+                    setTimeout(function () {
+                        $("#makerText2").css("opacity", "0");
+                    }, 1000);
 
-                            setTimeout(function () {
-                                $("#makerText2").css("opacity", "0");
-                                $("#taskBlock").hide();
-                                $("#taskEntry").hide();
-                            }, 3000);
+                    setTimeout(function () {
+                        $("#makerText2").html("");
+                    }, 2000);
 
-                            setTimeout(function () {
-                                $("#makerText2").html("");
-                            }, 6000);
-
-                        } else {
-                            $("#makerText2").html("<br><h5>Could not clock in!</h5>");
-                        }
-                    },
-                    error: function (clockres, status) {
-                        $("#makerClock").html('Clock In');
-                        $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
-                    }
-                });
+                } else {
+                    $("#makerText2").html("<br><h5>Could not clock in!</h5>");
+                }
             },
-            error: function (relres, status) {
+            error: function (clockres, status) {
                 $("#makerClock").html('Clock In');
-                $("#clockButton").html("<h5>You are not currently assigned to any Client.<br>" +
-                    "Please follow up with Freedom Makers for further instruction.</h5>");
+                $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
             }
         });
+
     });
 }
 
@@ -250,12 +223,17 @@ function setClockOutFunctionality() {
     $("#clockPrompt").css("opacity", "1");
     $("#clientCredit").css("opacity", "0");
     $("#availcredit").css("opacity", "0");
+    $("#taskBlock").css("opacity", "0");
+    $("#taskEntry").css("opacity", "0");
 
     setTimeout(function () {
+        $("#makerSelectedClient").hide();
         $("#clientRole").hide();
         $("#clientCredit").hide();
         $("#availcredit").hide();
-    }, 3000);
+        $("#taskBlock").hide();
+        $("#taskEntry").hide();
+    }, 1500);
 
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#32444e");
@@ -281,8 +259,7 @@ function setClockOutFunctionality() {
                     url: "api/clockOut",
                     method: "post",
                     data: {
-                        auth: id_token,
-                        makerId: TEST_ENVIRONMENT ? 4 : tokenres.id
+                        auth: id_token
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -291,36 +268,34 @@ function setClockOutFunctionality() {
                             $("#clockPrompt").css("opacity", "0");
                             $("#makerText2").html("<br><h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
-                            $("#taskBlock").css("transition", "opacity 0.5s ease-in");
-                            $("#taskEntry").css("transition", "opacity 0.5s ease-in");
-                            $("#taskBlock").show();
-                            $("#taskBlock").css("opacity", "1");
-                            $("#taskEntry").show();
-                            $("#taskEntry").val("");
-                            $("#taskEntry").css("opacity", "1");
-                            $("#clientRole").show();
                             $("#clientRole").css("opacity", "1");
                             $("#makerSelectedClient").css("opacity", "1");
                             $("#clientCredit").css("opacity", "1");
                             $("#availcredit").css("opacity", "1");
+                            $("#taskBlock").css("opacity", "1");
+                            $("#taskEntry").css("opacity", "1");
+                            $("#taskEntry").val("");
+                            $("#taskBlock").show();
+                            $("#taskEntry").show();
                             $("#clientCredit").show();
                             $("#clientRole").show();
                             $("#availcredit").show();
+                            $("#makerSelectedClient").show();
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
-                            }, 3000);
+                            }, 1000);
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
                                 $("#clockPrompt").html("");
-                            }, 6000);
+                            }, 2000);
                         } else {
-                            $("#makerText2").html("<br><h5>Could not clock out!</h5>");
+                            $("#clockPrompt").html("<br><h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
                     },
                     error: function (clockres, status) {
-                        $("#makerClock").html('Clock Out')
+                        $("#makerClock").html('Clock Out');
                         $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
                     }
                 });
@@ -344,13 +319,17 @@ function availableCredits() {
         },
         dataType: "json",
         success: function (bucketres, bucketstatus) {
-            let hours = Math.floor(((bucketres.minutes) / 60));
+            let hours = ((bucketres.minutes) / 60);
             let minutes = (bucketres.minutes) % 60;
             let message = "";
-            if (hours > 0) {
-                message += ` ${hours} hours `;
+            if (hours >= 0) {
+                message += ` ${Math.floor(hours)} hours `;
             }
-            if (minutes > 0) {
+            if (hours <= -1) {
+                hours = Math.abs(hours);
+                message += `-${Math.floor(hours)} hours `;
+            }
+            if (minutes >= 0 || minutes < 0) {
                 message += ` ${minutes} minutes `;
             }
             $("#availcredit").html(message);
@@ -361,14 +340,6 @@ function availableCredits() {
     });
 }
 
-//Google
-onSignIn = function (googleUser) {
-    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
-    GOOGLE_USER = googleUser;
-    let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
-    let name = TEST_ENVIRONMENT ? null : profile.getName();
-    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
-};
 
 //Previous Hours Methods
 function timeSheetFunctionality(res) {
@@ -385,18 +356,16 @@ function timeSheetFunctionality(res) {
         '        <thead class="thead">\n' +
         '            <th scope="col">Timesheet ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
         '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
     for (var item in res) {
-        if(res[item].clientName == null)
-        {
-            var clientIdentifier = `Deleted client ${res[item].clientName}`;
-        }
-        else
-        {
+        if (res[item].clientName == null) {
+            var clientIdentifier = `Deleted, Client ${res[item].clientName}`;
+        } else {
             clientIdentifier = res[item].clientName;
         }
 
@@ -405,6 +374,7 @@ function timeSheetFunctionality(res) {
             '<tr class="sheetRow">' +
             '   <td>' + res[item].id + '</td>' +
             '   <td>' + clientIdentifier + '</td>' +
+            '   <td>' +  res[item].company + '</td>' +
             '   <td>' + res[item].timeIn + '</td>' +
             '   <td>' + res[item].timeOut + '</td>' +
             '   <td>' + res[item].task + '</td></tr>'
@@ -438,6 +408,7 @@ function clientFunctionality(res) {
     $("#clientTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Phone</th>\n' +
         '            <th scope="col">Email</th>\n' +
         '        </thead><tbody>');
@@ -447,6 +418,7 @@ function clientFunctionality(res) {
             $("#clientTable").append('\n' +
                 '<tr class="clientRow">' +
                 '   <td>' + `${item.first_name} ${item.last_name}` + '</td>' +
+                '   <td>' + item.company + '</td>' +
                 '   <td>' + item.phone + '</td>' +
                 '   <td>' + item.email + '</td></tr>'
             );
@@ -523,6 +495,4 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
-
-
-})//end document ready
+});//end document ready

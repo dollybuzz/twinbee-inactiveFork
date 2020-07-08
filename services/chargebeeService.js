@@ -1,9 +1,13 @@
+var moment = require('moment');
+
 var chargebee = require("chargebee");
-chargebee.configure({site : process.env.CHARGEBEE_SITE,
-    api_key : process.env.CHARGEBEE_API_KEY});
+chargebee.configure({
+    site: process.env.CHARGEBEE_SITE,
+    api_key: process.env.CHARGEBEE_API_KEY
+});
 const util = require('util');
 const request = util.promisify(require('request'));
-const emailService = require('./notificationService.js');
+const {notifyAdmin} = require("./notificationService");
 
 
 //TODO: Add validation
@@ -21,23 +25,29 @@ class ChargebeeService {
     };
 
     /**
-     * Retrieves all plans from the {TEST} environment as chargebee entries.
+     * Retrieves all plans from the environment as chargebee entries.
      * Note that in order to access meaningful data, an intermediate object is
      * accessed.  E.g, to access "pricing_model", given that "returnedValue" is the
-     * result of this funciton, use:
+     * result of this function, use:
      *  returnedValue[0].plan.pricing_model
      * @returns {Promise<[{entry:plan{}}]>}
      */
-    async getAllPlans(){
+    async getAllPlans() {
         let listObject = await chargebee.plan.list({
             limit: 100
-        }).request().catch(error => console.log(error));
+        }).request().catch(error => {
+            console.log(error);
+            notifyAdmin(error.toString());
+        });
         let list = listObject.list;
         while (listObject.next_offset) {
             listObject = await chargebee.plan.list({
                 limit: 100,
                 offset: listObject.next_offset
-            }).request().catch(error => console.log(error));
+            }).request().catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
             for (var item of listObject.list) {
                 list.push(item);
             }
@@ -46,7 +56,7 @@ class ChargebeeService {
     }
 
     /**
-     * Creates a new plan in the {TEST} environment.
+     * Creates a new plan in the  environment.
      *
      * @param planId      - desired name of the plan
      * @param invoiceName   - desired name of the plan as displayed on an invoice
@@ -71,11 +81,11 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     //handle error
-                    emailService.notifyAdmin(error);
+                    notifyAdmin(error);
                     console.log(error);
                     reject(error);
                 } else {
-                    console.log(`Plan ${planId} created. Rate: $${pricePerHour} per `+
+                    console.log(`Plan ${planId} created. Rate: $${pricePerHour} per ` +
                         `hour. Description: ${planDescription}`);
                     var plan = result.plan;
                     resolve(plan);
@@ -96,7 +106,7 @@ class ChargebeeService {
             chargebee.plan.retrieve(planId).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin(error);
                     reject(error);
                 } else {
                     console.log(`Plan ${planId} retrieved`);
@@ -127,10 +137,10 @@ class ChargebeeService {
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin(error);
                     reject(error);
                 } else {
-                    console.log(`Plan ${planId} updated. New name: ${planId}, `+
+                    console.log(`Plan ${planId} updated. New name: ${planId}, ` +
                         `invoice name ${planInvoiceName}, price ${planPrice}`);
                     var plan = result.plan;
                     resolve(plan);
@@ -148,7 +158,7 @@ class ChargebeeService {
         chargebee.plan.delete(planId).request(function (error, result) {
             if (error) {
                 console.log(error);
-                emailService.notifyAdmin(error);
+                notifyAdmin(error);
             } else {
                 var plan = result.plan;
             }
@@ -167,15 +177,23 @@ class ChargebeeService {
         console.log("Getting all subscriptions...");
         let listObject = await chargebee.subscription.list({
             limit: 100,
-            include_deleted: true
-        }).request().catch(error => console.log(error));
+            include_deleted: true,
+            "sort_by[desc]": "created_at"
+        }).request().catch(error => {
+            console.log(error);
+            notifyAdmin(error)
+        });
         let list = listObject.list;
         while (listObject.next_offset) {
             listObject = await chargebee.subscription.list({
                 limit: 100,
                 include_deleted: true,
+                "sort_by[desc]": "created_at",
                 offset: listObject.next_offset
-            }).request().catch(error => console.log(error));
+            }).request().catch(error => {
+                console.log(error);
+                notifyAdmin(error)
+            });
             for (var item of listObject.list) {
                 list.push(item);
             }
@@ -185,24 +203,31 @@ class ChargebeeService {
 
     /**
      * Creates a new subscription for an existing customer.
-     * Note that auto_collection is ALWAYS ON.
+     * Note that auto_collection is ALWAYS ON. If a start date is omitted,
+     * the request is processed immediately
      *
      * @param planId    - id of the plan to subscribe to
      * @param customerId- id of the customer that is subscribing
      * @param planQuantity- number of hours per month
+     * @param startDate - desired start date in moment-readable format
      */
-    createSubscription(planId, customerId, planQuantity) {
+    createSubscription(planId, customerId, planQuantity, startDate) {
+        let startMoment = moment(startDate);
+        let startTimeStamp = startMoment.unix();
         console.log(`Creating subscription for customer ${customerId} with plan ${planId}...`);
         return new Promise((resolve, reject) => {
-            chargebee.subscription.create_for_customer(customerId, {
+            let subscriptionConfig = {
                 plan_id: planId,
                 plan_quantity: planQuantity,
                 auto_collection: "on"
-            }).request(function (error, result) {
+            };
+            if (startDate) {
+                subscriptionConfig.start_date = startTimeStamp;
+            }
+            chargebee.subscription.create_for_customer(customerId, subscriptionConfig).request(function (error, result) {
                 if (error) {
-                    //handle error
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin(error);
                     reject(error);
                 } else {
                     var subscription = result.subscription;
@@ -216,11 +241,11 @@ class ChargebeeService {
                             'id': result.customer.id,
                             'planId': planId,
                             'minutes': subscription.plan_quantity * 60,
-                            'auth':process.env.TWINBEE_MASTER_AUTH
+                            'auth': process.env.TWINBEE_MASTER_AUTH
                         }
                     }).catch(err => {
                         console.log(err);
-                        emailService.notifyAdmin(error);
+                        notifyAdmin(error);
                     });
                     console.log("Update time bucket due to purchase request sent")
                 }
@@ -236,13 +261,12 @@ class ChargebeeService {
     retrieveSubscription(subscriptionId) {
         console.log(`Retrieving details for subscription ${subscriptionId}`);
         return new Promise((resolve, reject) => {
-            chargebee.subscription.retrieve(subscriptionId).request(function(error,result) {
-                if(error){
-                    //handle error
+            chargebee.subscription.retrieve(subscriptionId).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin(error);
                     reject(error);
-                }else{
+                } else {
                     var subscription = result.subscription;
                     console.log(`Subscription ${subscription.id} retrieved`);
                     resolve(subscription);
@@ -256,15 +280,15 @@ class ChargebeeService {
      *
      * @param subscriptionId - subscription to be reverted
      */
-    cancelScheduledChanges(subscriptionId){
+    cancelScheduledChanges(subscriptionId) {
         return new Promise((resolve, reject) => {
             console.log(`Cancelling pending changes to subscription ${subscriptionId}...`)
-            chargebee.subscription.remove_scheduled_changes(subscriptionId).request(function(error,result) {
-                if(error){
+            chargebee.subscription.remove_scheduled_changes(subscriptionId).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin(error);
                     reject(error);
-                }else{
+                } else {
                     var subscription = result.subscription;
                     console.log(`Changes reverted for subscription ${subscription.id}`)
                     resolve(subscription);
@@ -280,15 +304,15 @@ class ChargebeeService {
      * @param subscriptionId    - id of the subscription to retrieve
      * @returns {Promise<subscription>}
      */
-    retrieveSubscriptionWithChanges(subscriptionId){
+    retrieveSubscriptionWithChanges(subscriptionId) {
         console.log(`Retrieving details for subscription ${subscriptionId} with scheduled changes...`);
         return new Promise((resolve, reject) => {
-            chargebee.subscription.retrieve_with_scheduled_changes(subscriptionId).request(function(error,result) {
-                if(error){
+            chargebee.subscription.retrieve_with_scheduled_changes(subscriptionId).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin();
                     reject(error);
-                }else{
+                } else {
                     var subscription = result.subscription;
                     console.log(`Subscription ${subscription.id} scheduled changes retrieved`);
                     resolve(subscription);
@@ -312,18 +336,17 @@ class ChargebeeService {
     updateSubscription(subscriptionId, planId, planQuantity, pricePerHour) {
         console.log(`Updating subscription ${subscriptionId}...`);
         return new Promise((resolve, reject) => {
-            chargebee.subscription.update(subscriptionId,{
-                plan_id : planId,
-                end_of_term : true,
+            chargebee.subscription.update(subscriptionId, {
+                plan_id: planId,
+                end_of_term: true,
                 plan_quantity: planQuantity,
-                plan_unit_price: pricePerHour * 100
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
+                plan_unit_price: Math.floor(Number.parseFloat(pricePerHour) * 100)
+            }).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin();
                     reject(error);
-                }else{
+                } else {
                     console.log("Subscription updated.");
                     var subscription = result.subscription;
                     resolve(subscription);
@@ -333,19 +356,18 @@ class ChargebeeService {
     }
 
 
-    updateSubscriptionForCustomer(subscriptionId, planQuantity){
+    updateSubscriptionForCustomer(subscriptionId, planQuantity) {
         console.log(`Updating subscription ${subscriptionId} for client...`);
         return new Promise((resolve, reject) => {
-            chargebee.subscription.update(subscriptionId,{
-                end_of_term : true,
+            chargebee.subscription.update(subscriptionId, {
+                end_of_term: true,
                 plan_quantity: planQuantity
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
+            }).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin();
                     reject(error);
-                }else{
+                } else {
                     console.log("Subscription updated.");
                     var subscription = result.subscription;
                     resolve(subscription);
@@ -369,17 +391,16 @@ class ChargebeeService {
     customerUpdateSubscription(subscriptionId, planId, planQuantity) {
         console.log(`Updating subscription ${subscriptionId}...`);
         return new Promise((resolve, reject) => {
-            chargebee.subscription.update(subscriptionId,{
-                plan_id : planId,
-                end_of_term : true,
+            chargebee.subscription.update(subscriptionId, {
+                plan_id: planId,
+                end_of_term: true,
                 plan_quantity: planQuantity
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
+            }).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin();
                     reject(error);
-                }else{
+                } else {
                     console.log("Subscription updated.");
                     var subscription = result.subscription;
                     resolve(subscription);
@@ -406,9 +427,8 @@ class ChargebeeService {
                 "customer_id[is]": clientId
             }).request(function (error, result) {
                 if (error) {
-                    //handle error
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin();
                     reject(error);
                 } else {
                     resolve(result.list);
@@ -418,16 +438,15 @@ class ChargebeeService {
     }
 
 
-    getCustomerOfSubscription(subscriptionId){
+    getCustomerOfSubscription(subscriptionId) {
         console.log(`Getting subscription ${subscriptionId}...`)
         return new Promise(((resolve, reject) => {
 
-            chargebee.subscription.retrieve(subscriptionId).request(function(error,result) {
-                if(error){
-                    //handle error
+            chargebee.subscription.retrieve(subscriptionId).request(function (error, result) {
+                if (error) {
                     console.log(error);
                     reject(error)
-                }else{
+                } else {
                     var subscription = result.subscription;
                     var customer = result.customer;
                     var card = result.card;
@@ -443,14 +462,13 @@ class ChargebeeService {
      */
     cancelSubscription(subscriptionId) {
         console.log(`Cancelling subscription ${subscriptionId}...`);
-        chargebee.subscription.cancel(subscriptionId,{
-            end_of_term : false
-        }).request(function(error,result) {
-            if(error){
-                //handle error
+        chargebee.subscription.cancel(subscriptionId, {
+            end_of_term: false
+        }).request(function (error, result) {
+            if (error) {
                 console.log(error);
-                emailService.notifyAdmin(error);
-            }else{
+                notifyAdmin();
+            } else {
                 var subscription = result.subscription;
                 var customer = result.customer;
                 var unbilled_charges = result.unbilled_charges;
@@ -465,17 +483,16 @@ class ChargebeeService {
      * @param subscription to be paused.
      * @returns {Promise<>}
      */
-    async pauseSubscription(subscription){
+    async pauseSubscription(subscription) {
         console.log(`Pausing subscription ${subscription}...`);
         return new Promise(((resolve, reject) => {
-            chargebee.subscription.pause(subscription,{
-                pause_option : "end_of_term"
-            }).request(function(error,result) {
-                if(error){
-                    //handle error
+            chargebee.subscription.pause(subscription, {
+                pause_option: "end_of_term"
+            }).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
-                }else{
+                    notifyAdmin();
+                } else {
                     const subscription = result.subscription;
                     resolve(subscription);
                 }
@@ -490,22 +507,55 @@ class ChargebeeService {
      * @param subscription to be paused.
      * @returns {Promise<>}
      */
-    async resumePausedSubscription(subscription){
+    async resumePausedSubscription(subscription) {
         console.log(`Resuming subscription ${subscription}...`);
         return new Promise(((resolve, reject) => {
-            chargebee.subscription.resume(subscription,{
-                resume_option : "immediately"
-            }).request(function(error,result) {
-                if(error){
+            chargebee.subscription.resume(subscription, {
+                resume_option: "immediately"
+            }).request(function (error, result) {
+                if (error) {
                     console.log(error);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin();
                     reject(error);
-                }else{
+                } else {
                     const subscription = result.subscription;
                     resolve(subscription);
                 }
             });
         }))
+    }
+
+
+    /**
+     * Retrieves all transactions from the environment as chargebee entries.
+     * Note that in order to access meaningful data, an intermediate object is
+     * accessed. E.g, to access "status", given that "returnedValue" is the
+     * result of this function, use: returnedValue[0].transaction.status
+     * @returns {Promise<*>}
+     */
+    async getAllTransactions() {
+        let listObject = await chargebee.transaction.list({
+            limit: 100,
+            "status[is]": "success",
+            "sort_by[asc]": "date"
+        }).request().catch(error => {
+            notifyAdmin();
+            console.log(error);
+        });
+        let list = listObject.list;
+        while (listObject.next_offset) {
+            listObject = await chargebee.transaction.list({
+                limit: 100,
+                offset: listObject.next_offset
+            }).request().catch(error => {
+                console.log(error);
+                notifyAdmin();
+            });
+            for (var item of listObject.list) {
+                list.push(item);
+            }
+        }
+        return list;
     }
 
     /**
@@ -516,33 +566,53 @@ class ChargebeeService {
      * @param plan      - id of plan for which to add hours
      * @param numHours  - number of hours to add
      * @param customerId- customer that is adding hours
-     * @returns {Promise<void>}
+     * @returns {Promise<>}
      */
-    async chargeCustomerNow(plan, numHours, customerId){
-        let planObj = await this.retrievePlan(plan);
-        let pricePerHour = Number.parseFloat(planObj.price);
+    async chargeCustomerNow(plan, numHours, customerId) {
+
+        let subscriptionEntries = await this.getSubscriptionsByClient(customerId);
+        let pricePerHour;
+        for (var entry of subscriptionEntries) {
+            if (entry.subscription.plan_id.toString() === plan.toString()) {
+                pricePerHour = entry.subscription.plan_unit_price;
+                console.log(`Using subscription price of ${entry.subscription.plan_unit_price} instead of plan price.`);
+                break;
+            }
+        }
+        if (!pricePerHour) {
+            let planObj = await this.retrievePlan(plan).catch(err=>{
+                console.log(err);
+                notifyAdmin(err);
+            });
+            pricePerHour = Number.parseFloat(planObj.price);
+        }
+        if (!pricePerHour) {
+            notifyAdmin(`No price found for plan ${plan} for customer ${customerId} for ${numHours} hours.`);
+            console.log(`No price found for plan ${plan} for customer ${customerId} for ${numHours} hours.`);
+            return false;
+        }
+
         let calculatedPrice = Math.floor(pricePerHour * Number.parseFloat(numHours));
-        let minutesString = (numHours * 60).toString();
+        let minutesString = (Math.floor(Number.parseFloat(numHours) * 60)).toString();
         let hours = Math.floor(numHours);
-        let minutes = Math.floor(Number.parseInt(minutesString)%60);
+        let minutes = Math.floor(Number.parseInt(minutesString) % 60);
         let message = "";
         if (hours > 0) {
             message += `${hours} hour(s) `;
         }
-        if (minutes > 0){
+        if (minutes > 0) {
             message += `${minutes} minute(s) `;
         }
 
         chargebee.invoice.charge({
-            customer_id : customerId,
-            amount : calculatedPrice.toString(),
-            description : `Buy ${message} for ${planObj.name}`
-        }).request(function(error,result) {
-            if(error){
-                //handle error
+            customer_id: customerId,
+            amount: calculatedPrice.toString(),
+            description: `Buy ${message} for ${plan}`
+        }).request(function (error, result) {
+            if (error) {
                 console.log(error);
-                emailService.notifyAdmin(error);
-            }else{
+                notifyAdmin();
+            } else {
                 console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
                     method: 'POST',
@@ -551,15 +621,16 @@ class ChargebeeService {
                         'id': customerId,
                         'planId': plan,
                         'minutes': minutesString,
-                        'auth':process.env.TWINBEE_MASTER_AUTH
+                        'auth': process.env.TWINBEE_MASTER_AUTH
                     }
                 }).catch(err => {
                     console.log(err);
-                    emailService.notifyAdmin(error);
+                    notifyAdmin(err.toString());
                 });
                 console.log("Update time bucket due to purchase request sent")
             }
         });
+        return calculatedPrice;
     }
 }
 

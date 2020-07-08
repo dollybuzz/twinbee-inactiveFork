@@ -67,23 +67,25 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
 });
 
 /**
- * Sends a notification to the admins
+ *
  * @param content
- * @returns {Promise<>}
  */
 exports.notifyAdmin = content => {
-    if (process.env.TWINBEE_LIVE) {
+    let channel = process.env.TWINBEE_LIVE ? "C0163S58V0D" : "C015TU1QG0P";
         console.log(`Notifying admin!`);
         web.chat.postMessage({
             text: content,
-            channel: "C0163S58V0D",
+            channel: channel,
+        }).catch(err=>{
+            console.log(err);
+            exports.notifyAdmin(err.toString())
         });
-    }
 };
 
 /**
  * Sends an email to the Freedom Makers admins
- * @param content
+ * @param subject - email subject
+ * @param content - email content
  * @returns {Promise<>}
  */
 exports.emailFMAdmin = (subject, content) => new Promise((resolve, reject) => {

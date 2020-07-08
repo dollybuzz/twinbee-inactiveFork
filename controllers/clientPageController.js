@@ -13,15 +13,16 @@ module.exports ={
         };
         let headerLinks = [
             {link: "/client", text: "Main", id:"main"},
+            {link: "", text: "Manage Available Hours", id:"manageCredits"},
             {link: "", text: "Manage My Subscriptions", id: "manageSubscriptions"},
             {link: "", text: "My Freedom Makers", id: "manageMakers"},
             {link: "", text: "Review Time Sheets", id:"reviewTimeSheets"}
-        ]
+        ];
         let footerLinks = [
             {link: "", text: "Report a problem"},
             {link: "", text: "FAQ"}
-        ]
+        ];
 
         res.render("client", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
-}
+};

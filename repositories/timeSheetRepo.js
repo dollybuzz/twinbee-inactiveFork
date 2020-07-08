@@ -1,6 +1,7 @@
 //TODO; have errors send us notifications rather than "throw"
 
 const {query} = require("./repoMaster.js");
+const notificationService = require('../services/notificationService.js');
 class TimeSheetRepository {
     constructor() {
     };
@@ -10,6 +11,7 @@ class TimeSheetRepository {
             ' VALUES (?, ?, ?, ?, ?, ?, ?)';
         let sqlParams = [makerId, clientId, rate, startTime, endTime, task, adminNote];
         let result = await query(sql, sqlParams).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             return('error; client or maker might not exist');
         });
@@ -21,7 +23,10 @@ class TimeSheetRepository {
         let sql = 'UPDATE time_sheet SET hourly_rate = ?, start_time = ?, end_time = ?, task = ?, admin_note = ? WHERE id = ?';
         let sqlParams = [rate, startTime, endTime, task, adminNote, id];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err.toString());
+            }
         });
         console.log(`Sheet ${id} successfully updated.`);
     }
@@ -33,7 +38,10 @@ class TimeSheetRepository {
             "admin_note = ? WHERE id = ?";
         let sqlParams = [adminNote, id];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                notificationService.notifyAdmin(err.toString());
+            }
         });
         console.log(`Sheet ${id} cleared`)
     }
@@ -45,6 +53,7 @@ class TimeSheetRepository {
             'WHERE maker_id = ?';
         let sqlParams = [id];
         let result = await query(sql, sqlParams).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });
@@ -58,6 +67,7 @@ class TimeSheetRepository {
             'WHERE client_id = ?';
         let sqlParams = [id];
         let result = await query(sql, sqlParams).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });
@@ -70,6 +80,7 @@ class TimeSheetRepository {
             'FROM time_sheet';
         let sqlParams = [];
         let result = await query(sql, sqlParams).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });

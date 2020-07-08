@@ -1,5 +1,5 @@
 //TODO; have errors send us notifications rather than "throw"
-
+const notificationService = require('../services/notificationService.js');
 const {query} = require("./repoMaster.js");
 class RelationshipRepository {
     constructor() {
@@ -7,12 +7,12 @@ class RelationshipRepository {
 
     createRelationship(makerId, clientId, planId, task) {
         return new Promise((resolve, reject) => {
-
             let sql = 'INSERT INTO relationship(maker_id, client_id, plan_id, occupation)' +
                 ' VALUES (?, ?, ?, ?)';
             let sqlParams = [makerId, clientId, planId, task];
             query(sql, sqlParams, function (err, result) {
                 if (err) {
+                    notificationService.notifyAdmin(err.toString());
                     console.log(err);
                     reject(err)
                 }
@@ -27,7 +27,10 @@ class RelationshipRepository {
             'plan_id = ?, occupation = ?, maker_id = ? WHERE id = ?';
         let sqlParams = [planId, occupation, makerId, id];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                notificationService.notifyAdmin(err.toString());
+                console.log(err);
+            }
             console.log(`Relationship ${id} updated`);
         });
     }
@@ -36,7 +39,10 @@ class RelationshipRepository {
         let sql = 'DELETE FROM relationship where id = ?';
         let sqlParams = [id];
         query(sql, sqlParams, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                notificationService.notifyAdmin(err.toString());
+                console.log(err);
+            }
         });
         console.log(`Relationship ${id}  deleted`);
     }
@@ -46,6 +52,7 @@ class RelationshipRepository {
         let sql = 'SELECT * FROM relationship';
         let sqlParam = [];
         let result = await query(sql, sqlParam).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });
@@ -59,6 +66,7 @@ class RelationshipRepository {
             'WHERE maker_id = ? ';
         let sqlParam = [makerId];
         let result = await query(sql, sqlParam).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });
@@ -70,6 +78,7 @@ class RelationshipRepository {
         let sql = 'SELECT * FROM relationship where id = ?';
         let sqlParam = [id];
         let result = await query(sql, sqlParam).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });
@@ -81,6 +90,7 @@ class RelationshipRepository {
         let sql = 'SELECT * FROM relationship WHERE client_id = ?';
         let sqlParam = [clientId];
         let result = await query(sql, sqlParam).catch(e => {
+            notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
         });

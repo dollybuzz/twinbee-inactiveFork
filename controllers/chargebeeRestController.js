@@ -1,4 +1,102 @@
 const chargebeeService = require('../services/chargebeeService.js');
+const {notifyAdmin} = require("../services/notificationService");
+const moment = require('moment');
+
+
+//TODO: find a home for the validator
+let validatorMap = {
+    "present": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString]){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveIntegerOnly": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseInt(body[keyString])
+                || body[keyString].includes("-") || body[keyString].includes(" ") || body[keyString].includes(".")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "noSpaces": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || body[keyString].includes(" ")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveDecimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseFloat(body[keyString])
+                || body[keyString].includes("-")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "decimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseFloat(body[keyString])){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+};
+
+/**
+ *  validates parameters
+ * @param paramArrayMap - object in form:
+ * {
+ *      present: array of string keys that should be present
+ *      positiveIntegerOnly: array of string keys that should parse to positive integers only,
+ *      noSpaces: array of string keys that should not have spaces
+ * }
+ *
+ * @param body request body to validate
+ * @returns object in the form:
+ * {
+ *      isValid: a boolean indicating whether or not the parameters were valid
+ *      message: a string description of the result
+ * }
+ */
+async function validateParams(paramArrayMap, body){
+    let validator = {isValid: true, message: ""};
+    let paramsTypesToScan = ["present", "positiveIntegerOnly", "noSpaces", "positiveDecimalAllowed", "decimalAllowed"];
+    for (var paramName of paramsTypesToScan){
+        let keyArray = paramArrayMap[paramName];
+        if (keyArray) {
+            let result = await validatorMap[paramName](keyArray, body);
+            if (!result.isValid) {
+                validator.isValid = false;
+                validator.message += result.message;
+            }
+        }
+    }
+    if (!validator.message){
+        validator.message = "Valid";
+    }
+    if (!validator.isValid){
+        console.log(`Failed to validate! \nParameters: ${paramArrayMap.toString()} \nBody: ${paramArrayMap.toString()}`);
+        notifyAdmin(`Failed to validate! \nParameters: ${paramArrayMap.toString()} \nBody: ${paramArrayMap.toString()}`);
+    }
+    return validator;
+}
 
 module.exports = {
 
@@ -7,7 +105,7 @@ module.exports = {
      * Retrieves all plans from the {TEST} environment as chargebee entries.
      * Note that in order to access meaningful data, an intermediate object is
      * accessed.  E.g, to access "pricing_model", given that "returnedValue" is the
-     * result of this funciton, use:
+     * result of this function, use:
      *  returnedValue[0].plan.pricing_model
      *  returns data as follows:
      *  [
@@ -25,10 +123,13 @@ module.exports = {
      *  }
      * @returns [{entry:plan{}},...]
      */
-    getAllPlans: async function(req, res){
+    getAllPlans: async function (req, res) {
         console.log("Attempting to get all plans from REST: ");
         console.log(req.body);
-        let plans = await chargebeeService.getAllPlans().catch(e=>console.log(e));
+        let plans = await chargebeeService.getAllPlans().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        });
         res.send(plans);
     },
 
@@ -43,11 +144,26 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    createPlan: async function(req, res){
+    createPlan: async function (req, res) {
         console.log("Attempting to create a plan from REST: ");
         console.log(req.body);
-        res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
-            req.body.pricePerHour, req.body.planDescription));
+
+        let validationResult = await validateParams(
+            {
+                "present": ["invoiceName", "planDescription"],
+                "noSpaces": ["planId"],
+                "decimalAllowed": ["pricePerHour"]
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
+                req.body.pricePerHour, req.body.planDescription).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -61,12 +177,29 @@ module.exports = {
      *
      * @returns plan{}
      */
-    retrievePlan: async function(req, res){
+    retrievePlan: async function (req, res) {
         console.log("Attempting to retrieve a plan from REST: ");
         console.log(req.body);
-        let planActual = await chargebeeService.retrievePlan(req.body.planId)
-            .catch(err=>console.log(err));
-        res.send({plan: planActual});
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["planId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let planActual = await chargebeeService.retrievePlan(req.body.planId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send({plan: planActual});
+        }
     },
 
     /**
@@ -81,12 +214,26 @@ module.exports = {
      *
      * }
      */
-    updatePlan: function(req, res){
+    updatePlan: async function (req, res) {
         console.log("Attempting to update a plan from REST: ");
         console.log(req.body);
-        chargebeeService.updatePlan(req.body.planId, req.body.planId,
-            req.body.planInvoiceName, req.body.planPrice);
-        res.send({});
+
+        let validationResult = await validateParams(
+            {
+                "present": ["planInvoiceName"],
+                "positiveIntegerOnly": ["planPrice"],
+                "noSpaces": ["planId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            chargebeeService.updatePlan(req.body.planId, req.body.planId,
+                req.body.planInvoiceName, req.body.planPrice);
+            res.send({status: "update request processed"});
+        }
     },
 
     /**
@@ -97,12 +244,27 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    deletePlan: function(req, res){
+    deletePlan: async function (req, res) {
         console.log("Attempting to delete a plan from REST: ");
         console.log(req.body);
-        chargebeeService.deletePlan(req.body.planId);
-        res.send({});
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["planId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            chargebeeService.deletePlan(req.body.planId);
+            res.send({status: "delete request processed"});
+        }
     },
+
 
     /**
      * ENDPOINT: /api/getAllSubscriptions
@@ -127,13 +289,17 @@ module.exports = {
      * }
      * @returns [{"customer":{},"subscription":{},"card":{}},...]
      */
-    getAllSubscriptions: async function(req, res){
+    getAllSubscriptions: async function (req, res) {
         console.log("Attempting to get all subscriptions from REST: ");
         console.log(req.body);
-        let subscriptions = await chargebeeService.getAllSubscriptions().catch(e=>console.log(e))
-            .catch(e=>console.log(e));
+        let subscriptions = await chargebeeService.getAllSubscriptions().catch(e => console.log(e))
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
         res.send(subscriptions);
     },
+
 
     /**
      * /api/createSubscription
@@ -143,18 +309,38 @@ module.exports = {
      *     "planId": id of the plan to subscribe to,
      *     "customerId": id of the subscribing customer,
      *     "planQuantity": initial number of hours to subscribe to,
+     *     "startDate": date to start subscription,
      *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns subscription{}
      */
-    createSubscription: async function(req, res){
+    createSubscription: async function (req, res) {
         console.log("Attempting to create a subscription from REST: ");
         console.log(req.body);
-        let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId, req.body.planQuantity)
-            .catch(e=>console.log(e));
-        res.send(sub);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["planId", "customerId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId,
+                req.body.planQuantity, req.body.startDate)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(sub);
+        }
     },
+
 
     /**
      * /api/retrieveSubscription
@@ -167,13 +353,31 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    retrieveSubscription: async function(req, res){
+    retrieveSubscription: async function (req, res) {
         console.log("Attempting to retrieve one subscription from REST: ");
         console.log(req.body);
-        let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
-            .catch(e=>console.log(e));
-        res.send(subscription);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["subscriptionId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
+
 
     /**
      * /api/retrieveSubscriptionChanges
@@ -186,12 +390,29 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    retrieveSubscriptionChanges: async function(req, res){
+    retrieveSubscriptionChanges: async function (req, res) {
         console.log("Attempting to retrieve one subscription's scheduled changes from REST: ");
         console.log(req.body);
-        let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
-            .catch(e=>console.log(e));
-        res.send(subscription);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["subscriptionId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
 
     /**
@@ -206,12 +427,29 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    undoSubscriptionChanges: async function(req, res){
+    undoSubscriptionChanges: async function (req, res) {
         console.log(`Attempting to revert scheduled changes for a subscription...`);
         console.log(req.body);
-        let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
-            .catch(e=>console.log(e));
-        res.send(subscription);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["subscriptionId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
 
     /**
@@ -224,18 +462,36 @@ module.exports = {
      *     "subscriptionId": id of subscription to be modified,
      *     "planId": new plan to use for subscription,
      *     "planQuantity": new number of hours to use,
-     *     "pricePerHour": overridden price per hour for subscription, - DEACTIVATED
+     *     "pricePerHour": overridden price per hour for subscription
      *     "auth": authentication credentials; either master or token
      * }
      *
      * @returns subscription{}
      */
-    updateSubscription: async function(req, res){
+    updateSubscription: async function (req, res) {
         console.log("Attempting to update subscription from REST: ");
         console.log(req.body);
-        let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
-            req.body.planQuantity, req.body.pricePerHour);
-        res.send(subscription);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": ["planQuantity"],
+                "noSpaces": ["subscriptionId", "planId"],
+                "positiveDecimalAllowed": ["pricePerHour"],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
+                req.body.planQuantity, req.body.pricePerHour)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(subscription);
+        }
     },
 
     /**
@@ -247,11 +503,25 @@ module.exports = {
      *     "auth": authentication credentials; either master or token
      * }
      */
-    cancelSubscription: function(req, res){
+    cancelSubscription: async function (req, res) {
         console.log("Attempting to cancel subscription from REST: ");
         console.log(req.body);
-        chargebeeService.cancelSubscription(req.body.subscriptionId);
-        res.send({});
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["subscriptionId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            chargebeeService.cancelSubscription(req.body.subscriptionId);
+            res.send({status: `subscription cancellation request sent for subscription: ${req.body.subscriptionId}`});
+        }
     },
 
     /**
@@ -270,11 +540,28 @@ module.exports = {
      * @param req
      * @param res
      */
-    chargeCustomerNow: function (req, res) {
+    chargeCustomerNow: async function (req, res) {
         console.log("Attempting to charge customer from REST: ");
         console.log(req.body);
-        chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId);
-        res.send({});
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["customerId", "planId"],
+                "positiveDecimalAllowed": ["numHours"],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({});
+        }
     },
 
     /**
@@ -305,7 +592,24 @@ module.exports = {
     getSubscriptionsByClient: async function (req, res) {
         console.log(`Attempting to get subscriptions for client ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.getSubscriptionsByClient(req.body.id));
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["id"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await chargebeeService.getSubscriptionsByClient(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -321,10 +625,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    pauseSubscription: async function(req, res){
+    pauseSubscription: async function (req, res) {
         console.log(`Attempting to pause subscription ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.pauseSubscription(req.body.id));
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["id"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -340,9 +661,47 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    resumePausedSubscription: async function(req, res){
+    resumePausedSubscription: async function (req, res) {
         console.log(`Attempting to resume subscription ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.resumePausedSubscription(req.body.id));
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["id"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+    },
+
+    /**
+     * ENDPOINT: /api/getAllTransactions
+     *
+     * Retrieves all transactions. Looks for data in the body in
+     * the form:
+     * {
+     *     "auth" : valid auth token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getAllTransactions: async function (req, res) {
+        console.log(`Attempting to retrieve all transactions from REST`);
+        console.log(req.body);
+        res.send(await chargebeeService.getAllTransactions().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     }
 };

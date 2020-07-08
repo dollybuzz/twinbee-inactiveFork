@@ -1,8 +1,133 @@
 const clientService = require('../services/ClientService.js');
 const authService = require('../services/authService.js');
 const chargebeeService = require('../services/chargebeeService.js');
-//TODO Add validation before action
+const {notifyAdmin} = require("../services/notificationService");
+
+//TODO: find a home for the validator
+let validatorMap = {
+    "present": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString]){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveIntegerOnly": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseInt(body[keyString])
+                || body[keyString].includes("-") || body[keyString].includes(" ") || body[keyString].includes(".")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "noSpaces": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || body[keyString].includes(" ")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "positiveDecimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseFloat(body[keyString])
+                || body[keyString].includes("-")){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+    "decimalAllowed": async function (keysToValidate, body) {
+        let valid = {isValid: true, message: ""};
+        for (var keyString of keysToValidate){
+            if (!body[keyString] || !Number.parseInt(body[keyString])){
+                valid.isValid = false;
+                valid.message += `${keyString} was not valid.  `;
+            }
+        }
+        return valid;
+    },
+};
+
+/**
+ *  validates parameters
+ * @param paramArrayMap - object in form:
+ * {
+ *      present: array of string keys that should be present
+ *      positiveIntegerOnly: array of string keys that should parse to positive integers only,
+ *      noSpaces: array of string keys that should not have spaces
+ * }
+ *
+ * @param body request body to validate
+ * @returns object in the form:
+ * {
+ *      isValid: a boolean indicating whether or not the parameters were valid
+ *      message: a string description of the result
+ * }
+ */
+
+async function validateParams(paramArrayMap, body){
+    let validator = {isValid: true, message: ""};
+    let paramsTypesToScan = ["present", "positiveIntegerOnly", "noSpaces", "positiveDecimalAllowed", "decimalAllowed"];
+    for (var paramName of paramsTypesToScan){
+        let keyArray = paramArrayMap[paramName];
+        if (keyArray) {
+            let result = await validatorMap[paramName](keyArray, body);
+            if (!result.isValid) {
+                validator.isValid = false;
+                validator.message += result.message;
+            }
+        }
+    }
+    if (!validator.message){
+        validator.message = "Valid";
+    }
+    if (!validator.isValid){
+        console.log(`Failed to validate! \nParameters: ${paramArrayMap.toString()} \nBody: ${paramArrayMap.toString()}`);
+        notifyAdmin(`Failed to validate! \nParameters: ${paramArrayMap.toString()} \nBody: ${paramArrayMap.toString()}`);
+    }
+    return validator;
+}
+
+
 module.exports = {
+
+    /**
+     * ENDPOINT: /api/updateClientContact
+     * Updates a client's contact info. looks for data in the body in the form:
+     * {
+     *     "id": id of customer to update,
+     *     "firstName": new first name,
+     *     "lastName": new last name,
+     *     "email": new email,
+     *     "phone": new phone,
+     *     "company": new company name
+     *     "auth": authentication credentials; either master or token
+     * }
+     */
+    updateClientContact: async (req, res) => {
+        console.log("Attempting to update client contact info from REST: ");
+        console.log(req.body);
+        let validationResult = await validateParams({"present": ["id", "firstName", "lastName", "email", "phone"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName,
+                req.body.email, req.body.phone, req.body.company);
+            res.send({status: "Request processed"});
+        }
+    },
 
     /**
      * ENDPOINT: /api/getClient
@@ -17,12 +142,23 @@ module.exports = {
     getClientById: async (req, res) => {
         console.log("Attempting to get client by id from REST: ");
         console.log(req.body);
-        let id = req.body.id;
-        let client = await clientService.getClientById(id);
-        res.send(client);
+
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let id = req.body.id;
+            let client = await clientService.getClientById(id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(client);
+        }
     },
 
     /**
+     * ENDPOINT: /api/getMyTimeSheetsClient
      * Retrieves timesheets for the requesting client. Looks for data in the body in the
      * form:
      * {
@@ -33,16 +169,32 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyTimeSheets: async(req, res)=>{
+    getMyTimeSheets: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their timesheets from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getSheetsByClient(client.id));
+
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getSheetsByClient(client.id)).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+        }
     },
 
     /**
-     * /api/updateMySubscription
+     * ENDPOINT: /api/updateMySubscription
      * Updates a subscription with new values. Note that
      * the pricePerHour will override defaults. This can be used
      * to create "custom" subscriptions. Use caution when doing so.
@@ -55,25 +207,47 @@ module.exports = {
      *
      * @returns subscription{}
      */
-    updateMySubscription: async function(req, res){
+    updateMySubscription: async function (req, res) {
         console.log("Attempting to update subscription from  REST by client request: ");
         console.log(req.body);
-        let subscriptionOwner = chargebeeService.getCustomerOfSubscription(req.body.subscriptionId);
-        let clientEmail = authService.getEmailFromToken(req.body.auth);
-        let client= clientService.getClientByEmail(clientEmail);
-        console.log(client.id);
-        console.log(subscriptionOwner.id)
-        if (client.id === subscriptionOwner.id) {
-            res.send(await chargebeeService.updateSubscriptionForCustomer(req.body.subscriptionId,
-                req.body.planQuantity));
+
+        let validationResult = await validateParams(
+            {
+                "present": ["subscriptionId", "auth"],
+                "positiveDecimalAllowed": ["planQuantity"]
+            },req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let clientEmail = await authService.getEmailFromToken(req.body.auth).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(clientEmail).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            console.log(client.id);
+            console.log(subscriptionOwner.id);
+            if (client.id === subscriptionOwner.id) {
+                res.send(await chargebeeService.updateSubscriptionForCustomer(req.body.subscriptionId,
+                    req.body.planQuantity).catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                }));
+            } else
+                res.send(false);
         }
-        else
-            res.send(false);
     },
 
 
     /**
-     * Endpoint: '/api/getMySubscriptions
+     * ENDPOINT: /api/getMySubscriptions
      * Retrieves subscriptions for the requesting client. Looks for data in the body in the
      * form:
      * {
@@ -98,12 +272,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMySubscriptions: async(req, res)=>{
+    getMySubscriptions: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their subscriptions from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getSubscriptionsForClient(client.id));
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getSubscriptionsForClient(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -119,12 +308,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMySubscriptionChanges: async(req, res)=>{
+    getMySubscriptionChanges: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their changes to subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getMySubscriptionChanges(client.id, req.body.subscriptionId));
+        let validationResult = await validateParams({"present": ["token", "subscriptionId"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -139,12 +343,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    retrieveMySubscription: async(req, res)=>{
+    retrieveMySubscription: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getMySubscription(client.id, req.body.subscriptionId));
+        let validationResult = await validateParams({"present": ["token", "subscriptionId"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getMySubscription(client.id, req.body.subscriptionId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -159,16 +378,32 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyTimeBucket: async(req, res)=>{
-      console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
-      console.log(req.body);
-      let email = await authService.getEmailFromToken(req.body.token);
-      let client = await clientService.getClientByEmail(email);
-      res.send(await clientService.getTimeBucket(client.id, req.body.bucket));
+    getMyTimeBucket: async (req, res) => {
+        console.log(`Client with token...\n${req.body.token}\n...is requesting their time bucket for ${req.body.bucket} from REST`);
+        console.log(req.body);
+
+        let validationResult = await validateParams({"present": ["token", "bucket"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getTimeBucket(client.id, req.body.bucket).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
-     * ENDPOINT: /api/getMyBuckets
+     * ENDPOINT: /api/getAllMyTimeBuckets
      * Retrieves all buckets for the authenticated client. Looks for data in the body in the form:
      * {
      *     "token": requester's token,
@@ -188,12 +423,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getAllMyTimeBuckets: async(req, res)=>{
+    getAllMyTimeBuckets: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting their time buckets from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getTimeBucketsByClientId(client.id));
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getTimeBucketsByClientId(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -209,12 +459,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    undoMySubscriptionChanges: async(req, res)=>{
+    undoMySubscriptionChanges: async (req, res) => {
         console.log(`Client with token...\n${req.body.token}\n...is requesting to revert their changes to subscription ${req.body.subscriptionId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.undoMySubscriptionChanges(client.id, req.body.subscriptionId));
+        let validationResult = await validateParams({"present": ["token", "subscriptionId"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.undoMySubscriptionChanges(client.id, req.body.subscriptionId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -237,58 +502,23 @@ module.exports = {
     getClientName: async (req, res) => {
         console.log("Attempting to get client by id from REST: ");
         console.log(req.body);
-
-        let censoredClient = {};
-        let id = req.body['relationshipObj[clientId]'];
-        let client = await clientService.getClientById(id);
-        censoredClient.id = client.id;
-        censoredClient.name = client.first_name + " " + client.last_name;
-        censoredClient.relId = req.body['relationshipObj[id]'];
-        res.send(censoredClient);
-    },
-
-    /**
-     * ENDPOINT: /api/updateClientBilling
-     * Updates a client's billing info. looks for data in the body in the form:
-     * {
-     *     "id": id of customer to update,
-     *     "firstName": new first name for billing,
-     *     "lastName": new last name for  billing,
-     *     "street": new street number and name for billing,
-     *     "city": new city for billing,
-     *     "state": new state for billing,
-     *     "zip": new zip for billing,
-     *     "auth": authentication credentials; either master or token
-     * }
-     */
-    updateClientBilling: (req, res) => {
-        console.log("Attempting to update client billing from REST: ");
-        console.log(req.body);
-        clientService.updateClientBilling(req.body.id, req.body.firstName, req.body.lastName,
-            req.body.street, req.body.city, req.body.state, req.body.zip);
-        res.send({});
-    },
-
-
-    /**
-     * ENDPOINT: /api/updateClientContact
-     * Updates a client's contact info. looks for data in the body in the form:
-     * {
-     *     "id": id of customer to update,
-     *     "firstName": new first name,
-     *     "lastName": new last name,
-     *     "email": new email,
-     *     "phone": new phone,
-     *     "company": new company name
-     *     "auth": authentication credentials; either master or token
-     * }
-     */
-    updateClientContact: (req, res) => {
-        console.log("Attempting to update client contact info from REST: ");
-        console.log(req.body);
-        clientService.updateClientContact(req.body.id, req.body.firstName, req.body.lastName,
-            req.body.email, req.body.phone, req.body.company);
-        res.send({});
+        let validationResult = await validateParams({"present": ["relationshipObj"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let censoredClient = {};
+            let id = req.body['relationshipObj[clientId]'];
+            let client = await clientService.getClientById(id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            censoredClient.id = client.id;
+            censoredClient.name = client.first_name + " " + client.last_name;
+            censoredClient.company = client.company;
+            censoredClient.relId = req.body['relationshipObj[id]'];
+            res.send(censoredClient);
+        }
     },
 
     /**
@@ -304,11 +534,17 @@ module.exports = {
      *     "auth": authentication credentials; either master or token,
      * }
      */
-    updateClientMetadata: (req, res) => {
+    updateClientMetadata: async (req, res) => {
         console.log("Attempting to update client meta data from REST: ");
         console.log(req.body);
-        clientService.updateClientMetadata(req.body.id, req.body.metadata);
-        res.send({});
+        let validationResult = await validateParams({"present": ["id", "metadata"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            clientService.updateClientMetadata(req.body.id, req.body.metadata);
+            res.send({status: "Request processed"});
+        }
     },
 
     /**
@@ -338,7 +574,10 @@ module.exports = {
     async getAllTimeBuckets(req, res) {
         console.log("Attempting to get all time buckets from REST");
         console.log(req.body);
-        res.send(await clientService.getAllTimeBuckets());
+        res.send(await clientService.getAllTimeBuckets().catch(err => {
+            console.log(err);
+            notifyAdmin(err.toString());
+        }));
     },
 
 
@@ -368,7 +607,16 @@ module.exports = {
     async getTimeBucketsByClientId(req, res) {
         console.log(`Attempting to get a time bucket for client ${req.body.id} from REST`);
         console.log(req.body);
-        res.send(await clientService.getTimeBucketsByClientId(req.body.id));
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await clientService.getTimeBucketsByClientId(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -385,11 +633,17 @@ module.exports = {
     async updateClientTimeBucket(req, res) {
         console.log("Attempting to update client from REST: ");
         console.log(req.body);
-
-        res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
-            .catch(error => {
-                console.log(error)
-            }));
+        let validationResult = await validateParams({"present": ["id", "planId", "minutes"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await clientService.updateClientRemainingMinutes(req.body.id, req.body.planId, parseInt(req.body.minutes))
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                }));
+        }
     },
 
     /**
@@ -409,10 +663,17 @@ module.exports = {
         console.log(`Attempting to delete client ${req.body.id} time bucket ${req.body.bucket} from REST: `);
         console.log(req.body);
 
-        res.send(await clientService.deleteTimeBucket(req.body.id, req.body.bucket)
-            .catch(error => {
-                console.log(error)
-            }));
+        let validationResult = await validateParams({"present": ["id", "bucket"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await clientService.deleteTimeBucket(req.body.id, req.body.bucket)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                }));
+        }
     },
 
     /**
@@ -432,12 +693,19 @@ module.exports = {
     createClient: async (req, res) => {
         console.log("Attempting to create a client from REST: ");
         console.log(req.body);
-        let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
-            req.body.email, req.body.phone, req.body.company)
-            .catch(err => {
-                console.log(err)
-            });
-        res.send(client);
+        let validationResult = await validateParams({"present": ["firstName", "lastName", "email", "phone"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let client = await clientService.createNewClient(req.body.firstName, req.body.lastName,
+                req.body.email, req.body.phone, req.body.company)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err.toString());
+                });
+            res.send(client);
+        }
     },
 
     /**
@@ -451,8 +719,18 @@ module.exports = {
     deleteClient: async (req, res) => {
         console.log("Attempting to delete a client from REST: ");
         console.log(req.body);
-        await clientService.deleteClientById(req.body.id);
-        res.send({});
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            await clientService.deleteClientById(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({status: "Request processed"});
+        }
+
     },
 
     /**
@@ -480,9 +758,11 @@ module.exports = {
     getAllClients: async (req, res) => {
         console.log("Attempting to grab all clients from REST");
         res.send(await clientService.getAllClients().catch(err => {
-            console.log(err)
+            console.log(err);
+            notifyAdmin(err.toString());
         }));
     },
+
 
     /**
      * ENDPOINT: /api/getMakersForClient
@@ -500,7 +780,17 @@ module.exports = {
     getMakersForClient: async (req, res) => {
         console.log("Attempting to get makers for client from rest: ");
         console.log(req.body);
-        res.send(await clientService.getMakersForClient(req.body.id));
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await clientService.getMakersForClient(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+
     },
 
 
@@ -520,8 +810,20 @@ module.exports = {
     getClientByToken: async (req, res) => {
         console.log("Attempting to get client by token from REST: ");
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        res.send(await clientService.getClientByEmail(email));
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -536,10 +838,16 @@ module.exports = {
      */
     subscriptionRenewed: async (req, res) => {
         console.log(`Webhook hit for ${req.body.event_type}`);
-        if (req.body.event_type == "subscription_renewed") {
+        if (req.body.event_type.toString() === "subscription_renewed") {
             console.log("Client subscription renewed; updating from REST");
             console.log(req.body);
-            res.send(await clientService.subscriptionRenewed(req.body));
+            res.send(await clientService.subscriptionRenewed(req.body).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+        else {
+            res.status(400).send({error: "Bad request", code: 400, details: "Webhook not supported"});
         }
     },
 
@@ -558,13 +866,18 @@ module.exports = {
         console.log(req.body);
         console.log(`Webhook hit for ${req.body.event_type}`);
         console.log(clientService.webHookBucketUpdate);
+
         let possible = clientService.webhookMap[req.body.event_type];
         if (possible) {
-            res.send(await possible(req.body));
+            res.send(await possible(req.body).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
         } else {
-            res.send("Unsupported Event");
+            res.send({error: "Bad request", code: 400, details: "Webhook not supported"});
         }
     },
+
 
     /**
      * ENDPOINT: /api/getUpdatePaymentURL
@@ -580,8 +893,17 @@ module.exports = {
     getUpdatePaymentPage: async (req, res) => {
         console.log("Attempting to get a hosted page for payment source update: ");
         console.log(req.body);
-        let page = await clientService.getUpdatePaymentPage(req.body.id);
-        res.send({url: page.url});
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let page = await clientService.getUpdatePaymentPage(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({url: page.url});
+        }
     },
 
     /**
@@ -596,12 +918,28 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyUpdatePaymentPage: async (req, res) =>{
-      console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
-      console.log(req.body);
-      let email =await authService.getEmailFromToken(req.body.token);
-      let client = await clientService.getClientByEmail(email);
-      res.send(await clientService.getUpdatePaymentPage(client.id));
+    getMyUpdatePaymentPage: async (req, res) => {
+        console.log(`Attempting to get hosted page for payment source update for client with token...\n${req.body.token}\n...from REST`);
+        console.log(req.body);
+
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getUpdatePaymentPage(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -618,8 +956,17 @@ module.exports = {
     getClientPayInvoicesPage: async (req, res) => {
         console.log("Attempting to get a hosted page for client pay invoices from REST");
         console.log(req.body);
-        let page = await clientService.getOutstandingPaymentsPage(req.body.id);
-        res.send({url: page.url});
+        let validationResult = await validateParams({"present": ["id"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let page = await clientService.getOutstandingPaymentsPage(req.body.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({url: page.url});
+        }
     },
 
     /**
@@ -637,13 +984,29 @@ module.exports = {
     getMyPayInvoicesPage: async (req, res) => {
         console.log(`Attempting to "my" hosted page for client ${req.body.clientId} from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        let page = await clientService.getOutstandingPaymentsPage(client.id);
-        res.send({url: page.url});
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let page = await clientService.getOutstandingPaymentsPage(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send({url: page.url});
+        }
     },
 
     /**
+     * ENDPOINT: /api/getAllMyRelationshipsClient
      * Retrieves all relationships for the requester. Looks for data in the body in the form:
      * {
      *      "token": requester's token,
@@ -668,12 +1031,27 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getAllMyRelationships: async (req, res) =>{
+    getAllMyRelationships: async (req, res) => {
         console.log(`Attempting to get relationships for client with token..\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        res.send(await clientService.getAllMyRelationships(client.id));
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.getAllMyRelationships(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -691,13 +1069,28 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    chargeMeNow: async (req, res) =>{
-      console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
-      console.log(req.body);
-      let email = await authService.getEmailFromToken(req.body.token);
-      let client = await clientService.getClientByEmail(email);
-      console.log(client);
-      res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id));
+    chargeMeNow: async (req, res) => {
+        console.log(`Attempting to charge customer with token...\n${req.body.token}\n...from REST`);
+        console.log(req.body);
+        let validationResult = await validateParams({"present": ["token", "planId", "numHours"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            console.log(client);
+            res.send(await clientService.chargeMeNow(req.body.planId, req.body.numHours, client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
@@ -713,17 +1106,31 @@ module.exports = {
      * @param res
      * @returns {Promise<void>}
      */
-    getMyMakers: async (req, res) =>{
+    getMyMakers: async (req, res) => {
         console.log(`Attempting to retrieve makers for client with token...\n${req.body.token}\n...from REST`);
         console.log(req.body);
-        let email = await authService.getEmailFromToken(req.body.token);
-        let client = await clientService.getClientByEmail(email);
-        console.log(client);
-        res.send(await clientService.getMakersForClient(client.id));
+        let validationResult = await validateParams({"present": ["token"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            console.log(client);
+            res.send(await clientService.getMakersForClient(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     },
 
     /**
-     * May have to redo to account for relationship and authentication security
      * ENDPOINT: /api/getTimeBucket
      * {
      *      "auth": valid auth token,
@@ -739,6 +1146,15 @@ module.exports = {
     getTimeBucket: async (req, res) => {
         console.log("Attempting to get a timebucket for client");
         console.log(req.body);
-        res.send(await clientService.getTimeBucket(req.body.id, req.body.planId));
+        let validationResult = await validateParams({"present": ["id", "planId"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await clientService.getTimeBucket(req.body.id, req.body.planId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     }
 };

@@ -1,132 +1,68 @@
 const sinon = require('sinon');
 const assert = require('assert');
+const nock = require('nock');
 const {expect} = require('chai');
-const makerRepo = require('../repositories/makerRepo.js');
-const clientRepo = require('../repositories/clientRepo.js');
-const timeSheetRepo = require('../repositories/timeSheetRepo.js');
-const timeSheetService = require('../services/timeSheetService.js');
 const timeClockService = require('../services/timeClockService.js');
-const makerService = require('../services/MakerService.js');
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 
 
 describe('Time Clock Service Test', function () {
-    /*
-
-        beforeEach(function () {
-
-
-            let getOnlineStub = sinon.stub(makerRepo, 'getOnlineMakers')
-                .callsFake(() => {
-                    return [timeSheetExtra2];
-                });
-            let getAllSheetsStub = sinon.stub(timeSheetRepo, 'getAllSheets')
-                .callsFake(() => {
-                    return [timeSheetBasic1, timeSheetBasic2, timeSheetBasic3]
-                });
-            let getAllStub = sinon.stub(makerRepo, 'getAllMakers')
-                .callsFake(() => {
-                    return [{id: 1, first_name: 'first', last_name: 'last'},
-                        {id: 2, first_name: 'first2', last_name: 'last2'}]
-                });
-
-            //maker 1
-            let sheetByMakerStub2 = sinon.stub(timeSheetService, 'getSheetsByMaker')
-                .callsFake(() => {
-                    return [timeSheetBasic1, timeSheetBasic2];
-                });
-            let sheetByMakerStub = sinon.stub(timeSheetRepo, 'getSheetsByMaker')
-                .callsFake(() => {
-                    return [timeSheetBasic1, timeSheetBasic2];
-                });
-            let makerByIdStub = sinon.stub(makerRepo, 'getMakerById')
-                .callsFake(() => {
-                    return {id: 1, first_name: 'first', last_name: 'last', email: 'email'}
-                });
-            let getClientNameStub = sinon.stub(clientRepo, 'getClientNameById')
-                .callsFake(() => {
-                    return [{name: 'client'}]
-                });
-        });
-
-        afterEach(function () {
-            sinon.restore();
-        });
-
-
-
-        it('Should grab only online users', async () => {
-            let results = await timeClockService.getOnlineMakers();
-
-            expect(results[0].id).to.equal(1);
-            expect(results[0].email).to.equal('clientEmail');
-            assert(results[0].time_online > 0);
-        })
-
-
-
-        it('Should grab all timesheets', function () {
-            throw new Error("Not yet implemented")
-        })
-
-        it ("Should get the maker's current logged in time in seconds", async function () {
-            let actual = await timeClockService.getRunningTime(maker1);
-            console.log ('actual is ' + actual)
-            assert(actual > 536493)
-        })
-
-        it('Should grab timesheets for a given maker', async function () {
-
-            let actual = await timeClockService.getSheetsByMaker(1);
-
-            expect(actual).to.deep.equal(
-                [{
-                    id: 1,
-                    maker_name: 'first last',
-                    client: 'client',
-                    hourly_rate: 20.00,
-                    start_time: '2019-04-24 22:22:22',
-                    end_time: '2019-04-24 23:23:23',
+    beforeEach(function () {
+        let onlinesheetsstub = sinon.stub(timeClockService, 'getOnlineSheets')
+            .resolves([]);
+        let scope = nock(process.env.TWINBEE_URL)
+            .post('/api/getMakerIdByToken', {auth: process.env.TWINBEE_MASTER_AUTH, token: "asdf"})
+            .reply(200,
+                JSON.stringify({id: 5})
+            );
+        let scope2 = nock(process.env.TWINBEE_URL)
+            .post('/api/getRelationshipById', {auth: process.env.TWINBEE_MASTER_AUTH, id: 5})
+            .reply(200,
+                JSON.stringify({id: 5, makerId: 5, clientId: 5, hourlyRate: "potato"})
+            );
+        let scope3 = nock(process.env.TWINBEE_URL)
+            .post('/api/getTimeSheetsByMakerId', {auth: process.env.TWINBEE_MASTER_AUTH, id: 5})
+            .reply(200,
+                JSON.stringify([{
+                    id: 5,
+                    maker_id: 5,
+                    client_id: 5,
+                    hourly_rate: "potato",
+                    timeIn: '2019-04-22 22:22:22',
+                    timeOut: '2019-04-22 23:23:23',
                     task: 'worker',
-                    duration: '1 hour 1 minute',
-                    cost: 23.33
+                    admin_note: 'Added by admin: 2'
                 }])
-        })
+            );
+        let scope4 = nock(process.env.TWINBEE_URL)
+            .post('/api/createTimeSheet'
+            )
+            .reply(200,
+                JSON.stringify({id: 1})
+            );
 
 
+    });
 
-        it('Should confirm a maker IS clocked in anywhere', async function () {
-            let actual = await timeClockService.userIsOnline(1);
-
-            expect(actual).to.equal(true);
-        })
-
+    afterEach(function () {
+        sinon.restore();
+    });
 
 
-        it('Should confirm a maker IS NOT clocked in anywhere', async function () {
-            let actual = await timeClockService.userIsOnline(2);
+    it('Should clock in a user', async () => {
 
-            expect(actual).to.equal(false);
-        })
+        let results = await timeClockService.clockIn("asdf", "asdf", "5");
+
+        expect(results).to.equal(true);
+    });
 
 
+    it('Should clock out a user', async function () {
+        let actual = await timeClockService.clockOut("asdf");
 
-        it("Should grab the clocked in maker's data", async function () {
-            let actual = await timeClockService.getDataForOnlineMaker(1);
+        expect(actual).to.equal(true);
+    });
 
-            expect(actual).to.deep.equal(
-                [{
-                    id: 1,
-                    maker_name: 'first last',
-                    client: 'client',
-                    hourly_rate: 20.00,
-                    start_time: '2019-04-24 22:22:22',
-                    task: 'worker',
-                    time_sheet_id: 1
-                }]);
 
-        })
-
-     */
 })
