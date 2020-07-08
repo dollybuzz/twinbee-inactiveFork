@@ -137,7 +137,7 @@ function timeClockFunctionality() {
                         $("#clientRole").hide();
                         $("#availcredit").hide();
                         $("#makerSelectedClient").hide();
-                    }, 3000)
+                    }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = true;
                     $("#taskBlock").css("opacity", "1");
@@ -233,7 +233,7 @@ function setClockOutFunctionality() {
         $("#availcredit").hide();
         $("#taskBlock").hide();
         $("#taskEntry").hide();
-    }, 3000);
+    }, 1500);
 
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#32444e");
