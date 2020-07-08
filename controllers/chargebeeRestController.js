@@ -39,7 +39,7 @@ let validatorMap = {
     "positiveDecimalAllowed": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate){
-            if (!body[keyString] || !Number.parseInt(body[keyString])
+            if (!body[keyString] || !Number.parseFloat(body[keyString])
                 || body[keyString].includes("-")){
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
@@ -50,7 +50,7 @@ let validatorMap = {
     "decimalAllowed": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate){
-            if (!body[keyString] || !Number.parseInt(body[keyString])){
+            if (!body[keyString] || !Number.parseFloat(body[keyString])){
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
@@ -462,7 +462,7 @@ module.exports = {
      *     "subscriptionId": id of subscription to be modified,
      *     "planId": new plan to use for subscription,
      *     "planQuantity": new number of hours to use,
-     *     "pricePerHour": overridden price per hour for subscription, - DEACTIVATED
+     *     "pricePerHour": overridden price per hour for subscription
      *     "auth": authentication credentials; either master or token
      * }
      *

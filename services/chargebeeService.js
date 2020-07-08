@@ -340,7 +340,7 @@ class ChargebeeService {
                 plan_id: planId,
                 end_of_term: true,
                 plan_quantity: planQuantity,
-                plan_unit_price: pricePerHour * 100
+                plan_unit_price: Math.floor(Number.parseFloat(pricePerHour) * 100)
             }).request(function (error, result) {
                 if (error) {
                     console.log(error);

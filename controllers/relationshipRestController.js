@@ -38,7 +38,7 @@ let validatorMap = {
     "positiveDecimalAllowed": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate) {
-            if (!body[keyString] || !Number.parseInt(body[keyString])
+            if (!body[keyString] || !Number.parseFloat(body[keyString])
                 || body[keyString].includes("-")) {
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
@@ -49,7 +49,7 @@ let validatorMap = {
     "decimalAllowed": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate) {
-            if (!body[keyString] || !Number.parseInt(body[keyString])) {
+            if (!body[keyString] || !Number.parseFloat(body[keyString])) {
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
