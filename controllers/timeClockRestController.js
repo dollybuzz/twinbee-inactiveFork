@@ -126,7 +126,6 @@ module.exports = {
      * values (ideally should only ever be one) with the current time. Looks for
      * values in the body in the form:
      * {
-     *     "makerId": id of the maker to clock out,
      *     "newTask": updated task (if desired)
      *     "auth": authentication credentials; either master or token
      * }
@@ -138,7 +137,7 @@ module.exports = {
     clockOut: async (req, res) => {
         console.log('Attempting to clock out user from REST:');
         console.log(req.body);
-        let validationResult = await validateParams({"present": ["auth", "makerId"]}, req.body);
+        let validationResult = await validateParams({"present": ["auth"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
