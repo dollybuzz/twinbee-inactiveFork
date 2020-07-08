@@ -9,13 +9,13 @@ const nock = require('nock');
 const TimeSheet = require('../domain/entity/timeSheet');
 
 const timeSheetBasic1 = {id: 1, maker_id: 1, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-24 22:22:22',
-                        end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'Added by admin: '};
+                        end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'No details given.'};
 const timeSheetBasic2 = {id: 2, maker_id: 1, client_id: 'b', hourly_rate: 20.00, start_time: '2019-04-23 22:22:22',
                         end_time: '2019-04-23 23:23:23', task: 'worker', admin_note: 'Added by admin: 1'};
 const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
                         end_time: '2019-04-22 23:23:23', task: 'worker', admin_note: 'Added by admin: 2'};
 
-const timeSheetRefined1 = new TimeSheet(1, 1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', 'Added by admin: ');
+const timeSheetRefined1 = new TimeSheet(1, 1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', 'No details given.');
 const timeSheetRefined2 = new TimeSheet(2, 1, 20.00, 'b', '2019-04-23 22:22:22', '2019-04-23 23:23:23', 'worker', 'Added by admin: 1');
 const timeSheetRefined3 = new TimeSheet(3, 2, 20.00, 'a', '2019-04-22 22:22:22', '2019-04-22 23:23:23', 'worker', 'Added by admin: 2');
 

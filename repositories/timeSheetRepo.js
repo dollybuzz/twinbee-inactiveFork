@@ -26,9 +26,11 @@ class TimeSheetRepository {
             if (err) {
                 console.log(err);
                 notificationService.notifyAdmin(err.toString());
+                return false;
             }
+            console.log(`Sheet ${id} successfully updated.`);
+            return result;
         });
-        console.log(`Sheet ${id} successfully updated.`);
     }
 
 

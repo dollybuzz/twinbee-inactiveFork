@@ -44,11 +44,11 @@ class TimeSheetService {
      * @param task      - entry for maker task
      * @param detail    - entry for admin note on mod change
      */
-    updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail) {
+    async updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail) {
         if (detail) {
             detail = `Modified by admin: ${detail}`;
         }
-        timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
+        await timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
     }
 
     /**
@@ -291,7 +291,7 @@ class TimeSheetService {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
-            this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
+            await this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
                 newTask ? newTask : currentSheet.task, currentSheet.adminNote);
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
 
