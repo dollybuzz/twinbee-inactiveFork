@@ -247,7 +247,7 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        let newSheet = await this.createTimeSheet(relationship.makerId, relationship.hourlyRate, relationship.clientId,
+        let newSheet = await this.createTimeSheet(relationship.makerId, relationship.planId, relationship.clientId,
             rightNow, '0000-00-00 00:00:00', task);
         console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
 
