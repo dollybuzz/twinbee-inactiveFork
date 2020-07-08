@@ -387,7 +387,7 @@ module.exports = {
             {
                 "present": ["occupation"],
                 "positiveIntegerOnly": ["id", "makerId"],
-                "noSpaces": ["clientId", "planId"],
+                "noSpaces": ["planId"],
                 "positiveDecimalAllowed": [],
                 "decimalAllowed": []
             }, req.body);
