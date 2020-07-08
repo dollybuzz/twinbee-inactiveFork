@@ -347,7 +347,18 @@ app.post("/api/getAllTransactions",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     chargebeeRestController.getAllTransactions);
-
+app.post("/api/getInvoicesForCustomer",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.getInvoicesForCustomer);
+app.post("/api/doesCustomerHaveInvoices",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.doesCustomerHaveInvoices);
+app.post("/api/doIHaveInvoices",
+    authController.authorizeClient,
+    authController.authorizeMaster,
+    clientRestController.doIHaveInvoices);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

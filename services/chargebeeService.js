@@ -222,8 +222,7 @@ class ChargebeeService {
             if (startDate) {
                 let startMoment = moment(startDate);
                 subscriptionConfig.start_date = startMoment.unix();
-            }
-            else{
+            } else {
                 subscriptionConfig.start_date = moment().unix();
             }
             chargebee.subscription.create_for_customer(customerId, subscriptionConfig).request(function (error, result) {
@@ -572,7 +571,10 @@ class ChargebeeService {
      */
     async chargeCustomerNow(plan, numHours, customerId) {
 
-        let subscriptionEntries = await this.getSubscriptionsByClient(customerId);
+        let subscriptionEntries = await this.getSubscriptionsByClient(customerId).catch(error => {
+            console.log(error);
+            notifyAdmin(error.toString());
+        });
         let pricePerHour;
         for (var entry of subscriptionEntries) {
             if (entry.subscription.plan_id.toString() === plan.toString()) {
@@ -582,9 +584,9 @@ class ChargebeeService {
             }
         }
         if (!pricePerHour) {
-            let planObj = await this.retrievePlan(plan).catch(err=>{
+            let planObj = await this.retrievePlan(plan).catch(err => {
                 console.log(err);
-                notifyAdmin(err);
+                notifyAdmin(err.toString());
             });
             pricePerHour = Number.parseFloat(planObj.price);
         }
@@ -613,7 +615,7 @@ class ChargebeeService {
         }).request(function (error, result) {
             if (error) {
                 console.log(error);
-                notifyAdmin();
+                notifyAdmin(error);
             } else {
                 console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
@@ -633,6 +635,66 @@ class ChargebeeService {
             }
         });
         return calculatedPrice;
+    }
+
+    /**
+     * determines whether the given client has outstanding invoices.
+     * @param clientId  - id of client in question
+     * @returns {Promise<{invoicesPresent: (*|boolean)}>}
+     */
+    async doesCustomerHaveInvoices(clientId){
+        let invoices = await chargebee.invoice.list({
+            limit: 2,
+            "status[is]": "not_paid",
+            "sort_by[asc]": "date",
+            "customer_id[is]": clientId
+        }).request().catch(error => {
+            console.log(error);
+            notifyAdmin(error.toString());
+        });
+
+        return {invoicesPresent: invoices.list && invoices.list.length > 0};
+    }
+
+    /**
+     * Retrieves invoices for the given chargebee customer id.
+     * @param clientId  - id of client owing on invoices
+     * @returns {Promise<[chargebee invoice]>}
+     */
+    async getInvoicesForCustomer(clientId) {
+        let invoices = await chargebee.invoice.list({
+            limit: 100,
+            "status[is]": "not_paid",
+            "sort_by[asc]": "date",
+            "customer_id[is]": clientId
+        }).request().catch(error => {
+            console.log(error);
+            notifyAdmin(error.toString());
+        });
+
+        let list = invoices.list;
+        let refinedList = [];
+
+        for (var i = 0; i < list.length; i++) {
+            refinedList.push(list[i].invoice);
+        }
+
+        while (invoices.next_offset){
+            invoices = await chargebee.invoice.list({
+                limit: 100,
+                "status[is]": "not_paid",
+                "sort_by[asc]": "date",
+                "customer_id[is]": clientId,
+                "offset": invoices.next_offset
+            }).request().catch(error => {
+                console.log(error);
+                notifyAdmin(error.toString());
+            });
+            for (var entry of invoices.list) {
+                refinedList.push(entry.invoice);
+            }
+        }
+        return refinedList;
     }
 }
 

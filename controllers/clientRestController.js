@@ -1093,6 +1093,53 @@ module.exports = {
         }
     },
 
+
+    /**
+     * ENDPOINT: /api/doIHaveInvoices
+     *
+     * Determines whether a customer has outstanding invoices. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "token": requester's token
+     * }
+     * returns a result in the form:
+     * { invoicesPresent: true or false }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    doIHaveInvoices: async function (req, res) {
+        console.log(`Attempting to retrieve all invoices for customer ${req.body.clientId}`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["token"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let client = await clientService.getClientByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await clientService.doIHaveInvoices(client.id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+    },
+
     /**
      * ENDPOINT: /api/getMyMakers
      * Retrieves freedom makers for a client
