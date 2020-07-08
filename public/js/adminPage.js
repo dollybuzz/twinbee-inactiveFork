@@ -1286,7 +1286,9 @@ function subscriptionAddForm() {
         "<label for='addsubscriptionplanid'>Plan:</label>" +
         `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select><br><br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
-        `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>\n` +
+        `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n` +
+        "<label for='addsubscriptionstart'>Start Date:</label>" +
+        `<input class='form-control' type='date' id='addsubscriptionstart' name='addubscriptionstart'>\n<br><br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>\n");
 
     $("#optionsClient").append("<hr><p>Note: Only Clients that have a valid payment method will populate in the field.</p>");
@@ -1338,6 +1340,11 @@ function subscriptionAddForm() {
                             valid = false;
                             message += "Invalid entry! Please try again.<br>";
                         }
+                        if($("#addsubscriptionstart").val() == 'undefined')
+                        {
+                            valid = false;
+                            message += "Please select a start date.<br>";
+                        }
 
                         if (valid) {
                             $("#errormessage").html("");
@@ -1349,6 +1356,7 @@ function subscriptionAddForm() {
                                 planId: $("#addsubscriptionplanid").val(),
                                 customerId: $("#addsubscriptioncustomerid").val(),
                                 planQuantity: $("#addsubscriptionplanquantity").val(),
+                                startDate: $("#addsubscriptionstart").val()
                             }, addSubscriptionSuccess);
                         } else {
                             $("#errormessage").html(message);
