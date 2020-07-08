@@ -2255,19 +2255,37 @@ function sheetModForm(res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsheetid'>Time Sheet ID:</label>" +
-        `<input class='form-control' type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheetid' name='modsheetid' value='${res.id}' disabled>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='modsheetplanname'>Plan:</label>" +
-        `<input class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}' disabled>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}' disabled>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='modsheettimein'>Time In:</label>" +
         `<input class='form-control' type='date' id='modsheettimeindate' name='modsheettimeindate' value='${res.timeIn}'>` +
         `<input class='form-control' type='time' id='modsheettimeintime' name='modsheettimeintime' value='${res.timeIn}'>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='modsheettimeout'>Time Out:</label>" +
         `<input class='form-control' type='date' id='modsheettimeoutdate' name='modsheettimeoutdate' value='${res.timeOut}'>` +
         `<input class='form-control' type='time' id='modsheettimeouttime' name='modsheettimeouttime' value='${res.timeOut}'>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='modsheettask'>Task:</label>" +
-        `<input class='form-control' type='text' id='modsheettask' name='modsheettask' value='${res.task}'>\n<br>\n` +
+        `<input class='form-control' type='text' id='modsheettask' name='modsheettask' value='${res.task}'>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='modsheetdetail'>Detail:</label>" +
-        `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -2336,17 +2354,31 @@ function sheetAddForm() {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='addsheetgroup'>Group:</label>" +
-        `<select class='form-control' id='addsheetgroup' name='addsheetgroup'></select>\n<br><br>\n` +
+        `<select class='form-control' id='addsheetgroup' name='addsheetgroup'></select>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='addsheettimein'>Time In:</label>" +
         `<input class='form-control' type='date' id='addsheettimeindate' name='addsheettimeindate' >` +
         `<input class='form-control' type='time' id='addsheettimeintime' name='addsheettimeintime' >\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='addsheettimeout'>Time Out:</label>" +
         `<input class='form-control' type='date' id='addsheettimeoutdate' name='addsheettimeoutdate' >` +
         `<input class='form-control' type='time' id='addsheettimeouttime' name='addsheettimeouttime' >` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='addsheettask'>Task:</label>" +
-        `<input class='form-control' type='text' id='addsheettask' name='addsheettask'>\n<br>\n` +
+        `<input class='form-control' type='text' id='addsheettask' name='addsheettask'>\n` +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
+        "<label for='empty'></label>" +
         "<label for='addsheetdetail'>Detail:</label>" +
-        `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n<br><br>\n` +
+        `<input class='form-control' type='text' id='addsheetdetail' name='addsheetdetail'>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
     $("#optionsClient").append("<hr><p>Note: Changes may take a moment to reflect.</p>");
 
