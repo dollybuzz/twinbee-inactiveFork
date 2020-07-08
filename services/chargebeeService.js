@@ -212,8 +212,6 @@ class ChargebeeService {
      * @param startDate - desired start date in moment-readable format
      */
     createSubscription(planId, customerId, planQuantity, startDate) {
-        let startMoment = moment(startDate);
-        let startTimeStamp = startMoment.unix();
         console.log(`Creating subscription for customer ${customerId} with plan ${planId}...`);
         return new Promise((resolve, reject) => {
             let subscriptionConfig = {
@@ -222,7 +220,11 @@ class ChargebeeService {
                 auto_collection: "on"
             };
             if (startDate) {
-                subscriptionConfig.start_date = startTimeStamp;
+                let startMoment = moment(startDate);
+                subscriptionConfig.start_date = startMoment.unix();
+            }
+            else{
+                subscriptionConfig.start_date = moment().unix();
             }
             chargebee.subscription.create_for_customer(customerId, subscriptionConfig).request(function (error, result) {
                 if (error) {
