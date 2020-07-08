@@ -291,11 +291,13 @@ function setClockOutFunctionality() {
                                 $("#clockPrompt").html("");
                             }, 2000);
                         } else {
-                            $("#makerText2").html("<br><h5>Could not clock out!</h5>");
+                            //alert("hi");
+                            //$("#makerText2").css("opacity", "1");
+                            $("#clockPrompt").html("<br><h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
                     },
                     error: function (clockres, status) {
-                        $("#makerClock").html('Clock Out')
+                        $("#makerClock").html('Clock Out');
                         $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
                     }
                 });
