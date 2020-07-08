@@ -2396,10 +2396,6 @@ function sheetAddForm() {
                                     valid = false;
                                     message += "Please correct the dates and times!<br>";
                                 }
-                                if ($("#addsheettask").val().length === 0) {
-                                    valid = false;
-                                    message += "Task must be added!<br>";
-                                }
                                 if ($("#addsheetdetail").val().length === 0) {
                                     valid = false;
                                     message += "Please enter a reason for adding!<br>";

@@ -107,7 +107,7 @@ module.exports = {
         console.log('Attempting to clock in user from REST:');
         console.log(req.body);
 
-        let validationResult = await validateParams({"present": ["auth", "relationshipId", "task"]}, req.body);
+        let validationResult = await validateParams({"present": ["auth", "relationshipId"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
