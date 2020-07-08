@@ -332,5 +332,62 @@ module.exports = {
             }
             res.send(createdSheet);
         }
+    },
+
+
+    /**
+     * ENDPOINT: /api/clockIn
+     * "Clocks in" a given user. Initializes a new timesheet with the provided
+     * client, hourly rate, and task. Looks for values in the body in the form:
+     * {
+     *     "relationshipId": id of relationship to clock into,
+     *     "task": type of work performed for this period,
+     *     "auth": authentication credentials; either master or token
+     * }
+     */
+    clockIn: async (req, res) => {
+        console.log('Attempting to clock in user from REST:');
+        console.log(req.body);
+
+        let validationResult = await validateParams({"present": ["auth", "relationshipId"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await timeSheetService.clockIn(req.body.auth, req.body.task,
+                req.body.relationshipId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+    },
+
+    /**
+     * ENDPOINT: /api/clockOut
+     * "Clocks out" a given user. Completes any timesheets without valid "clock in"
+     * values (ideally should only ever be one) with the current time. Looks for
+     * values in the body in the form:
+     * {
+     *     "newTask": updated task (if desired)
+     *     "auth": authentication credentials; either master or token
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    clockOut: async (req, res) => {
+        console.log('Attempting to clock out user from REST:');
+        console.log(req.body);
+        let validationResult = await validateParams({"present": ["auth"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await timeSheetService.clockOut(req.body.auth, req.body.newTask).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     }
 };

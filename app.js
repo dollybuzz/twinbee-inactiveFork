@@ -11,7 +11,6 @@ const makerPageController = require('./controllers/makerPageController.js');
 const clientRestController = require('./controllers/clientRestController.js');
 const makerRestController = require('./controllers/makerRestController.js');
 const timeSheetRestController = require('./controllers/timeSheetRestController.js');
-const timeClockRestController = require('./controllers/timeClockRestController.js');
 const relationshipRestController = require('./controllers/relationshipRestController.js');
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
 const timeReportingRestController = require('./controllers/timeReportingRestController.js');
@@ -179,12 +178,12 @@ app.post("/api/clockIn",
     authController.authorizeMaker,
     authController.authorizeAdmin,
     authController.authorizeMaster,
-    timeClockRestController.clockIn);
+    timeSheetRestController.clockIn);
 app.post("/api/clockOut",
     authController.authorizeMaker,
     authController.authorizeAdmin,
     authController.authorizeMaster,
-    timeClockRestController.clockOut);
+    timeSheetRestController.clockOut);
 app.post("/api/creditNow",
     authController.authorizeAdmin,
     authController.authorizeMaster,

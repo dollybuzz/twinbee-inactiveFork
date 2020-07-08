@@ -19,6 +19,67 @@ const timeSheetRefined1 = new TimeSheet(1, 1, 20.00, 'a', '2019-04-24 22:22:22',
 const timeSheetRefined2 = new TimeSheet(2, 1, 20.00, 'b', '2019-04-23 22:22:22', '2019-04-23 23:23:23', 'worker', 'Added by admin: 1');
 const timeSheetRefined3 = new TimeSheet(3, 2, 20.00, 'a', '2019-04-22 22:22:22', '2019-04-22 23:23:23', 'worker', 'Added by admin: 2');
 
+
+
+describe('Time Clock Service Test', function () {
+    beforeEach(function () {
+        let onlinesheetsstub = sinon.stub(timeSheetService, 'getOnlineSheets')
+            .resolves([]);
+        let scope = nock(process.env.TWINBEE_URL)
+            .post('/api/getMakerIdByToken', {auth: process.env.TWINBEE_MASTER_AUTH, token: "asdf"})
+            .reply(200,
+                JSON.stringify({id: 5})
+            );
+        let scope2 = nock(process.env.TWINBEE_URL)
+            .post('/api/getRelationshipById', {auth: process.env.TWINBEE_MASTER_AUTH, id: 5})
+            .reply(200,
+                JSON.stringify({id: 5, makerId: 5, clientId: 5, hourlyRate: "potato"})
+            );
+        let scope3 = nock(process.env.TWINBEE_URL)
+            .post('/api/getTimeSheetsByMakerId', {auth: process.env.TWINBEE_MASTER_AUTH, id: 5})
+            .reply(200,
+                JSON.stringify([{
+                    id: 5,
+                    maker_id: 5,
+                    client_id: 5,
+                    hourly_rate: "potato",
+                    timeIn: '2019-04-22 22:22:22',
+                    timeOut: '2019-04-22 23:23:23',
+                    task: 'worker',
+                    admin_note: 'Added by admin: 2'
+                }])
+            );
+        let scope4 = nock(process.env.TWINBEE_URL)
+            .post('/api/createTimeSheet'
+            )
+            .reply(200,
+                JSON.stringify({id: 1})
+            );
+
+
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+    it('Should clock in a user', async () => {
+
+        let results = await timeSheetService.clockIn("asdf", "asdf", "5");
+        expect(results).to.equal(true);
+    });
+
+
+    it('Should clock out a user', async function () {
+        let actual = await timeSheetService.clockOut("asdf");
+
+        expect(actual).to.equal(true);
+    });
+
+
+});
+
 describe('Time Sheet Service Test', function () {
     beforeEach(function () {
         let getAllSheetsStub = sinon.stub(timeSheetRepo, 'getAllSheets')
