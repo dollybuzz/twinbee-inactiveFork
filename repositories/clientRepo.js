@@ -1,4 +1,4 @@
-const {query} = require('./repoMaster');
+const repoMaster = require('./repoMaster.js');
 var chargebee = require("chargebee");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
     api_key : process.env.CHARGEBEE_API_KEY});
@@ -28,7 +28,7 @@ class ClientRepository {
                     let sql = 'INSERT INTO client(chargebee_id, email) ' +
                         'VALUES (?, ?)';
                     let sqlParams = [customer.id, customerEmail];
-                    query(sql, sqlParams, function (err, result) {
+                    repoMaster.query(sql, sqlParams, function (err, result) {
                         if (err) {
                             notificationService.notifyAdmin(err.toString());
                             reject(err);
@@ -59,7 +59,7 @@ class ClientRepository {
 
                     let sql = 'UPDATE client SET email = ? WHERE chargebee_id = ?';
                     let sqlParams = [customerEmail, customer.id];
-                    query(sql, sqlParams, function (err, result) {
+                    repoMaster.query(sql, sqlParams, function (err, result) {
                         if (err) {
                             notificationService.notifyAdmin(err.toString());
                             reject(err);
@@ -75,7 +75,7 @@ class ClientRepository {
     deleteClient(chargebeeId) {
         let sql = 'DELETE FROM client WHERE chargebee_id = ?';
         let sqlParams = [chargebeeId];
-        query(sql, sqlParams, function (err, result) {
+        repoMaster.query(sql, sqlParams, function (err, result) {
             if (err) {
                 console.log(err);
                 notificationService.notifyAdmin(err.toString());

@@ -1,4 +1,4 @@
-const {query} = require('./repoMaster');
+
 const repoMaster = require('./repoMaster.js');
 const notificationService = require('../services/notificationService.js');
 class AuthRepository {
@@ -14,7 +14,7 @@ class AuthRepository {
             let sqlParam = [];
             let result;
             console.log("getting admins");
-            result = await query(sql, sqlParam).catch( async e => {
+            result = await repoMaster.query(sql, sqlParam).catch( async e => {
                 if (numRetries === 0){
                     reject();
                 }

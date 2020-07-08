@@ -1,5 +1,4 @@
 
-const {query} = require("./repoMaster.js");
 const repoMaster = require('./repoMaster.js');
 const notificationService = require('../services/notificationService.js');
 
@@ -13,7 +12,7 @@ class MakerRepository {
         }
         let sql = 'INSERT INTO maker(first_name, last_name, email, unique_descriptor) VALUES (?, ?, ?, ?)';
         let sqlParams = [firstName, lastName, email, unique];
-        query(sql, sqlParams, function (err, result) {
+        repoMaster.query(sql, sqlParams, function (err, result) {
             if (err) {
                 console.log(err);
                 notificationService.notifyAdmin(err.toString());
@@ -28,7 +27,7 @@ class MakerRepository {
         }
         let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ?, unique_descriptor = ? WHERE id = ?';
         let sqlParams = [firstName, lastName, email, unique, id];
-        query(sql, sqlParams, function (err, result) {
+        repoMaster.query(sql, sqlParams, function (err, result) {
             if (err) {
                 console.log(err);
                 notificationService.notifyAdmin(err.toString());
@@ -40,7 +39,7 @@ class MakerRepository {
     deleteMaker(id) {
         let sql = 'UPDATE maker SET deleted = true where id = ?';
         let sqlParams = [id];
-        query(sql, sqlParams, function (err, result) {
+        repoMaster.query(sql, sqlParams, function (err, result) {
             if (err) {
                 console.log(err);
                 notificationService.notifyAdmin(err.toString());
@@ -57,7 +56,7 @@ class MakerRepository {
             'WHERE end_time - start_time < 0 ' +
             'GROUP BY maker.id';
         let sqlParams = [];
-        let result = await query(sql, sqlParams).catch(e => {
+        let result = await repoMaster.query(sql, sqlParams).catch(e => {
             console.log(e);
             result = [];
         });
@@ -68,7 +67,7 @@ class MakerRepository {
     async getMakerById(id) {
         let sql = 'SELECT * FROM maker WHERE id = ?';
         let sqlParam = [id];
-        let result = await query(sql, sqlParam).catch(e => {
+        let result = await repoMaster.query(sql, sqlParam).catch(e => {
             console.log(e);
             result = [];
         });
@@ -85,7 +84,7 @@ class MakerRepository {
             let sql = 'SELECT * FROM maker';
             let sqlParam = [];
             let result;
-            result = await query(sql, sqlParam).catch(async e => {
+            result = await repoMaster.query(sql, sqlParam).catch(async e => {
                 if (numRetries === 0) {
                     reject();
                 }
@@ -107,7 +106,7 @@ class MakerRepository {
         console.log("EMAIL IS " + email);
         let sql = 'SELECT id FROM maker WHERE email = ?';
         let sqlParam = [email];
-        let result = await query(sql, sqlParam).catch(e => {
+        let result = await repoMaster.query(sql, sqlParam).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];

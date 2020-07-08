@@ -29,7 +29,7 @@ const dbOptions = {
     database: process.env.TWINBEE_DB_SCHEMA
 };
 
-class DbMaster {
+class RepoMaster {
     constructor() {
         this.conn = mysql.createConnection(dbOptions);
         this.query = util.promisify(this.conn.query).bind(this.conn);
@@ -56,19 +56,30 @@ class DbMaster {
                         dbMaster.activateConnection(dbMaster, numRetries - 1)
                     }, 5000)
                 } else {
-                    resolve();
+                    reject();
                 }
             });
+
             dbMaster.conn.on('error', function (err) {
-                setTimeout(function () {
+                setTimeout(async function () {
                     notifyAdmin(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
                     console.log(`Error occurred in dbMaster. Error Code: ${err.code}\nFull Error: ${err.toString()}`);
                     if (err.code.toString() === 'PROTOCOL_CONNECTION_LOST') {
                         notifyAdmin("Attempting to recover.");
                         console.log("Attempting to recover.");
                         dbMaster.conn = mysql.createConnection(dbOptions);
-                        dbMaster.activateConnection(dbMaster, numRetries);
+                        await dbMaster.activateConnection(dbMaster, numRetries).catch(error => {
+                            console.log(error);
+                            notifyAdmin(error.toString());
+                        });
                         dbMaster.query = util.promisify(dbMaster.conn.query).bind(dbMaster.conn);
+                        let message = "Recovered successfully.";
+                        await this.query("select * from admin", [])
+                            .catch(error => {
+                                message = "Failed to recover.";
+                            });
+                        console.log(message);
+                        notifyAdmin(message);
                     } else {
                         notifyAdmin("Unable to recover.");
                         console.log("Unable to recover.");
@@ -80,4 +91,4 @@ class DbMaster {
     }
 }
 
-module.exports = new DbMaster();
+module.exports = new RepoMaster();

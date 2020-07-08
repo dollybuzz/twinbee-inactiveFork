@@ -23,7 +23,7 @@ class TimeSheetService {
      * @returns {Promise<TimeSheet>}
      */
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail) {
-        if (!detail){
+        if (!detail) {
             detail = "No details given."
         }
         let id = await timeSheetRepo.createSheet(makerId, clientId,
@@ -38,7 +38,6 @@ class TimeSheetService {
      * Updates the timesheet specified by id with new values
      *
      * @param id    - timesheet's database id
-     * @param makerId   - id of the maker who owns the timesheet
      * @param hourlyRate- associated plan rate, e.g, 'freedom-makers-32'
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
@@ -347,5 +346,4 @@ createSheetFromRow = async row => {
 };
 
 
-module
-    .exports = new TimeSheetService();
+module.exports = new TimeSheetService();
