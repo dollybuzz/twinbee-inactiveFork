@@ -196,15 +196,8 @@ function setClockInFunctionality() {
                     $("#clockPrompt").html("<h5>Time is running . . .</h5>");
                     $("#clockPrompt").css("opacity", "1");
 
-                    $("#taskBlock").css("opacity", "0");
-                    $("#taskEntry").css("opacity", "0");
-                    $("#taskBlock").css("transition", "opacity 0.5s ease-out");
-                    $("#taskEntry").css("transition", "opacity 0.5s ease-out");
-
                     setTimeout(function () {
                         $("#makerText2").css("opacity", "0");
-                        $("#taskBlock").hide();
-                        $("#taskEntry").hide();
                     }, 1000);
 
                     setTimeout(function () {
@@ -230,12 +223,16 @@ function setClockOutFunctionality() {
     $("#clockPrompt").css("opacity", "1");
     $("#clientCredit").css("opacity", "0");
     $("#availcredit").css("opacity", "0");
+    $("#taskBlock").css("opacity", "0");
+    $("#taskEntry").css("opacity", "0");
 
     setTimeout(function () {
         $("#makerSelectedClient").hide();
         $("#clientRole").hide();
         $("#clientCredit").hide();
         $("#availcredit").hide();
+        $("#taskBlock").hide();
+        $("#taskEntry").hide();
     }, 3000);
 
     $("#makerClock").off("click");
@@ -271,18 +268,15 @@ function setClockOutFunctionality() {
                             $("#clockPrompt").css("opacity", "0");
                             $("#makerText2").html("<br><h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
-                            $("#taskBlock").css("transition", "opacity 0.5s ease-in");
-                            $("#taskEntry").css("transition", "opacity 0.5s ease-in");
-                            $("#taskBlock").show();
-                            $("#taskBlock").css("opacity", "1");
-                            $("#taskEntry").show();
-                            $("#taskEntry").val("");
-                            $("#taskEntry").css("opacity", "1");
-                            $("#clientRole").show();
                             $("#clientRole").css("opacity", "1");
                             $("#makerSelectedClient").css("opacity", "1");
                             $("#clientCredit").css("opacity", "1");
                             $("#availcredit").css("opacity", "1");
+                            $("#taskBlock").css("opacity", "1");
+                            $("#taskEntry").css("opacity", "1");
+                            $("#taskEntry").val("");
+                            $("#taskBlock").show();
+                            $("#taskEntry").show();
                             $("#clientCredit").show();
                             $("#clientRole").show();
                             $("#availcredit").show();
