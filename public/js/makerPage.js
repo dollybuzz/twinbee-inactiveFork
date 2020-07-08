@@ -291,8 +291,6 @@ function setClockOutFunctionality() {
                                 $("#clockPrompt").html("");
                             }, 2000);
                         } else {
-                            //alert("hi");
-                            //$("#makerText2").css("opacity", "1");
                             $("#clockPrompt").html("<br><h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
                     },
