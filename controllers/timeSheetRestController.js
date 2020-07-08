@@ -317,7 +317,7 @@ module.exports = {
     createTimeSheet: async (req, res) => {
         console.log("Attempting to create a timesheet");
         console.log(req.body);
-        let validationResult = await validateParams({"present": ["id", "hourlyRate", "clientId", "timeIn", "timeOut", "detail"]}, req.body);
+        let validationResult = await validateParams({"present": ["id", "hourlyRate", "clientId", "timeIn", "timeOut"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});

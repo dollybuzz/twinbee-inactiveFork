@@ -174,7 +174,7 @@ class TimeClockService {
                     timeIn: currentSheet.timeIn,
                     timeOut: rightNow,
                     task: newTask ? newTask : currentSheet.task,
-                    adminNote: currentSheet.adminNote,
+                    detail: currentSheet.adminNote,
                     'auth':process.env.TWINBEE_MASTER_AUTH
                 }
             });
