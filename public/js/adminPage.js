@@ -1346,6 +1346,9 @@ function subscriptionAddForm() {
                             message += "Please select a start date.<br>";
                         }
 
+                        let UTCstartdate = $("#addsubscriptionstart").val() + " 08:00:00";
+
+
                         if (valid) {
                             $("#errormessage").html("");
                             $("#SubmitButton").hide();
@@ -1356,7 +1359,7 @@ function subscriptionAddForm() {
                                 planId: $("#addsubscriptionplanid").val(),
                                 customerId: $("#addsubscriptioncustomerid").val(),
                                 planQuantity: $("#addsubscriptionplanquantity").val(),
-                                startDate: $("#addsubscriptionstart").val()
+                                startDate: UTCstartdate
                             }, addSubscriptionSuccess);
                         } else {
                             $("#errormessage").html(message);
