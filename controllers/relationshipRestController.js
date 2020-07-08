@@ -131,7 +131,7 @@ module.exports = {
 
         let validationResult = await validateParams(
             {
-                "present": [, "occupation"],
+                "present": ["occupation"],
                 "positiveIntegerOnly": ["makerId"],
                 "noSpaces": ["clientId", "planId"],
                 "positiveDecimalAllowed": [],
