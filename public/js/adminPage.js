@@ -1286,7 +1286,7 @@ function subscriptionAddForm() {
         "<label for='addsubscriptionplanid'>Plan:</label>" +
         `<select class='form-control' id='addsubscriptionplanid' name='addsubscriptionplanid'></select><br><br>\n` +
         "<label for='addsubscriptionplanquantity'>Planned Monthly Hours:</label>" +
-        `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n` +
+        `<input class='form-control' type='number' step='1' id='addsubscriptionplanquantity' name='addsubscriptionplanquantity'>\n<br>` +
         "<label for='addsubscriptionstart'>Start Date:</label>" +
         `<input class='form-control' type='date' id='addsubscriptionstart' name='addubscriptionstart'>\n<br><br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>\n");
