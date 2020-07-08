@@ -2082,7 +2082,7 @@ function deleteCreditSuccess(res, status) {
 
 function verifyDeleteCredit() {
     let deleteUser = $("#deleteUser").val();
-    return (deleteUser == selectedRow.children()[2].innerHTML);
+    return (deleteUser == selectedRow.children()[3].innerHTML);
 
 }
 
