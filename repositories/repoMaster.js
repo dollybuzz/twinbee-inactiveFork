@@ -35,14 +35,14 @@ class RepoMaster {
         this.query = util.promisify(this.conn.query).bind(this.conn);
         this.activateConnection(this, 5).catch(error => {
             console.log(error);
-            notificationService.notifyAdmin(error.toString());
+            notificationService.notifyAdmin(error);
         });
     }
 
     async activateConnection(dbMaster, numRetries) {
         notificationService.notifyAdmin("Activating dbconnection");
-        return new Promise((resolve, reject) => {
-            dbMaster.conn.connect(function (err) {
+        return new Promise(async (resolve, reject) => {
+            await dbMaster.conn.connect(function (err) {
                 if (err && err.toString().includes("ECONNREFUSED")) {
                     console.log(err);
                     notificationService.notifyAdmin(err.toString());
@@ -56,7 +56,8 @@ class RepoMaster {
                         dbMaster.activateConnection(dbMaster, numRetries - 1)
                     }, 5000)
                 } else {
-                    reject();
+                    let message = `Error was: ${err} String: ${err ? err.toString() : ""}`;
+                    reject(err);
                 }
             });
 
@@ -67,14 +68,14 @@ class RepoMaster {
                     if (err.code.toString() === 'PROTOCOL_CONNECTION_LOST') {
                         notifyAdmin("Attempting to recover.");
                         console.log("Attempting to recover.");
-                        dbMaster.conn = mysql.createConnection(dbOptions);
+                        dbMaster.conn = await mysql.createConnection(dbOptions);
                         await dbMaster.activateConnection(dbMaster, numRetries).catch(error => {
                             console.log(error);
-                            notifyAdmin(error.toString());
+                            notifyAdmin(error);
                         });
                         dbMaster.query = util.promisify(dbMaster.conn.query).bind(dbMaster.conn);
                         let message = "Recovered successfully.";
-                        await this.query("select * from admin", [])
+                        await dbMaster.query("select * from admin", [])
                             .catch(error => {
                                 message = "Failed to recover.";
                             });

@@ -16,6 +16,7 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const timeReportingRestController = require('./controllers/timeReportingRestController.js');
 const authController = require('./controllers/authController.js');
 const app = express();
+const repoMaster = require("./repositories/repoMaster.js")
 const bodyParser = require('body-parser');
 const makerService = require('./services/MakerService.js');
 const es = require('./services/notificationService.js');
