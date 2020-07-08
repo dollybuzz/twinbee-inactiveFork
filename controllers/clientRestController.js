@@ -39,7 +39,7 @@ let validatorMap = {
     "positiveDecimalAllowed": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate){
-            if (!body[keyString] || !Number.parseInt(body[keyString])
+            if (!body[keyString] || !Number.parseFloat(body[keyString])
                 || body[keyString].includes("-")){
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
@@ -93,8 +93,8 @@ async function validateParams(paramArrayMap, body){
         validator.message = "Valid";
     }
     if (!validator.isValid){
-        console.log(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
-        notifyAdmin(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
+        console.log(`Failed to validate! \nParameters: ${paramArrayMap.toString()} \nBody: ${paramArrayMap.toString()}`);
+        notifyAdmin(`Failed to validate! \nParameters: ${paramArrayMap.toString()} \nBody: ${paramArrayMap.toString()}`);
     }
     return validator;
 }
