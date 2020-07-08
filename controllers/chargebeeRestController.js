@@ -548,7 +548,7 @@ module.exports = {
             {
                 "present": [],
                 "positiveIntegerOnly": [],
-                "noSpaces": ["subscriptionId", "planId"],
+                "noSpaces": ["customerId", "planId"],
                 "positiveDecimalAllowed": ["numHours"],
                 "decimalAllowed": []
             }, req.body);
