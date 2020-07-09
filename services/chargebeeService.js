@@ -653,7 +653,7 @@ class ChargebeeService {
             notifyAdmin(error.toString());
         });
 
-        return {invoicesPresent: invoices.list && invoices.list.length > 0};
+        return {invoicesPresent: invoices.list && invoices.list.length > 0, numInvoices: invoices.list.length + 1};
     }
 
     /**

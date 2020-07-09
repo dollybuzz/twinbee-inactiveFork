@@ -100,6 +100,39 @@ function showFunction(functionality, endpoint) {
 }
 
 //Main Methods
+function showAlerts() {
+
+    $("#clientTopRow").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours! <button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+        "<span aria-hidden='true'>&times;</span></button></div>");
+    $("#clientTopRow").append("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You are out of available hours! <button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+        "<span aria-hidden='true'>&times;</span></button></div>");
+
+
+    $.ajax({
+        url: "/api/doesCustomerHaveInvoices",
+        method: "post",
+        data: {
+            auth: id_token,
+            clientId: id_token,
+        },
+        dataType: "json",
+        success: function (invoiceres, invoicestatus) {
+            if(invoiceres.invoicesPresent)
+            {
+                $("#clientText1").append("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have outstanding invoices! <button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                    "<span aria-hidden='true'>&times;</span></button></div>");
+            }
+        },
+        error: function (invoiceres, invoicestatus) {
+            $("#userMainContent").html("Token isn't working!");
+        }
+    });
+
+
+
+}
+
+//Available Hours Methods
 function openHostedPage(getPageEndpoint) {
 
     $.ajax({
@@ -117,8 +150,6 @@ function openHostedPage(getPageEndpoint) {
             $("#userMainContent").html("failed to get page!");
         }
     });// ajax
-
-
 }
 
 //Buy Hours Methods
@@ -645,6 +676,9 @@ function timeSheetFunctionality() {
 }
 
 $(document).ready(function () {
+    //Shows Client any alerts
+    showAlerts();
+
     $.ajax({
         url: "/api/getEnvironment",
         method: "get",
