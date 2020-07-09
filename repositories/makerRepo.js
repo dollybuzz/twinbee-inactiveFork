@@ -91,11 +91,6 @@ class MakerRepository {
                 console.log(e);
                 result = [];
                 notificationService.notifyAdmin(e.toString());
-                if (e.toString().includes("Cannot enqueue Query after fatal error.")) {
-                    await repoMaster.activateConnection(repoMaster, 3);
-                    console.log(`Trying to get makers again, ${numRetries} retries left`);
-                    resolve(await this.getAllMakers(numRetries - 1));
-                }
             });
             console.log("All makers retrieved from database");
             resolve(result);
@@ -114,7 +109,6 @@ class MakerRepository {
         let idToReturn = result[0].id;
         for (var maker of result){
             if (!maker.deleted){
-                notificationService.notifyAdmin("HI!")
                 idToReturn = maker.id;
                 break;
             }
