@@ -97,13 +97,14 @@ function showBlock() {
     $("#ExpandButton").show();
     $("#SubmitButton").show();
     $("#DeleteButton").show();
-    $("#DeleteButton").css("opacity", "1");
     $("#optionsClient").css("width", "50%");
-    $("#optionsClient").css("width", "50%");
-    $("#optionsClient").css("opacity", "1");
-    $("#SubmitButton").css("opacity", "1");
-    $("#ExpandButton").css("opacity", "1");
-    $("#AddButton").css("opacity", "1");
+    setTimeout(function () {
+        $("#optionsClient").css("opacity", "1");
+        $("#DeleteButton").css("opacity", "1");
+        $("#SubmitButton").css("opacity", "1");
+        $("#ExpandButton").css("opacity", "1");
+        $("#AddButton").css("opacity", "1");
+    }, 800)
 }
 
 function minimizeTable() {
@@ -155,7 +156,7 @@ function showFunction(functionality, endpoint) {
 //Mod
 function prePopModForm(endpoint, modForm) {
     minimizeTable();
-    showBlock();
+
     let clientId = selectedRow.children()[0].innerHTML;
     $.ajax({
         url: endpoint,
@@ -172,6 +173,7 @@ function prePopModForm(endpoint, modForm) {
             $("#optionsClient").html("Mod Form is not populating!");
         }
     });//end ajax
+    showBlock();
 }
 
 function modSubmit(endpoint, object, successFunction) {
@@ -1164,8 +1166,6 @@ function subscriptionModForm(res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#SubmitButton").css("opacity", "1");
-
     $("#optionsClient").append("<div id='pendingChanges'></div>");
 
     //Pre-populating drop down options
