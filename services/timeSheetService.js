@@ -132,6 +132,7 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
+        console.log(sheets)
         let makerSheets = [];
         await sheets.forEach(async row => {
             let refinedSheet = await createSheetFromRow(row).catch(err => {
