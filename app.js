@@ -5,9 +5,6 @@ Authors: Dalia Faria, Greg Brown
 const express = require("express");
 const sslRedirect = require('heroku-ssl-redirect');
 const landingPageController = require('./controllers/landingPageController.js');
-const adminPageController = require('./controllers/adminPageController.js');
-const clientPageController = require('./controllers/clientPageController.js');
-const makerPageController = require('./controllers/makerPageController.js');
 const clientRestController = require('./controllers/clientRestController.js');
 const makerRestController = require('./controllers/makerRestController.js');
 const timeSheetRestController = require('./controllers/timeSheetRestController.js');
@@ -15,8 +12,8 @@ const relationshipRestController = require('./controllers/relationshipRestContro
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
 const timeReportingRestController = require('./controllers/timeReportingRestController.js');
 const authController = require('./controllers/authController.js');
+const notificationRestController = require('./controllers/notificationRestController.js');
 const app = express();
-const repoMaster = require("./repositories/repoMaster.js")
 const bodyParser = require('body-parser');
 const makerService = require('./services/MakerService.js');
 const es = require('./services/notificationService.js');
@@ -27,6 +24,8 @@ const timeReportingService = require('./services/timeReportingService.js');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
+const authRepo = require("./repositories/authRepo");
+const emailService = require("./services/notificationService");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
     api_key : process.env.CHARGEBEE_API_KEY});
 app.set('view engine', 'ejs');
@@ -359,12 +358,15 @@ app.post("/api/doIHaveInvoices",
     authController.authorizeClient,
     authController.authorizeMaster,
     clientRestController.doIHaveInvoices);
+app.post("/api/notifyAdmin",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    notificationRestController.restBugReport);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
-    //console.log(await makerService.getRelationshipsForMaker(4));
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});
