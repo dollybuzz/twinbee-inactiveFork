@@ -91,8 +91,14 @@ function timeClockFunctionality() {
         success: function (relres, status) {
             $("#makerSelectedClient").html("");
             for (var i = 0; i < relres.length; ++i) {
-                $("#makerSelectedClient").append(
-                    `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].company + " - " + relres[i].occupation}</option>`);
+                if(relres[i].company == 'No Company'){
+                    $("#makerSelectedClient").append(
+                        `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
+                }
+                else {
+                    $("#makerSelectedClient").append(
+                        `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].company + " - " + relres[i].occupation}</option>`);
+                }
 
                 if (i == relres.length - 1) {
                     //Getting available credits by client selected
