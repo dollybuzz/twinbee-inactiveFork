@@ -177,11 +177,13 @@ class TimeSheetService {
 
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i) {
+            emailService.notifyAdmin(sheetsForMaker[i]);
             let currentSheet = sheetsForMaker[i];
             if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0") {
                 onlineSheets.push(currentSheet);
             }
         }
+        emailService.notifyAdmin(onlineSheets.toString())
         return onlineSheets;
     }
 
