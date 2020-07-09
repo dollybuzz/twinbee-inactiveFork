@@ -170,6 +170,7 @@ class TimeSheetService {
      * @returns {Promise<[TimeSheet]>} all timesheets for the given maker where clock-out == 0000-00-00 00:00:00
      */
     async getOnlineSheets(makerId) {
+        console.log(`Getting online sheets for maker ${makerId}`)
         let sheetsForMaker = this.getSheetsByMaker(makerId);
         let onlineSheets = [];
 
@@ -284,6 +285,8 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
 
+        notifyAdmin(onlineSheets.toString())
+        console.log(onlineSheets)
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i) {
             let currentSheet = onlineSheets[i];
