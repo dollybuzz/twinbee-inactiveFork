@@ -208,6 +208,9 @@ class MakerService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByMaker(id) {
+        if (!id){
+            throw new Error()
+        }
         console.log("SHEETS BY MAKERID");
         console.log(id);
         console.log(`Getting sheets for maker ${id}...`);
