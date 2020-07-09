@@ -91,10 +91,14 @@ async function validateParams(paramArrayMap, body) {
         validator.message = "Valid";
     }
     if (!validator.isValid){
-        console.log(`Failed to validate! \nParameters:\n`, paramArrayMap);
-        console.log("\nBody:\n", body);
-        notifyAdmin(`Failed to validate! \nParameters:\n`, paramArrayMap);
-        notifyAdmin("\nBody:\n", body);
+        console.log(`Failed to validate! \nParameters:\n`);
+        console.log(paramArrayMap);
+        console.log("\nBody:\n")
+        console.log(body);
+        notifyAdmin(`Failed to validate! \nParameters:\n`);
+        notifyAdmin(paramArrayMap);
+        notifyAdmin("\nBody:\n")
+        notifyAdmin(body);
 }
     return validator;
 }
