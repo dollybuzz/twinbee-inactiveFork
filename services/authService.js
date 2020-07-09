@@ -129,9 +129,12 @@ class AuthService {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
         });
-        const payload = ticket.getPayload();
-        console.log(`Email was: ${payload['email']}`);
-        return payload['email'];
+        if (ticket) {
+            const payload = ticket.getPayload();
+            console.log(`Email was: ${payload['email']}`);
+            return payload['email'];
+        }
+        return false;
     }
 }
 
