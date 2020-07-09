@@ -291,6 +291,7 @@ class TimeSheetService {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
+            console.log(rightNow);
             await this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
                 newTask ? newTask : currentSheet.task, currentSheet.adminNote);
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
