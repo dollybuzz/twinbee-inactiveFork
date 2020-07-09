@@ -1190,6 +1190,25 @@ function subscriptionModForm(res, status) {
                     );
             }
 
+            if(selectedRow.children()[7].innerHTML == "Terminated")
+            {
+                $("#SubmitButton").css("opacity", "0");
+                $("#DeleteButton").css("opacity", "0");
+                $("#modsuccess").html("<br><h5>You cannot modify a terminated subscription.</h5>");
+
+                setTimeout(function () {
+                    $("#SubmitButton").hide();
+                    $("#DeleteButton").hide();
+                }, 500)
+            }
+            else
+            {
+                $("#SubmitButton").show();
+                $("#DeleteButton").show();
+                $("#SubmitButton").css("opacity", "1");
+                $("#DeleteButton").css("opacity", "1");
+            }
+
             //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
