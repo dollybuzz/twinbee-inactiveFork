@@ -34,8 +34,8 @@ let navMapper = {
         showFunction(relationshipFunctionality, "/api/getAllRelationships");
     },
 
-    manageCredit: function () {
-        navItemChange("manageCredit");
+    manageHours: function () {
+        navItemChange("manageHours");
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     },
 
@@ -1793,7 +1793,7 @@ function verifyDeleteRelationship() {
     return (deleteUser == (selectedRow.children()[0].innerHTML));
 }
 
-//Credit Methods
+//Available Hours Methods (Credit Methods)
 function creditFunctionality(res) {
     //Create table
     $("#userMainContent").html(
@@ -2505,22 +2505,22 @@ function modSheetSuccess(res, status) {
 
 function addSheetSuccess(res, status) {
     $("#addsuccess").html(`<br><h5>Successfully added Time Sheet ${res.id}!</h5>` +
-        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
+        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Hours</button><br>to adjust credit for the plan and associated Client.<br>");
 
     $("#ManageAvailCreditButton").on('click', function () {
-        navItemChange("manageCredit");
-        selectedTab = $("#manageCredit")[0].id;
+        navItemChange("manageHours");
+        selectedTab = $("#manageHours")[0].id;
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     });
 }
 
 function clearSheetSuccess(res, status) {
     $("#verifyEntry").html(`<br><h5>Successfully cleared time sheet ${selectedRow.children()[0].innerHTML}!</h5>` +
-        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Credit</button><br>to adjust credit for the plan and associated Client.<br>");
+        "<br><p>Now, please navigate to <button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"ManageAvailCreditButton\">Manage Available Hours</button><br>to adjust credit for the plan and associated Client.<br>");
 
     $("#ManageAvailCreditButton").on('click', function () {
-        navItemChange("manageCredit");
-        selectedTab = $("#manageCredit")[0].id;
+        navItemChange("manageHours");
+        selectedTab = $("#manageHours")[0].id;
         showFunction(creditFunctionality, "/api/getAllTimeBuckets");
     });
 }
