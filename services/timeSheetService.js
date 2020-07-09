@@ -45,7 +45,6 @@ class TimeSheetService {
      * @param detail    - entry for admin note on mod change
      */
     async updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail) {
-        emailService.notifyAdmin(`Updating timesheet with values: ${id}, ${hourlyRate}, ${timeIn}, ${timeOut}, ${task}, ${detail}`)
         if (detail) {
             detail = `Modified by admin: ${detail}`;
         }
@@ -116,7 +115,6 @@ class TimeSheetService {
         let sheets = await this.getAllTimeSheets();
         for (var i = 0; i < sheets.length; ++i) {
             if (sheets[i].id.toString() === id.toString()) {
-                console.log(sheets[i]);
                 return sheets[i];
             }
         }
@@ -176,20 +174,14 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
-        console.log("SHEETS FOR MAKER")
-        console.log(sheetsForMaker)
         let onlineSheets = [];
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i) {
-            console.log("INSIDEFOR")
-            console.log(sheetsForMaker[i])
-
             let currentSheet = sheetsForMaker[i];
             if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0") {
                 onlineSheets.push(currentSheet);
             }
         }
-        console.log(onlineSheets)
         return onlineSheets;
     }
 
@@ -261,7 +253,6 @@ class TimeSheetService {
             rightNow, '0000-00-00 00:00:00', task);
         console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
 
-        console.log(newSheet)
         return Number.isInteger(newSheet.id);
     }
 
@@ -294,8 +285,6 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
 
-        emailService.notifyAdmin(onlineSheets.toString())
-        console.log(onlineSheets)
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i) {
             let currentSheet = onlineSheets[i];
@@ -303,12 +292,11 @@ class TimeSheetService {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
-            console.log(rightNow);
-            emailService.notifyAdmin("Pre update")
+
             await this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
                 newTask ? newTask : currentSheet.task, currentSheet.adminNote);
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
-            emailService.notifyAdmin("post update")
+
             let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
