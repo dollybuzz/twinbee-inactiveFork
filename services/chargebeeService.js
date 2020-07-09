@@ -644,7 +644,7 @@ class ChargebeeService {
      */
     async doesCustomerHaveInvoices(clientId){
         let invoices = await chargebee.invoice.list({
-            limit: 2,
+            limit: 100,
             "status[is]": "payment_due",
             "sort_by[asc]": "date",
             "customer_id[is]": clientId

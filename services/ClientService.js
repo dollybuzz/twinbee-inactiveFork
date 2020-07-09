@@ -718,7 +718,7 @@ class ClientService {
         });
 
         let body = JSON.parse(result.body);
-        return body.invoicesPresent;
+        return {invoicesPresent: body.invoicesPresent, numInvoices: body.numInvoices};
     }
 
     async getAllMyRelationships(clientId) {
