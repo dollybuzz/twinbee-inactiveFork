@@ -172,7 +172,7 @@ class TimeSheetService {
      */
     async getOnlineSheets(makerId) {
         console.log(`Getting online sheets for maker ${makerId}`)
-        let sheetsForMaker = this.getSheetsByMaker(makerId);
+        let sheetsForMaker = await this.getSheetsByMaker(makerId);
         console.log("SHEETS FOR MAKER")
         console.log(sheetsForMaker)
         let onlineSheets = [];
