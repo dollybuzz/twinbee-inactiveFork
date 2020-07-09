@@ -112,7 +112,14 @@ class MakerRepository {
             result = [];
         });
         console.log(`Maker ID retrieved for maker with email ${email}`);
-        return result[0].id;
+        let idToReturn = result[0].id;
+        for (var maker of result){
+            if (!maker.deleted){
+                idToReturn = maker.id;
+                break;
+            }
+        }
+        return idToReturn.id;
     }
 }
 
