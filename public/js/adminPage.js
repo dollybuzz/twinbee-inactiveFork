@@ -92,14 +92,18 @@ function createBody(button) {
 
 function showBlock() {
     //show block after table stops moving
-    setTimeout(function () {
-        $("#optionsClient").css("width", "50%");
-        $("#optionsClient").css("width", "50%");
-        $("#optionsClient").css("opacity", "1");
-        $("#SubmitButton").css("opacity", "1");
-        $("#ExpandButton").css("opacity", "1");
-        $("#AddButton").css("opacity", "1");
-    }, 500)
+    $("#optionsClient").show();
+    $("#AddButton").show();
+    $("#ExpandButton").show();
+    $("#SubmitButton").show();
+    $("#DeleteButton").show();
+    $("#DeleteButton").css("opacity", "1");
+    $("#optionsClient").css("width", "50%");
+    $("#optionsClient").css("width", "50%");
+    $("#optionsClient").css("opacity", "1");
+    $("#SubmitButton").css("opacity", "1");
+    $("#ExpandButton").css("opacity", "1");
+    $("#AddButton").css("opacity", "1");
 }
 
 function minimizeTable() {
@@ -151,10 +155,6 @@ function showFunction(functionality, endpoint) {
 //Mod
 function prePopModForm(endpoint, modForm) {
     minimizeTable();
-    $("#optionsClient").show();
-    $("#AddButton").show();
-    $("#ExpandButton").show();
-    $("#SubmitButton").show();
     showBlock();
     let clientId = selectedRow.children()[0].innerHTML;
     $.ajax({
@@ -191,10 +191,6 @@ function modSubmit(endpoint, object, successFunction) {
 //Add
 function popAddForm(addForm) {
     minimizeTable();
-    $("#optionsClient").show();
-    $("#AddButton").show();
-    $("#ExpandButton").show();
-    $("#SubmitButton").show();
     showBlock();
     addForm();
 }
@@ -214,10 +210,6 @@ function addSubmit(endpoint, object, successFunction) {
 
 //Delete
 function showDeletePrompt(option, prompt, endpoint, object, successFunction, verifyDeleteUser) {
-    $("#optionsClient").show();
-    $("#AddButton").show();
-    $("#ExpandButton").show();
-    $("#SubmitButton").show();
     showBlock();
     $("#optionsClient").html("<div id='deletePrompt'></div>");
     setTimeout(function () {
@@ -1119,8 +1111,6 @@ function subscriptionFunctionality(res) {
             "</div>\n";
 
         prePopModForm("/api/retrieveSubscription", subscriptionModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let subscriptionId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("cancel", subscriptionPrompt, "/api/cancelSubscription", {
