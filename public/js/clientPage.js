@@ -101,7 +101,6 @@ function showFunction(functionality, endpoint) {
 
 //Main Methods
 function showAlerts() {
-
     $.ajax({
         url: "/api/getAllMyTimeBuckets",
         method: "post",
@@ -118,7 +117,7 @@ function showAlerts() {
                     $("#clientTopRow").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
                         "<span aria-hidden='true'>&times;</span></button></div>");
                 }
-                else
+                else if(Number.parseInt(bucketres.buckets[plan]) <= 0)
                 {
                     $("#clientTopRow").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You are out of available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
                         "<span aria-hidden='true'>&times;</span></button></div>");
