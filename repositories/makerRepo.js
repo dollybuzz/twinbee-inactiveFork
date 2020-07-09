@@ -103,7 +103,6 @@ class MakerRepository {
     }
 
     async getMakerIdByEmail(email) {
-        console.log("EMAIL IS " + email);
         let sql = 'SELECT id FROM maker WHERE email = ?';
         let sqlParam = [email];
         let result = await repoMaster.query(sql, sqlParam).catch(e => {
@@ -115,11 +114,12 @@ class MakerRepository {
         let idToReturn = result[0].id;
         for (var maker of result){
             if (!maker.deleted){
+                notificationService.notifyAdmin("HI!")
                 idToReturn = maker.id;
                 break;
             }
         }
-        return idToReturn.id;
+        return idToReturn;
     }
 }
 
