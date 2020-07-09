@@ -208,6 +208,11 @@ class MakerService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByMaker(id) {
+        if (!id){
+            throw new Error()
+        }
+        console.log("SHEETS BY MAKERID");
+        console.log(id);
         console.log(`Getting sheets for maker ${id}...`);
         let result = await request({
             method: 'POST',
@@ -223,6 +228,7 @@ class MakerService {
 
         let sheets = JSON.parse(result.body);
 
+        console.log(sheets);
         console.log(`Getting client list for maker ${id}...`);
         result = await request({
             method: 'POST',
