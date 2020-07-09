@@ -119,7 +119,7 @@ function showAlerts() {
         success: function (invoiceres, invoicestatus) {
             if(invoiceres.invoicesPresent)
             {
-                $("#clientText1").append("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have outstanding invoices! <button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                $("#clientText1").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have ${invoiceres.numInvoices} outstanding invoices! <button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
                     "<span aria-hidden='true'>&times;</span></button></div>");
             }
         },
