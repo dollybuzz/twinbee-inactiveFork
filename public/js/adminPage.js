@@ -1194,7 +1194,8 @@ function subscriptionModForm(res, status) {
             {
                 $("#SubmitButton").css("opacity", "0");
                 $("#DeleteButton").css("opacity", "0");
-                $("#modsuccess").html("<br><h5>You cannot modify a terminated subscription.</h5>");
+                $("#pendingChanges").css("opacity", "1");
+                $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><br><p>Please create a new subscription</p>");
 
                 setTimeout(function () {
                     $("#SubmitButton").hide();
@@ -1203,6 +1204,7 @@ function subscriptionModForm(res, status) {
             }
             else
             {
+                $("#pendingChanges").css("opacity", "0");
                 $("#SubmitButton").show();
                 $("#DeleteButton").show();
                 setTimeout(function () {
