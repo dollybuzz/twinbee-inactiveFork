@@ -139,6 +139,8 @@ class MakerService {
         let relationshipList = JSON.parse(result.body);
         let newRelationshipList = [];
         for (var ship of relationshipList) {
+            notifyAdmin(ship);
+            notifyAdmin(ship.toString())
             if (ship.makerId.toString() === makerId.toString()) {
                 newRelationshipList.push(ship)
             }
