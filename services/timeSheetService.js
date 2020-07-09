@@ -48,7 +48,7 @@ class TimeSheetService {
         if (detail) {
             detail = `Modified by admin: ${detail}`;
         }
-        await timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
+        return await timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
     }
 
     /**
