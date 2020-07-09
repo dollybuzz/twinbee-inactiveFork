@@ -645,7 +645,7 @@ class ChargebeeService {
     async doesCustomerHaveInvoices(clientId){
         let invoices = await chargebee.invoice.list({
             limit: 2,
-            "status[is]": "not_paid",
+            "status[is]": "payment_due",
             "sort_by[asc]": "date",
             "customer_id[is]": clientId
         }).request().catch(error => {
@@ -653,6 +653,8 @@ class ChargebeeService {
             notifyAdmin(error.toString());
         });
 
+        console.log(clientId);
+        console.log(invoices);
         return {invoicesPresent: invoices.list && invoices.list.length > 0};
     }
 

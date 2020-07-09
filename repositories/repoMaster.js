@@ -34,8 +34,10 @@ class RepoMaster {
         this.conn = mysql.createConnection(dbOptions);
         this.query = util.promisify(this.conn.query).bind(this.conn);
         this.activateConnection(this, 5).catch(error => {
-            console.log(error);
-            notificationService.notifyAdmin(error);
+            if(error) {
+                console.log(error);
+                notificationService.notifyAdmin(error.toString());
+            }
         });
     }
 
