@@ -12,6 +12,7 @@ const relationshipRestController = require('./controllers/relationshipRestContro
 const chargebeeRestController = require('./controllers/chargebeeRestController.js');
 const timeReportingRestController = require('./controllers/timeReportingRestController.js');
 const authController = require('./controllers/authController.js');
+const notificationRestController = require('./controllers/notificationRestController.js');
 const app = express();
 const bodyParser = require('body-parser');
 const makerService = require('./services/MakerService.js');
@@ -357,6 +358,10 @@ app.post("/api/doIHaveInvoices",
     authController.authorizeClient,
     authController.authorizeMaster,
     clientRestController.doIHaveInvoices);
+app.post("/api/notifyAdmin",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    notificationRestController.restNotifyAdmin);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
