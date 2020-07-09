@@ -110,7 +110,7 @@ module.exports = {
      * }
      * @returns {Promise<[{},...]>}
      */
-    restNotifyAdmin: async (req, res) => {
+    restBugReport: async (req, res) => {
         console.log("Someone is trying to notify admin via rest!");
         console.log(req.body);
 

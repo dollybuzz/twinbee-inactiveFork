@@ -361,7 +361,7 @@ app.post("/api/doIHaveInvoices",
 app.post("/api/notifyAdmin",
     authController.authorizeAdmin,
     authController.authorizeMaster,
-    notificationRestController.restNotifyAdmin);
+    notificationRestController.restBugReport);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
