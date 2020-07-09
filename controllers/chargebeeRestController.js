@@ -7,8 +7,8 @@ const moment = require('moment');
 let validatorMap = {
     "present": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate){
-            if (!body[keyString]){
+        for (var keyString of keysToValidate) {
+            if (!body[keyString]) {
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
@@ -17,9 +17,9 @@ let validatorMap = {
     },
     "positiveIntegerOnly": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate){
+        for (var keyString of keysToValidate) {
             if (!body[keyString] || !Number.parseInt(body[keyString])
-                || body[keyString].includes("-") || body[keyString].includes(" ") || body[keyString].includes(".")){
+                || body[keyString].includes("-") || body[keyString].includes(" ") || body[keyString].includes(".")) {
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
@@ -28,8 +28,8 @@ let validatorMap = {
     },
     "noSpaces": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate){
-            if (!body[keyString] || body[keyString].includes(" ")){
+        for (var keyString of keysToValidate) {
+            if (!body[keyString] || body[keyString].includes(" ")) {
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
@@ -38,9 +38,9 @@ let validatorMap = {
     },
     "positiveDecimalAllowed": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate){
+        for (var keyString of keysToValidate) {
             if (!body[keyString] || !Number.parseFloat(body[keyString])
-                || body[keyString].includes("-")){
+                || body[keyString].includes("-")) {
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
@@ -49,8 +49,8 @@ let validatorMap = {
     },
     "decimalAllowed": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate){
-            if (!body[keyString] || !Number.parseFloat(body[keyString])){
+        for (var keyString of keysToValidate) {
+            if (!body[keyString] || !Number.parseFloat(body[keyString])) {
                 valid.isValid = false;
                 valid.message += `${keyString} was not valid.  `;
             }
@@ -75,10 +75,10 @@ let validatorMap = {
  *      message: a string description of the result
  * }
  */
-async function validateParams(paramArrayMap, body){
+async function validateParams(paramArrayMap, body) {
     let validator = {isValid: true, message: ""};
     let paramsTypesToScan = ["present", "positiveIntegerOnly", "noSpaces", "positiveDecimalAllowed", "decimalAllowed"];
-    for (var paramName of paramsTypesToScan){
+    for (var paramName of paramsTypesToScan) {
         let keyArray = paramArrayMap[paramName];
         if (keyArray) {
             let result = await validatorMap[paramName](keyArray, body);
@@ -88,13 +88,11 @@ async function validateParams(paramArrayMap, body){
             }
         }
     }
-    if (!validator.message){
+    if (!validator.message) {
         validator.message = "Valid";
     }
-    if (!validator.isValid){
-        console.log(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
-        notifyAdmin(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
-}
+    if (!validator.isValid) {
+    }
     return validator;
 }
 
@@ -736,7 +734,7 @@ module.exports = {
      * @returns {Promise<void>}
      */
     getInvoicesForCustomer: async function (req, res) {
-      console.log(`Attempting to retrieve all invoices for customer ${req.body.clientId}`);
+        console.log(`Attempting to retrieve all invoices for customer ${req.body.clientId}`);
         console.log(req.body);
 
         let validationResult = await validateParams(

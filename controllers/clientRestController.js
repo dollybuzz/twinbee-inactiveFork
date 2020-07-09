@@ -93,8 +93,14 @@ async function validateParams(paramArrayMap, body){
         validator.message = "Valid";
     }
     if (!validator.isValid){
-        console.log(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
-        notifyAdmin(`Failed to validate! \nParameters: ${paramArrayMap} \nBody: ${paramArrayMap}`);
+        console.log(`Failed to validate! \nParameters:\n`);
+        console.log(paramArrayMap);
+        console.log("\nBody:\n")
+        console.log(paramArrayMap);
+        notifyAdmin(`Failed to validate! \nParameters:\n`);
+        notifyAdmin(paramArrayMap);
+        notifyAdmin("\nBody:\n")
+        notifyAdmin(paramArrayMap);
 }
     return validator;
 }
