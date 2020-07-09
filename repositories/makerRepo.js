@@ -91,11 +91,6 @@ class MakerRepository {
                 console.log(e);
                 result = [];
                 notificationService.notifyAdmin(e.toString());
-                if (e.toString().includes("Cannot enqueue Query after fatal error.")) {
-                    await repoMaster.activateConnection(repoMaster, 3);
-                    console.log(`Trying to get makers again, ${numRetries} retries left`);
-                    resolve(await this.getAllMakers(numRetries - 1));
-                }
             });
             console.log("All makers retrieved from database");
             resolve(result);
@@ -103,7 +98,6 @@ class MakerRepository {
     }
 
     async getMakerIdByEmail(email) {
-        console.log("EMAIL IS " + email);
         let sql = 'SELECT id FROM maker WHERE email = ?';
         let sqlParam = [email];
         let result = await repoMaster.query(sql, sqlParam).catch(e => {
@@ -119,7 +113,7 @@ class MakerRepository {
                 break;
             }
         }
-        return idToReturn.id;
+        return idToReturn;
     }
 }
 
