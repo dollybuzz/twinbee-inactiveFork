@@ -92,11 +92,11 @@ function createBody(button) {
 
 function showBlock() {
     //show block after table stops moving
+    $("#optionsClient").show();
+    $("#AddButton").show();
+    $("#ExpandButton").show();
+    $("#SubmitButton").show();
     setTimeout(function () {
-        $("#optionsClient").show();
-        $("#AddButton").show();
-        $("#ExpandButton").show();
-        $("#SubmitButton").show();
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("opacity", "1");
@@ -127,10 +127,10 @@ function expandTable() {
     $("#DeleteButton").css("opacity", "0");
 
     $("#AddButton").show();
-    $("#AddButton").css("opacity", "1");
 
     setTimeout(function () {
         $("#ExpandButton").hide();
+        $("#AddButton").css("opacity", "1");
     }, 500);
 }
 
@@ -251,6 +251,7 @@ function showDeletePrompt(option, prompt, endpoint, object, successFunction, ver
             $("#SubmitButton").off("click");
             $("#SubmitButton").on("click", function (e) {
                 if (verifyDeleteUser()) {
+                    $("#SubmitButton").css("opacity", "0");
                     $("#SubmitButton").hide();
                     $("#verifyEntry").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                     $.ajax({
@@ -1200,16 +1201,6 @@ function subscriptionModForm(res, status) {
                 setTimeout(function () {
                     $("#SubmitButton").hide();
                     $("#DeleteButton").hide();
-                }, 500)
-            }
-            else
-            {
-                $("#pendingChanges").css("opacity", "0");
-                $("#SubmitButton").show();
-                $("#DeleteButton").show();
-                setTimeout(function () {
-                    $("#SubmitButton").css("opacity", "1");
-                    $("#DeleteButton").css("opacity", "1");
                 }, 500)
             }
 
