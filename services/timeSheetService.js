@@ -285,7 +285,7 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
 
-        notifyAdmin(onlineSheets.toString())
+        emailService.notifyAdmin(onlineSheets.toString())
         console.log(onlineSheets)
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i) {
@@ -295,7 +295,7 @@ class TimeSheetService {
                 emailService.notifyAdmin(err.toString());
             });
             console.log(rightNow);
-            notifyAdmin(
+            emailService.notifyAdmin(
             await this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
                 newTask ? newTask : currentSheet.task, currentSheet.adminNote));
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
