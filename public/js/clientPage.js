@@ -590,8 +590,8 @@ function timeSheetFunctionality() {
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
-        '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
         '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
@@ -610,8 +610,8 @@ function timeSheetFunctionality() {
                 $("#sheetsTable").append('\n' +
                     '<tr class="sheetsRow">' +
                     '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.makerId + '</td>' +
                     '   <td>' + item.makerName + '</td>' +
+                    '   <td>' + item.makerId + '</td>' +
                     '   <td>' + item.hourlyRate + '</td>' +
                     '   <td>' + item.timeIn + '</td>' +
                     '   <td>' + item.timeOut + '</td>' +
