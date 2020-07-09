@@ -704,6 +704,23 @@ class ClientService {
         }
     }
 
+    async doIHaveInvoices(clientId){
+        let result = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/doesCustomerHaveInvoices`,
+            form: {
+                'clientId': clientId,
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        let body = JSON.parse(result.body);
+        return body.invoicesPresent;
+    }
+
     async getAllMyRelationships(clientId) {
         let relationships = await this.getRelationshipsForClient(clientId).catch(err=>{
             console.log(err);

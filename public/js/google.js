@@ -46,10 +46,12 @@ function googleUserAction(route, callback = null,) {
 }
 
 function refreshGoogle() {
+    console.log(`Token expires in: ${GOOGLE_USER.expires_in} seconds.\n refreshing.`);
     gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse()
         .then(function () {
             GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
             id_token = GOOGLE_USER.id_token;
+            console.log(`Token refreshed. New token expires in: ${GOOGLE_USER.expires_in} seconds.`);
             setTimeout(refreshGoogle, 2400000);
         });
 }
@@ -60,9 +62,11 @@ function init(){
         console.log("Google initializing...");
         GOOGLE_USER = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
         id_token = GOOGLE_USER.id_token;
+        console.log(`Signed in. Token expires in: ${GOOGLE_USER.expires_in} seconds.`);
 
         //refresh tokens before timeout
         var timeToRefresh = Math.max((GOOGLE_USER.expires_in - 30) * 1000, 1000);
+        console.log(`Refreshing token in ${timeToRefresh/1000} seconds.`);
         setTimeout(refreshGoogle, timeToRefresh);
     });
 }

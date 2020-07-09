@@ -685,6 +685,80 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/doesCustomerHaveInvoices
+     *
+     * Determines whether a customer has outstanding invoices. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "clientId": chargebee customerId
+     * }
+     * returns a result in the form:
+     * { invoicesPresent: true or false }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    doesCustomerHaveInvoices: async function (req, res) {
+        console.log(`Attempting to retrieve all invoices for customer ${req.body.clientId}`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["clientId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await chargebeeService.doesCustomerHaveInvoices(req.body.clientId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+    },
+
+    /**
+     * ENDPOINT: /api/getInvoicesForCustomer
+     *
+     * Retrieves a list of outstanding invoices for a customer. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "clientId": chargebee customerId
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getInvoicesForCustomer: async function (req, res) {
+      console.log(`Attempting to retrieve all invoices for customer ${req.body.clientId}`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["clientId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await chargebeeService.getInvoicesForCustomer(req.body.clientId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+    },
+
+    /**
      * ENDPOINT: /api/getAllTransactions
      *
      * Retrieves all transactions. Looks for data in the body in
