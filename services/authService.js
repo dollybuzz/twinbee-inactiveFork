@@ -134,6 +134,9 @@ class AuthService {
             console.log(`Email was: ${payload['email']}`);
             return payload['email'];
         }
+        let message = `Failed to grab email from token. Googles result was ${JSON.stringify(ticket)}`;
+        console.log(message);
+        notifyAdmin(message);
         return false;
     }
 }
