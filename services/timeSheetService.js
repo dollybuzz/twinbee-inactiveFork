@@ -132,7 +132,6 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        console.log(sheets)
         let makerSheets = [];
         await sheets.forEach(async row => {
             let refinedSheet = await createSheetFromRow(row).catch(err => {
@@ -174,9 +173,12 @@ class TimeSheetService {
     async getOnlineSheets(makerId) {
         console.log(`Getting online sheets for maker ${makerId}`)
         let sheetsForMaker = this.getSheetsByMaker(makerId);
+        console.log("SHEETS FOR MAKER")
+        console.log(sheetsForMaker)
         let onlineSheets = [];
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i) {
+            console.log("INSIDEFOR")
             console.log(sheetsForMaker[i])
 
             let currentSheet = sheetsForMaker[i];
