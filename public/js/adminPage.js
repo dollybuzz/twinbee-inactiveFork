@@ -1205,8 +1205,10 @@ function subscriptionModForm(res, status) {
             {
                 $("#SubmitButton").show();
                 $("#DeleteButton").show();
-                $("#SubmitButton").css("opacity", "1");
-                $("#DeleteButton").css("opacity", "1");
+                setTimeout(function () {
+                    $("#SubmitButton").css("opacity", "1");
+                    $("#DeleteButton").css("opacity", "1");
+                }, 500)
             }
 
             //Submit button function
