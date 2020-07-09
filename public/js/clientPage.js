@@ -676,9 +676,6 @@ function timeSheetFunctionality() {
 }
 
 $(document).ready(function () {
-    //Shows Client any alerts
-    showAlerts();
-
     $.ajax({
         url: "/api/getEnvironment",
         method: "get",
@@ -694,6 +691,9 @@ $(document).ready(function () {
             onSignIn();
         }
     });
+
+    //Shows Client any alerts
+    showAlerts();
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
