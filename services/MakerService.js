@@ -113,7 +113,7 @@ class MakerService {
         await this.deleteAllRelationships(id).catch(err=>{
             console.log(err);
             emailService.notifyAdmin(err.toString());
-        });;
+        });
         makerRepo.deleteMaker(id);
     }
 
@@ -139,8 +139,8 @@ class MakerService {
         let relationshipList = JSON.parse(result.body);
         let newRelationshipList = [];
         for (var ship of relationshipList) {
-            notifyAdmin(ship);
-            notifyAdmin(ship.toString())
+            emailService.notifyAdmin(ship);
+            emailService.notifyAdmin(ship.toString())
             if (ship.makerId.toString() === makerId.toString()) {
                 newRelationshipList.push(ship)
             }
