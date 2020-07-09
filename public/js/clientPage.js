@@ -124,7 +124,7 @@ function showAlerts() {
             }
         },
         error: function (invoiceres, invoicestatus) {
-            $("#userMainContent").html("Token isn't working!");
+            $("#userMainContent").html("This shizz!");
         }
     });
 
@@ -693,7 +693,10 @@ $(document).ready(function () {
     });
 
     //Shows Client any alerts
-    showAlerts();
+    setTimeout(function () {
+        showAlerts();
+    }, 1000);
+
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
