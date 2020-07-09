@@ -126,7 +126,7 @@ module.exports = {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            let email = authService.getEmailFromToken(req.body.token);
+            let email = await authService.getEmailFromToken(req.body.token);
             console.log(`${email} is trying to send a message!`);
             notificationService.notifyAdmin(`BUG REPORT:\nFrom:${email}\nMessage${req.body.message}`);
             res.send({status: "Request Sent"});
