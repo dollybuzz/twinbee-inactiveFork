@@ -48,7 +48,7 @@ class TimeSheetService {
         if (detail) {
             detail = `Modified by admin: ${detail}`;
         }
-        await timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
+        return await timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
     }
 
     /**
@@ -115,7 +115,6 @@ class TimeSheetService {
         let sheets = await this.getAllTimeSheets();
         for (var i = 0; i < sheets.length; ++i) {
             if (sheets[i].id.toString() === id.toString()) {
-                console.log(sheets[i]);
                 return sheets[i];
             }
         }
@@ -170,9 +169,12 @@ class TimeSheetService {
      * @returns {Promise<[TimeSheet]>} all timesheets for the given maker where clock-out == 0000-00-00 00:00:00
      */
     async getOnlineSheets(makerId) {
-        let sheetsForMaker = this.getSheetsByMaker(makerId);
+        console.log(`Getting online sheets for maker ${makerId}`)
+        let sheetsForMaker = await this.getSheetsByMaker(makerId).catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString())
+        });
         let onlineSheets = [];
-
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i) {
             let currentSheet = sheetsForMaker[i];
@@ -251,7 +253,6 @@ class TimeSheetService {
             rightNow, '0000-00-00 00:00:00', task);
         console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
 
-        console.log(newSheet)
         return Number.isInteger(newSheet.id);
     }
 
@@ -291,6 +292,7 @@ class TimeSheetService {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
+
             await this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
                 newTask ? newTask : currentSheet.task, currentSheet.adminNote);
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
