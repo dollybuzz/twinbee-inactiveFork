@@ -534,3 +534,7 @@ th {
 #clientTopRow {
     justify-content: center;
 }
+
+.alert {
+    height: 50px;
+}
