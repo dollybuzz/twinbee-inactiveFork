@@ -292,8 +292,9 @@ class TimeSheetService {
                 emailService.notifyAdmin(err.toString());
             });
             console.log(rightNow);
+            notifyAdmin(
             await this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
-                newTask ? newTask : currentSheet.task, currentSheet.adminNote);
+                newTask ? newTask : currentSheet.task, currentSheet.adminNote));
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
 
             let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow).catch(err => {

@@ -20,6 +20,8 @@ class TimeSheetRepository {
     }
 
     updateSheet(id, rate, startTime, endTime, task, adminNote) {
+        console.log(`${id}\n${rate}\n${startTime}\n${endTime}\n${task}\n${adminNote}`)
+        notifyAdmin(`${id}\n${rate}\n${startTime}\n${endTime}\n${task}\n${adminNote}`)
         let sql = 'UPDATE time_sheet SET hourly_rate = ?, start_time = ?, end_time = ?, task = ?, admin_note = ? WHERE id = ?';
         let sqlParams = [rate, startTime, endTime, task, adminNote, id];
         repoMaster.query(sql, sqlParams, function (err, result) {
