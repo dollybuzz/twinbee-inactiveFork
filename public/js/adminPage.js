@@ -95,8 +95,6 @@ function showBlock() {
     $("#optionsClient").show();
     $("#AddButton").show();
     $("#ExpandButton").show();
-    $("#SubmitButton").show();
-    $("#DeleteButton").show();
     $("#optionsClient").css("width", "50%");
     setTimeout(function () {
         $("#optionsClient").css("opacity", "1");
