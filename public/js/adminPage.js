@@ -1175,10 +1175,6 @@ function subscriptionModForm(res, status) {
     if(selectedRow.children()[7].innerHTML != "Terminated")
     {
         $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-        setTimeout(function () {
-            $("#SubmitButton").css("opacity", "1");
-            $("#DeleteButton").css("opacity", "1");
-        }, 500);
     }
 
     $("#optionsClient").append("<div id='pendingChanges'></div>");
