@@ -100,11 +100,9 @@ function showBlock() {
     $("#optionsClient").css("width", "50%");
     setTimeout(function () {
         $("#optionsClient").css("opacity", "1");
-        $("#DeleteButton").css("opacity", "1");
-        $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1");
         $("#AddButton").css("opacity", "1");
-    }, 800)
+    }, 500)
 }
 
 function minimizeTable() {
@@ -193,8 +191,8 @@ function modSubmit(endpoint, object, successFunction) {
 //Add
 function popAddForm(addForm) {
     minimizeTable();
-    showBlock();
     addForm();
+    showBlock();
 }
 
 function addSubmit(endpoint, object, successFunction) {
@@ -1113,6 +1111,8 @@ function subscriptionFunctionality(res) {
             "</div>\n";
 
         prePopModForm("/api/retrieveSubscription", subscriptionModForm);
+        $("#DeleteButton").css("opacity", "1");
+        $("#SubmitButton").css("opacity", "1");
         $("#DeleteButton").click(function () {
             let subscriptionId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("cancel", subscriptionPrompt, "/api/cancelSubscription", {
@@ -1203,7 +1203,7 @@ function subscriptionModForm(res, status) {
                     $("#DeleteButton").hide();
                 }, 500)
             }
-            else {
+            else{
                 $("#pendingChanges").css("opacity", "0");
                 $("#pendingChanges").html("");
             }
