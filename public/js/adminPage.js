@@ -1172,10 +1172,8 @@ function subscriptionModForm(res, status) {
         `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "" : res.plan_unit_price / 100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
-    if(selectedRow.children()[7].innerHTML != "Terminated")
-    {
-        $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    }
+    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     $("#optionsClient").append("<div id='pendingChanges'></div>");
 
