@@ -479,21 +479,19 @@ function subscriptionModForm(res, status) {
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>");
-    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#SubmitButton").css("opacity", "1");
 
+    if(selectedRow.children()[5].innerHTML != "Terminated")
+    {
+        $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+        $("#SubmitButton").css("opacity", "1");
+    }
     $("#optionsClient").append("<div id='pendingChanges'></div>");
 
     if(selectedRow.children()[5].innerHTML == "Terminated")
     {
-        $("#SubmitButton").css("opacity", "0");
         $("#pendingChanges").css("opacity", "1");
         $("#pendingChanges").html("");
         $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please contact Freedom Makers to create a new subscription.</p>");
-
-        setTimeout(function () {
-            $("#SubmitButton").hide();
-        }, 800);
     }
 
 
