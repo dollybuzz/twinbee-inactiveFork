@@ -1172,10 +1172,29 @@ function subscriptionModForm(res, status) {
         `<input class='form-control' type='number' id='modsubscriptionprice' name='modsubscriptionprice' value='${res.plan_unit_price == undefined ? "" : res.plan_unit_price / 100}'>\n<br>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
-    $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-    $("#SubmitButton").css("opacity", "1");
+    if(selectedRow.children()[7].innerHTML != "Terminated")
+    {
+        $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+        setTimeout(function () {
+            $("#SubmitButton").css("opacity", "1");
+            $("#DeleteButton").css("opacity", "1");
+        }, 500);
+    }
 
     $("#optionsClient").append("<div id='pendingChanges'></div>");
+
+    if(selectedRow.children()[7].innerHTML == "Terminated")
+    {
+        $("#SubmitButton").css("opacity", "0");
+        $("#DeleteButton").css("opacity", "0");
+        $("#pendingChanges").html("");
+        $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please create a new subscription.</p>");
+        setTimeout(function () {
+            $("#SubmitButton").hide();
+            $("#DeleteButton").hide();
+            $("#pendingChanges").css("opacity", "1");
+        }, 500);
+    }
 
     //Pre-populating drop down options
     $.ajax({
@@ -1198,19 +1217,6 @@ function subscriptionModForm(res, status) {
                     );
             }
 
-            if(selectedRow.children()[7].innerHTML == "Terminated")
-            {
-                $("#SubmitButton").css("opacity", "0");
-                $("#DeleteButton").css("opacity", "0");
-                $("#pendingChanges").css("opacity", "1");
-                $("#pendingChanges").html("");
-                $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please create a new subscription.</p>");
-
-                setTimeout(function () {
-                    $("#SubmitButton").hide();
-                    $("#DeleteButton").hide();
-                }, 500);
-            }
             //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {

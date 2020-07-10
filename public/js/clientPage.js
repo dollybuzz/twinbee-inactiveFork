@@ -495,6 +495,7 @@ function subscriptionModForm(res, status) {
         $("#SubmitButton").css("opacity", "0");
         $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please contact Freedom Makers to create a new subscription.</p>");
         setTimeout(function () {
+            $("#SubmitButton").hide();
             $("#pendingChanges").css("opacity", "1");
         }, 500);
     }
