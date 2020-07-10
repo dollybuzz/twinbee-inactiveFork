@@ -1179,8 +1179,6 @@ function subscriptionModForm(res, status) {
 
     if(selectedRow.children()[7].innerHTML == "Terminated")
     {
-        $("#SubmitButton").css("opacity", "0");
-        $("#DeleteButton").css("opacity", "0");
         $("#pendingChanges").html("");
         $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please create a new subscription.</p>");
         setTimeout(function () {
