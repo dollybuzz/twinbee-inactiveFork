@@ -44,12 +44,11 @@ function createBody(button) {
 
 function showBlock() {
     //show block after table stops moving
+    $("#optionsClient").show();
+    $("#ExpandButton").show();
+    $("#SubmitButton").show();
+    $("#optionsClient").css("width", "50%");
     setTimeout(function () {
-        $("#optionsClient").show();
-        $("#ExpandButton").show();
-        $("#SubmitButton").show();
-        $("#optionsClient").css("width", "50%");
-        $("#optionsClient").css("width", "50%");
         $("#optionsClient").css("opacity", "1");
         $("#SubmitButton").css("opacity", "1");
         $("#ExpandButton").css("opacity", "1")
@@ -383,7 +382,6 @@ function buyForm() {
 //Subscription Methods
 function prePopModForm(endpoint, modForm) { //not a versatile method
     minimizeTable();
-    showBlock();
     let subscriptionId = selectedRow.children()[0].innerHTML;
     $.ajax({
         url: endpoint,
@@ -399,6 +397,7 @@ function prePopModForm(endpoint, modForm) { //not a versatile method
             $("#optionsClient").html("Mod Form is not populating! Please refresh the page. Contact support if the problem persists.");
         }
     });//end ajax
+    showBlock();
 }
 
 function subscriptionFunctionality(res) {
@@ -480,10 +479,22 @@ function subscriptionModForm(res, status) {
         "<label for='modsubscriptionplanquantity'>Monthly Hours:</label>" +
         `<input class='form-control' type='number' id='modsubscriptionplanquantity' name='modsubscriptionplanquantity' value='${res.plan_quantity}'>\n<br>\n` +
         "</form><br><div><span id='errormessage' style='color:red'></span></div>");
+
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
 
     $("#optionsClient").append("<div id='pendingChanges'></div>");
+
+    if(selectedRow.children()[5].innerHTML == "Terminated")
+    {
+        $("#pendingChanges").html("");
+        $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please contact Freedom Makers to create a new subscription.</p>");
+        setTimeout(function () {
+            $("#SubmitButton").hide();
+            $("#pendingChanges").css("opacity", "1");
+        }, 500);
+    }
+
 
     $("#SubmitButton").on("click", function (e) {
         let monthlyHours = $("#modsubscriptionplanquantity").val();
