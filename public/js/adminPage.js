@@ -1209,7 +1209,7 @@ function subscriptionModForm(res, status) {
                 setTimeout(function () {
                     $("#SubmitButton").hide();
                     $("#DeleteButton").hide();
-                }, 500)
+                }, 500);
             }
             //Submit button function
             $("#SubmitButton").off("click");

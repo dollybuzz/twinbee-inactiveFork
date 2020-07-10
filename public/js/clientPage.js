@@ -493,7 +493,7 @@ function subscriptionModForm(res, status) {
 
         setTimeout(function () {
             $("#SubmitButton").hide();
-        }, 500)
+        }, 800);
     }
 
 
