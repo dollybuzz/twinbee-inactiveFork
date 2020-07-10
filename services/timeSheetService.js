@@ -22,7 +22,7 @@ class TimeSheetService {
      * @param detail    - entry for admin note on add
      * @returns {Promise<TimeSheet>}
      */
-    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail) {
+    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail, relationshipId) {
         if (!detail) {
             detail = "No details given."
         }
@@ -31,7 +31,7 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, detail);
+        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, detail, relationshipId);
     }
 
     /**
@@ -169,7 +169,7 @@ class TimeSheetService {
      * @returns {Promise<[TimeSheet]>} all timesheets for the given maker where clock-out == 0000-00-00 00:00:00
      */
     async getOnlineSheets(makerId) {
-        console.log(`Getting online sheets for maker ${makerId}`)
+        console.log(`Getting online sheets for maker ${makerId}`);
         let sheetsForMaker = await this.getSheetsByMaker(makerId).catch(error => {
             console.log(error);
             emailService.notifyAdmin(error.toString())
@@ -344,7 +344,7 @@ class TimeSheetService {
 //helper function
 createSheetFromRow = async row => {
     return new TimeSheet(row.id, row.maker_id, row.hourly_rate,
-        row.client_id, row.start_time, row.end_time, row.task, row.admin_note);
+        row.client_id, row.start_time, row.end_time, row.task, row.admin_note, row.relationship_id);
 };
 
 

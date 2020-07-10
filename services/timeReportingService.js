@@ -128,7 +128,6 @@ class TimeReportingService {
         return obj;
     }
 
-
     /**
      * Retrieves reporting data for a client/maker combo. If no client or maker is passed,
      * the value is treated as a wildcard (retrieve all). Reporting data is constrained to the given

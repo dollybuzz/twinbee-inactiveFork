@@ -21,6 +21,7 @@ const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
 const chargebeeservice = require('./services/chargebeeService.js');
 const timeReportingService = require('./services/timeReportingService.js');
+const ts = require('./services/timeSheetService.js');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
 var chargebee = require("chargebee");
@@ -367,6 +368,7 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
+    console.log(await ts.getAllTimeSheets())
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

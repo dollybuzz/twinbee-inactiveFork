@@ -1,7 +1,7 @@
 'use strict';
 module.exports = class TimeSheet{
 
-    constructor(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, adminNote){
+    constructor(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, adminNote, relationshipId){
         //upon finishing population of object, send to database.
         //any validity checks will have to occur prior to this.
         this.id = id;
@@ -12,5 +12,6 @@ module.exports = class TimeSheet{
         this.timeOut = timeOut;
         this.task = task;
         this.adminNote = adminNote;
+        this.relationshipId = relationshipId;
     }
 }
