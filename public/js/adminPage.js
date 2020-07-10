@@ -1198,6 +1198,7 @@ function subscriptionModForm(res, status) {
                 $("#SubmitButton").css("opacity", "0");
                 $("#DeleteButton").css("opacity", "0");
                 $("#pendingChanges").css("opacity", "1");
+                $("#pendingChanges").html("");
                 $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please create a new subscription.</p>");
 
                 setTimeout(function () {
@@ -1205,10 +1206,6 @@ function subscriptionModForm(res, status) {
                     $("#DeleteButton").hide();
                 }, 500)
             }
-            else{
-                $("#pendingChanges").html("");
-            }
-
             //Submit button function
             $("#SubmitButton").off("click");
             $("#SubmitButton").on('click', function (e) {
@@ -1259,6 +1256,7 @@ function subscriptionModForm(res, status) {
             dataType: "json",
             success: function (retres, retstatus) {
                 $("#pendingChanges").css("opacity", "1");
+                $("#pendingChanges").html("");
                 $("#pendingChanges").html("<br><hr><p>This plan has the following scheduled change and will take effect on the next " +
                     "renewed billing cycle." +
                     `<h5>Monthly Hours from ${selectedRow.children()[4].innerHTML} to ${retres.plan_quantity} starting on ${selectedRow.children()[7].innerHTML}</h5>` +
