@@ -168,7 +168,6 @@ class TimeReportingService {
         let clientMap = await getClientMap();
         let makerMap = await getMakerMap();
 
-        console.log(timeSheets.length);
         for (var sheet of timeSheets) {
             let filter = await makerIdFilter(makerId, sheet.makerId).catch(err => {
                 console.log(err);
