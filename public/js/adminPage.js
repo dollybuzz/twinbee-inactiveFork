@@ -1111,8 +1111,10 @@ function subscriptionFunctionality(res) {
             "</div>\n";
 
         prePopModForm("/api/retrieveSubscription", subscriptionModForm);
-        $("#DeleteButton").css("opacity", "1");
-        $("#SubmitButton").css("opacity", "1");
+        setTimeout(function () {
+            $("#DeleteButton").css("opacity", "1");
+            $("#SubmitButton").css("opacity", "1");
+        }, 500);
         $("#DeleteButton").click(function () {
             let subscriptionId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("cancel", subscriptionPrompt, "/api/cancelSubscription", {
