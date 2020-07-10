@@ -154,7 +154,6 @@ function showFunction(functionality, endpoint) {
 //Mod
 function prePopModForm(endpoint, modForm) {
     minimizeTable();
-
     let clientId = selectedRow.children()[0].innerHTML;
     $.ajax({
         url: endpoint,
@@ -390,8 +389,10 @@ function clientFunctionality(res) {
             "<hr><p>Note: Changes may take a moment to reflect.</p>";
 
         prePopModForm("/api/getClient", clientModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
+        setTimeout(function () {
+            $("#DeleteButton").css("opacity", "1");
+            $("#SubmitButton").css("opacity", "1");
+        }, 500);
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("delete", clientPrompt, "/api/deleteClient", {
@@ -653,8 +654,10 @@ function makerFunctionality(res) {
             "</div>\n";
 
         prePopModForm("/api/getMaker", makerModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
+        setTimeout(function () {
+            $("#DeleteButton").css("opacity", "1");
+            $("#SubmitButton").css("opacity", "1");
+        }, 500);
         $("#DeleteButton").click(function () {
             let makerId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("delete", makerPrompt, "/api/deleteMaker", {
@@ -872,8 +875,10 @@ function planFunctionality(res) {
             "</div>\n";
 
         prePopModForm("/api/retrievePlan", planModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
+        setTimeout(function () {
+            $("#DeleteButton").css("opacity", "1");
+            $("#SubmitButton").css("opacity", "1");
+        }, 500);
         $("#DeleteButton").click(function () {
             let planId = selectedRow.children()[0].innerHTML;
             showDeletePrompt("delete", planPrompt, "/api/deletePlan", {
@@ -1508,8 +1513,10 @@ function relationshipFunctionality(res) {
                                     "<div id='empty'></div>" +
                                     "</div>\n";
                                 prePopModForm("/api/getRelationshipById", relationshipModForm);
-                                $("#DeleteButton").show();
-                                $("#DeleteButton").css("opacity", "1");
+                                setTimeout(function () {
+                                    $("#DeleteButton").css("opacity", "1");
+                                    $("#SubmitButton").css("opacity", "1");
+                                }, 500);
                                 $("#DeleteButton").click(function () {
                                     let relationshipId = selectedRow.children()[0].innerHTML;
                                     showDeletePrompt("delete", relationshipPrompt, "/api/deleteRelationship", {
@@ -1876,8 +1883,10 @@ function creditFunctionality(res) {
             "</div>\n";
         ;
         prePopModForm("/api/getAllTimeBuckets", creditModForm);
-        $("#DeleteButton").show();
-        $("#DeleteButton").css("opacity", "1");
+        setTimeout(function () {
+            $("#DeleteButton").css("opacity", "1");
+            $("#SubmitButton").css("opacity", "1");
+        }, 500);
         $("#DeleteButton").click(function () {
             let clientId = selectedRow.children()[0].innerHTML;
             let planId = selectedRow.children()[3].innerHTML;
@@ -2216,8 +2225,10 @@ function timeSheetFunctionality(res) {
                             "</div>\n" +
                             "<hr><p>Note: First please calculate the running time to credit back to the associated client.<br>Changes may take a moment to reflect.</p>";
                         prePopModForm("/api/getTimeSheet", sheetModForm);
-                        $("#DeleteButton").show();
-                        $("#DeleteButton").css("opacity", "1");
+                        setTimeout(function () {
+                            $("#DeleteButton").css("opacity", "1");
+                            $("#SubmitButton").css("opacity", "1");
+                        }, 500);
                         $("#DeleteButton").click(function () {
                             if ($("#modsheetdetail").val() == "" || $("#modsheetdetail").val() == "undefined") {
                                 $("#errormessage").html("");
