@@ -1168,6 +1168,7 @@ function subscriptionModForm(res, status) {
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
+    $("#SubmitButton").css("opacity", "1");
 
     $("#optionsClient").append("<div id='pendingChanges'></div>");
 
