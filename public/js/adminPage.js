@@ -1204,7 +1204,6 @@ function subscriptionModForm(res, status) {
                 }, 500)
             }
             else{
-                $("#pendingChanges").css("opacity", "0");
                 $("#pendingChanges").html("");
             }
 
