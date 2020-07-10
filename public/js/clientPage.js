@@ -483,15 +483,18 @@ function subscriptionModForm(res, status) {
     if(selectedRow.children()[5].innerHTML != "Terminated")
     {
         $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
-        $("#SubmitButton").css("opacity", "1");
+        setTimeout(function () {
+            $("#SubmitButton").css("opacity", "1");
+        }, 500);
     }
     $("#optionsClient").append("<div id='pendingChanges'></div>");
 
     if(selectedRow.children()[5].innerHTML == "Terminated")
     {
-        $("#pendingChanges").css("opacity", "1");
-        $("#pendingChanges").html("");
         $("#pendingChanges").html("<br><hr><h5>You cannot modify a terminated subscription.</h5><p>Please contact Freedom Makers to create a new subscription.</p>");
+        setTimeout(function () {
+            $("#pendingChanges").css("opacity", "1");
+        }, 500);
     }
 
 
