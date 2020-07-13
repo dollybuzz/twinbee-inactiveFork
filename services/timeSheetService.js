@@ -20,6 +20,7 @@ class TimeSheetService {
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
      * @param task- maker's task for pay period
      * @param detail    - entry for admin note on add
+     * @param relationshipId - id of the relationship binding the client and maker on the sheet
      * @returns {Promise<TimeSheet>}
      */
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail, relationshipId) {
