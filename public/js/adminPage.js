@@ -2306,7 +2306,7 @@ function sheetModForm(res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsheetdetail'>Detail:</label>" +
-        `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail' value='${res.adminNote}'>\n` +
+        `<input class='form-control' type='text' id='modsheetdetail' name='modsheetdetail'>\n` +
         "</form><div><span id='errormessage' style='color:red'></span></div>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
