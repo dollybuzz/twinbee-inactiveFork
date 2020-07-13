@@ -352,12 +352,19 @@ function timeSheetFunctionality(res) {
 
     //Create table
     $("#userMainContent").html(
+        "<div class='reportOptions'></div>" +
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
         "    <table id=\"sheetsTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
+    //Report Buttons
+    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    //Populate table but do not show
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Timesheet ID</th>\n' +
@@ -366,30 +373,98 @@ function timeSheetFunctionality(res) {
         '            <th scope="col">Clock In (PST/PDT)</th>\n' +
         '            <th scope="col">Clock Out (PST/PDT)</th>\n' +
         '            <th scope="col">Task</th>\n' +
-        '        </thead><tbody>');
-    //Populate table
-    for (var item in res) {
-        if (res[item].clientName == null) {
-            var clientIdentifier = `Deleted, Client ${res[item].clientName}`;
-        } else {
-            clientIdentifier = res[item].clientName;
-        }
+        '            <th scope="col">Shift Duration</th>\n' +
+        '        </thead><tbody id="reportContent">' +
+        '</tbody>');
+    //Pre-populate Report drop down options
+    $("#clientRepSearch").on("change", function () {
+        $.ajax({
+            url: "/api/getMyClients",
+            method: "post",
+            data: {
+                auth: id_token
+            },
+            dataType: "json",
+            success: function (clientres, clientstatus) {
+                $("#clientReport").html("");
+                for (var i = 0; i < clientres.length; ++i) {
+                    let clientName = clientres[i].first_name + " " + clientres[i].last_name;
+                    if (clientName.toLowerCase().includes($("#clientRepSearch").val().toLowerCase()) && $("#clientRepSearch").val() != "") {
+                        $('#clientReport').append(
+                            `<option id="${clientres[i].id}" value="${clientres[i].id}">${clientres[i].first_name} ${clientres[i].last_name} - ${clientres[i].company}</option>`
+                        )
+                    }
+                }
+            },
+            error: function (clientres, clientstatus) {
+                $("#userMainContent").html("Could not get clients for drop down!");
+            }
+        });
+    });
 
+    //Event Listeners
+    //Run Report
+    $("#runReportButton").on('click', function () {
+        $("#reportTable").css("opacity", "1");
+        $("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $.ajax({
+            url: "/api/getTimeForMakerClientPair",
+            method: "post",
+            data: {
+                auth: id_token,
+                makerId: $("#makerReport").val(),
+                clientId: $("#clientReport").val(),
+                start: $("#startDate").val(),
+                end: $("#endDate").val()
+            },
+            dataType: "json",
+            success: function (timeres, timestatus) {
+                $("#reportContent").html("");
+                for (var item of timeres.sheets) {
+                    let hours = item.duration / 60;
+                    let minutes = item.duration % 60;
+                    let message = "";
+                    if (hours >= 0) {
+                        message += ` ${Math.floor(hours)} hours `;
+                    }
+                    if (hours <= -1) {
+                        hours = Math.abs(hours);
+                        message += `-${Math.floor(hours)} hours `;
+                    }
+                    if (minutes >= 0 || minutes < 0) {
+                        message += ` ${minutes} minutes `;
+                    }
+                    $("#reportContent").append('\n' +
+                        '<tr class="reportRow">' +
+                        '   <td scope="row">' + item.id + '</td>' +
+                        '   <td>' + item.clientName + '</td>' +
+                        '   <td>' + item.makerName + '</td>' +
+                        '   <td>' + (item.company || 'No Company') + '</td>' +
+                        '   <td>' + item.plan + '</td>' +
+                        `   <td> ${message}</td></tr>`);
+                }
+                let totalhours = Number.parseInt(timeres.total) / 60;
+                let totalminutes = Number.parseInt(timeres.total) % 60;
+                let totalmessage = "";
+                if (totalhours >= 0) {
+                    totalmessage += ` ${Math.floor(totalhours)} hours `;
+                }
+                if (totalhours <= -1) {
+                    totalhours = Math.abs(totalhours);
+                    totalmessage += `-${Math.floor(totalhours)} hours `;
+                }
+                if (totalminutes >= 0 || totalminutes < 0) {
+                    totalmessage += ` ${totalminutes} minutes `;
+                }
 
-        $("#sheetsTable").append('\n' +
-            '<tr class="sheetRow">' +
-            '   <td>' + res[item].id + '</td>' +
-            '   <td>' + clientIdentifier + '</td>' +
-            '   <td>' +  res[item].company + '</td>' +
-            '   <td>' + res[item].timeIn + '</td>' +
-            '   <td>' + res[item].timeOut + '</td>' +
-            '   <td>' + res[item].task + '</td></tr>'
-        );
-    }
-    $("#sheetsTable").append('\n</tbody>');
-
-    //Body Block content
-    createBody();
+                $("#reportContent").append('<tfoot><th id="repTotal">Total Time:</th>' +
+                    '<td>' + totalmessage + '</td></tfoot>');
+            },
+            error: function (timeres, timestatus) {
+                $("#userMainContent").html("Run Reports isn't working!");
+            }
+        });
+    });
 
     //Event Listeners
     //Row effect
