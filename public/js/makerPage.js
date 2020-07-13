@@ -384,7 +384,8 @@ function timeSheetFunctionality(res) {
             url: "/api/getMyClients",
             method: "post",
             data: {
-                auth: id_token
+                auth: id_token,
+                token: id_token
             },
             dataType: "json",
             success: function (clientres, clientstatus) {
