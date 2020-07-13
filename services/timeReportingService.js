@@ -61,7 +61,7 @@ class TimeReportingService {
             uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
-                'id': token
+                'token': token
             }
         }).catch(err => {
             console.log(err);
