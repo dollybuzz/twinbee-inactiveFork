@@ -159,7 +159,7 @@ class TimeReportingService {
             if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId) && filter) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
-                    let details = await getSheetDetails(sheet, timePeriod.end);
+                    let details = await getSheetDetails(sheet);
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
@@ -316,10 +316,11 @@ async function getAllSheets(){
 async function getSheetDetails(sheet, end){
 
     let startMoment = moment(sheet.timeIn);
+    let endMoment = moment(sheet.timeOut);
     let clientMap = await getClientMap();
     let makerMap = await getMakerMap();
 
-    let duration = await getMinutesBetweenMoments(startMoment, end).catch(err => {
+    let duration = await getMinutesBetweenMoments(startMoment, endMoment).catch(err => {
         console.log(err);
         emailService.notifyAdmin(err.toString());
     });
