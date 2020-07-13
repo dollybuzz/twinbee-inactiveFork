@@ -159,7 +159,7 @@ class TimeReportingService {
             if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId) && filter) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
-                    let details = await getSheetDetails(sheet);
+                    let details = await getSheetDetails(sheet, timePeriod.end);
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,

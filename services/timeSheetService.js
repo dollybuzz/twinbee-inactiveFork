@@ -253,7 +253,7 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
         let newSheet = await this.createTimeSheet(relationship.makerId, relationship.planId, relationship.clientId,
-            rightNow, '0000-00-00 00:00:00', task, relationshipId);
+            rightNow, '0000-00-00 00:00:00', task, null,  relationshipId);
         console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
 
         return Number.isInteger(newSheet.id);
