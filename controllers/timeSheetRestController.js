@@ -103,15 +103,18 @@ module.exports = {
     /**
      * ENDPOINT: /api/getAllTimeSheets
      * Retrieves a list of all timesheets in form
-     * {
-     *      "id": sheet id,
-     *      "makerId": id of owning maker,
-     *      "hourlyRate": pay rate of owning maker,
-     *      "clientId": id of client maker is assigned to for pay period,
-     *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "task": task of maker for time period
-     * }
+     * [
+     *      {
+     *          "id": sheet id,
+     *          "makerId": id of owning maker,
+     *          "hourlyRate": pay rate of owning maker,
+     *          "clientId": id of client maker is assigned to for pay period,
+     *          "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *          "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *          "task": task of maker for time period,
+     *          "relationshipId": id of relationship binding sheet entities
+     *      }...
+     *  ]
      *
      * Looks for data in the body as follows:
      * {
@@ -132,15 +135,18 @@ module.exports = {
     /**
      * ENDPOINT: /api/getTimeSheetsByClientId
      * Retrieves a list of all timesheets for work performed for a given client in form
-     * {
-     *      "id": sheet id,
-     *      "makerId": id of owning maker,
-     *      "hourlyRate": pay rate of owning maker,
-     *      "clientId": id of client maker is assigned to for pay period,
-     *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "task": task of maker for time period
-     * }
+     *  [
+     *      {
+     *          "id": sheet id,
+     *          "makerId": id of owning maker,
+     *          "hourlyRate": pay rate of owning maker,
+     *          "clientId": id of client maker is assigned to for pay period,
+     *          "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *          "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *          "task": task of maker for time period,
+     *          "relationshipId": id of relationship binding sheet entities
+     *      },...
+     *  ]
      * Looks for values in the body in form:
      * {
      *     "id": client's chargebee id,
@@ -177,7 +183,8 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "task": task of maker for time period
+     *      "task": task of maker for time period,
+     *      "relationshipId": id of relationship binding sheet entities
      * }
      * Looks for values in the body in form:
      * {
@@ -212,15 +219,18 @@ module.exports = {
     /**
      * ENDPOINT: /api/getTimeSheetsByMakerId
      * Retrieves a list of all timesheets for a given maker in form
-     * {
-     *      "id": sheet id,
-     *      "makerId": id of owning maker,
-     *      "hourlyRate": pay rate of owning maker,
-     *      "clientId": id of client maker is assigned to for pay period,
-     *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
-     *      "task": task of maker for time period
-     * }
+     * [
+     *      {
+     *          "id": sheet id,
+     *          "makerId": id of owning maker,
+     *          "hourlyRate": pay rate of owning maker,
+     *          "clientId": id of client maker is assigned to for pay period,
+     *          "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *          "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *          "task": task of maker for time period,
+     *          "relationshipId": id of relationship binding sheet entities
+     *      }...
+     * ]
      * Looks for values in the body in form:
      * {
      *     "id": maker's database id,
@@ -309,8 +319,9 @@ module.exports = {
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "relationshipId": id of relationship ,
      *      "task": task of maker for time period,
-     *      "auth": authentication credentials; either master or token
-     *      "detail": entry for admin note on add
+     *      "auth": authentication credentials; either master or token.
+     *      "detail": entry for admin note on add,
+     *      "relationshipId": id of relationship binding sheet entities
      * }
      * @param req
      * @param res
