@@ -88,8 +88,7 @@ function createBody(button) {
     $("#AddButton").css("opacity", "1");
 
     //dynamically append submit button in each form
-};
-
+}
 function showBlock() {
     //show block after table stops moving
     $("#optionsClient").show();
@@ -149,7 +148,7 @@ function showFunction(functionality, endpoint) {
             $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
         }
     });
-};
+}
 
 //Mod
 function prePopModForm(endpoint, modForm) {
@@ -205,7 +204,7 @@ function addSubmit(endpoint, object, successFunction) {
             $("#optionsClient").html("Add isn't working!");
         }
     });
-};
+}
 
 //Delete
 function showDeletePrompt(option, prompt, endpoint, object, successFunction, verifyDeleteUser) {
@@ -323,8 +322,7 @@ function showOnlineMakers() {
             $("#userMainContent").html("Could not get online Freedom Makers!");
         }
     });
-};
-
+}
 //Google
 onSignIn = function (googleUser) {
     GOOGLE_USER = googleUser;
@@ -367,7 +365,6 @@ function clientFunctionality(res) {
                 '   <td>' + item.customer.email + '</td></tr>'
             );
         }
-        ;
     });
     $("#clientTable").append('\n</tbody>');
 
@@ -633,7 +630,6 @@ function makerFunctionality(res) {
                 '   <td>' + item.email + '</td></tr>'
             );
         }
-        ;
     });
     $("#makerTable").append('\n</tbody>');
 
@@ -1608,8 +1604,6 @@ function relationshipModForm(res, status) {
                             );
                         }
                     }
-                    ;
-
                     //Submit button function
                     $("#SubmitButton").off("click");
                     $("#SubmitButton").on('click', function (e) {
@@ -1860,7 +1854,6 @@ function creditFunctionality(res) {
                 `   <td>${message}</td>`
             );
         }
-        ;
     });
     $("#creditTable").append('\n</tbody>');
 
@@ -1879,7 +1872,6 @@ function creditFunctionality(res) {
             `<div><input class='form-control' type='text' id='deleteUser' name='deleteUser'></div>\n` +
             "<div id='empty'></div>" +
             "</div>\n";
-        ;
         prePopModForm("/api/getAllTimeBuckets", creditModForm);
         setTimeout(function () {
             $("#DeleteButton").css("opacity", "1");
@@ -2681,7 +2673,6 @@ function runReportFunctionality() {
                         '   <td>' + item.plan + '</td>' +
                         `   <td> ${message}</td></tr>`);
                 }
-                ;
                 let totalhours = Number.parseInt(timeres.total) / 60;
                 let totalminutes = Number.parseInt(timeres.total) % 60;
                 let totalmessage = "";

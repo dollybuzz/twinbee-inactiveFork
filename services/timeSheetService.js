@@ -23,9 +23,6 @@ class TimeSheetService {
      * @returns {Promise<TimeSheet>}
      */
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail, relationshipId) {
-        if (!detail) {
-            detail = "No details given."
-        }
         let id = await timeSheetRepo.createSheet(makerId, clientId,
             hourlyRate, timeIn, timeOut, task, detail).catch(err => {
             console.log(err);
