@@ -58,8 +58,8 @@ module.exports = {
      * those present on the sheets.
      * Looks for data in the body in the form:
      * {
-     *     "start": inclusive beginning of reporting time,
-     *     "end": exclusive ending of reporting time,
+     *     "start": inclusive beginning of reporting time, (wildcard if none specified)
+     *     "end": exclusive ending of reporting time,  (wildcard if none specified)
      *     "auth": authentication credentials; either master or token
      *     "token": requester's token,
      *     "clientId": id of client to request report for (wildcard if none specified)
