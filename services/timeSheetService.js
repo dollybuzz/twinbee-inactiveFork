@@ -187,7 +187,7 @@ class TimeSheetService {
      * @returns {Promise<Moment>} for the current instant
      */
     async getCurrentMoment() {
-        return await moment().utcOffset(-480).format('YYYY-MM-DD HH:mm:ss');
+        return await moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
     }
 
     /**
