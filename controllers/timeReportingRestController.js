@@ -52,7 +52,7 @@ module.exports = {
 
 
     /**
-     * ENDPOINT: /api/getMyTimeSheetsMaker
+     * ENDPOINT: /api/getMakerTimeReport
      * Retrieves a "report" for a maker. The report
      * contains a list of sheet id's with durations, total duration, and names of
      * those present on the sheets.
