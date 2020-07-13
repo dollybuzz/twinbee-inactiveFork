@@ -168,6 +168,7 @@ class TimeReportingService {
                         makerName: details.makerName,
                         plan: sheet.hourlyRate
                     });
+                    totalTime += details.duration;
                 }
             }
         }
@@ -222,7 +223,6 @@ class TimeReportingService {
                         occupation: relationship.occupation,
                         plan: sheet.hourlyRate
                     });
-                    totalTime += details.duration;
                 }
             }
         }
