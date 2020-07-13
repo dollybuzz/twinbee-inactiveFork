@@ -163,6 +163,8 @@ class TimeReportingService {
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
+                        timeIn: sheet.timeIn,
+                        timeOut: sheet.timeOut,
                         clientName: details.clientName,
                         company: details.clientCompany,
                         makerName: details.makerName,

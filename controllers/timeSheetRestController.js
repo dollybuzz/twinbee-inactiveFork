@@ -307,6 +307,7 @@ module.exports = {
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
+     *      "relationshipId": id of relationship ,
      *      "task": task of maker for time period,
      *      "auth": authentication credentials; either master or token
      *      "detail": entry for admin note on add
@@ -324,7 +325,7 @@ module.exports = {
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
-                req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail).catch(err => {
+                req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail, req.body.relationshipId).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString())
             });
