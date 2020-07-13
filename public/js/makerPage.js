@@ -363,8 +363,8 @@ function timeSheetFunctionality(res) {
         '            <th scope="col">Timesheet ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Company</th>\n' +
-        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
-        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
+        '            <th scope="col">Clock In (PST/PDT)</th>\n' +
+        '            <th scope="col">Clock Out (PST/PDT)</th>\n' +
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table

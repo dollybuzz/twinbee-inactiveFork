@@ -653,8 +653,8 @@ function timeSheetFunctionality() {
         '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Freedom Maker ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
-        '            <th scope="col">Clock In (GMT/UTC)</th>\n' +
-        '            <th scope="col">Clock Out (GMT/UTC)</th>\n' +
+        '            <th scope="col">Clock In (PST/PDT)</th>\n' +
+        '            <th scope="col">Clock Out (PST/PDT)</th>\n' +
         '            <th scope="col">Task</th>\n' +
         '        </thead><tbody>');
     //Populate table
