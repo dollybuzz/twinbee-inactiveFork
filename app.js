@@ -285,7 +285,7 @@ app.post("/api/getTimeBucket",
 
 app.post("/api/getMyTimeSheetsMaker",
     authController.authorizeMaker,
-    makerRestController.getMyTimeSheets);
+    timeReportingRestController.getMakerTimeReport);
 app.post("/api/getMyRelationshipBucket",
     authController.authorizeMaker,
     makerRestController.getMyRelationshipBucket);
