@@ -163,11 +163,15 @@ class TimeReportingService {
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
+                        timeIn: sheet.timeIn,
+                        timeOut: sheet.timeOut,
                         clientName: details.clientName,
                         company: details.clientCompany,
                         makerName: details.makerName,
+                        task: sheet.task,
                         plan: sheet.hourlyRate
                     });
+                    totalTime += details.duration;
                 }
             }
         }
@@ -222,7 +226,6 @@ class TimeReportingService {
                         occupation: relationship.occupation,
                         plan: sheet.hourlyRate
                     });
-                    totalTime += details.duration;
                 }
             }
         }

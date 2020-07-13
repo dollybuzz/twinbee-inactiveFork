@@ -474,6 +474,7 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/getMyTimeSheetsMaker
      * Retrieves timesheets for the requesting maker. Looks for data in the body in the
      * form:
      * {

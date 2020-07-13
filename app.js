@@ -285,7 +285,7 @@ app.post("/api/getTimeBucket",
 
 app.post("/api/getMyTimeSheetsMaker",
     authController.authorizeMaker,
-    timeReportingRestController.getMakerTimeReport);
+    makerRestController.getMyTimeSheets);
 app.post("/api/getMyRelationshipBucket",
     authController.authorizeMaker,
     makerRestController.getMyRelationshipBucket);
@@ -363,6 +363,10 @@ app.post("/api/notifyAdmin",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     notificationRestController.restBugReport);
+app.post("/api/getMakerTimeReport",
+    authController.authorizeMaker,
+    authController.authorizeMaster,
+    timeReportingRestController.getMakerTimeReport);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

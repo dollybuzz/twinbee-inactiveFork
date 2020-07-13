@@ -52,14 +52,14 @@ module.exports = {
 
 
     /**
-     * ENDPOINT: /api/getMyTimeSheetsMaker
+     * ENDPOINT: /api/getMakerTimeReport
      * Retrieves a "report" for a maker. The report
      * contains a list of sheet id's with durations, total duration, and names of
      * those present on the sheets.
      * Looks for data in the body in the form:
      * {
-     *     "start": inclusive beginning of reporting time,
-     *     "end": exclusive ending of reporting time,
+     *     "start": inclusive beginning of reporting time, (wildcard if none specified)
+     *     "end": exclusive ending of reporting time,  (wildcard if none specified)
      *     "auth": authentication credentials; either master or token
      *     "token": requester's token,
      *     "clientId": id of client to request report for (wildcard if none specified)
