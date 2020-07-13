@@ -352,7 +352,7 @@ function timeSheetFunctionality(res) {
 
     //Create table
     $("#userMainContent").html(
-        "<div class='reportOptions'></div>" +
+        "<div class='reportOptionsMaker'></div>" +
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
@@ -360,10 +360,12 @@ function timeSheetFunctionality(res) {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
-    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
-    $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
-    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $(".reportOptionsMaker").append("<div id='empty'></div>");
+    $(".reportOptionsMaker").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptionsMaker").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsMaker").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptionsMaker").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $(".reportOptionsMaker").append("<div id='empty'></div>");
     //Populate table but do not show
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
@@ -408,11 +410,11 @@ function timeSheetFunctionality(res) {
         $("#reportTable").css("opacity", "1");
         $("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
         $.ajax({
-            url: "/api/getTimeForMakerClientPair",
+            url: "/api/getMakerTimeReport",
             method: "post",
             data: {
                 auth: id_token,
-                makerId: $("#makerReport").val(),
+                token: id_token,
                 clientId: $("#clientReport").val(),
                 start: $("#startDate").val(),
                 end: $("#endDate").val()
@@ -435,12 +437,13 @@ function timeSheetFunctionality(res) {
                         message += ` ${minutes} minutes `;
                     }
                     $("#reportContent").append('\n' +
-                        '<tr class="reportRow">' +
+                        '<tr class="sheetsRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
-                        '   <td>' + item.makerName + '</td>' +
                         '   <td>' + (item.company || 'No Company') + '</td>' +
-                        '   <td>' + item.plan + '</td>' +
+                        '   <td>' + item.timeIn + '</td>' +
+                        '   <td>' + item.timeOut + '</td>' +
+                        '   <td>' + item.task + '</td>' +
                         `   <td> ${message}</td></tr>`);
                 }
                 let totalhours = Number.parseInt(timeres.total) / 60;

@@ -170,6 +170,13 @@ body a:hover {
     height: 100px;
 }
 
+.reportOptionsMaker {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    place-items: center;
+    height: 100px;
+}
+
 #DeleteButton,
 #YesDelete,
 #NoBuy,
