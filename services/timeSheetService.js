@@ -25,7 +25,7 @@ class TimeSheetService {
      */
     async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail, relationshipId) {
         let id = await timeSheetRepo.createSheet(makerId, clientId,
-            hourlyRate, timeIn, timeOut, task, detail).catch(err => {
+            hourlyRate, timeIn, timeOut, task, detail, relationshipId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
@@ -253,7 +253,7 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
         let newSheet = await this.createTimeSheet(relationship.makerId, relationship.planId, relationship.clientId,
-            rightNow, '0000-00-00 00:00:00', task);
+            rightNow, '0000-00-00 00:00:00', task, relationshipId);
         console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
 
         return Number.isInteger(newSheet.id);

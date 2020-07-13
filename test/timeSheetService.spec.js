@@ -128,7 +128,7 @@ describe('Time Sheet Service Test', function () {
     });
 
     it('Should create a new valid timesheet', async function () {
-        let actual = await timeSheetService.createTimeSheet(1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', "");
+        let actual = await timeSheetService.createTimeSheet(1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', "", "");
         expect(actual).to.deep.equal(timeSheetRefined1);
         sinon.assert.calledOnce(timeSheetRepo.createSheet);
     });
