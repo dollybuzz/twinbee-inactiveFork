@@ -54,36 +54,33 @@ class TimeReportingService {
         return obj;
     }
 
-    /**
-     * TODO: Optimize.  This is an initial knowingly-naive approach.
-     *
-     * Retrieves a list of relationship details for a set time period including
-     * relationship members and logged time for the time period. Each element of the returned
-     * array contains the data for a single relationship.
-     *
-     * @param start - start time (inclusive) for the report in a moment.js readable format
-     * @param end   - end time (exlusive) for the report in a moment.js readable format
-     * @returns {Promise<[]>}
-     */
-    async getTimeRollup(start, end) {
-        let rollupRows = [];
+
+    async getMyTimeReportMaker(start, end, token, client){
         let response = await request({
             method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
+            uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
+                'id': token
             }
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
 
-        let relationships = JSON.parse(response.body);
+        let {id} = JSON.parse(response.body);
 
+        return await this.getReportForClientMakerPair(start, end, id, client);
+    }
+
+
+    //TODO: Optimize.  This is an initial knowingly-naive approach.
+    async getTimeReport(start, end, relationshipList){
+        let rollupRows = [];
         let clientMap = await getClientMap();
         let makerMap = await getMakerMap();
 
-        for (var relationship of relationships) {
+        for (var relationship of relationshipList) {
             let hoursReport = await this.getReportForRelationship(start, end, relationship.id);
             let makerName = makerMap[relationship.makerId] ? `${makerMap[relationship.makerId].firstName} ${makerMap[relationship.makerId].lastName}`
                 : `Deleted Maker ${relationship.makerId}`;
@@ -100,6 +97,33 @@ class TimeReportingService {
             rollupRows.push(rollupRow);
         }
         return rollupRows;
+    }
+
+    /**
+     *
+     * Retrieves a list of relationship details for a set time period including
+     * relationship members and logged time for the time period. Each element of the returned
+     * array contains the data for a single relationship.
+     *
+     * @param start - start time (inclusive) for the report in a moment.js readable format
+     * @param end   - end time (exlusive) for the report in a moment.js readable format
+     * @returns {Promise<[]>}
+     */
+    async getTimeRollup(start, end) {
+        let response = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        let relationships = JSON.parse(response.body);
+
+        return await this.getTimeReport(start, end, relationships);
     }
 
     /**
