@@ -6,10 +6,10 @@ class TimeSheetRepository {
     constructor() {
     };
 
-    async createSheet(makerId, clientId, rate, startTime, endTime, task, adminNote) {
-        let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, task, admin_note)' +
-            ' VALUES (?, ?, ?, ?, ?, ?, ?)';
-        let sqlParams = [makerId, clientId, rate, startTime, endTime, task, adminNote];
+    async createSheet(makerId, clientId, rate, startTime, endTime, task, adminNote, relationshipId) {
+        let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, task, admin_note, relationship_id)' +
+            ' VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        let sqlParams = [makerId, clientId, rate, startTime, endTime, task, adminNote, relationshipId];
         let result = await repoMaster.query(sql, sqlParams).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
