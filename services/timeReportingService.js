@@ -168,6 +168,7 @@ class TimeReportingService {
                         clientName: details.clientName,
                         company: details.clientCompany,
                         makerName: details.makerName,
+                        task: sheet.task,
                         plan: sheet.hourlyRate
                     });
                     totalTime += details.duration;
