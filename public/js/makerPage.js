@@ -97,7 +97,7 @@ function timeClockFunctionality() {
                 }
                 else {
                     $("#makerSelectedClient").append(
-                        `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].company + " - " + relres[i].occupation}</option>`);
+                        `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].company + " - " + relres[i].occupation}</option>`);
                 }
 
                 if (i == relres.length - 1) {
