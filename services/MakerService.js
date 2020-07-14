@@ -22,7 +22,6 @@ class MakerService {
         });
         repoResult.forEach(item => {
             let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted, item.unique_descriptor);
-
             makers.push(newObj);
         });
         return makers;
