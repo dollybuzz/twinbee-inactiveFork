@@ -356,11 +356,11 @@ function runningTime(timeIn) {
     //Checking time zone to calculate time according to PST/PDT
     if (moment().isDST()){
         currentTime = moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
-        timeIn = moment(timeInSec).utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
+        timeIn = moment(timeIn).utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
     }
     else {
         currentTime = moment().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
-        timeIn = moment(timeInSec).utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
+        timeIn = moment(timeIn).utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
     }
 
     $("#runningTime").html(`<h5>${currentTime} ${timeIn}</h5>`);
