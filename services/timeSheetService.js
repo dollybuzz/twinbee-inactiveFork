@@ -21,9 +21,20 @@ class TimeSheetService {
      * @param task- maker's task for pay period
      * @param detail    - entry for admin note on add
      * @param relationshipId - id of the relationship binding the client and maker on the sheet
-     * @returns {Promise<TimeSheet>}
+     * @returns {Promise<>}
      */
     async createTimeSheet(makerId, planId, clientId, timeIn, timeOut, task, detail, relationshipId) {
+        if (!makerId || !planId || !clientId || !timeIn){
+            let error = {status: "failed to create timesheet\n", reason: ""};
+            let tracer = new Error();
+            error.reason += makerId ? "" : "makerId was invalid\n";
+            error.reason += planId ? "" : "planId was invalid\n";
+            error.reason += clientId ? "" : "clientId was invalid\n";
+            error.reason += timeIn ? "" : "timeIn was invalid\n";
+            console.log(error.status, error.reason);
+            emailService.notifyAdmin(error.status, error.reason, JSON.stringify(tracer.stack));
+            return error;
+        }
         let id = await timeSheetRepo.createSheet(makerId, clientId,
             planId, timeIn, timeOut, task, detail, relationshipId).catch(err => {
             console.log(err);

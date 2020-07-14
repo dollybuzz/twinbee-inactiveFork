@@ -150,8 +150,23 @@ describe('Time Sheet Service Test', function () {
     });
     it('Should fail to create a timesheet without a maker id', async function () {
         let actual = await timeSheetService.createTimeSheet(null, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', "No details given.", 1);
-        expect(actual).to.deep.equal(undefined);
-        sinon.assert.calledOnce(timeSheetRepo.createSheet);
+        expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "makerId was invalid\n"});
+    });
+    it('Should fail to create a timesheet without a plan id', async function () {
+        let actual = await timeSheetService.createTimeSheet(1, null, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', "No details given.", 1);
+        expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "planId was invalid\n"});
+    });
+    it('Should fail to create a timesheet without a client id', async function () {
+        let actual = await timeSheetService.createTimeSheet(1, 20.00, null, '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', "No details given.", 1);
+        expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "clientId was invalid\n"});
+    });
+    it('Should fail to create a timesheet without a time in', async function () {
+        let actual = await timeSheetService.createTimeSheet(1, 20.00, 'a', null, '0000-00-00 00:00:00', 'worker', "No details given.", 1);
+        expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "timeIn was invalid\n"});
+    });
+    it('Should fail to create a timesheet without multiple required fields', async function () {
+        let actual = await timeSheetService.createTimeSheet(null, null, null, null, '0000-00-00 00:00:00', 'worker', "No details given.", 1);
+        expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "makerId was invalid\nplanId was invalid\nclientId was invalid\ntimeIn was invalid\n"});
     });
 
 });
