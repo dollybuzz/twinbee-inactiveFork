@@ -164,6 +164,10 @@ describe('Time Sheet Service Test', function () {
         let actual = await timeSheetService.createTimeSheet(1, 20.00, 'a', null, '0000-00-00 00:00:00', 'worker', "No details given.", 1);
         expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "timeIn was invalid\n"});
     });
+    it('Should fail to create a timesheet without a time out', async function () {
+        let actual = await timeSheetService.createTimeSheet(1, 20.00, 'a', '2019-04-24 22:22:22', null, 'worker', "No details given.", 1);
+        expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "timeOut was invalid\n"});
+    });
     it('Should fail to create a timesheet without multiple required fields', async function () {
         let actual = await timeSheetService.createTimeSheet(null, null, null, null, '0000-00-00 00:00:00', 'worker', "No details given.", 1);
         expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "makerId was invalid\nplanId was invalid\nclientId was invalid\ntimeIn was invalid\n"});

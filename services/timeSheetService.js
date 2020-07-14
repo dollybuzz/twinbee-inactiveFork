@@ -24,15 +24,16 @@ class TimeSheetService {
      * @returns {Promise<>}
      */
     async createTimeSheet(makerId, planId, clientId, timeIn, timeOut, task, detail, relationshipId) {
-        if (!makerId || !planId || !clientId || !timeIn){
+        if (!makerId || !planId || !clientId || !timeIn || !timeOut){
             let error = {status: "failed to create timesheet\n", reason: ""};
             let tracer = new Error();
             error.reason += makerId ? "" : "makerId was invalid\n";
             error.reason += planId ? "" : "planId was invalid\n";
             error.reason += clientId ? "" : "clientId was invalid\n";
             error.reason += timeIn ? "" : "timeIn was invalid\n";
+            error.reason += timeOut ? "" : "timeOut was invalid\n";
             console.log(error.status, error.reason);
-            emailService.notifyAdmin(error.status, error.reason, JSON.stringify(tracer.stack));
+            emailService.notifyAdmin(error.status + error.reason + JSON.stringify(tracer.stack));
             return error;
         }
         let id = await timeSheetRepo.createSheet(makerId, clientId,
@@ -139,7 +140,6 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        console.log(sheets)
         let makerSheets = [];
         for (let row of sheets){
             let refinedSheet = await createSheetFromRow(row).catch(err => {
