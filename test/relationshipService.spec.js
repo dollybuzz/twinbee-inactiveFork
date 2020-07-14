@@ -7,13 +7,13 @@ require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const nock = require('nock');
 
-const relationshipBasic1 = {id: "1", maker_id: "1", client_id: 'a', plan_id: 'freedom-makers-32', occupation: 'oc1'};
-const relationshipBasic2 = {id: "2", maker_id: "1", client_id: 'b', plan_id: 'freedom-makers-37', occupation: 'oc2'};
-const relationshipBasic3 = {id: "3", maker_id: "2", client_id: 'b', plan_id: 'freedom-makers-42', occupation: 'oc3'};
+const relationshipBasic1 = {id: "1", maker_id: "1", client_id: 'a', plan_id: 'freedom-makers-32', occupation: 'oc1', hourly_rate: 1000};
+const relationshipBasic2 = {id: "2", maker_id: "1", client_id: 'b', plan_id: 'freedom-makers-37', occupation: 'oc2', hourly_rate: 2000};
+const relationshipBasic3 = {id: "3", maker_id: "2", client_id: 'b', plan_id: 'freedom-makers-42', occupation: 'oc3', hourly_rate: 3000};
 
-const relationshipRefined1 = {id: "1", makerId: "1", clientId: 'a', planId: 'freedom-makers-32', occupation: 'oc1'};
-const relationshipRefined2 = {id: "2", makerId: "1", clientId: 'b', planId: 'freedom-makers-37', occupation: 'oc2'};
-const relationshipRefined3 = {id: "3", makerId: "2", clientId: 'b', planId: 'freedom-makers-42', occupation: 'oc3'};
+const relationshipRefined1 = {id: "1", makerId: "1", clientId: 'a', planId: 'freedom-makers-32', occupation: 'oc1', hourlyRate: 1000};
+const relationshipRefined2 = {id: "2", makerId: "1", clientId: 'b', planId: 'freedom-makers-37', occupation: 'oc2', hourlyRate: 2000};
+const relationshipRefined3 = {id: "3", makerId: "2", clientId: 'b', planId: 'freedom-makers-42', occupation: 'oc3', hourlyRate: 3000};
 
 describe('Relationship Service Test', function () {
     beforeEach(function () {
@@ -42,7 +42,7 @@ describe('Relationship Service Test', function () {
     });
 
     it('Should create a valid relationship object', async function () {
-        let actual = await relationshipService.createRelationship("1", "a", "freedom-makers-32", "oc1");
+        let actual = await relationshipService.createRelationship("1", "a", "freedom-makers-32", "oc1", 1000);
         expect(actual).to.deep.equal(relationshipRefined1);
     });
 

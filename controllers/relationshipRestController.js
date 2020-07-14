@@ -1,102 +1,6 @@
-
 const relationshipService = require('../services/relationshipService');
 const {notifyAdmin} = require("../services/notificationService");
-
-//TODO: find a home for the validator
-let validatorMap = {
-    "present": async function (keysToValidate, body) {
-        let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate) {
-            if (!body[keyString]) {
-                valid.isValid = false;
-                valid.message += `${keyString} was not valid.  `;
-            }
-        }
-        return valid;
-    },
-    "positiveIntegerOnly": async function (keysToValidate, body) {
-        let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate) {
-            if (!body[keyString] || !Number.parseInt(body[keyString])
-                || body[keyString].includes("-") || body[keyString].includes(" ") || body[keyString].includes(".")) {
-                valid.isValid = false;
-                valid.message += `${keyString} was not valid.  `;
-            }
-        }
-        return valid;
-    },
-    "noSpaces": async function (keysToValidate, body) {
-        let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate) {
-            if (!body[keyString] || body[keyString].includes(" ")) {
-                valid.isValid = false;
-                valid.message += `${keyString} was not valid.  `;
-            }
-        }
-        return valid;
-    },
-    "positiveDecimalAllowed": async function (keysToValidate, body) {
-        let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate) {
-            if (!body[keyString] || !Number.parseFloat(body[keyString])
-                || body[keyString].includes("-")) {
-                valid.isValid = false;
-                valid.message += `${keyString} was not valid.  `;
-            }
-        }
-        return valid;
-    },
-    "decimalAllowed": async function (keysToValidate, body) {
-        let valid = {isValid: true, message: ""};
-        for (var keyString of keysToValidate) {
-            if (!body[keyString] || !Number.parseFloat(body[keyString])) {
-                valid.isValid = false;
-                valid.message += `${keyString} was not valid.  `;
-            }
-        }
-        return valid;
-    },
-};
-
-/**
- *  validates parameters
- * @param paramArrayMap - object in form:
- * {
- *      present: array of string keys that should be present
- *      positiveIntegerOnly: array of string keys that should parse to positive integers only,
- *      noSpaces: array of string keys that should not have spaces
- * }
- *
- * @param body request body to validate
- * @returns object in the form:
- * {
- *      isValid: a boolean indicating whether or not the parameters were valid
- *      message: a string description of the result
- * }
- */
-async function validateParams(paramArrayMap, body) {
-    let validator = {isValid: true, message: ""};
-    let paramsTypesToScan = ["present", "positiveIntegerOnly", "noSpaces", "positiveDecimalAllowed", "decimalAllowed"];
-    for (var paramName of paramsTypesToScan) {
-        let keyArray = paramArrayMap[paramName];
-        if (keyArray) {
-            let result = await validatorMap[paramName](keyArray, body);
-            if (!result.isValid) {
-                validator.isValid = false;
-                validator.message += result.message;
-            }
-        }
-    }
-    if (!validator.message) {
-        validator.message = "Valid";
-    }
-    if (!validator.isValid){
-        let tracer = new Error();
-        console.log(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace:${JSON.stringify(tracer.stack)}`);
-        notifyAdmin(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace:${JSON.stringify(tracer.stack)}`);
-}
-    return validator;
-}
+const {validateParams} = require("../util.js");
 
 module.exports = {
 
@@ -109,7 +13,8 @@ module.exports = {
      *     "makerId": id of the freedom maker in the relationship,
      *     "clientId": id of the client in the relationship,
      *     "planId": plan id that defines relationship price,
-     *     "occupation": maker's occupation for the relationship
+     *     "occupation": maker's occupation for the relationship,
+     *     "hourlyRate": maker's hourly rate in cents (integer)
      * }
      *
      * returns data in the form:
@@ -118,7 +23,8 @@ module.exports = {
      *  "makerId": id of the maker in the relationship,
      *  "clientId": id of the client in the relationship,
      *  "planId": id of the plan binding the relationship,
-     *  "occupation": occupation of the maker in the relationship
+     *  "occupation": occupation of the maker in the relationship,
+     *  "hourlyRate": maker's hourly rate in cents (integer)
      * }
      *
      * @param req
@@ -143,7 +49,7 @@ module.exports = {
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await relationshipService.createRelationship(req.body.makerId,
-                req.body.clientId, req.body.planId, req.body.occupation).catch(err => {
+                req.body.clientId, req.body.planId, req.body.occupation, req.body.hourlyRate).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
             }));
@@ -165,7 +71,8 @@ module.exports = {
      *    "makerId": id of the maker in the relationship,
      *    "clientId": id of the client in the relationship,
      *    "planId": id of the plan binding the relationship,
-     *    "occupation": occupation of the maker in the relationship
+     *    "occupation": occupation of the maker in the relationship,
+     *    "hourlyRate": maker's hourly rate in cents (integer)
      *   },...
      * ]
      * @param req
@@ -210,7 +117,8 @@ module.exports = {
      *    "makerId": id of the maker in the relationship,
      *    "clientId": id of the client in the relationship,
      *    "planId": id of the plan binding the relationship,
-     *    "occupation": occupation of the maker in the relationship
+     *    "occupation": occupation of the maker in the relationship,
+     *    "hourlyRate": maker's hourly rate in cents (integer)
      *   },...
      * ]
      * @param req
@@ -255,7 +163,8 @@ module.exports = {
      *  "makerId": id of the maker in the relationship,
      *  "clientId": id of the client in the relationship,
      *  "planId": id of the plan binding the relationship,
-     *  "occupation": occupation of the maker in the relationship
+     *  "occupation": occupation of the maker in the relationship,
+     *  "hourlyRate": maker's hourly rate in cents (integer)
      * }
      * @param req
      * @param res
@@ -297,7 +206,8 @@ module.exports = {
      *       "makerId": id of the maker in the relationship,
      *       "clientId": id of the client in the relationship,
      *       "planId": id of the plan binding the relationship,
-     *       "occupation": occupation of the maker in the relationship
+     *       "occupation": occupation of the maker in the relationship,
+     *       "hourlyRate": maker's hourly rate in cents (integer)
      *      },
      *
      *      {
@@ -305,7 +215,8 @@ module.exports = {
      *       "makerId": id of the maker in the relationship,
      *       "clientId": id of the client in the relationship,
      *       "planId": id of the plan binding the relationship,
-     *       "occupation": occupation of the maker in the relationship
+     *       "occupation": occupation of the maker in the relationship,
+     *       "hourlyRate": maker's hourly rate in cents (integer)
      *      },...
      * ]
      * @param req
@@ -374,7 +285,8 @@ module.exports = {
      *  "makerId": id of the maker in the relationship,
      *  "clientId": id of the client in the relationship,
      *  "planId": updated id of the plan binding the relationship,
-     *  "occupation": updated occupation of the maker in the relationship
+     *  "occupation": updated occupation of the maker in the relationship,
+     *  "hourlyRate": maker's hourly rate in cents (integer)
      * }
      * @param req
      * @param res

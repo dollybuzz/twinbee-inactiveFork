@@ -5,11 +5,11 @@ class RelationshipRepository {
     constructor() {
     };
 
-    createRelationship(makerId, clientId, planId, task) {
+    createRelationship(makerId, clientId, planId, occupation, hourlyRate) {
         return new Promise((resolve, reject) => {
-            let sql = 'INSERT INTO relationship(maker_id, client_id, plan_id, occupation)' +
-                ' VALUES (?, ?, ?, ?)';
-            let sqlParams = [makerId, clientId, planId, task];
+            let sql = 'INSERT INTO relationship(maker_id, client_id, plan_id, occupation, hourly_rate)' +
+                ' VALUES (?, ?, ?, ?, ?)';
+            let sqlParams = [makerId, clientId, planId, occupation, hourlyRate];
             repoMaster.query(sql, sqlParams, function (err, result) {
                 if (err) {
                     notificationService.notifyAdmin(err.toString());
