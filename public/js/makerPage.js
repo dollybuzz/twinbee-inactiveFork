@@ -139,7 +139,8 @@ function timeClockFunctionality() {
 
                     setTimeout(function () {
                         $("#taskBlock").hide();
-                        $("#taskEntry").hide();
+                        $(
+                            "#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
                         $("#makerSelectedClient").hide();
