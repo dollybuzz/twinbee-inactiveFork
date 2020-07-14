@@ -2479,6 +2479,7 @@ function sheetAddForm() {
                                             $("#errormessage").html("");
                                             addSubmit("/api/createTimeSheet", {
                                                 auth: id_token,
+                                                relationshipId: subrelres.id,
                                                 makerId: subrelres.makerId,
                                                 planId: subrelres.planId,
                                                 clientId: subrelres.clientId,
