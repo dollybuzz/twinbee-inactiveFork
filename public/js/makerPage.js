@@ -145,7 +145,6 @@ function timeClockFunctionality() {
                         $("#makerSelectedClient").hide();
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                    clockedOut = true;
                     $("#taskBlock").css("opacity", "1");
                     $("#taskEntry").css("opacity", "1");
                     $("#clientRole").css("opacity", "1");
