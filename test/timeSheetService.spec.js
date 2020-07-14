@@ -130,6 +130,7 @@ describe('Time Sheet Service Test', function () {
         let actual = await timeSheetService.getSheetsByMaker(-1);
         expect(actual).to.deep.equal([]);
     });
+
     it('Should fail to find sheets for a nonexistent maker', async function () {
         let actual = await timeSheetService.getSheetsByMaker(null);
         expect(actual).to.deep.equal([]);
