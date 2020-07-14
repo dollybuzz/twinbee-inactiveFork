@@ -1,6 +1,7 @@
 const timeReportingService = require('../services/timeReportingService.js');
 const {notifyAdmin} = require("../services/notificationService.js");
-const authService = require('../services/authService.js')
+const authService = require('../services/authService.js');
+const {validateParams} = require("../util.js");
 
 
 module.exports = {
