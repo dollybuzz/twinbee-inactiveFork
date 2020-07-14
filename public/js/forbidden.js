@@ -1,4 +1,5 @@
 id_token = null;
+let TEST_ENVIRONMENT = false;
 
 $(document).ready(function () {
     $.ajax({
