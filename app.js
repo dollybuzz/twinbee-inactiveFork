@@ -286,6 +286,9 @@ app.post("/api/getTimeBucket",
 app.post("/api/getMyTimeSheetsMaker",
     authController.authorizeMaker,
     makerRestController.getMyTimeSheets);
+app.post("/api/getMyCurrentTimeSheet",
+    authController.authorizeMaker,
+    makerRestController.getMyCurrentTimeSheet);
 app.post("/api/getMyRelationshipBucket",
     authController.authorizeMaker,
     makerRestController.getMyRelationshipBucket);
@@ -372,7 +375,7 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
-    console.log(await timeReportingService.getTimeRollup("", "", 59))
+    console.log(await ts.getOnlineSheets(4));
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

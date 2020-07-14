@@ -260,6 +260,7 @@ class MakerService {
         return sheets;
     }
 
+
     async getMyRelationship(makerId, relationshipId) {
         let result = await request({
             method: 'POST',

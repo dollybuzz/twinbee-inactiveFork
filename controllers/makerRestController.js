@@ -1,5 +1,6 @@
 const makerService = require('../services/MakerService.js');
 const authService = require('../services/authService.js');
+const timeSheetService = require('../services/timeSheetService.js');
 const {notifyAdmin} = require("../services/notificationService");
 
 //TODO: find a home for the validator
@@ -510,6 +511,49 @@ module.exports = {
                 notifyAdmin(err.toString());
             });
             res.send(await makerService.getSheetsByMaker(id).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
+    },
+
+    /**
+     * ENDPOINT: /api/getMyCurrentTimeSheet
+     * Retrieves the online timesheet for the requesting maker. Looks for data in the body in the
+     * form:
+     * {
+     *     "token": requester's google token,
+     *     "auth": valid authentication
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getMyCurrentTimeSheet: async (req, res) => {
+        console.log(`Maker with token...\n${req.body.token}\n...is requesting their current/online timesheet from REST`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["token"],
+                "positiveIntegerOnly": [],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            let id = await makerService.getMakerIdByEmail(email).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            });
+            res.send(await timeSheetService.getOnlineSheets(id).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
             }));

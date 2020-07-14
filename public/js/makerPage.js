@@ -135,7 +135,7 @@ function timeClockFunctionality() {
                     $("#makerSelectedClient").css("opacity", "0");
                     $("#clientCredit").css("opacity", "0");
                     $("#availcredit").css("opacity", "0");
-                    $("#clockPrompt").html("<h5>Time is still running . . .</h5>");
+                    runningTime();
 
                     setTimeout(function () {
                         $("#taskBlock").hide();
@@ -200,7 +200,7 @@ function setClockInFunctionality() {
 
 
                     $("#clockPrompt").html("<div id='runningTime'></div>");
-                    runningTime(moment().valueOf());
+                    runningTime();
                     $("#clockPrompt").css("opacity", "1");
 
                     setTimeout(function () {
@@ -347,8 +347,24 @@ function availableCredits() {
     });
 }
 
-function runningTime(timeIn) {
+function runningTime() {
     let currentTime;
+
+    $.ajax({
+        url: "/api/getTimeBucketByClientId",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: '16CHT7Ryu5EhnPWY',//tokenres.id,
+        },
+        dataType: "json",
+        success: function (planres, planstatus) {
+        },
+        error: function (tokenres, tokenstatus) {
+            $("#userMainContent").html("Token isn't working!");
+        }
+    });
+
 
     //Checking time zone to calculate time according to PST/PDT
     if (moment().isDST()){
