@@ -211,8 +211,6 @@ class MakerService {
         if (!id){
             throw new Error()
         }
-        console.log("SHEETS BY MAKERID");
-        console.log(id);
         console.log(`Getting sheets for maker ${id}...`);
         let result = await request({
             method: 'POST',
