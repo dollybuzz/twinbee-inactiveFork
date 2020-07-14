@@ -1,5 +1,3 @@
-const moment = require('moment');
-
 let selectedTab = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
