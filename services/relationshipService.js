@@ -2,31 +2,42 @@ const relationshipRepo = require('../repositories/relationshipRepo.js');
 const Relationship = require('../domain/entity/relationship');
 const emailService = require('./notificationService.js');
 
+async function createRelationshipFromRow(row) {
+    return new Relationship(row.id, row.maker_id, row.client_id, row.plan_id, row.occupation, row.hourly_rate);
+}
+async function createRelationshipArrayFromDBSet(result){
+    let relationships = [];
+    for (var item of result){
+        let newObj = await createRelationshipFromRow(item);
+        relationships.push(newObj);
+    }
+    return relationships;
+    
+}
+
 class RelationshipService {
     constructor() {
     };
 
-    async createRelationship(makerId, clientId, planId, occupation) {
+    async createRelationship(makerId, clientId, planId, occupation, hourlyRate) {
         console.log("Creating a relationship...");
-        let id = await relationshipRepo.createRelationship(makerId, clientId, planId, occupation).catch(err => {
+        let id = await relationshipRepo.createRelationship(makerId, clientId, planId, occupation, hourlyRate).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        return new Relationship(id, makerId, clientId, planId, occupation);
+        return new Relationship(id, makerId, clientId, planId, occupation, hourlyRate);
     }
 
     async getAllRelationships() {
         console.log("Getting all relationships...");
-        let relationships = [];
         let repoResult = await relationshipRepo.getAllRelationships().catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        repoResult.forEach(item => {
-            let newObj = new Relationship(item.id, item.maker_id, item.client_id, item.plan_id, item.occupation);
-            relationships.push(newObj);
+        return await createRelationshipArrayFromDBSet(repoResult).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
         });
-        return relationships;
     }
 
     async getRelationshipsByMakerId(makerId) {
@@ -35,12 +46,10 @@ class RelationshipService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        let relationships = [];
-        result.forEach(item => {
-            let newObj = new Relationship(item.id, item.maker_id, item.client_id, item.plan_id, item.occupation);
-            relationships.push(newObj);
+        return await createRelationshipArrayFromDBSet(result).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
         });
-        return relationships;
     }
 
     async getRelationshipsByClientId(clientId) {
@@ -49,12 +58,10 @@ class RelationshipService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        let relationships = [];
-        result.forEach(item => {
-            let newObj = new Relationship(item.id, item.maker_id, item.client_id, item.plan_id, item.occupation);
-            relationships.push(newObj);
+        return await createRelationshipArrayFromDBSet(result).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
         });
-        return relationships;
     }
 
     async getRelationshipById(id) {
@@ -65,8 +72,7 @@ class RelationshipService {
         });
         if (result[0]) {
             let relationship = result[0];
-            return new Relationship(relationship.id, relationship.maker_id, relationship.client_id,
-                relationship.plan_id, relationship.occupation);
+            return await createRelationshipFromRow(relationship);
         }
         return 'not found';
     }

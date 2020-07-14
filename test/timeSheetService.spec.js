@@ -65,7 +65,6 @@ describe('Time Clock Service Test', function () {
 
 
     it('Should clock in a user', async () => {
-
         let results = await timeSheetService.clockIn("asdf", "asdf", "5");
         expect(results).to.equal(true);
     });
