@@ -2,10 +2,27 @@ const moment = require('moment');
 const util = require('util');
 const request = util.promisify(require('request'));
 const emailService = require('./notificationService.js');
+
 class TimeReportingService {
     constructor() {
+        this.setup();
     };
 
+    async setup(){
+        this.makerMap = await getMakerMap();
+        this.clientMap = await getClientMap();
+    }
+    async validateMaps(clientId, makerId) {
+        if (!this.clientMap[clientId]) {
+            console.log(`Couldn't find client ${clientId}. Double checking reporting service client map!`);
+            this.clientMap = await getClientMap();
+        }
+        if (!this.makerMap[makerId.toString()]) {
+            console.log(`Couldn't find maker ${makerId} Double checking reporting service maker map!`);
+            this.makerMap = await getMakerMap();
+        }
+        return true;
+    }
 
     async timePeriodToMoments(start, end) {
         if (!start) {
@@ -55,7 +72,7 @@ class TimeReportingService {
     }
 
 
-    async getMyTimeReportMaker(start, end, token, client){
+    async getMyTimeReportMaker(start, end, token, client) {
         let response = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
@@ -75,16 +92,17 @@ class TimeReportingService {
 
 
     //TODO: Optimize.  This is an initial knowingly-naive approach.
-    async getTimeReport(start, end, relationshipList){
+    async getTimeReport(start, end, relationshipList) {
         let rollupRows = [];
-        let clientMap = await getClientMap();
-        let makerMap = await getMakerMap();
 
         for (var relationship of relationshipList) {
+
+            await this.validateMaps(relationship.clientId, relationship.makerId);
+
             let hoursReport = await this.getReportForRelationship(start, end, relationship.id);
-            let makerName = makerMap[relationship.makerId] ? `${makerMap[relationship.makerId].firstName} ${makerMap[relationship.makerId].lastName}`
+            let makerName = this.makerMap[relationship.makerId] ? `${this.makerMap[relationship.makerId].firstName} ${this.makerMap[relationship.makerId].lastName}`
                 : `Deleted Maker ${relationship.makerId}`;
-            let clientName = clientMap[relationship.clientId] ? `${clientMap[relationship.clientId].first_name} ${clientMap[relationship.clientId].last_name}`
+            let clientName = this.clientMap[relationship.clientId] ? `${this.clientMap[relationship.clientId].first_name} ${this.clientMap[relationship.clientId].last_name}`
                 : `Deleted Client ${relationship.clientId}`;
 
             let rollupRow = {};
@@ -159,7 +177,7 @@ class TimeReportingService {
             if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId) && filter) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
-                    let details = await getSheetDetails(sheet);
+                    let details = await this.getSheetDetails(sheet);
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
@@ -191,6 +209,7 @@ class TimeReportingService {
      * @returns {Promise<{sheets:[], duration: total time logged}>}
      */
     async getReportForRelationship(start, end, relationshipId) {
+
         if (!relationshipId) {
             relationshipId = "";
         }
@@ -204,19 +223,21 @@ class TimeReportingService {
             uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
-                'id' : relationshipId
+                'id': relationshipId
             }
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
         let relationship = JSON.parse(response.body);
+        let startTime = moment().valueOf();
+        let time;
 
         for (var sheet of timeSheets) {
-            if ( await sheetIsClosed(sheet) && await sheetRelationshipMatches(sheet, relationshipId)) {
+            if (await sheetIsClosed(sheet) && await sheetRelationshipMatches(sheet, relationshipId)) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
-                    let details = await getSheetDetails(sheet,  endMoment);
+                    let details = await this.getSheetDetails(sheet, endMoment);
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
@@ -226,27 +247,51 @@ class TimeReportingService {
                         occupation: relationship.occupation,
                         plan: sheet.planId
                     });
+                    totalTime += details.duration;
                 }
             }
         }
 
+        time = Math.max(time ? time : 0, moment().valueOf());
+
         obj.sheets = sheets;
+        obj.penniesOwed = Math.floor((totalTime / 60) * relationship.hourlyRate);
         obj.total = totalTime;
+        obj.runningTime = time - startTime;
         return obj;
     }
-}
 
+    async getSheetDetails(sheet) {
+
+        let startMoment = moment(sheet.timeIn);
+        let endMoment = moment(sheet.timeOut);
+
+        let duration = await getMinutesBetweenMoments(startMoment, endMoment).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        await this.validateMaps(sheet.clientId, sheet.makerId);
+
+        let client = this.clientMap[sheet.clientId];
+        let maker = this.makerMap[sheet.makerId];
+        let clientName = this.clientMap[sheet.clientId] ? `${client.first_name} ${client.last_name}` : `Deleted client ${sheet.clientId}`;
+        let clientCompany = this.clientMap[sheet.clientId] ? `${client.company || "No Company"}` : `Deleted Client`;
+        let makerName = this.makerMap[sheet.makerId] ? `${maker.firstName} ${maker.lastName}` : `Deleted maker ${sheet.makerId}`;
+        return {duration: duration, clientName: clientName, clientCompany: clientCompany, makerName: makerName};
+    }
+}
 
 
 async function makerIdFilter(makerId, sheetMakerId) {
     return makerId === "" || makerId.toString() === sheetMakerId.toString();
 }
 
-async function sheetIsClosed(sheet){
+async function sheetIsClosed(sheet) {
     return sheet.timeIn[0].toString() !== "0" && sheet.timeOut.toString() !== "0";
 }
 
-async function sheetRelationshipMatches(sheet, relationshipId){
+async function sheetRelationshipMatches(sheet, relationshipId) {
     return sheet.relationshipId && sheet.relationshipId.toString().includes(relationshipId);
 }
 
@@ -290,7 +335,7 @@ async function getMakerMap() {
     }).catch(err => {
         console.log(err);
         emailService.notifyAdmin(err.toString());
-    });
+    })
     let makers = JSON.parse(response.body);
     let makerMap = {};
     for (var maker of makers) {
@@ -299,7 +344,7 @@ async function getMakerMap() {
     return makerMap;
 }
 
-async function getAllSheets(){
+async function getAllSheets() {
     let response = await request({
         method: 'POST',
         uri: `${process.env.TWINBEE_URL}/api/getAllTimeSheets`,
@@ -313,24 +358,5 @@ async function getAllSheets(){
     return JSON.parse(response.body);
 }
 
-async function getSheetDetails(sheet, end){
-
-    let startMoment = moment(sheet.timeIn);
-    let endMoment = moment(sheet.timeOut);
-    let clientMap = await getClientMap();
-    let makerMap = await getMakerMap();
-
-    let duration = await getMinutesBetweenMoments(startMoment, endMoment).catch(err => {
-        console.log(err);
-        emailService.notifyAdmin(err.toString());
-    });
-    let client = clientMap[sheet.clientId];
-    let maker = makerMap[sheet.makerId];
-
-    let clientName = clientMap[sheet.clientId] ? `${client.first_name} ${client.last_name}` : `Deleted client ${sheet.clientId}`;
-    let clientCompany = clientMap[sheet.clientId] ? `${client.company || "No Company"}` : `Deleted Client`;
-    let makerName = makerMap[sheet.makerId] ? `${maker.firstName} ${maker.lastName}` : `Deleted maker ${sheet.makerId}`;
-    return {duration: duration, clientName: clientName, clientCompany: clientCompany, makerName: makerName};
-}
 
 module.exports = new TimeReportingService();
