@@ -225,7 +225,6 @@ module.exports = {
      *      "task": task of maker for time period,
      *      "auth": authentication credentials; either master or token.
      *      "detail": entry for admin note on add,
-     *      "relationshipId": id of relationship binding sheet entities
      * }
      * @param req
      * @param res
@@ -234,7 +233,7 @@ module.exports = {
     createTimeSheet: async (req, res) => {
         console.log("Attempting to create a timesheet");
         console.log(req.body);
-        let validationResult = await validateParams({"present": ["makerId", "planId", "clientId", "timeIn", "timeOut"]}, req.body);
+        let validationResult = await validateParams({"present": ["makerId", "planId", "clientId", "timeIn", "timeOut", "relationshipId"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});

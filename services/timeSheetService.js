@@ -67,6 +67,9 @@ class TimeSheetService {
      * @param detail   reason for clearing
      */
     clearTimeSheet(id, detail) {
+        if (!id){
+            return;
+        }
         detail = `Cleared by admin: ${detail}`;
         return timeSheetRepo.clearSheet(id, detail);
     }
@@ -136,6 +139,9 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByMaker(id) {
+        if (!id){
+            return [];
+        }
         let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());

@@ -110,6 +110,11 @@ describe('Time Sheet Service Test', function () {
         sinon.assert.calledOnce(timeSheetRepo.clearSheet);
     });
 
+    it('Should not mark a sheet as deleted', async function () {
+        await timeSheetService.clearTimeSheet(null);
+        sinon.assert.notCalled(timeSheetRepo.clearSheet);
+    });
+
     it('Should grab only the sheets for online users', async function () {
         let actual = await timeSheetService.getOnlineMakerSheets();
         expect(actual).to.deep.equal([timeSheetRefined1]);
@@ -123,6 +128,11 @@ describe('Time Sheet Service Test', function () {
 
     it('Should fail to find sheets for a nonexistent maker', async function () {
         let actual = await timeSheetService.getSheetsByMaker(-1);
+        expect(actual).to.deep.equal([]);
+    });
+
+    it('Should fail to find sheets for a nonexistent maker', async function () {
+        let actual = await timeSheetService.getSheetsByMaker(null);
         expect(actual).to.deep.equal([]);
     });
 
