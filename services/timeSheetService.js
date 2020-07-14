@@ -14,7 +14,7 @@ class TimeSheetService {
      * Instantiates and returns a timesheet object.
      *
      * @param makerId   - maker's database id
-     * @param hourlyRate- maker's hourly rate
+     * @param planId- maker's hourly rate
      * @param clientId  - client's chargebee id
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
@@ -23,30 +23,30 @@ class TimeSheetService {
      * @param relationshipId - id of the relationship binding the client and maker on the sheet
      * @returns {Promise<TimeSheet>}
      */
-    async createTimeSheet(makerId, hourlyRate, clientId, timeIn, timeOut, task, detail, relationshipId) {
+    async createTimeSheet(makerId, planId, clientId, timeIn, timeOut, task, detail, relationshipId) {
         let id = await timeSheetRepo.createSheet(makerId, clientId,
-            hourlyRate, timeIn, timeOut, task, detail, relationshipId).catch(err => {
+            planId, timeIn, timeOut, task, detail, relationshipId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        return new TimeSheet(id, makerId, hourlyRate, clientId, timeIn, timeOut, task, detail, relationshipId);
+        return new TimeSheet(id, makerId, planId, clientId, timeIn, timeOut, task, detail, relationshipId);
     }
 
     /**
      * Updates the timesheet specified by id with new values
      *
      * @param id    - timesheet's database id
-     * @param hourlyRate- associated plan rate, e.g, 'freedom-makers-32'
+     * @param planId- associated plan rate, e.g, 'freedom-makers-32'
      * @param timeIn    - time clocked in in form 'YYYY-MM-DD HH:MM:SS'
      * @param timeOut   - time clocked out in form 'YYYY-MM-DD HH:MM:SS'
      * @param task      - entry for maker task
      * @param detail    - entry for admin note on mod change
      */
-    async updateTimesheet(id, hourlyRate, timeIn, timeOut, task, detail) {
+    async updateTimesheet(id, planId, timeIn, timeOut, task, detail) {
         if (detail) {
             detail = `Modified by admin: ${detail}`;
         }
-        return await timeSheetRepo.updateSheet(id, hourlyRate, timeIn, timeOut, task, detail);
+        return await timeSheetRepo.updateSheet(id, planId, timeIn, timeOut, task, detail);
     }
 
     /**
@@ -128,14 +128,15 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
+        console.log(sheets)
         let makerSheets = [];
-        await sheets.forEach(async row => {
+        for (let row of sheets){
             let refinedSheet = await createSheetFromRow(row).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
             makerSheets.push(refinedSheet);
-        });
+        }
         return makerSheets;
     }
 
@@ -150,13 +151,13 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
         let clientSheets = [];
-        await sheets.forEach(async row => {
+        for (let row of sheets){
             let refinedSheet = await createSheetFromRow(row).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
             clientSheets.push(refinedSheet);
-        });
+        }
         return clientSheets;
     }
 
@@ -296,7 +297,7 @@ class TimeSheetService {
                 emailService.notifyAdmin(err.toString());
             });
 
-            await this.updateTimesheet(currentSheet.id, currentSheet.hourlyRate, currentSheet.timeIn, rightNow,
+            await this.updateTimesheet(currentSheet.id, currentSheet.planId, currentSheet.timeIn, rightNow,
                 newTask ? newTask : currentSheet.task, currentSheet.adminNote);
             console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
 
@@ -309,7 +310,7 @@ class TimeSheetService {
                 uri: `${process.env.TWINBEE_URL}/api/updateClientTimeBucket`,
                 form: {
                     id: currentSheet.clientId,
-                    planId: currentSheet.hourlyRate,
+                    planId: currentSheet.planId,
                     minutes: shiftLength * -1,
                     'auth': process.env.TWINBEE_MASTER_AUTH
                 }

@@ -33,7 +33,7 @@ describe('Time Clock Service Test', function () {
         let scope2 = nock(process.env.TWINBEE_URL)
             .post('/api/getRelationshipById', {auth: process.env.TWINBEE_MASTER_AUTH, id: 5})
             .reply(200,
-                JSON.stringify({id: 5, makerId: 5, clientId: 5, hourlyRate: "potato"})
+                JSON.stringify({id: 5, makerId: 5, clientId: 5, planId: "potato"})
             );
         let scope3 = nock(process.env.TWINBEE_URL)
             .post('/api/getTimeSheetsByMakerId', {auth: process.env.TWINBEE_MASTER_AUTH, id: 5})
@@ -85,10 +85,15 @@ describe('Time Sheet Service Test', function () {
         let getAllSheetsStub = sinon.stub(timeSheetRepo, 'getAllSheets')
             .resolves([timeSheetBasic1, timeSheetBasic2, timeSheetBasic3]);
         let getByMakerStub = sinon.stub(timeSheetRepo, 'getSheetsByMaker')
-            .resolves([timeSheetBasic1, timeSheetBasic2]
-            );
+            .withArgs(1)
+            .resolves([timeSheetBasic1, timeSheetBasic2])
+            .withArgs(-1)
+            .resolves([]);
         let getByClientStub = sinon.stub(timeSheetRepo, 'getSheetsByClient')
-            .resolves([timeSheetBasic1, timeSheetBasic3]);
+            .withArgs('a')
+            .resolves([timeSheetBasic1, timeSheetBasic3])
+            .withArgs(-1)
+            .resolves([]);
         let createSheetStub = sinon.stub(timeSheetRepo, 'createSheet')
             .resolves(1);
         let deleteSheetStub = sinon.stub(timeSheetRepo, 'clearSheet')
@@ -117,10 +122,21 @@ describe('Time Sheet Service Test', function () {
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined2]);
     });
 
+    it('Should fail to find sheets for a nonexistent maker', async function () {
+        let actual = await timeSheetService.getSheetsByMaker(-1);
+        expect(actual).to.deep.equal([]);
+    });
+
     it('Should grab all sheets for a given client', async function () {
         let actual = await timeSheetService.getSheetsByClient('a');
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined3]);
     });
+
+    it('Should fail to find sheets for a nonexistent client', async function () {
+        let actual = await timeSheetService.getSheetsByClient(-1);
+        expect(actual).to.deep.equal([]);
+    });
+
 
     it('Should grab  all timesheets', async function () {
         let actual = await timeSheetService.getAllTimeSheets();
@@ -130,6 +146,11 @@ describe('Time Sheet Service Test', function () {
     it('Should create a new valid timesheet', async function () {
         let actual = await timeSheetService.createTimeSheet(1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', "No details given.", 1);
         expect(actual).to.deep.equal(timeSheetRefined1);
+        sinon.assert.calledOnce(timeSheetRepo.createSheet);
+    });
+    it('Should fail to create a timesheet without a maker id', async function () {
+        let actual = await timeSheetService.createTimeSheet(null, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', "No details given.", 1);
+        expect(actual).to.deep.equal(undefined);
         sinon.assert.calledOnce(timeSheetRepo.createSheet);
     });
 

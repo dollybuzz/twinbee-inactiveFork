@@ -2190,7 +2190,7 @@ function timeSheetFunctionality(res) {
                             '   <td scope="row">' + item.id + '</td>' +
                             '   <td>' + makerValue + '</td>' +
                             '   <td>' + clientIdentifier + '</td>' +
-                            '   <td>' + item.hourlyRate + '</td>' +
+                            '   <td>' + item.planId + '</td>' +
                             '   <td>' + item.timeIn + '</td>' +
                             '   <td>' + item.timeOut + '</td>' +
                             '   <td>' + item.task + '</td>' +
@@ -2282,7 +2282,7 @@ function sheetModForm(res, status) {
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='modsheetplanname'>Plan:</label>" +
-        `<input class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.hourlyRate}' disabled>\n` +
+        `<input class='form-control' type='text' id='modsheetplanname' name='modsheetplanname' value='${res.planId}' disabled>\n` +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
         "<label for='empty'></label>" +
@@ -2351,7 +2351,7 @@ function sheetModForm(res, status) {
                     modSubmit("/api/updateTimeSheet", {
                         auth: id_token,
                         id: $("#modsheetid").val(),
-                        hourlyRate: $("#modsheetplanname").val(),
+                        planId: $("#modsheetplanname").val(),
                         timeIn: `${$("#modsheettimeindate").val()} ${$("#modsheettimeintime").val()}:00`,
                         timeOut: `${$("#modsheettimeoutdate").val()} ${$("#modsheettimeouttime").val()}:00`,
                         task: $("#modsheettask").val(),
@@ -2480,7 +2480,7 @@ function sheetAddForm() {
                                             addSubmit("/api/createTimeSheet", {
                                                 auth: id_token,
                                                 makerId: subrelres.makerId,
-                                                hourlyRate: subrelres.planId,
+                                                planId: subrelres.planId,
                                                 clientId: subrelres.clientId,
                                                 timeIn: `${$("#addsheettimeindate").val()} ${$("#addsheettimeintime").val()}:00`,
                                                 timeOut: `${$("#addsheettimeoutdate").val()} ${$("#addsheettimeouttime").val()}:00`,

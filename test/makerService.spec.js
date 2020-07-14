@@ -108,7 +108,7 @@ describe('Maker Service Test', function () {
                             id: '1',
                             makerId: '1',
                             clientId: "169yOXRy3SPY9s7n",
-                            hourlyRate: '20.00',
+                            planId: '20.00',
                             timeIn: '2019-04-24 22:22:22',
                             timeOut: '0000-00-00 00:00:00',
                             task: ''
@@ -117,7 +117,7 @@ describe('Maker Service Test', function () {
                             id: '2',
                             makerId: '1',
                             clientId: "169yOXRy3SPY9s7n",
-                            hourlyRate: '20.00',
+                            planId: '20.00',
                             timeIn: '2019-04-23 22:22:22',
                             timeOut: '2019-04-23 23:23:23',
                             task: ''
@@ -126,7 +126,7 @@ describe('Maker Service Test', function () {
                             id: '3',
                             makerId: '2',
                             clientId: "169yOXRy3SPY9s7n",
-                            hourlyRate: '20.00',
+                            planId: '20.00',
                             timeIn: '2019-04-22 22:22:22',
                             timeOut: '2019-04-22 23:23:23',
                             task: ''
@@ -142,7 +142,7 @@ describe('Maker Service Test', function () {
                     id: '1',
                     makerId: '1',
                     clientId: "169yOXRy3SPY9s7n",
-                    hourlyRate: '20.00',
+                    planId: '20.00',
                     timeIn: '2019-04-24 22:22:22',
                     timeOut: '0000-00-00 00:00:00',
                     task: ''
@@ -151,7 +151,7 @@ describe('Maker Service Test', function () {
                     id: '2',
                     makerId: '1',
                     clientId: "169yOXRy3SPY9s7n",
-                    hourlyRate: '20.00',
+                    planId: '20.00',
                     timeIn: '2019-04-23 22:22:22',
                     timeOut: '2019-04-23 23:23:23',
                     task: ''
@@ -316,7 +316,7 @@ describe('Maker Service Test', function () {
                         id: '1',
                         makerId: '1',
                         clientId: "169yOXRy3SPY9s7n",
-                        hourlyRate: '20.00',
+                        planId: '20.00',
                         timeIn: '2019-04-24 22:22:22',
                         timeOut: '0000-00-00 00:00:00',
                         task: ''
@@ -325,7 +325,7 @@ describe('Maker Service Test', function () {
                         id: '2',
                         makerId: '1',
                         clientId: "169yOXRy3SPY9s7n",
-                        hourlyRate: '20.00',
+                        planId: '20.00',
                         timeIn: '2019-04-23 22:22:22',
                         timeOut: '2019-04-23 23:23:23',
                         task: ''
@@ -334,7 +334,7 @@ describe('Maker Service Test', function () {
                         id: '3',
                         makerId: '2',
                         clientId: "169yOXRy3SPY9s7n",
-                        hourlyRate: '20.00',
+                        planId: '20.00',
                         timeIn: '2019-04-22 22:22:22',
                         timeOut: '2019-04-22 23:23:23',
                         task: ''

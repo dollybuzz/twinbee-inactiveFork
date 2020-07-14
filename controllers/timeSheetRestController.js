@@ -107,7 +107,7 @@ module.exports = {
      *      {
      *          "id": sheet id,
      *          "makerId": id of owning maker,
-     *          "hourlyRate": pay rate of owning maker,
+     *          "planId": pay rate of owning maker,
      *          "clientId": id of client maker is assigned to for pay period,
      *          "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *          "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
@@ -139,7 +139,7 @@ module.exports = {
      *      {
      *          "id": sheet id,
      *          "makerId": id of owning maker,
-     *          "hourlyRate": pay rate of owning maker,
+     *          "planId": pay rate of owning maker,
      *          "clientId": id of client maker is assigned to for pay period,
      *          "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *          "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
@@ -179,7 +179,7 @@ module.exports = {
      * {
      *      "id": sheet id,
      *      "makerId": id of owning maker,
-     *      "hourlyRate": pay rate of owning maker,
+     *      "planId": pay rate of owning maker,
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
@@ -223,7 +223,7 @@ module.exports = {
      *      {
      *          "id": sheet id,
      *          "makerId": id of owning maker,
-     *          "hourlyRate": pay rate of owning maker,
+     *          "planId": pay rate of owning maker,
      *          "clientId": id of client maker is assigned to for pay period,
      *          "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *          "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
@@ -262,7 +262,7 @@ module.exports = {
      * timesheet with the given id. Looks for values in the body in the form:
      * {
      *     "id": database id of the timesheet,
-     *     "hourlyRate": new associated plan rate, e.g, 'freedom-makers-32',
+     *     "planId": new associated plan rate, e.g, 'freedom-makers-32',
      *     "timeIn": new clock-in time,
      *     "timeOut": new clock-out time,
      *     "auth": authentication credentials; either master or token
@@ -274,12 +274,12 @@ module.exports = {
     updateTimeSheetsById: async (req, res) => {
         console.log("Attempting to update timesheet by id from REST");
         console.log(req.body);
-        let validationResult = await validateParams({"present": ["id", "hourlyRate", "timeIn", "timeOut"]}, req.body);
+        let validationResult = await validateParams({"present": ["id", "planId", "timeIn", "timeOut"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            timeSheetService.updateTimesheet(req.body.id, req.body.hourlyRate,
+            timeSheetService.updateTimesheet(req.body.id, req.body.planId,
                 req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail);
             res.send({});
         }
@@ -313,7 +313,7 @@ module.exports = {
      * in the form:
      * {
      *      "makerId": id of owning maker,
-     *      "hourlyRate": pay rate of owning maker,
+     *      "planId": pay rate of owning maker,
      *      "clientId": id of client maker is assigned to for pay period,
      *      "timeIn": dateTime of "clock in" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
      *      "timeOut": dateTime of "clock out" in form 'YYYY-MM-DDTHH:MM:SS.000Z',
@@ -330,12 +330,12 @@ module.exports = {
     createTimeSheet: async (req, res) => {
         console.log("Attempting to create a timesheet");
         console.log(req.body);
-        let validationResult = await validateParams({"present": ["makerId", "hourlyRate", "clientId", "timeIn", "timeOut"]}, req.body);
+        let validationResult = await validateParams({"present": ["makerId", "planId", "clientId", "timeIn", "timeOut"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.hourlyRate, req.body.clientId,
+            let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.planId, req.body.clientId,
                 req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail, req.body.relationshipId).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString())

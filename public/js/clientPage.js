@@ -672,7 +672,7 @@ function timeSheetFunctionality() {
                     '   <td>' + item.id + '</td>' +
                     '   <td>' + item.makerName + '</td>' +
                     '   <td>' + item.makerId + '</td>' +
-                    '   <td>' + item.hourlyRate + '</td>' +
+                    '   <td>' + item.planId + '</td>' +
                     '   <td>' + item.timeIn + '</td>' +
                     '   <td>' + item.timeOut + '</td>' +
                     '   <td>' + item.task + '</td>'
