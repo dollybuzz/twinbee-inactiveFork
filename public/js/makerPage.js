@@ -1,3 +1,6 @@
+require('moment')().format('YYYY-MM-DD HH:mm:ss');
+const moment = require('moment');
+
 let selectedTab = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
@@ -199,7 +202,8 @@ function setClockInFunctionality() {
                     $("#makerText2").css("opacity", "1");
 
 
-                    $("#clockPrompt").html("<h5>Time is running . . .</h5>");
+                    $("#clockPrompt").html("<div id='runningTime'></div>");
+                    runningTime(moment().valueOf());
                     $("#clockPrompt").css("opacity", "1");
 
                     setTimeout(function () {
@@ -346,6 +350,23 @@ function availableCredits() {
     });
 }
 
+function runningTime(timeIn) {
+    let currentTime;
+
+    //Checking time zone to calculate time according to PST/PDT
+    if (moment().isDST()){
+        currentTime = moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
+        timeIn = moment(timeInSec).utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
+    }
+    else {
+        currentTime = moment().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
+        timeIn = moment(timeInSec).utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
+    }
+
+    $("#runningTime").html(`<h5>${currentTime} ${timeIn}</h5>`);
+
+
+}
 
 //Previous Hours Methods
 function timeSheetFunctionality(res) {
