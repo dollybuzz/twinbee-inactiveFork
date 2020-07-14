@@ -109,7 +109,8 @@ module.exports = {
      *     "makerId": id of the freedom maker in the relationship,
      *     "clientId": id of the client in the relationship,
      *     "planId": plan id that defines relationship price,
-     *     "occupation": maker's occupation for the relationship
+     *     "occupation": maker's occupation for the relationship,
+     *     "hourlyRate": maker's hourly rate in cents (integer)
      * }
      *
      * returns data in the form:
@@ -118,7 +119,8 @@ module.exports = {
      *  "makerId": id of the maker in the relationship,
      *  "clientId": id of the client in the relationship,
      *  "planId": id of the plan binding the relationship,
-     *  "occupation": occupation of the maker in the relationship
+     *  "occupation": occupation of the maker in the relationship,
+     *  "hourlyRate": maker's hourly rate in cents (integer)
      * }
      *
      * @param req
@@ -143,7 +145,7 @@ module.exports = {
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await relationshipService.createRelationship(req.body.makerId,
-                req.body.clientId, req.body.planId, req.body.occupation).catch(err => {
+                req.body.clientId, req.body.planId, req.body.occupation, req.body.hourlyRate).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
             }));
@@ -165,7 +167,8 @@ module.exports = {
      *    "makerId": id of the maker in the relationship,
      *    "clientId": id of the client in the relationship,
      *    "planId": id of the plan binding the relationship,
-     *    "occupation": occupation of the maker in the relationship
+     *    "occupation": occupation of the maker in the relationship,
+     *    "hourlyRate": maker's hourly rate in cents (integer)
      *   },...
      * ]
      * @param req
@@ -210,7 +213,8 @@ module.exports = {
      *    "makerId": id of the maker in the relationship,
      *    "clientId": id of the client in the relationship,
      *    "planId": id of the plan binding the relationship,
-     *    "occupation": occupation of the maker in the relationship
+     *    "occupation": occupation of the maker in the relationship,
+     *    "hourlyRate": maker's hourly rate in cents (integer)
      *   },...
      * ]
      * @param req
@@ -255,7 +259,8 @@ module.exports = {
      *  "makerId": id of the maker in the relationship,
      *  "clientId": id of the client in the relationship,
      *  "planId": id of the plan binding the relationship,
-     *  "occupation": occupation of the maker in the relationship
+     *  "occupation": occupation of the maker in the relationship,
+     *  "hourlyRate": maker's hourly rate in cents (integer)
      * }
      * @param req
      * @param res
@@ -297,7 +302,8 @@ module.exports = {
      *       "makerId": id of the maker in the relationship,
      *       "clientId": id of the client in the relationship,
      *       "planId": id of the plan binding the relationship,
-     *       "occupation": occupation of the maker in the relationship
+     *       "occupation": occupation of the maker in the relationship,
+     *       "hourlyRate": maker's hourly rate in cents (integer)
      *      },
      *
      *      {
@@ -305,7 +311,8 @@ module.exports = {
      *       "makerId": id of the maker in the relationship,
      *       "clientId": id of the client in the relationship,
      *       "planId": id of the plan binding the relationship,
-     *       "occupation": occupation of the maker in the relationship
+     *       "occupation": occupation of the maker in the relationship,
+     *       "hourlyRate": maker's hourly rate in cents (integer)
      *      },...
      * ]
      * @param req
@@ -374,7 +381,8 @@ module.exports = {
      *  "makerId": id of the maker in the relationship,
      *  "clientId": id of the client in the relationship,
      *  "planId": updated id of the plan binding the relationship,
-     *  "occupation": updated occupation of the maker in the relationship
+     *  "occupation": updated occupation of the maker in the relationship,
+     *  "hourlyRate": maker's hourly rate in cents (integer)
      * }
      * @param req
      * @param res
