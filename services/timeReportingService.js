@@ -91,12 +91,10 @@ class TimeReportingService {
     }
 
 
-    //TODO: Optimize.  This is an initial knowingly-naive approach.
     async getTimeReport(start, end, relationshipList) {
         let rollupRows = [];
 
         for (var relationship of relationshipList) {
-
             await this.validateMaps(relationship.clientId, relationship.makerId);
 
             let hoursReport = await this.getReportForRelationship(start, end, relationship.id);
@@ -111,12 +109,15 @@ class TimeReportingService {
             rollupRow.client = clientName;
             rollupRow.occupation = relationship.occupation;
             rollupRow.totalTime = hoursReport.total;
-
+            rollupRow.penniesOwed = hoursReport.penniesOwed;
             rollupRows.push(rollupRow);
         }
         return rollupRows;
     }
 
+
+
+    //TODO: Optimize.  This is an initial knowingly-naive approach.
     /**
      *
      * Retrieves a list of relationship details for a set time period including
@@ -209,7 +210,6 @@ class TimeReportingService {
      * @returns {Promise<{sheets:[], duration: total time logged}>}
      */
     async getReportForRelationship(start, end, relationshipId) {
-
         if (!relationshipId) {
             relationshipId = "";
         }
@@ -230,9 +230,6 @@ class TimeReportingService {
             emailService.notifyAdmin(err.toString());
         });
         let relationship = JSON.parse(response.body);
-        let startTime = moment().valueOf();
-        let time;
-
         for (var sheet of timeSheets) {
             if (await sheetIsClosed(sheet) && await sheetRelationshipMatches(sheet, relationshipId)) {
                 let endMoment = moment(sheet.timeOut);
@@ -251,13 +248,9 @@ class TimeReportingService {
                 }
             }
         }
-
-        time = Math.max(time ? time : 0, moment().valueOf());
-
         obj.sheets = sheets;
         obj.penniesOwed = Math.floor((totalTime / 60) * relationship.hourlyRate);
         obj.total = totalTime;
-        obj.runningTime = time - startTime;
         return obj;
     }
 
