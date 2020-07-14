@@ -1,4 +1,3 @@
-require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 
 let selectedTab = null;
