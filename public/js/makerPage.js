@@ -343,9 +343,11 @@ function availableCredits() {
         }
     });
 }
+
 let elapsedTime;
 let currentTimeinPT;
 let timeInAsPT;
+
 function runningTime() {
 
     $.ajax({
