@@ -2776,7 +2776,7 @@ function rollupReportFunctionality() {
                         '   <td>' + item.client + '</td>' +
                         '   <td>' + item.occupation + '</td>' +
                         `   <td>${hours}:${minutes}:${seconds}</td>` +
-                        `   <td> ${Number.parseInt(item.penniesOwed)/100}</td></tr>`);
+                        `   <td> <em>$${Number.parseInt(item.penniesOwed)/100}</em></td></tr>`);
                 }
             },
             error: function (timeres, timestatus) {
