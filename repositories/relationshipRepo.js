@@ -1,4 +1,3 @@
-//TODO; have errors send us notifications rather than "throw"
 const notificationService = require('../services/notificationService.js');
 const repoMaster = require('./repoMaster.js');
 class RelationshipRepository {
@@ -102,6 +101,5 @@ class RelationshipRepository {
         return result;
     }
 }
-
 
 module.exports = new RelationshipRepository();
