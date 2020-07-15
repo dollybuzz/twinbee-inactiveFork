@@ -71,7 +71,7 @@ function timeClockFunctionality() {
         "            <div id=\"taskBlock\"><br><h6>Please enter in a task:</h6></div>\n" +
         "            <div><br><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
         "        </div>\n" +
-        "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
+        "        <div id='clockPrompt'><div id='runningTime'>asdf</div></div>\n" +
         "        <br>\n" +
         "    <div class=\"row\" id=\"makerBottomRow\">\n" +
         "        <div id=\"empty\"></div>\n" +
@@ -158,7 +158,6 @@ function timeClockFunctionality() {
                 setClockInFunctionality();
             } else {
                 setClockOutFunctionality();
-                runningTime();
             }
         },
         error: function (innerRes, innerStatus) {
@@ -222,6 +221,7 @@ function setClockInFunctionality() {
 }
 
 function setClockOutFunctionality() {
+    runningTime();
     $("#clientRole").css("opacity", "0");
     $("#makerSelectedClient").css("opacity", "0");
     $("#clockPrompt").css("opacity", "1");
