@@ -343,6 +343,13 @@ function availableCredits() {
     });
 }
 
+function padIntToTwoPlaces(int){
+    let intString = int.toString();
+    if (intString.length === 1){
+        intString = "0" + intString;
+    }
+    return intString;
+}
 function runningTime() {
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
@@ -360,8 +367,10 @@ function runningTime() {
                 elapsedSeconds += 1;
                 let duration = moment.duration(elapsedSeconds * 1000);
                 console.log(duration);
-
-                $("#runningTime").html(`<h5>${moment.duration(elapsedSeconds).humanize()}</h5>`);
+                let hours = padIntToTwoPlaces(duration.hours());
+                let minutes = padIntToTwoPlaces(duration.minutes());
+                let seconds = padIntToTwoPlaces(duration.seconds());
+                $("#runningTime").html(`<h5>${hours}:${minutes}:${seconds}</h5>`);
             }, 1000);
 
         },
