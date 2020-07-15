@@ -213,15 +213,11 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
-        let onlineSheet = [];
-        // get online sheets
-        for (var i = 0; i < sheetsForMaker.length; ++i) {
-            let currentSheet = sheetsForMaker[i];
-            if (i == sheetsForMaker.length-1) {
-                onlineSheet.push(currentSheet);
-            }
-        }
-        return onlineSheet;
+        let currentSheet = sheetsForMaker[sheetsForMaker.length - 1];
+        let inMoment = moment(currentSheet.timeIn);
+        let now = await this.getCurrentMoment();
+        currentSheet.secondsOnline = moment.duration(now.diff(inMoment)).asSeconds();
+        return currentSheet;
     }
 
     /**

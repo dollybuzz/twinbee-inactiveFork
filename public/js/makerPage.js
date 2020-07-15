@@ -93,11 +93,10 @@ function timeClockFunctionality() {
         success: function (relres, status) {
             $("#makerSelectedClient").html("");
             for (var i = 0; i < relres.length; ++i) {
-                if(relres[i].company == 'No Company'){
+                if (relres[i].company == 'No Company') {
                     $("#makerSelectedClient").append(
                         `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].occupation}</option>`);
-                }
-                else {
+                } else {
                     $("#makerSelectedClient").append(
                         `<option id=${relres[i].id} value=${relres[i].id}>${relres[i].clientName + " - " + relres[i].company + " - " + relres[i].occupation}</option>`);
                 }
@@ -344,12 +343,7 @@ function availableCredits() {
     });
 }
 
-
-let elapsedTime;
-let currentTimeinPT;
-let timeInAsPT;
 function runningTime() {
-
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
         method: "post",
@@ -359,34 +353,13 @@ function runningTime() {
         },
         dataType: "json",
         success: function (timeres, timestatus) {
-            for(var item of timeres)
-            {
-                //Time is returned as PT from timeres
-                timeInAsPT = moment(item.timeIn);
-                console.log(timeInAsPT);
 
-                if (timeInAsPT.isDST()){
-                    //Accounting for UTC offset
-                    timeInAsPT = moment(timeInAsPT).valueOf() + 25200000;
-                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
-                    elapsedTime = (moment(currentTimeinPT - timeInAsPT).add(-(moment().utcOffset()), 'm')).valueOf();
+            let elapsedSeconds = timeres.secondsOnline;
 
-                }
-                else {
-                    //Accounting for UTC offset
-                    timeInAsPT = moment(timeInAsPT).valueOf() + 25200000; //28800000;
-                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
-                    elapsedTime = (moment(currentTimeinPT - timeInAsPT).add(-(moment().utcOffset()), 'm')).valueOf();
-                }
-            }
-            console.log(timeInAsPT);
-            console.log(currentTimeinPT);
-            console.log(elapsedTime);
-
-            setInterval(function() {
-                elapsedTime += 1000;
-                $("#runningTime").html(`<h5>${moment(elapsedTime).format("HH:mm:ss")}</h5>`);
-                }, 1000);
+            setInterval(function () {
+                elapsedSeconds += 1;
+                $("#runningTime").html(`<h5>${moment.duration(elapsedSeconds * 1000).humanize()}</h5>`);
+            }, 1000);
 
         },
         error: function (timeres, timestatus) {
