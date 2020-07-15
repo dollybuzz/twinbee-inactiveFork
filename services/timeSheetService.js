@@ -215,21 +215,25 @@ class TimeSheetService {
         });
         let currentSheet = sheetsForMaker[sheetsForMaker.length - 1];
         let inMoment = moment(currentSheet.timeIn);
-        let now = await this.getCurrentMoment();
-        currentSheet.secondsOnline = moment.duration(now.diff(inMoment)).asSeconds();
+        let now = await this.getCurrentMoment().catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString())
+        });
+        currentSheet.secondsOnline = moment.duration(moment(now).diff(inMoment)).asSeconds();
+        currentSheet.test = now.toString();
         return currentSheet;
     }
 
     /**
      * Returns the current moment/date-time in the Twinbee standard format (YYYY-MM-DD HH:mm:ss)
-     * @returns {Promise<Moment>} for the current instant
+     * @returns {Promise<moment>} for the current instant
      */
     async getCurrentMoment() {
         if (await moment().isDST()){
-            return await moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
+            return await moment().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
         }
         else{
-            return await moment().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
+            return await moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
         }
     }
 
