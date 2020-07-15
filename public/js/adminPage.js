@@ -2770,15 +2770,16 @@ function rollupReportFunctionality() {
                     let seconds = padIntToTwoPlaces(duration.seconds());
 
                     let penniesOwed = Number.parseInt(item.penniesOwed);
-                    if (penniesOwed)
-                    $("#reportContent").append('\n' +
-                        '<tr class="reportRow">' +
-                        '   <td scope="row">' + item.relationshipId + '</td>' +
-                        '   <td>' + item.freedomMaker + '</td>' +
-                        '   <td>' + item.client + '</td>' +
-                        '   <td>' + item.occupation + '</td>' +
-                        `   <td>${hours}:${minutes}:${seconds}</td>` +
-                        `   <td> <strong><em>$${penniesOwed/100}</em></strong></td></tr>`);
+                    if (penniesOwed) {
+                        $("#reportContent").append('\n' +
+                            '<tr class="reportRow">' +
+                            '   <td scope="row">' + item.relationshipId + '</td>' +
+                            '   <td>' + item.freedomMaker + '</td>' +
+                            '   <td>' + item.client + '</td>' +
+                            '   <td>' + item.occupation + '</td>' +
+                            `   <td>${hours}:${minutes}:${seconds}</td>` +
+                            `   <td> <strong><em>$${penniesOwed / 100}</em></strong></td></tr>`);
+                    }
                 }
             },
             error: function (timeres, timestatus) {
