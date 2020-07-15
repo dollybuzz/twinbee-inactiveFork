@@ -344,11 +344,11 @@ function availableCredits() {
     });
 }
 
-let elapsedTime;
-let currentTimeinPT;
-let timeInAsPT;
-
 function runningTime() {
+
+    let elapsedTime;
+    let currentTimeinPT;
+    let timeInAsPT;
 
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
@@ -363,6 +363,7 @@ function runningTime() {
             {
                 //Time is returned as PT from timeres
                 timeInAsPT = moment(item.timeIn);
+                console.log(timeInAsPT);
 
                 if (timeInAsPT.isDST()){
                     //Accounting for UTC offset
