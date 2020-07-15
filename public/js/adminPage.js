@@ -2764,7 +2764,8 @@ function rollupReportFunctionality() {
                 $("#reportContent").html("");
                 for (var item of timeres) {
                     let duration = moment.duration(Number.parseInt(item.totalTime) * 60000);
-                    let hours = padIntToTwoPlaces(duration.hours());
+                    let days = Number.parseInt(padIntToTwoPlaces(duration.days()));
+                    let hours = padIntToTwoPlaces(duration.hours() + (days * 24);
                     let minutes = padIntToTwoPlaces(duration.minutes());
                     let seconds = padIntToTwoPlaces(duration.seconds());
 
