@@ -349,11 +349,13 @@ function availableCredits() {
     });
 }
 
-function runningTime() {
-    let currentTime = moment();
-    let timeIn;
-    let elapsedTime;
+let elapsedTime;
+let currentTime;
+let timeIn;
 
+function runningTime() {
+    currentTime = moment();
+    console.log(currentTime);
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
         method: "post",
@@ -366,21 +368,23 @@ function runningTime() {
 
             for(var item of timeres)
             {
-                timeIn = item.timeIn;
+                timeIn = moment(item.timeIn);
+                console.log(timeIn);
             }
 
             //Converting local time zone to PST/PDT
             if (currentTime.isDST()){
-                currentTime = moment().utcOffset("-08:00").format('HH:mm:ss');
+                currentTime = moment().utcOffset("-08:00");
             }
             else {
-                currentTime = moment().utcOffset("-07:00").format('HH:mm:ss');
+                currentTime = moment().utcOffset("-07:00");
             }
+            elapsedTime = moment(currentTime.valueOf() - timeIn.valueOf());
 
-            elapsedTime = moment.duration(moment(currentTime).diff(timeIn));
+            console.log(elapsedTime);
             setInterval(function() {
                 elapsedTime += 1;
-                $("#runningTime").html(`<h5>${elapsedTime.hours()}:${elapsedTime.minutes}:${elapsedTime.seconds()}</h5>`);
+                $("#runningTime").html(`<h5>${moment.duration(elapsedTime).hours()}:${moment.duration(elapsedTime).minutes()}:${moment.duration(elapsedTime).seconds()}</h5>`);
                 }, 1000);
 
         },
