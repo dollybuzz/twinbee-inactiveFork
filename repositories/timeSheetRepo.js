@@ -2,6 +2,7 @@
 
 const repoMaster = require("./repoMaster.js");
 const notificationService = require('../services/notificationService.js');
+
 class TimeSheetRepository {
     constructor() {
     };
@@ -10,10 +11,11 @@ class TimeSheetRepository {
         let sql = 'INSERT INTO time_sheet(maker_id, client_id, hourly_rate, start_time, end_time, task, admin_note, relationship_id)' +
             ' VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         let sqlParams = [makerId, clientId, rate, startTime, endTime, task, adminNote, relationshipId];
-        let result = await repoMaster.query(sql, sqlParams).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParams).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
-            return('error; client or maker might not exist');
+            return ('error; client or maker might not exist');
         });
         console.log(`Sheet ${result.insertId} successfully created`);
         return result.insertId;
@@ -32,7 +34,6 @@ class TimeSheetRepository {
             return result;
         });
     }
-
 
 
     clearSheet(id, adminNote) {
@@ -54,7 +55,8 @@ class TimeSheetRepository {
             'FROM time_sheet ' +
             'WHERE maker_id = ?';
         let sqlParams = [id];
-        let result = await repoMaster.query(sql, sqlParams).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParams).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
@@ -68,7 +70,8 @@ class TimeSheetRepository {
             'FROM time_sheet ' +
             'WHERE client_id = ?';
         let sqlParams = [id];
-        let result = await repoMaster.query(sql, sqlParams).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParams).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
@@ -81,7 +84,8 @@ class TimeSheetRepository {
         let sql = 'SELECT * ' +
             'FROM time_sheet';
         let sqlParams = [];
-        let result = await repoMaster.query(sql, sqlParams).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParams).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];

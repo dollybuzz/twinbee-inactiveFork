@@ -22,7 +22,6 @@ class MakerService {
         });
         repoResult.forEach(item => {
             let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted, item.unique_descriptor);
-
             makers.push(newObj);
         });
         return makers;
@@ -211,8 +210,6 @@ class MakerService {
         if (!id){
             throw new Error()
         }
-        console.log("SHEETS BY MAKERID");
-        console.log(id);
         console.log(`Getting sheets for maker ${id}...`);
         let result = await request({
             method: 'POST',
