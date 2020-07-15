@@ -293,7 +293,7 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
-                                $("#clockPrompt").html("");
+                                $("#clockPrompt").html("<div id='runningTime'>asdf</div>");
                             }, 2000);
                         } else {
                             $("#clockPrompt").html("<br><h5>An error occurred! Please refresh and check your time sheet.</h5>");
