@@ -156,6 +156,7 @@ function timeClockFunctionality() {
             }
             if (clockedOut) {
                 setClockInFunctionality();
+                elapsedTime = 0;
             } else {
                 setClockOutFunctionality();
                 runningTime();
@@ -343,11 +344,10 @@ function availableCredits() {
         }
     });
 }
-
+let elapsedTime;
+let currentTimeinPT;
+let timeInAsPT;
 function runningTime() {
-    let elapsedTime;
-    let currentTimeinPT;
-    let timeInAsPT;
 
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
