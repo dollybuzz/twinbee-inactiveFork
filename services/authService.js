@@ -136,7 +136,7 @@ class AuthService {
         }
         let message = `Failed to grab email from token. Googles result was ${JSON.stringify(ticket)}`;
         console.log(message);
-        notifyAdmin(message);
+        emailService.notifyAdmin(message);
         return false;
     }
 }
