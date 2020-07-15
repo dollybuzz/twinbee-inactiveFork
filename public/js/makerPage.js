@@ -350,7 +350,6 @@ let timeInAsPT;
 
 function runningTime() {
 
-    //currentTimeinUTC = moment.utc().format('YYYY-DD-MM HH:mm:ss z'); //returns a string
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
         method: "post",
@@ -363,20 +362,21 @@ function runningTime() {
             for(var item of timeres)
             {
                 //Converting returned PT time from report to UTC
-                timeInAsPT = moment(item.timeIn).utc();
+                timeInAsPT = moment(item.timeIn);
+                console.log(timeInAsPT);
 
                 if (timeInAsPT.isDST()){
                     //Accounting for offset
-                    timeInAsPT = timeInAsPT.utcOffset("+07:00").valueOf();
-                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
-                    elapsedTime = moment(currentTimeinPT - timeInAsPT).utcOffset("+07:00");
+                    timeInAsPT = moment(timeInAsPT).utcOffset("+07:00");
+                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm'));
+                    elapsedTime = moment(currentTimeinPT.valueOf() - timeInAsPT.valueOf()).utcOffset("+07:00");
 
                 }
                 else {
                     //Accounting for offset
-                    timeInAsPT = timeInAsPT.utcOffset("+08:00").valueOf();
-                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
-                    elapsedTime = moment(currentTimeinPT - timeInAsPT).utcOffset("+08:00");
+                    timeInAsPT = moment(timeInAsPT).utcOffset("+08:00");
+                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm'));
+                    elapsedTime = moment(currentTimeinPT.valueOf() - timeInAsPT.valueOf()).utcOffset("+08:00");
                 }
             }
             console.log(timeInAsPT);
