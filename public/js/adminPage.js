@@ -2770,7 +2770,7 @@ function rollupReportFunctionality() {
 
                     $("#reportContent").append('\n' +
                         '<tr class="reportRow">' +
-                        '   <td scope="row">' + item.id + '</td>' +
+                        '   <td scope="row">' + item.relationshipId + '</td>' +
                         '   <td>' + item.freedomMaker + '</td>' +
                         '   <td>' + item.client + '</td>' +
                         '   <td>' + item.occupation + '</td>' +

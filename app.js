@@ -366,7 +366,7 @@ app.post("/api/doIHaveInvoices",
     authController.authorizeClient,
     authController.authorizeMaster,
     clientRestController.doIHaveInvoices);
-app.post("/api/notifyAdmin",
+app.post("/api/notifyAdmin", 
     authController.authorizeAdmin,
     authController.authorizeMaster,
     notificationRestController.restBugReport);
