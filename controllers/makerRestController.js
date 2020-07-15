@@ -3,7 +3,6 @@ const authService = require('../services/authService.js');
 const {notifyAdmin} = require("../services/notificationService");
 const {validateParams} = require('../util.js');
 
-
 module.exports = {
 
     /**
