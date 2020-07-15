@@ -344,11 +344,11 @@ function availableCredits() {
     });
 }
 
-function runningTime() {
 
-    let elapsedTime;
-    let currentTimeinPT;
-    let timeInAsPT;
+let elapsedTime;
+let currentTimeinPT;
+let timeInAsPT;
+function runningTime() {
 
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
