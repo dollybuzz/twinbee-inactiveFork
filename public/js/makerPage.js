@@ -1,3 +1,5 @@
+//id_token is retrieved from Google.js
+
 let selectedTab = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
@@ -348,37 +350,35 @@ function availableCredits() {
 }
 
 function runningTime() {
-    let currentTime;
+    let currentTime = moment();
+    let timeIn;
 
     $.ajax({
-        url: "/api/getTimeBucketByClientId",
+        url: "/api/getMyCurrentTimeSheet",
         method: "post",
         data: {
             auth: id_token,
-            id: '16CHT7Ryu5EhnPWY',//tokenres.id,
+            token: id_token
         },
         dataType: "json",
-        success: function (planres, planstatus) {
+        success: function (timeres, timestatus) {
+
+            timeIn = timeres.timeIn;
+
+            //Converting local time zone to PST/PDT
+            if (currentTime.isDST()){
+                currentTime = moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
+            }
+            else {
+                currentTime = moment().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
+            }
+
+            $("#runningTime").html(`<h5>Current Time: ${currentTime}<br>Clocked in: ${timeIn}</h5>`);
         },
-        error: function (tokenres, tokenstatus) {
-            $("#userMainContent").html("Token isn't working!");
+        error: function (timeres, timestatus) {
+            $("#userMainContent").html("Cannot get current time sheet!");
         }
     });
-
-
-    //Checking time zone to calculate time according to PST/PDT
-    if (moment().isDST()){
-        currentTime = moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
-        timeIn = moment(timeIn).utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
-    }
-    else {
-        currentTime = moment().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
-        timeIn = moment(timeIn).utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
-    }
-
-    $("#runningTime").html(`<h5>${currentTime} ${timeIn}</h5>`);
-
-
 }
 
 //Previous Hours Methods
