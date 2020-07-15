@@ -53,7 +53,7 @@ let navMapper = {
 
     rollupReport: function () {
         navItemChange("rollupReport");
-        showFunction(runReportFunctionality, "/api/getAllTimeSheets");
+        showFunction(rollupReportFunctionality, "/api/getAllTimeSheets");
     }
 
 
@@ -2763,7 +2763,7 @@ function rollupReportFunctionality() {
             success: function (timeres, timestatus) {
                 $("#reportContent").html("");
                 for (var item of timeres) {
-                    let duration = moment.duration(startingTime * 60000);
+                    let duration = moment.duration(Number.parseInt(item.totalTime) * 60000);
                     let hours = padIntToTwoPlaces(duration.hours());
                     let minutes = padIntToTwoPlaces(duration.minutes());
                     let seconds = padIntToTwoPlaces(duration.seconds());
