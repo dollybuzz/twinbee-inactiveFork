@@ -4,6 +4,7 @@ let selectedTab = null;
 let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
+let TIME_SHOULD_RUN = false;
 let navMapper = {
     main: function () {
         location.reload();
@@ -267,6 +268,7 @@ function setClockOutFunctionality() {
                     dataType: "json",
                     success: function (clockres, status) {
                         if (clockres) {
+                            TIME_SHOULD_RUN = false;
                             setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
                             $("#makerText2").html("<br><h5>Successfully clocked out!</h5>");
@@ -351,6 +353,7 @@ function padIntToTwoPlaces(int){
     return intString;
 }
 function runningTime() {
+    TIME_SHOULD_RUN = true;
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
         method: "post",
@@ -362,15 +365,8 @@ function runningTime() {
         success: function (timeres, timestatus) {
 
             let elapsedSeconds = timeres.secondsOnline;
-
+            runClock(elapsedSeconds);
             setInterval(function () {
-                elapsedSeconds += 1;
-                let duration = moment.duration(elapsedSeconds * 1000);
-                console.log(duration);
-                let hours = padIntToTwoPlaces(duration.hours());
-                let minutes = padIntToTwoPlaces(duration.minutes());
-                let seconds = padIntToTwoPlaces(duration.seconds());
-                $("#runningTime").html(`<h5>${hours}:${minutes}:${seconds}</h5>`);
             }, 1000);
 
         },
@@ -378,6 +374,21 @@ function runningTime() {
             $("#userMainContent").html("Cannot get current time sheet!");
         }
     });
+}
+
+function runClock(startingTime){
+    if (TIME_SHOULD_RUN){
+        startingTime += 1;
+        let duration = moment.duration(startingTime * 1000);
+        let hours = padIntToTwoPlaces(duration.hours());
+        let minutes = padIntToTwoPlaces(duration.minutes());
+        let seconds = padIntToTwoPlaces(duration.seconds());
+        $("#runningTime").html(`<h5>${hours}:${minutes}:${seconds}</h5>`);
+
+        setTimeout(function () {
+            runClock(startingTime)
+        }, 1000)
+    }
 }
 
 //Previous Hours Methods
@@ -586,6 +597,7 @@ $(document).ready(function () {
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
+        TIME_SHOULD_RUN = false;
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
         SELECTED_NAV_MAP = $(this);
