@@ -250,7 +250,6 @@ module.exports = {
         }
     },
 
-
     /**
      * ENDPOINT: /api/clockIn
      * "Clocks in" a given user. Initializes a new timesheet with the provided
@@ -305,5 +304,33 @@ module.exports = {
                 notifyAdmin(err.toString());
             }));
         }
+    },
+
+    /**
+     * ENDPOINT: /api/getMakerCurrentTimeSheet
+     * Retrieves the current time sheet for an online maker:
+     * {
+     *     "makerId": id of requesting maker
+     *     "auth": valid authentication
+     * }
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    getOnlineSheet: async (req, res) => {
+        console.log('Retrieving the most current time sheet for maker:');
+        console.log(req.body);
+        let validationResult = await validateParams({"present": ["auth", "makerId"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await timeSheetService.getLastOnlineSheet(req.body.makerId).catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
+        }
     }
+
 };

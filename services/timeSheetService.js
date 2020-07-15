@@ -202,6 +202,29 @@ class TimeSheetService {
     }
 
     /**
+     *
+     * @param makerId
+     * @returns {Promise<[TimeSheet]>} all the most recent time sheet
+     * for the given maker where clock-out == 0000-00-00 00:00:00
+     */
+    async getLastOnlineSheet(makerId) {
+        console.log(`Getting the most recent online sheet for maker ${makerId}`);
+        let sheetsForMaker = await this.getOnlineSheets(makerId).catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString())
+        });
+        let onlineSheet = [];
+        // get online sheets
+        for (var i = 0; i < sheetsForMaker.length; ++i) {
+            let currentSheet = sheetsForMaker[i];
+            if (i == sheetsForMaker.length-1) {
+                onlineSheet.push(currentSheet);
+            }
+        }
+        return onlineSheet;
+    }
+
+    /**
      * Returns the current moment/date-time in the Twinbee standard format (YYYY-MM-DD HH:mm:ss)
      * @returns {Promise<Moment>} for the current instant
      */

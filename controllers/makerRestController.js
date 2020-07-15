@@ -1,6 +1,5 @@
 const makerService = require('../services/MakerService.js');
 const authService = require('../services/authService.js');
-const timeSheetService = require('../services/timeSheetService.js');
 const {notifyAdmin} = require("../services/notificationService");
 
 //TODO: find a home for the validator
@@ -553,10 +552,11 @@ module.exports = {
                 console.log(err);
                 notifyAdmin(err.toString());
             });
-            res.send(await timeSheetService.getOnlineSheets(id).catch(err => {
+            res.send(await makerService.getMakerCurrentTimeSheet(id).catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
             }));
+
         }
     },
 

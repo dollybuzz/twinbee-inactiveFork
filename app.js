@@ -289,6 +289,10 @@ app.post("/api/getMyTimeSheetsMaker",
 app.post("/api/getMyCurrentTimeSheet",
     authController.authorizeMaker,
     makerRestController.getMyCurrentTimeSheet);
+app.post("/api/getMakerCurrentTimeSheet",
+    authController.authorizeMaker,
+    authController.authorizeMaster,
+    timeSheetRestController.getOnlineSheet);
 app.post("/api/getMyRelationshipBucket",
     authController.authorizeMaker,
     makerRestController.getMyRelationshipBucket);

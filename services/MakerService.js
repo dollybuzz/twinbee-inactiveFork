@@ -409,6 +409,31 @@ class MakerService {
         }
         return 'not found';
     }
+
+    /**
+     * Communicates with /api/getMakerCurrentTimeSheet to get
+     * a maker's online time sheet.
+     *
+     * @param id    - id of the desired maker
+     * @returns {Promise<void>}
+     */
+    async getMakerCurrentTimeSheet(id) {
+        console.log(`Getting online time sheet for maker ${id}`);
+        let result = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getMakerCurrentTimeSheet`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        let timeSheet = JSON.parse(result.body);
+
+        return timeSheet;
+    }
 }
 
 module.exports = new MakerService();
