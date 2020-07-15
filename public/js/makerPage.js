@@ -369,14 +369,14 @@ function runningTime() {
                     //Accounting for offset
                     timeInAsPT = timeInAsPT.utcOffset("+07:00").valueOf();
                     currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
-                    elapsedTime = moment(currentTimeinPT - timeInAsPT).format("HH:mm:ss");
+                    elapsedTime = moment(currentTimeinPT - timeInAsPT).utcOffset("+07:00");
 
                 }
                 else {
                     //Accounting for offset
                     timeInAsPT = timeInAsPT.utcOffset("+08:00").valueOf();
                     currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
-                    elapsedTime = moment(currentTimeinPT - timeInAsPT).valueOf();
+                    elapsedTime = moment(currentTimeinPT - timeInAsPT).utcOffset("+08:00");
                 }
             }
             console.log(timeInAsPT);
