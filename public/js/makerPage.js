@@ -376,7 +376,7 @@ function runningTime() {
                     //Accounting for offset
                     timeInAsPT = timeInAsPT.utcOffset("+08:00").valueOf();
                     currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
-                    elapsedTime = moment(currentTimeinPT - timeInAsPT).format("HH:mm:ss");
+                    elapsedTime = moment(currentTimeinPT - timeInAsPT).valueOf();
                 }
             }
             console.log(timeInAsPT);
@@ -385,7 +385,7 @@ function runningTime() {
 
             setInterval(function() {
                 elapsedTime += 1000;
-                $("#runningTime").html(`<h5>${elapsedTime}</h5>`);
+                $("#runningTime").html(`<h5>${moment(elapsedTime).format("HH:mm:ss")}</h5>`);
                 }, 1000);
 
         },
