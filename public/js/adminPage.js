@@ -8,7 +8,7 @@ let TEST_ENVIRONMENT = false;
 
 let navMapper = {
     main: function () {
-        location.reload();
+        window.location.replace(`/login?token=${id_token}`);;
     },
 
     manageClients: function () {
