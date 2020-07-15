@@ -156,7 +156,6 @@ function timeClockFunctionality() {
             }
             if (clockedOut) {
                 setClockInFunctionality();
-                elapsedTime = 0;
             } else {
                 setClockOutFunctionality();
                 runningTime();
