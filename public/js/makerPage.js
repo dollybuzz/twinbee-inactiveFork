@@ -352,6 +352,7 @@ function availableCredits() {
 function runningTime() {
     let currentTime = moment();
     let timeIn;
+    let elapsedTime;
 
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
@@ -370,13 +371,18 @@ function runningTime() {
 
             //Converting local time zone to PST/PDT
             if (currentTime.isDST()){
-                currentTime = moment().utcOffset("-08:00").format('YYYY-MM-DD HH:mm:ss');
+                currentTime = moment().utcOffset("-08:00").format('HH:mm:ss');
             }
             else {
-                currentTime = moment().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
+                currentTime = moment().utcOffset("-07:00").format('HH:mm:ss');
             }
 
-            $("#runningTime").html(`<h5>Current Time: ${currentTime}<br>Clocked in: ${timeIn}</h5>`);
+            elapsedTime = moment.duration(moment(currentTime).diff(timeIn));
+            setInterval(function() {
+                elapsedTime += 1;
+                $("#runningTime").html(`<h5>${elapsedTime.hours()}:${elapsedTime.minutes}:${elapsedTime.seconds()}</h5>`);
+                }, 1000);
+
         },
         error: function (timeres, timestatus) {
             $("#userMainContent").html("Cannot get current time sheet!");
