@@ -34,7 +34,8 @@ module.exports = {
             {
                 link: "", text: "Reporting Tools", id: "reportingTools", dropdowns: [
                     {link: "", text: "Review TimeSheets", id: "reviewTimeSheets"},
-                    {link: "", text: "Time Reports", id: "runReports"}
+                    {link: "", text: "Time Reports", id: "runReports"},
+                    {link: "", text: "Rollup", id: "rollupReport"}
                 ]
             }
         ];

@@ -49,6 +49,11 @@ let navMapper = {
     runReports: function () {
         navItemChange("runReports");
         showFunction(runReportFunctionality, "/api/getAllTimeSheets");
+    },
+
+    rollupReport: function () {
+        navItemChange("rollupReport");
+        showFunction(runReportFunctionality, "/api/getAllTimeSheets");
     }
 
 
@@ -2708,6 +2713,85 @@ function runReportFunctionality() {
     });
 }
 
+
+function padIntToTwoPlaces(int){
+    let intString = int.toString();
+    if (intString.length === 1){
+        intString = "0" + intString;
+    }
+    return intString;
+}
+function rollupReportFunctionality() {
+    //Creating the table
+    $("#userMainContent").html(
+        "<div class='reportOptions'></div>" +
+        "<div id=\"buttonsTop\"></div>\n" +
+        "<div class='row' id='topRow'>\n" +
+        "<div id=\"floor\">\n" +
+        "    <table id=\"reportTable\" class=\"table\">\n" +
+        "    </table>\n" +
+        "</div></div>");
+    //Report Buttons
+    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    //Populate table but do not show
+    $("#reportTable").html('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Relationship ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Client</th>\n' +
+        '            <th scope="col">Occupation</th>\n' +
+        '            <th scope="col">Total Time</th>\n' +
+        '            <th scope="col">Amount Owed</th>\n' +
+        '        </thead><tbody id="reportContent">' +
+        '</tbody>');
+    //Event Listeners
+    //Run Report
+    $("#runReportButton").on('click', function () {
+        $("#reportTable").css("opacity", "1");
+        $("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $.ajax({
+            url: "/api/getTimeRollup",
+            method: "post",
+            data: {
+                auth: id_token,
+                start: $("#startDate").val(),
+                end: $("#endDate").val()
+            },
+            dataType: "json",
+            success: function (timeres, timestatus) {
+                $("#reportContent").html("");
+                for (var item of timeres) {
+                    let duration = moment.duration(startingTime * 60000);
+                    let hours = padIntToTwoPlaces(duration.hours());
+                    let minutes = padIntToTwoPlaces(duration.minutes());
+                    let seconds = padIntToTwoPlaces(duration.seconds());
+
+                    $("#reportContent").append('\n' +
+                        '<tr class="reportRow">' +
+                        '   <td scope="row">' + item.id + '</td>' +
+                        '   <td>' + item.freedomMaker + '</td>' +
+                        '   <td>' + item.client + '</td>' +
+                        '   <td>' + item.occupation + '</td>' +
+                        `   <td>${hours}:${minutes}:${seconds}</td>` +
+                        `   <td> ${Number.parseInt(item.penniesOwed)/100}</td></tr>`);
+                }
+            },
+            error: function (timeres, timestatus) {
+                $("#userMainContent").html("Run Reports isn't working!");
+            }
+        });
+    });
+
+    //Row effect
+    $(".reportRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
+    });
+}
 $(document).ready(function () {
 
     //Adding logout Button
