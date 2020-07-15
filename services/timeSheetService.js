@@ -221,6 +221,8 @@ class TimeSheetService {
         });
         currentSheet.secondsOnline = moment.duration(moment(now).diff(inMoment)).asSeconds();
         currentSheet.test = now.toString();
+        console.log("NOW")
+        console.log(now.toString())
         return currentSheet;
     }
 

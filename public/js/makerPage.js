@@ -358,7 +358,10 @@ function runningTime() {
 
             setInterval(function () {
                 elapsedSeconds += 1;
-                $("#runningTime").html(`<h5>${moment.duration(elapsedSeconds * 1000).humanize()}</h5>`);
+                let duration = moment.duration(elapsedSeconds * 1000);
+                console.log(duration);
+
+                $("#runningTime").html(`<h5>${moment.duration(elapsedSeconds).humanize()}</h5>`);
             }, 1000);
 
         },
