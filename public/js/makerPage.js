@@ -363,7 +363,10 @@ function runningTime() {
         dataType: "json",
         success: function (timeres, timestatus) {
 
-            timeIn = timeres.timeIn;
+            for(var item of timeres)
+            {
+                timeIn = timeres[item].timeIn;
+            }
 
             //Converting local time zone to PST/PDT
             if (currentTime.isDST()){
