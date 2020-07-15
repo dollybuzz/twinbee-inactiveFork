@@ -51,7 +51,8 @@ class RelationshipRepository {
     async getAllRelationships() {
         let sql = 'SELECT * FROM relationship';
         let sqlParam = [];
-        let result = await repoMaster.query(sql, sqlParam).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParam).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
@@ -65,7 +66,8 @@ class RelationshipRepository {
             'FROM relationship ' +
             'WHERE maker_id = ? ';
         let sqlParam = [makerId];
-        let result = await repoMaster.query(sql, sqlParam).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParam).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
@@ -77,7 +79,8 @@ class RelationshipRepository {
     async getRelationshipById(id){
         let sql = 'SELECT * FROM relationship where id = ?';
         let sqlParam = [id];
-        let result = await repoMaster.query(sql, sqlParam).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParam).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
@@ -89,7 +92,8 @@ class RelationshipRepository {
     async getRelationshipsByClientId(clientId) {
         let sql = 'SELECT * FROM relationship WHERE client_id = ?';
         let sqlParam = [clientId];
-        let result = await repoMaster.query(sql, sqlParam).catch(e => {
+        let result;
+        result = await repoMaster.query(sql, sqlParam).catch(e => {
             notificationService.notifyAdmin(e.toString());
             console.log(e);
             result = [];
