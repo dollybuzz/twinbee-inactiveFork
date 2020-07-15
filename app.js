@@ -374,6 +374,11 @@ app.post("/api/getMakerTimeReport",
     authController.authorizeMaker,
     authController.authorizeMaster,
     timeReportingRestController.getMakerTimeReport);
+app.post("/api/getTimeRollup",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeReportingRestController.getTimeRollup);
+
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 

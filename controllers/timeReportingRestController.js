@@ -95,5 +95,50 @@ module.exports = {
                 console.log(err);
                 notifyAdmin(err.toString());
             }));
+    },
+
+
+    /**
+     * ENDPOINT: /api/getTimeRollup
+     * Retrieves a "report" for all maker/client relationships.
+     * Looks for data in the body in the form:
+     * {
+     *     "start": inclusive beginning of reporting time, (wildcard if none specified)
+     *     "end": exclusive ending of reporting time,  (wildcard if none specified)
+     *     "auth": authentication credentials; either master or token
+     * }
+     * Returns data in the form:
+     *      {
+     *          sheets:[
+     *              {
+     *                  relationshipId: id of relationship binding entities,
+     *                  freedomMaker: name of freedom maker in relationship,
+     *                  client: name of client in relationship,
+     *                  occupation: freedom maker's occupation for relationship,
+     *                  totalTime: freedom maker's total logged minutes for the period,
+     *                  penniesOwed: amount owed to freedom maker in cents (rate * time worked)
+     *              },
+     *              {
+     *                  relationshipId: id of relationship binding entities,
+     *                  freedomMaker: name of freedom maker in relationship,
+     *                  client: name of client in relationship,
+     *                  occupation: freedom maker's occupation for relationship,
+     *                  totalTime: freedom maker's total logged minutes for the period,
+     *                  penniesOwed: amount owed to freedom maker in cents (rate * time worked)
+     *              },...
+     *          ]
+     *          total: total time of all timesheets
+     *      }
+     */
+    getTimeRollup: async (req, res)=>{
+        console.log("Attempting to grab time rollup from REST...");
+        console.log(req.body);
+
+        res.send(await timeReportingService
+            .getTimeRollup(req.body.start, req.body.end)
+            .catch(err => {
+                console.log(err);
+                notifyAdmin(err.toString());
+            }));
     }
 };
