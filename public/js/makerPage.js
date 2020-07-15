@@ -365,26 +365,24 @@ function runningTime() {
         },
         dataType: "json",
         success: function (timeres, timestatus) {
-
             for(var item of timeres)
             {
-                timeIn = moment(item.timeIn);
+                //Converting local time zone to PST/PDT
+                if (currentTime.isDST()){
+                    timeIn = moment(item.timeIn).utcOffset("-08:00");
+                }
+                else {
+                    timeIn = moment(item.timeIn).utcOffset("-07:00");
+                }
                 console.log(timeIn);
             }
 
-            //Converting local time zone to PST/PDT
-            if (currentTime.isDST()){
-                currentTime = moment().utcOffset("-08:00");
-            }
-            else {
-                currentTime = moment().utcOffset("-07:00");
-            }
-            elapsedTime = moment(currentTime.valueOf() - timeIn.valueOf());
+            elapsedTime = moment(timeIn.valueOf() - currentTime.valueOf());
 
             console.log(elapsedTime);
             setInterval(function() {
-                elapsedTime += 1;
-                $("#runningTime").html(`<h5>${moment.duration(elapsedTime).hours()}:${moment.duration(elapsedTime).minutes()}:${moment.duration(elapsedTime).seconds()}</h5>`);
+                elapsedTime += 1000;
+                $("#runningTime").html(`<h5>${moment.duration(elapsedTime).humanize()}</h5>`);
                 }, 1000);
 
         },
