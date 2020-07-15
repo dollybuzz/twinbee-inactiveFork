@@ -70,7 +70,7 @@ function timeClockFunctionality() {
         "            <div id=\"taskBlock\"><br><h6>Please enter in a task:</h6></div>\n" +
         "            <div><br><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
         "        </div>\n" +
-        "        <div id='clockPrompt'></div>\n" +
+        "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
         "        <br>\n" +
         "    <div class=\"row\" id=\"makerBottomRow\">\n" +
         "        <div id=\"empty\"></div>\n" +
@@ -137,8 +137,6 @@ function timeClockFunctionality() {
                     $("#makerSelectedClient").css("opacity", "0");
                     $("#clientCredit").css("opacity", "0");
                     $("#availcredit").css("opacity", "0");
-                    $("#clockPrompt").html("<div id='runningTime'></div>");
-                    runningTime();
 
                     setTimeout(function () {
                         $("#taskBlock").hide();
@@ -160,6 +158,7 @@ function timeClockFunctionality() {
                 setClockInFunctionality();
             } else {
                 setClockOutFunctionality();
+                runningTime();
             }
         },
         error: function (innerRes, innerStatus) {
@@ -199,10 +198,6 @@ function setClockInFunctionality() {
                     setClockOutFunctionality();
                     $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
                     $("#makerText2").css("opacity", "1");
-
-
-                    $("#clockPrompt").html("<div id='runningTime'></div>");
-                    runningTime();
                     $("#clockPrompt").css("opacity", "1");
 
                     setTimeout(function () {
@@ -350,12 +345,12 @@ function availableCredits() {
 }
 
 let elapsedTime;
-let currentTime;
-let timeIn;
+let currentTimeinPT;
+let timeInAsPT;
 
 function runningTime() {
-    currentTime = moment();
-    console.log(currentTime);
+
+    //currentTimeinUTC = moment.utc().format('YYYY-DD-MM HH:mm:ss z'); //returns a string
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
         method: "post",
@@ -367,22 +362,30 @@ function runningTime() {
         success: function (timeres, timestatus) {
             for(var item of timeres)
             {
-                //Converting local time zone to PST/PDT
-                if (currentTime.isDST()){
-                    timeIn = moment(item.timeIn).utcOffset("-08:00");
+                //Converting returned PT time from report to UTC
+                timeInAsPT = moment(item.timeIn).utc();
+
+                if (timeInAsPT.isDST()){
+                    //Accounting for offset
+                    timeInAsPT = timeInAsPT.utcOffset("+07:00").valueOf();
+                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
+                    elapsedTime = moment(currentTimeinPT - timeInAsPT).format("HH:mm:ss");
+
                 }
                 else {
-                    timeIn = moment(item.timeIn).utcOffset("-07:00");
+                    //Accounting for offset
+                    timeInAsPT = timeInAsPT.utcOffset("+08:00").valueOf();
+                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
+                    elapsedTime = moment(currentTimeinPT - timeInAsPT).format("HH:mm:ss");
                 }
-                console.log(timeIn);
             }
-
-            elapsedTime = moment(timeIn.valueOf() - currentTime.valueOf());
-
+            console.log(timeInAsPT);
+            console.log(currentTimeinPT);
             console.log(elapsedTime);
+
             setInterval(function() {
                 elapsedTime += 1000;
-                $("#runningTime").html(`<h5>${moment.duration(elapsedTime).humanize()}</h5>`);
+                $("#runningTime").html(`<h5>${elapsedTime}</h5>`);
                 }, 1000);
 
         },
