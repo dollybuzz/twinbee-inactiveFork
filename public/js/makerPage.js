@@ -137,12 +137,12 @@ function timeClockFunctionality() {
                     $("#makerSelectedClient").css("opacity", "0");
                     $("#clientCredit").css("opacity", "0");
                     $("#availcredit").css("opacity", "0");
+                    $("#clockPrompt").html("<div id='runningTime'></div>");
                     runningTime();
 
                     setTimeout(function () {
                         $("#taskBlock").hide();
-                        $(
-                            "#taskEntry").hide();
+                        $("#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
                         $("#makerSelectedClient").hide();
@@ -365,7 +365,7 @@ function runningTime() {
 
             for(var item of timeres)
             {
-                timeIn = timeres[item].timeIn;
+                timeIn = item.timeIn;
             }
 
             //Converting local time zone to PST/PDT
