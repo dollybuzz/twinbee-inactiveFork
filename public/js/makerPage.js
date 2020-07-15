@@ -344,11 +344,10 @@ function availableCredits() {
     });
 }
 
-let elapsedTime;
-let currentTimeinPT;
-let timeInAsPT;
-
 function runningTime() {
+    let elapsedTime;
+    let currentTimeinPT;
+    let timeInAsPT;
 
     $.ajax({
         url: "/api/getMyCurrentTimeSheet",
@@ -361,22 +360,21 @@ function runningTime() {
         success: function (timeres, timestatus) {
             for(var item of timeres)
             {
-                //Converting returned PT time from report to UTC
+                //Time is returned as PT from timeres
                 timeInAsPT = moment(item.timeIn);
-                console.log(timeInAsPT);
 
                 if (timeInAsPT.isDST()){
-                    //Accounting for offset
-                    timeInAsPT = moment(timeInAsPT).utcOffset("+07:00");
-                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm'));
-                    elapsedTime = moment(currentTimeinPT.valueOf() - timeInAsPT.valueOf()).utcOffset("+07:00");
+                    //Accounting for UTC offset
+                    timeInAsPT = moment(timeInAsPT).valueOf() + 25200000;
+                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
+                    elapsedTime = (moment(currentTimeinPT - timeInAsPT).add(-(moment().utcOffset()), 'm')).valueOf();
 
                 }
                 else {
-                    //Accounting for offset
-                    timeInAsPT = moment(timeInAsPT).utcOffset("+08:00");
-                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm'));
-                    elapsedTime = moment(currentTimeinPT.valueOf() - timeInAsPT.valueOf()).utcOffset("+08:00");
+                    //Accounting for UTC offset
+                    timeInAsPT = moment(timeInAsPT).valueOf() + 25200000; //28800000;
+                    currentTimeinPT = (moment().utc().add(-(moment().utcOffset()), 'm')).valueOf();
+                    elapsedTime = (moment(currentTimeinPT - timeInAsPT).add(-(moment().utcOffset()), 'm')).valueOf();
                 }
             }
             console.log(timeInAsPT);
