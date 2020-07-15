@@ -1,4 +1,6 @@
-//global variable
+//id_token is retrieved from Google.js
+
+//global variables
 let selectedRow = null;
 let selectedTab = null;
 let selectedDropdown = null;
