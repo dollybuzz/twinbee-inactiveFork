@@ -420,7 +420,8 @@ class MakerService {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getMakerCurrentTimeSheet`,
             form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'makerId': id
             }
         }).catch(err => {
             console.log(err);
