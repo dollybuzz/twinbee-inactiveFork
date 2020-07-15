@@ -2732,9 +2732,11 @@ function rollupReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
+    $(".reportOptions").append("<div id='empty'></div>");
     $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
     $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
     $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $(".reportOptions").append("<div id='empty'></div>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
