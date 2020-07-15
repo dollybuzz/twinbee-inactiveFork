@@ -71,7 +71,7 @@ function timeClockFunctionality() {
         "            <div id=\"taskBlock\"><br><h6>Please enter in a task:</h6></div>\n" +
         "            <div><br><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
         "        </div>\n" +
-        "        <div id='clockPrompt'><div id='runningTime'>asdf</div></div>\n" +
+        "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
         "        <br>\n" +
         "    <div class=\"row\" id=\"makerBottomRow\">\n" +
         "        <div id=\"empty\"></div>\n" +
