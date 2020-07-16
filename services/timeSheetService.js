@@ -223,14 +223,14 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
-        currentSheet.secondsOnline = await this.getSecondsOnline(inMoment).catch(error => {
+        currentSheet.secondsOnline = await this.getSecondsSince(inMoment).catch(error => {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
         return currentSheet;
     }
 
-    async getSecondsOnline(inMoment){
+    async getSecondsSince(startMoment){
         let now = await this.getCurrentMoment().catch(error => {
             console.log(error);
             emailService.notifyAdmin(error.toString())

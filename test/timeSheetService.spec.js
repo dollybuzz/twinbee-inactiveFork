@@ -161,7 +161,7 @@ describe("Last Online Sheet Test", function () {
                     resolve(sheets);
                 })
             });
-        let secondsOnlineStub = sinon.stub(timeSheetService, 'getSecondsOnline')
+        let secondsOnlineStub = sinon.stub(timeSheetService, 'getSecondsSince')
             .callsFake(function (id) {
                 return new Promise((resolve, reject) => {
                     resolve(5);
