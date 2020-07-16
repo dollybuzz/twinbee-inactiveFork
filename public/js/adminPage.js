@@ -1762,6 +1762,12 @@ function relationshipAddForm() {
                             message += "A Role is required!<br>";
                         }
 
+                        if($("#addHrRate").val().length === 0)
+                        {
+                            valid = false;
+                            message += "An hourly rate is required! <br>";
+                        }
+
                         if (valid) {
                             $("#errormessage").html("");
                             $("#SubmitButton").hide();
@@ -1773,6 +1779,7 @@ function relationshipAddForm() {
                                 makerId: $("#addMakerRel").val(),
                                 planId: $("#addPlanRel").val(),
                                 occupation: $("#addOccRel").val(),
+                                hourlyRate: Math.floor($("#addHrRate").val())*100,
                             }, addRelationshipSuccess);
                         } else {
                             $("#errormessage").html(message);
