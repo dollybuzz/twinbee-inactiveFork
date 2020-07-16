@@ -183,6 +183,33 @@ describe("Last Online Sheet Test", function () {
     });
 });
 
+describe("Token Relationship Validation Test", function () {
+    beforeEach(function () {
+
+        let tokenScope = nock(process.env.TWINBEE_URL)
+            .post('/api/getMakerIdByToken', {auth: process.env.TWINBEE_MASTER_AUTH, token: "fakeToken"})
+            .reply(200,
+                JSON.stringify({id: 5})
+            );
+    });
+
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+    it('Should pass validation', async function () {
+        let actual = await timeSheetService.tokenIsInSheetRelationship("fakeToken", new Relationship(1, 5, 1, 1, 1));
+        expect(actual).to.equal(true);
+    });
+
+    it('Should fail validation', async function () {
+        let actual = await timeSheetService.tokenIsInSheetRelationship("fakeToken", new Relationship(1, 1, 1, 1, 1));
+        expect(actual).to.equal(false);
+    });
+});
+
 
 describe('Time Sheet Service Test', function () {
     beforeEach(function () {
