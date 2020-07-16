@@ -58,7 +58,7 @@ function createBody() {
 function timeClockFunctionality() {
     //Create page
     $("#userMainContent").html(
-        "<div class=\"clockblock\">\n" +
+        "<div class=\"clockBlock\">\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"clientRole\"><<h6>Please select your Client<br>and Role:</h6></div>\n" +
         "            <div><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
@@ -72,7 +72,7 @@ function timeClockFunctionality() {
         "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
         "        </div>\n" +
         "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
-        "    <div class=\"clockrow\" id=\"makerBottomRow\">\n" +
+        "    <div class=\"clockRow\" id=\"makerBottomRow\">\n" +
         "        <div id=\"empty\"></div>\n" +
         "        <div id=\"clockButton\"><button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"makerClock\">Clock In</button></div>\n" +
         "        <div id=\"empty\"></div>\n" +
