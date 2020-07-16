@@ -226,7 +226,6 @@ class MakerService {
 
         let sheets = JSON.parse(result.body);
 
-        console.log(sheets);
         console.log(`Getting client list for maker ${id}...`);
         result = await request({
             method: 'POST',

@@ -183,6 +183,48 @@ describe("Last Online Sheet Test", function () {
     });
 });
 
+describe("Maker Is Online Test", function () {
+    beforeEach(function () {
+    });
+
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+    it('Should indicate the maker is online', async function () {
+        let onlineSheetsStub = sinon.stub(timeSheetService, 'getSheetsByMaker')
+            .callsFake(function (id) {
+                return new Promise((resolve, reject) => {
+                    let sheets = [
+                        new TimeSheet(id, 2, 1, 4, moment(firstStart).format("YYYY-MM-DD HH:mm:ss"), moment(secondStart).format("YYYY-MM-DD HH:mm:ss"), "task", "detail", 1),
+                        new TimeSheet(id, 2, 1, 4, moment(secondStart).format("YYYY-MM-DD HH:mm:ss"), moment(thirdStart).format("YYYY-MM-DD HH:mm:ss"), "task", "detail", 1),
+                        new TimeSheet(id, 2, 1, 4, moment(thirdStart).format("YYYY-MM-DD HH:mm:ss"), "0000-00-00 00:00:00", "task", "detail", 1)
+                    ];
+                    resolve(sheets);
+                })
+            });
+        let actual = await timeSheetService.makerIsOnline(1);
+        expect(actual).to.equal(true);
+    });
+    it('Should indicate the maker is not online', async function () {
+        let onlineSheetsStub = sinon.stub(timeSheetService, 'getSheetsByMaker')
+            .callsFake(function (id) {
+                return new Promise((resolve, reject) => {
+                    let sheets = [
+                        new TimeSheet(id, 2, 1, 4, moment(firstStart).format("YYYY-MM-DD HH:mm:ss"), moment(secondStart).format("YYYY-MM-DD HH:mm:ss"), "task", "detail", 1),
+                        new TimeSheet(id, 2, 1, 4, moment(secondStart).format("YYYY-MM-DD HH:mm:ss"), moment(thirdStart).format("YYYY-MM-DD HH:mm:ss"), "task", "detail", 1),
+                        new TimeSheet(id, 2, 1, 4, moment(thirdStart).format("YYYY-MM-DD HH:mm:ss"), moment(thirdStart).format("YYYY-MM-DD HH:mm:ss"), "task", "detail", 1)
+                    ];
+                    resolve(sheets);
+                })
+            });
+        let actual = await timeSheetService.makerIsOnline(1);
+        expect(actual).to.equal(false);
+    });
+});
+
 describe("Token Relationship Validation Test", function () {
     beforeEach(function () {
 

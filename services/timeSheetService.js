@@ -469,7 +469,6 @@ class TimeSheetService {
 
         for (var sheet of sheets) {
             if (sheet.timeIn[0].toString() !== "0" && sheet.timeOut[0].toString() === "0") {
-                console.log(sheet);
                 return true;
             }
         }
