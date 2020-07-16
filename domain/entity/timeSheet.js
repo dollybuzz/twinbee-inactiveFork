@@ -14,4 +14,4 @@ module.exports = class TimeSheet{
         this.adminNote = adminNote;
         this.relationshipId = relationshipId;
     }
-}
+};

@@ -121,7 +121,7 @@ describe("Open Sheet Test", function () {
         let actual = await timeSheetService.openTimeSheet(relationship, startMoment, "task");
         expect(actual).to.deep.equal(new TimeSheet(1, 1, "1", "1", moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), "0000-00-00 00:00:00", "task", "Created Normally", 1));
     });
-})
+});
 
 describe("Close Sheet Test", function () {
     beforeEach(function () {
@@ -146,7 +146,60 @@ describe("Close Sheet Test", function () {
             endMoment, "newTask");
         expect(actual).to.deep.equal(new TimeSheet(1, 2, 3, 4, moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), moment(endMoment).format('YYYY-MM-DD HH:mm:ss'), "newTask", "note", 1));
     });
-})
+});
+
+describe("Create Sheet Test", function () {
+    beforeEach(function () {
+        let createSheetStub = sinon.stub(timeSheetRepo, 'createSheet')
+            .callsFake(function (makerId, clientId, planId, timeIn, timeOut, task, detail, relationshipId) {
+                return new Promise((resolve, reject) => {
+                    resolve(1);
+                })
+            });
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+    it('Should close the selected sheet', async function () {
+        let actual = await timeSheetService.createTimeSheet(1, 1, 1, 1, 1, 1, 1, 1);
+        expect(actual).to.deep.equal(new TimeSheet(1, 1, 1, 1, 1, 1, 1, 1, 1));
+    });
+});
+
+describe("Update Sheet Test", function () {
+    let unupdatedTimeSheet = new TimeSheet(1, 1, 1, 1, 1, 1, 1, 1, 1);
+    beforeEach(function () {
+        let createSheetStub = sinon.stub(timeSheetRepo, 'updateSheet')
+            .callsFake(function (id, planId, timeIn, timeOut, task, detail) {
+                return new Promise((resolve, reject) => {
+                    unupdatedTimeSheet.planId = planId;
+                    unupdatedTimeSheet.timeIn = timeIn;
+                    unupdatedTimeSheet.timeOut = timeOut;
+                    unupdatedTimeSheet.task = task;
+                    unupdatedTimeSheet.adminNote = detail;
+                    resolve(unupdatedTimeSheet);
+                })
+            });
+
+        let getTimeSheetStub = sinon.stub(timeSheetService, 'getTimeSheet')
+            .callsFake(function (id) {
+                return new Promise((resolve, reject) => {
+                    resolve(unupdatedTimeSheet);
+                })
+            });
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+    it('Should close the selected sheet', async function () {
+        let actual = await timeSheetService.updateTimesheet(1,2, 2, 2, 2, 2);
+        expect(actual).to.deep.equal(new TimeSheet(1, 1, 2, 1, 2, 2, 2, "2", 1));
+    });
+});
 
 describe("Last Online Sheet Test", function () {
     beforeEach(function () {
