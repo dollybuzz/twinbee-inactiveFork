@@ -72,7 +72,6 @@ function timeClockFunctionality() {
         "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
         "        </div>\n" +
         "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
-        "        <br>\n" +
         "    <div class=\"clockrow\" id=\"makerBottomRow\">\n" +
         "        <div id=\"empty\"></div>\n" +
         "        <div id=\"clockButton\"><button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"makerClock\">Clock In</button></div>\n" +
@@ -293,10 +292,9 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
-                                $("#clockPrompt").html("<div id='runningTime'>asdf</div>");
                             }, 2000);
                         } else {
-                            $("#clockPrompt").html("<br><h5>An error occurred! Please refresh and check your time sheet.</h5>");
+                            $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
                     },
                     error: function (clockres, status) {
