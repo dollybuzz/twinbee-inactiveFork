@@ -1672,13 +1672,15 @@ function relationshipAddForm() {
                         "<label for='empty'></label>" +
                         "<label for='empty'></label>" +
                         "<label for='addClientRel'> Select a Client:</label>" +
-                        "<select class='form-control' id='addClientRel'>\n</select>\n<br><br>" +
+                        "<select class='form-control' id='addClientRel'>\n</select>\n<br>" +
                         "<label for='addMakerRel'> Select a Freedom Maker:</label>" +
-                        "<select class='form-control' id='addMakerRel'>\n</select>\n<br>" +
+                        "<select class='form-control' id='addMakerRel'>\n</select>\n<br><br>" +
                         "<label for='addOccRel'> Enter Freedom Maker Role:</label>" +
-                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>\n<br><br>\n" +
-                        "<label for='addPlanRel'> Select a Plan:</label>" +
-                        "<select class='form-control' id='addPlanRel'>\n</select>" +
+                        "<input class='form-control' type='text' id='addOccRel' name='addOccRel'>\n<br>\n" +
+                        "<label for='addPlanRel'> Select a Client Plan:</label>" +
+                        "<select class='form-control' id='addPlanRel'>\n</select>\n<br><br>" +
+                        "<label for='addHrRate'> Enter Freedom Maker Hourly Rate:</label>" +
+                        "<input class='form-control' type='number' id='addHrRate'>\n" +
                         "</form><div><span id='errormessage' style='color:red'></span></div>\n");
 
                     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
@@ -2003,7 +2005,7 @@ function creditAddForm() {
                         "<div id='empty'></div>" +
                         "<label for='addClientCredit'> Select a Client: </label>" +
                         "<select class='form-control' id='addClientCredit'>\n</select>\n<br>\n" +
-                        "<label for='addPlanCredit'> Select a Plan: </label>" +
+                        "<label for='addPlanCredit'> Select a Client Plan: </label>" +
                         "<select class='form-control' id='addPlanCredit'>\n</select>\n<br><br>\n" +
                         "<label for='addMinCredit'> Enter Number of Hours: </label>" +
                         "<input class='form-control' type='number' id='addHourCredit' name='addHourCredit'>\n<br>" +
