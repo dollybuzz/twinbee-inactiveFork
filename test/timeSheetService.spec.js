@@ -14,21 +14,28 @@ const timeSheetBasic2 = {id: 2, maker_id: 1, client_id: 'b', hourly_rate: 20.00,
                         end_time: '2019-04-23 23:23:23', task: 'worker', admin_note: 'Added by admin: 1', relationship_id: 2};
 const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
                         end_time: '2019-04-22 23:23:23', task: 'worker', admin_note: 'Added by admin: 2', relationship_id: 3};
+const timeSheetBasic4 = {id: 4, maker_id: 5, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
+                        end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'Added by admin: 2', relationship_id: 4};
 
 const timeSheetRefined1 = new TimeSheet(1, 1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', 'No details given.', 1);
 const timeSheetRefined2 = new TimeSheet(2, 1, 20.00, 'b', '2019-04-23 22:22:22', '2019-04-23 23:23:23', 'worker', 'Added by admin: 1', 2);
 const timeSheetRefined3 = new TimeSheet(3, 2, 20.00, 'a', '2019-04-22 22:22:22', '2019-04-22 23:23:23', 'worker', 'Added by admin: 2', 3);
+const timeSheetRefined4 = new TimeSheet(4, 5, 20.00, 'a', '2019-04-22 22:22:22', '0000-00-00 00:00:00', 'worker', 'Added by admin: 2', 4);
+const timeSheetRefined4Closed = new TimeSheet(4, 5, 20.00, 'a', '2019-04-22 22:22:22', '2000-01-01 12:00:00', 'worker', 'Added by admin: 2', 4);
 
 
 
 describe('Time Clock Service Test', function () {
     beforeEach(function () {
-        let onlinesheetsstub = sinon.stub(timeSheetService, 'getOnlineSheets')
-            .resolves([]);
         let scope = nock(process.env.TWINBEE_URL)
             .post('/api/getMakerIdByToken', {auth: process.env.TWINBEE_MASTER_AUTH, token: "asdf"})
             .reply(200,
                 JSON.stringify({id: 5})
+            );
+        let scope5 = nock(process.env.TWINBEE_URL)
+            .post('/api/updateClientTimeBucket', {auth: process.env.TWINBEE_MASTER_AUTH, token: "asdf"})
+            .reply(200,
+                JSON.stringify({id: true})
             );
         let scope2 = nock(process.env.TWINBEE_URL)
             .post('/api/getRelationshipById', {auth: process.env.TWINBEE_MASTER_AUTH, id: 5})
@@ -55,29 +62,33 @@ describe('Time Clock Service Test', function () {
             .reply(200,
                 JSON.stringify({id: 1})
             );
-
-
     });
 
     afterEach(function () {
         sinon.restore();
     });
 
-
     it('Should clock in a user', async () => {
+        let onlinesheetsstub = sinon.stub(timeSheetService, 'getOnlineSheets')
+            .resolves([]);
+        let sendStub = sinon.stub(timeSheetRepo, 'updateSheet')
+            .resolves();
+        let getStub = sinon.stub(timeSheetRepo, "getTimeSheet")
+            .withArgs(4)
+            .resolves(timeSheetRefined4Closed);
         let results = await timeSheetService.clockIn("asdf", "asdf", "5");
         expect(results).to.equal(true);
     });
 
-
     it('Should clock out a user', async function () {
+        let onlinesheetsstub = sinon.stub(timeSheetService, 'getOnlineSheets')
+            .resolves([timeSheetRefined4]);
         let actual = await timeSheetService.clockOut("asdf");
 
         expect(actual).to.equal(true);
     });
-
-
 });
+
 
 describe('Time Sheet Service Test', function () {
     beforeEach(function () {

@@ -1,3 +1,4 @@
+
 const makerRepo = require('../repositories/makerRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
@@ -432,6 +433,36 @@ class MakerService {
 
         return timeSheet;
     }
+
+
+    /**
+     * Logs a maker's validated "on the go" time. Leverages timeSheetService
+     * to provide clockIn functionality
+     *
+     * @param id
+     * @param relationshipId
+     * @param minutes
+     * @returns {Promise<void>}
+     */
+    async logOnTheGo(id, relationshipId, minutes) {
+        console.log(`Processing On The Go for maker ${id}`);
+
+        let result = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getMakerCurrentTimeSheet`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'makerId': id
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        let timeSheet = JSON.parse(result.body);
+
+    }
+
 }
 
 module.exports = new MakerService();

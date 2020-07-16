@@ -331,6 +331,84 @@ module.exports = {
                 notifyAdmin(err.toString());
             }));
         }
-    }
+    },
 
+
+    /**
+     * ENDPONT: /api/onTheGo
+     *
+     * Logs a preset amount of time for the requesting maker.
+     * Provides all time-bucket and time-sheet automation that clockOut and clockIn offer.
+     * Looks for values in the body in the form:
+     * {
+     *     "auth": authentication credentials,
+     *     "token": requester's token,
+     *     "relationshipId": id of the relationship to log time against,
+     *     "minutes": number of minutes to log,
+     *     "task": on the go task
+     * }
+     * returns the created timeSheet
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    makerOnTheGo: async (req, res) =>{
+        console.log("Attempting to log On The Go time for a maker from REST: ");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["auth", "token", "task"],
+                "positiveIntegerOnly": ["relationshipId", "minutes"],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await timeSheetService.makerOnTheGo(req.body.token, req.body.relationshipId, req.body.minutes, req.body.task));
+        }
+    },
+
+
+    /**
+     * ENDPONT: /api/onTheGo
+     *
+     * Logs a preset amount of time for the requesting maker.
+     * Provides all time-bucket and time-sheet automation that clockOut and clockIn offer.
+     * Looks for values in the body in the form:
+     * {
+     *     "auth": authentication credentials,
+     *     "relationshipId": id of the relationship to log time against,
+     *     "minutes": number of minutes to log,
+     *     "task": on the go task
+     * }
+     * returns the created timeSheet
+     *
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    onTheGo: async (req, res) =>{
+        console.log("Attempting to log On The Go time for a maker from REST: ");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["auth", "task"],
+                "positiveIntegerOnly": ["relationshipId", "minutes"],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await timeSheetService.logOnTheGo(req.body.relationshipId, req.body.minutes, req.body.task));
+        }
+    }
 };

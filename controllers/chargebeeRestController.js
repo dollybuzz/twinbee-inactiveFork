@@ -1,6 +1,5 @@
 const chargebeeService = require('../services/chargebeeService.js');
 const {notifyAdmin} = require("../services/notificationService");
-const moment = require('moment');
 const {validateParams} = require("../util.js");
 
 

@@ -65,6 +65,21 @@ class TimeSheetRepository {
         return result;
     }
 
+    async getTimeSheet(id) {
+        let sql = 'SELECT * ' +
+            'FROM time_sheet ' +
+            'WHERE id = ?';
+        let sqlParams = [id];
+        let result;
+        result = await repoMaster.query(sql, sqlParams).catch(e => {
+            notificationService.notifyAdmin(e.toString());
+            console.log(e);
+            result = [];
+        });
+        console.log(`Retrieved sheet ${id}`);
+        return result[0];
+    }
+
     async getSheetsByClient(id) {
         let sql = 'SELECT * ' +
             'FROM time_sheet ' +

@@ -378,6 +378,14 @@ app.post("/api/getTimeRollup",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     timeReportingRestController.getTimeRollup);
+app.post("/api/onTheGo",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    timeSheetRestController.onTheGo);
+app.post("/api/makerOnTheGo",
+    authController.authorizeMaker,
+    authController.authorizeMaster,
+    timeSheetRestController.makerOnTheGo);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

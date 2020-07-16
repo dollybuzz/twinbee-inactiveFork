@@ -24,7 +24,7 @@ class TimeSheetService {
      * @returns {Promise<>}
      */
     async createTimeSheet(makerId, planId, clientId, timeIn, timeOut, task, detail, relationshipId) {
-        if (!makerId || !planId || !clientId || !timeIn || !timeOut){
+        if (!makerId || !planId || !clientId || !timeIn || !timeOut) {
             let error = {status: "failed to create timesheet\n", reason: ""};
             let tracer = new Error();
             error.reason += makerId ? "" : "makerId was invalid\n";
@@ -56,9 +56,10 @@ class TimeSheetService {
      */
     async updateTimesheet(id, planId, timeIn, timeOut, task, detail) {
         if (detail) {
-            detail = `Modified by admin: ${detail}`;
+            detail = `${detail}`;
         }
-        return await timeSheetRepo.updateSheet(id, planId, timeIn, timeOut, task, detail);
+        await timeSheetRepo.updateSheet(id, planId, timeIn, timeOut, task, detail);
+        return await this.getTimeSheet(id);
     }
 
     /**
@@ -67,7 +68,7 @@ class TimeSheetService {
      * @param detail   reason for clearing
      */
     clearTimeSheet(id, detail) {
-        if (!id){
+        if (!id) {
             return;
         }
         detail = `Cleared by admin: ${detail}`;
@@ -125,12 +126,14 @@ class TimeSheetService {
      */
     async getTimeSheet(id) {
         console.log(`Getting timesheet ${id}...`);
-        let sheets = await this.getAllTimeSheets();
-        for (var i = 0; i < sheets.length; ++i) {
-            if (sheets[i].id.toString() === id.toString()) {
-                return sheets[i];
-            }
-        }
+        let sheet = await timeSheetRepo.getTimeSheet(id).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+        return await createSheetFromRow(sheet).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
     }
 
     /**
@@ -139,7 +142,7 @@ class TimeSheetService {
      * @returns {Promise<[]>} containing time_sheet objects
      */
     async getSheetsByMaker(id) {
-        if (!id){
+        if (!id) {
             return [];
         }
         let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err => {
@@ -147,7 +150,7 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
         let makerSheets = [];
-        for (let row of sheets){
+        for (let row of sheets) {
             let refinedSheet = await createSheetFromRow(row).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
@@ -168,7 +171,7 @@ class TimeSheetService {
             emailService.notifyAdmin(err.toString());
         });
         let clientSheets = [];
-        for (let row of sheets){
+        for (let row of sheets) {
             let refinedSheet = await createSheetFromRow(row).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
@@ -196,6 +199,7 @@ class TimeSheetService {
             let currentSheet = sheetsForMaker[i];
             if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0") {
                 onlineSheets.push(currentSheet);
+                console.log(currentSheet);
             }
         }
         return onlineSheets;
@@ -228,17 +232,101 @@ class TimeSheetService {
      * @returns {Promise<moment>} for the current instant
      */
     async getCurrentMoment() {
-            return await moment().utc().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
+        return await moment().utc().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
     }
 
-    /**
-     * Clocks a given user in with the
-     * @param token         - token of the requesting maker
-     * @param relationshipId- relationship between maker and paying client
-     * @param task          - maker's task for the session
-     * @returns {Promise<boolean>} indicating whether the clock-in was received and processed successfully
-     */
-    async clockIn(token, task, relationshipId) {
+
+    async openTimeSheet(relationship, startMoment, task) {
+        let newSheet = await this.createTimeSheet(relationship.makerId, relationship.planId, relationship.clientId,
+            moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), '0000-00-00 00:00:00', task, "Created Normally", relationship.id).catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString());
+        });
+        console.log(`Clock-in request sent for ${relationship.makerId} at time ${moment(startMoment).format('YYYY-MM-DD HH:mm:ss')}`);
+        return newSheet;
+    }
+
+    async closeTimeSheet(sheet, endMoment, changedTask) {
+        console.log(`Clock-out timesheet request sent for maker ${sheet.makerId} at time ${moment(endMoment).format('YYYY-MM-DD HH:mm:ss')}`);
+        sheet = await this.updateTimesheet(sheet.id, sheet.planId, sheet.timeIn, moment(endMoment).format('YYYY-MM-DD HH:mm:ss'),
+            changedTask ? changedTask : sheet.task, sheet.adminNote).catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString());
+        })
+        return sheet;
+    }
+
+    async makerOnTheGo(token, relationshipId, minutes, task) {
+        let relationship = await this.extractRelationship(relationshipId).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+            return false;
+        });
+        if (!(await this.tokenIsInSheetRelationship(token, relationship).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+            return false;
+        }))){
+            return false;
+        }
+        return await this.logOnTheGo(relationship.id, minutes, task);
+    }
+
+
+    async logOnTheGo(relationshipId, minutes, task) {
+        let relationship = await this.extractRelationship(relationshipId).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+            return false;
+        });
+        let now = moment();
+        let year = now.year();
+        let month = now.month() + 1;
+        let day = now.date();
+        let startTime = moment().year(year).month(month).date(day).hour(12).minute(0).second(0);
+        let sheet = await this.openTimeSheet(relationship, startTime, task).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+            return false;
+        });
+        let endTime = startTime.add(minutes, 'm');
+        sheet = await this.closeTimeSheet(sheet, endTime).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+            return false;
+        });
+        await this.updateBucketWithSheet(sheet).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+            return false;
+        });
+        sheet = await this.updateTimesheet(sheet.id, sheet.planId, sheet.timeIn, sheet.timeOut, sheet.task, "On the Go!").catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+            return false;
+        });
+        return sheet;
+    }
+
+    async updateBucketWithSheet(sheet) {
+        let shiftLength = await this.getMinutesBetweenMoments(moment(sheet.timeIn), moment(sheet.timeOut))
+            .catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
+        request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/updateClientTimeBucket`,
+            form: {
+                id: sheet.clientId,
+                planId: sheet.planId,
+                minutes: shiftLength * -1,
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        });
+    }
+
+    async tokenIsInSheetRelationship(token, relationship) {
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
@@ -250,9 +338,22 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
+        console.log(result.body);
         let idResponse = JSON.parse(result.body);
 
-        result = await request({
+        let match = idResponse.id.toString() === relationship.makerId.toString();
+
+        if (!match) {
+            console.log("Requester did not match maker in relationship.");
+            emailService.notifyAdmin(`Requester did not match maker in relationship.
+            Maker: ${idResponse.id}
+            Relationship: ${relationship.id}`);
+        }
+        return match;
+    }
+
+    async extractRelationship(relationshipId) {
+        let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
             form: {
@@ -263,34 +364,45 @@ class TimeSheetService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
+        return  JSON.parse(result.body);
+    }
 
-        let relationship = JSON.parse(result.body);
+    /**
+     * Clocks a given user in with the
+     * @param token         - token of the requesting maker
+     * @param relationshipId- relationship between maker and paying client
+     * @param task          - maker's task for the session
+     * @returns {Promise<boolean>} indicating whether the clock-in was received and processed successfully
+     */
+    async clockIn(token, task, relationshipId) {
+        let relationship = await this.extractRelationship(relationshipId).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
 
-        if (idResponse.id.toString() !== relationship.makerId.toString()) {
-            console.log("Maker attempted to clock into external relationship.");
-            emailService.notifyAdmin(`Maker attempted to clock into external relationship.
-            Maker: ${idResponse.id}
-            Relationship: ${relationshipId}
-            Task: ${task}`);
+        if (!(await this.tokenIsInSheetRelationship(token, relationship).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString())}))) {
             return false;
         }
-
-        let sheets = await this.getSheetsByMaker(relationship.makerId);
-        for (var sheet of sheets) {
-            if (sheet.timeOut.toString() === '0000-00-00 00:00:00') {
-                console.log(`User ${relationship.makerId} bad clock in attempt; already clocked in`);
-                return true; //attempt successful, a clock-in exists.
-            }
+        if (await this.makerIsOnline(relationship.makerId).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        })) {
+            console.log("Maker is already online!");
+            return true; //true that a successful clock-in exists
         }
 
         let rightNow = await this.getCurrentMoment().catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        let newSheet = await this.createTimeSheet(relationship.makerId, relationship.planId, relationship.clientId,
-            rightNow, '0000-00-00 00:00:00', task, null,  relationshipId);
-        console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
+        let newSheet = await this.openTimeSheet(relationship, rightNow, task).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
 
+        console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
         return Number.isInteger(newSheet.id);
     }
 
@@ -303,7 +415,6 @@ class TimeSheetService {
      * @param newTask - updated task if any
      */
     async clockOut(token, newTask) {
-
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
@@ -317,11 +428,11 @@ class TimeSheetService {
         });
         let idResponse = JSON.parse(result.body);
         let makerId = idResponse.id;
-
         let onlineSheets = await this.getOnlineSheets(makerId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
+
 
         //"clock out" online sheets
         for (var i = 0; i < onlineSheets.length; ++i) {
@@ -330,40 +441,27 @@ class TimeSheetService {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
-
-            await this.updateTimesheet(currentSheet.id, currentSheet.planId, currentSheet.timeIn, rightNow,
-                newTask ? newTask : currentSheet.task, currentSheet.adminNote);
-            console.log(`Clock-out timesheet request sent for ${makerId} at time ${rightNow}`);
-
-            let shiftLength = await this.getMinutesBetweenMoments(moment(currentSheet.timeIn), rightNow).catch(err => {
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
-            request({
-                method: 'POST',
-                uri: `${process.env.TWINBEE_URL}/api/updateClientTimeBucket`,
-                form: {
-                    id: currentSheet.clientId,
-                    planId: currentSheet.planId,
-                    minutes: shiftLength * -1,
-                    'auth': process.env.TWINBEE_MASTER_AUTH
-                }
-            });
-
+            let closedSheet = await this.closeTimeSheet(currentSheet, rightNow, newTask);
+            this.updateBucketWithSheet(closedSheet);
             console.log("Update client bucket due do clock-out request sent");
         }
 
-        console.log("Confirming sheets updated appropriately...");
+        return !(await this.makerIsOnline(makerId));
+    }
 
-        onlineSheets = await this.getOnlineSheets(makerId).catch(err => {
+    async makerIsOnline(makerId) {
+        let sheets = await this.getSheetsByMaker(makerId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
 
-        console.log("Remaining online sheets: ");
-        console.log(onlineSheets);
-
-        return onlineSheets.length === 0;
+        for (var sheet of sheets) {
+            if (sheet.timeIn[0].toString() !== "0" && sheet.timeOut[0].toString() === "0") {
+                console.log(sheet);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
