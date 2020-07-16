@@ -36,6 +36,7 @@ const firstStart = moment().year(2000);
 const secondStart = moment().year(2005);
 const thirdStart = moment().year(2010);
 
+
 describe('Time Clock Service Test', function () {
     beforeEach(function () {
         let scope = nock(process.env.TWINBEE_URL)
@@ -100,6 +101,7 @@ describe('Time Clock Service Test', function () {
     });
 });
 
+
 describe("Open Sheet Test", function () {
     beforeEach(function () {
         let createSheetStub = sinon.stub(timeSheetService, 'createTimeSheet')
@@ -115,13 +117,13 @@ describe("Open Sheet Test", function () {
         sinon.restore();
     });
 
-
     it('Should open a new sheet', async function () {
         let startMoment = moment();
         let actual = await timeSheetService.openTimeSheet(relationship, startMoment, "task");
         expect(actual).to.deep.equal(new TimeSheet(1, 1, "1", "1", moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), "0000-00-00 00:00:00", "task", "Created Normally", 1));
     });
 });
+
 
 describe("Close Sheet Test", function () {
     beforeEach(function () {
@@ -138,7 +140,6 @@ describe("Close Sheet Test", function () {
         sinon.restore();
     });
 
-
     it('Should close the selected sheet', async function () {
         let startMoment = moment();
         let endMoment = moment();
@@ -147,6 +148,7 @@ describe("Close Sheet Test", function () {
         expect(actual).to.deep.equal(new TimeSheet(1, 2, 3, 4, moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), moment(endMoment).format('YYYY-MM-DD HH:mm:ss'), "newTask", "note", 1));
     });
 });
+
 
 describe("Create Sheet Test", function () {
     beforeEach(function () {
@@ -167,6 +169,7 @@ describe("Create Sheet Test", function () {
         expect(actual).to.deep.equal(new TimeSheet(1, 1, 1, 1, 1, 1, 1, 1, 1));
     });
 });
+
 
 describe("Update Sheet Test", function () {
     let unupdatedTimeSheet = new TimeSheet(1, 1, 1, 1, 1, 1, 1, 1, 1);
@@ -201,6 +204,7 @@ describe("Update Sheet Test", function () {
     });
 });
 
+
 describe("Last Online Sheet Test", function () {
     beforeEach(function () {
         let onlineSheetsStub = sinon.stub(timeSheetService, 'getOnlineSheets')
@@ -234,15 +238,14 @@ describe("Last Online Sheet Test", function () {
     });
 });
 
+
 describe("Maker Is Online Test", function () {
     beforeEach(function () {
     });
 
-
     afterEach(function () {
         sinon.restore();
     });
-
 
     it('Should indicate the maker is online', async function () {
         let onlineSheetsStub = sinon.stub(timeSheetService, 'getSheetsByMaker')
