@@ -22,6 +22,9 @@ class AuthService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
+        if (!email) {
+            return false;
+        }
         let response = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
@@ -53,6 +56,9 @@ class AuthService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
+        if (!email) {
+            return false;
+        }
         let response = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
@@ -93,6 +99,9 @@ class AuthService {
             emailService.notifyAdmin(err.toString());
             return false;
         });
+        if (!email) {
+            return false;
+        }
         console.log("Let's see if you're on the list...");
         for (var i = 0; i < adminList.length; ++i){
             let emailsMatch = await compare(email.toLowerCase(), adminList[i].admin).catch(err => {
