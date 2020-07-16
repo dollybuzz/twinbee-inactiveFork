@@ -9,14 +9,22 @@ const nock = require('nock');
 const TimeSheet = require('../domain/entity/timeSheet');
 const Relationship = require('../domain/entity/relationship.js');
 
-const timeSheetBasic1 = {id: 1, maker_id: 1, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-24 22:22:22',
-                        end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'No details given.', relationship_id: 1};
-const timeSheetBasic2 = {id: 2, maker_id: 1, client_id: 'b', hourly_rate: 20.00, start_time: '2019-04-23 22:22:22',
-                        end_time: '2019-04-23 23:23:23', task: 'worker', admin_note: 'Added by admin: 1', relationship_id: 2};
-const timeSheetBasic3 = {id: 3, maker_id: 2, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
-                        end_time: '2019-04-22 23:23:23', task: 'worker', admin_note: 'Added by admin: 2', relationship_id: 3};
-const timeSheetBasic4 = {id: 4, maker_id: 5, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
-                        end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'Added by admin: 2', relationship_id: 4};
+const timeSheetBasic1 = {
+    id: 1, maker_id: 1, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-24 22:22:22',
+    end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'No details given.', relationship_id: 1
+};
+const timeSheetBasic2 = {
+    id: 2, maker_id: 1, client_id: 'b', hourly_rate: 20.00, start_time: '2019-04-23 22:22:22',
+    end_time: '2019-04-23 23:23:23', task: 'worker', admin_note: 'Added by admin: 1', relationship_id: 2
+};
+const timeSheetBasic3 = {
+    id: 3, maker_id: 2, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
+    end_time: '2019-04-22 23:23:23', task: 'worker', admin_note: 'Added by admin: 2', relationship_id: 3
+};
+const timeSheetBasic4 = {
+    id: 4, maker_id: 5, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-22 22:22:22',
+    end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'Added by admin: 2', relationship_id: 4
+};
 
 const timeSheetRefined1 = new TimeSheet(1, 1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', 'No details given.', 1);
 const timeSheetRefined2 = new TimeSheet(2, 1, 20.00, 'b', '2019-04-23 22:22:22', '2019-04-23 23:23:23', 'worker', 'Added by admin: 1', 2);
@@ -24,6 +32,9 @@ const timeSheetRefined3 = new TimeSheet(3, 2, 20.00, 'a', '2019-04-22 22:22:22',
 const timeSheetRefined4 = new TimeSheet(4, 5, 20.00, 'a', '2019-04-22 22:22:22', '0000-00-00 00:00:00', 'worker', 'Added by admin: 2', 4);
 const timeSheetRefined4Closed = new TimeSheet(4, 5, 20.00, 'a', '2019-04-22 22:22:22', '2000-01-01 12:00:00', 'worker', 'Added by admin: 2', 4);
 const relationship = new Relationship(1, 1, "1", "1", "1", 1);
+const firstStart = moment().year(2000);
+const secondStart = moment().year(2005);
+const thirdStart = moment().year(2010);
 
 describe('Time Clock Service Test', function () {
     beforeEach(function () {
@@ -137,6 +148,41 @@ describe("Close Sheet Test", function () {
     });
 })
 
+describe("Last Online Sheet Test", function () {
+    beforeEach(function () {
+        let onlineSheetsStub = sinon.stub(timeSheetService, 'getOnlineSheets')
+            .callsFake(function (id) {
+                return new Promise((resolve, reject) => {
+                    let sheets = [
+                        new TimeSheet(id, 2, 1, 4, moment(firstStart).format("YYYY-MM-DD HH:mm:ss"), "0000-00-00 00:00:00", "task", "detail", 1),
+                        new TimeSheet(id, 2, 1, 4, moment(secondStart).format("YYYY-MM-DD HH:mm:ss"), "0000-00-00 00:00:00", "task", "detail", 1),
+                        new TimeSheet(id, 2, 1, 4, moment(thirdStart).format("YYYY-MM-DD HH:mm:ss"), "0000-00-00 00:00:00", "task", "detail", 1)
+                    ];
+                    resolve(sheets);
+                })
+            });
+        let secondsOnlineStub = sinon.stub(timeSheetService, 'getSecondsOnline')
+            .callsFake(function (id) {
+                return new Promise((resolve, reject) => {
+                    resolve(5);
+                })
+            });
+    });
+
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+    it('Should successfully grab the most recent online sheet', async function () {
+        let actual = await timeSheetService.getLastOnlineSheet(1);
+        let expectedSheet = new TimeSheet(1, 2, 1, 4, moment(thirdStart).format("YYYY-MM-DD HH:mm:ss"), "0000-00-00 00:00:00", "task", "detail", 1);
+        expectedSheet.secondsOnline = 5;
+        expect(actual).to.deep.equal(expectedSheet);
+    });
+});
+
 
 describe('Time Sheet Service Test', function () {
     beforeEach(function () {
@@ -155,7 +201,7 @@ describe('Time Sheet Service Test', function () {
         let createSheetStub = sinon.stub(timeSheetRepo, 'createSheet')
             .resolves(1);
         let deleteSheetStub = sinon.stub(timeSheetRepo, 'clearSheet')
-            .resolves(()=>{
+            .resolves(() => {
                 console.log("Don't delete me bro!");
             });
     });
@@ -238,7 +284,10 @@ describe('Time Sheet Service Test', function () {
     });
     it('Should fail to create a timesheet without multiple required fields', async function () {
         let actual = await timeSheetService.createTimeSheet(null, null, null, null, '0000-00-00 00:00:00', 'worker', "No details given.", 1);
-        expect(actual).to.deep.equal({status: "failed to create timesheet\n", reason: "makerId was invalid\nplanId was invalid\nclientId was invalid\ntimeIn was invalid\n"});
+        expect(actual).to.deep.equal({
+            status: "failed to create timesheet\n",
+            reason: "makerId was invalid\nplanId was invalid\nclientId was invalid\ntimeIn was invalid\n"
+        });
     });
 
 });

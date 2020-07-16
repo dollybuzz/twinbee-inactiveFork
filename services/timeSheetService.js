@@ -223,8 +223,19 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
-        currentSheet.secondsOnline = moment.duration(moment(now).diff(inMoment)).asSeconds();
+        currentSheet.secondsOnline = await this.getSecondsOnline(inMoment).catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString())
+        });
         return currentSheet;
+    }
+
+    async getSecondsOnline(inMoment){
+        let now = await this.getCurrentMoment().catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString())
+        });
+        return moment.duration(moment(now).diff(inMoment)).asSeconds();
     }
 
     /**
