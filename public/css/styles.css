@@ -283,6 +283,20 @@ label {
     height: 150px;
 }
 
+.clockBlock {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    vertical-align: center;
+    text-align: center;
+    height: 100px;
+}
+
+.clockRow {
+    margin: 0 auto;
+    height: 300px;
+    width: auto;
+}
+
 #adminTitle, #clientTitle, #FMTitle {
     font-size: 1.5em;
     padding-top: 30px;
