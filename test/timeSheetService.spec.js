@@ -222,11 +222,9 @@ describe("Last Online Sheet Test", function () {
             });
     });
 
-
     afterEach(function () {
         sinon.restore();
     });
-
 
     it('Should successfully grab the most recent online sheet', async function () {
         let actual = await timeSheetService.getLastOnlineSheet(1);
