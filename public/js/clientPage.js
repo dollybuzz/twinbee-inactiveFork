@@ -9,7 +9,7 @@ let SELECTED_NAV_MAP = null;
 
 let navMapper = {
     main: function () {
-        window.location.replace(`/login?token=${id_token}`);;
+        window.location.replace(`/login?token=${id_token}`);
     },
 
     manageCredits: function () {
