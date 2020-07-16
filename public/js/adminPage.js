@@ -1574,10 +1574,14 @@ function relationshipModForm(res, status) {
         `<h6>You selected Relationship ID: ${selectedRow.children()[0].innerHTML}<br>Client: ${selectedRow.children()[1].innerHTML}</h6>` +
         "<br><form id='modify'>" +
         "<label for='modMakerRel'>Select a Freedom Maker:</label>" +
-        "<select class='form-control' id='modMakerRel'></select>\n<br><br>" +
+        "<select class='form-control' id='modMakerRel'></select>\n<br>" +
         "<label for='modMakerOcc'>Enter Freedom Maker Role:</label>" +
-        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[4].innerHTML}'><div><span id='errormessage' style='color:red'></span>\n` +
-        "<div id='empty'></div></form>");
+        `<input class='form-control' type='text' id='modMakerOcc' name='modMakerOcc' value='${selectedRow.children()[4].innerHTML}'>\n<br><br>` +
+        "<label for='modHrRate'>Freedom Maker Hourly Rate:</label>" +
+        `<input class='form-control' type='text' id='modHrRate' name='modHrRate' value='${Math.floor(res.hourlyRate/100).toFixed(2)}' disabled>\n` +
+        "<div id='empty'></div>" +
+        "<div id='empty'></div>" +
+        "<div><span id='errormessage' style='color:red'></span></div></form>");
 
     $("#optionsClient").append("<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button>");
     $("#SubmitButton").css("opacity", "1");
