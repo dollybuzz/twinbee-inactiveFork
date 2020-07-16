@@ -58,22 +58,21 @@ function createBody() {
 function timeClockFunctionality() {
     //Create page
     $("#userMainContent").html(
-        "<div class=\"block\">\n" +
+        "<div class=\"clockBlock\">\n" +
         "            <div id=\"empty\"></div>\n" +
-        "            <div id=\"clientRole\"><br><h6>Please select your Client<br>and Role:</h6><br></div>\n" +
-        "            <div><br><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
-        "            <div id=\"clientCredit\"><br><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
+        "            <div id=\"clientRole\"><h6>Please select your Client<br>and Role:</h6></div>\n" +
+        "            <div><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
+        "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"makerText1\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
-        "            <div id=\"taskBlock\"><br><h6>Please enter in a task:</h6></div>\n" +
-        "            <div><br><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
+        "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
+        "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
         "        </div>\n" +
         "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
-        "        <br>\n" +
-        "    <div class=\"row\" id=\"makerBottomRow\">\n" +
+        "    <div class=\"clockRow\" id=\"makerBottomRow\">\n" +
         "        <div id=\"empty\"></div>\n" +
         "        <div id=\"clockButton\"><button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"makerClock\">Clock In</button></div>\n" +
         "        <div id=\"empty\"></div>\n" +
@@ -293,10 +292,9 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
-                                $("#clockPrompt").html("<div id='runningTime'>asdf</div>");
                             }, 2000);
                         } else {
-                            $("#clockPrompt").html("<br><h5>An error occurred! Please refresh and check your time sheet.</h5>");
+                            $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
                     },
                     error: function (clockres, status) {
@@ -352,6 +350,7 @@ function padIntToTwoPlaces(int){
     }
     return intString;
 }
+
 function runningTime() {
     TIME_SHOULD_RUN = true;
     $.ajax({
