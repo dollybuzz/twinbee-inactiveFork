@@ -247,12 +247,13 @@ class TimeSheetService {
     }
 
     async closeTimeSheet(sheet, endMoment, changedTask) {
-        console.log(`Clock-out timesheet request sent for maker ${sheet.makerId} at time ${moment(endMoment).format('YYYY-MM-DD HH:mm:ss')}`);
+        console.log(`Close timesheet request sent for maker ${sheet.makerId} at time ${moment(endMoment).format('YYYY-MM-DD HH:mm:ss')}`);
+
         sheet = await this.updateTimesheet(sheet.id, sheet.planId, sheet.timeIn, moment(endMoment).format('YYYY-MM-DD HH:mm:ss'),
             changedTask ? changedTask : sheet.task, sheet.adminNote).catch(error => {
             console.log(error);
             emailService.notifyAdmin(error.toString());
-        })
+        });
         return sheet;
     }
 

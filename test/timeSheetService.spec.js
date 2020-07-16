@@ -7,6 +7,7 @@ require('moment')().format('YYYY-MM-DD HH:mm:ss');
 const moment = require('moment');
 const nock = require('nock');
 const TimeSheet = require('../domain/entity/timeSheet');
+const Relationship = require('../domain/entity/relationship.js');
 
 const timeSheetBasic1 = {id: 1, maker_id: 1, client_id: 'a', hourly_rate: 20.00, start_time: '2019-04-24 22:22:22',
                         end_time: '0000-00-00 00:00:00', task: 'worker', admin_note: 'No details given.', relationship_id: 1};
@@ -22,8 +23,7 @@ const timeSheetRefined2 = new TimeSheet(2, 1, 20.00, 'b', '2019-04-23 22:22:22',
 const timeSheetRefined3 = new TimeSheet(3, 2, 20.00, 'a', '2019-04-22 22:22:22', '2019-04-22 23:23:23', 'worker', 'Added by admin: 2', 3);
 const timeSheetRefined4 = new TimeSheet(4, 5, 20.00, 'a', '2019-04-22 22:22:22', '0000-00-00 00:00:00', 'worker', 'Added by admin: 2', 4);
 const timeSheetRefined4Closed = new TimeSheet(4, 5, 20.00, 'a', '2019-04-22 22:22:22', '2000-01-01 12:00:00', 'worker', 'Added by admin: 2', 4);
-
-
+const relationship = new Relationship(1, 1, "1", "1", "1", 1);
 
 describe('Time Clock Service Test', function () {
     beforeEach(function () {
@@ -89,6 +89,54 @@ describe('Time Clock Service Test', function () {
     });
 });
 
+describe("Open Sheet Test", function () {
+    beforeEach(function () {
+        let createSheetStub = sinon.stub(timeSheetService, 'createTimeSheet')
+            .callsFake(function (makerId, planId, clientId, startTime, endTime, task, detail, relationshipId) {
+                return new Promise((resolve, reject) => {
+                    let newSheet = new TimeSheet(1, makerId, planId, clientId, startTime, endTime, task, detail, relationshipId);
+                    resolve(newSheet);
+                })
+            });
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+    it('Should open a new sheet', async function () {
+        let startMoment = moment();
+        let actual = await timeSheetService.openTimeSheet(relationship, startMoment, "task");
+        expect(actual).to.deep.equal(new TimeSheet(1, 1, "1", "1", moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), "0000-00-00 00:00:00", "task", "Created Normally", 1));
+    });
+})
+
+describe("Close Sheet Test", function () {
+    beforeEach(function () {
+        let createSheetStub = sinon.stub(timeSheetService, 'updateTimesheet')
+            .callsFake(function (id, planId, startTime, endTime, task, detail) {
+                return new Promise((resolve, reject) => {
+                    let newSheet = new TimeSheet(id, 2, planId, 4, startTime, endTime, task, detail, 1);
+                    resolve(newSheet);
+                })
+            });
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+
+    it('Should close the selected sheet', async function () {
+        let startMoment = moment();
+        let endMoment = moment();
+        let actual = await timeSheetService.closeTimeSheet(new TimeSheet(1, 2, 3, 4, moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), "0000-00-00 00:00:00", "task", "note", 1),
+            endMoment, "newTask");
+        expect(actual).to.deep.equal(new TimeSheet(1, 2, 3, 4, moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), moment(endMoment).format('YYYY-MM-DD HH:mm:ss'), "newTask", "note", 1));
+    });
+})
+
 
 describe('Time Sheet Service Test', function () {
     beforeEach(function () {
@@ -129,9 +177,9 @@ describe('Time Sheet Service Test', function () {
     it('Should grab only the sheets for online users', async function () {
         let actual = await timeSheetService.getOnlineMakerSheets();
         expect(actual).to.deep.equal([timeSheetRefined1]);
-        
+
     });
-    
+
     it('Should grab all sheets for a given maker', async function () {
         let actual = await timeSheetService.getSheetsByMaker(1);
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined2]);
