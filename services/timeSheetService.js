@@ -235,7 +235,7 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
-        return moment.duration(moment(now).diff(inMoment)).asSeconds();
+        return moment.duration(moment(now).diff(startMoment)).asSeconds();
     }
 
     /**
