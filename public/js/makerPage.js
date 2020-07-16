@@ -60,7 +60,7 @@ function timeClockFunctionality() {
     $("#userMainContent").html(
         "<div class=\"clockBlock\">\n" +
         "            <div id=\"empty\"></div>\n" +
-        "            <div id=\"clientRole\"><<h6>Please select your Client<br>and Role:</h6></div>\n" +
+        "            <div id=\"clientRole\"><h6>Please select your Client<br>and Role:</h6></div>\n" +
         "            <div><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"makerText1\"></div>\n" +
