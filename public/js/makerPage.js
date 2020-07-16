@@ -7,7 +7,7 @@ let SELECTED_NAV_MAP = null;
 let TIME_SHOULD_RUN = false;
 let navMapper = {
     main: function () {
-        location.reload();
+        window.location.replace(`/login?token=${id_token}`);;
     },
 
     timeclock: function () {
