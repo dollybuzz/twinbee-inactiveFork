@@ -290,11 +290,12 @@ label {
     grid-template-columns: 2fr 1fr 1fr 2fr;
     vertical-align: center;
     text-align: center;
-    height: 100px;
+    height: 150px;
     margin-top: 15px;
 }
 
 .clockRow {
+    display: inline;
     margin: 0 auto;
     height: 300px;
     width: auto;
