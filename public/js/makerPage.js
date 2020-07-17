@@ -127,7 +127,8 @@ function timeClockFunctionality() {
         {
             timeClockFunctionality();
         }
-        else {
+        else
+        {
             $("#otgBlock").css("opacity", "1");
             $("#otgTime").css("opacity", "1");
             $("#otgButton").html("Back to Live Clock");
@@ -145,8 +146,37 @@ function timeClockFunctionality() {
             $("#makerClock").html("Submit");
             $("#makerClock").off("click");
             $("#makerClock").on('click', function() {
+                let message = "";
                 let valid = true;
-                //if("#taskEntry").
+                if($("#taskEntry").val().length === 0) {
+                    valid = false;
+                    message += "A task is required!";
+                }
+                if(valid) {
+                    $("#clockPrompt").html("");
+                    $.ajax({
+                        url: "/api/makerOnTheGo",
+                        method: "post",
+                        data: {
+                            auth: id_token,
+                            token: id_token,
+                            relationshipId: $("#makerSelectedClient").val(),
+                            minutes: $("#otgValues").val(),
+                            task: $("#taskEntry").val()
+                        },
+                        dataType: "json",
+                        success: function(res, status) {
+                            $("#makerText2").html("<h5>Successfully submitted entry!</h5>");
+                        },
+                        error: function (res, status) {
+                            $("#optionsClient").html("Could not add entry!");
+                        }
+                    });
+                }
+                else {
+                    $("#clockPrompt").html(`<h5>${message}</h5>`);
+                    $("#clockPrompt").css("color", "red");
+                }
 
             });
         }
