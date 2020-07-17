@@ -232,7 +232,7 @@ function setClockInFunctionality() {
             success: function (clockres, status) {
                 if (clockres) {
                     setClockOutFunctionality();
-                    $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
+                    $("#makerText2").html("<h5>Successfully clocked in!</h5>");
                     $("#makerText2").css("opacity", "1");
                     $("#clockPrompt").css("opacity", "1");
                     $("#otgButton").css("opacity", "0");
@@ -242,13 +242,8 @@ function setClockInFunctionality() {
                         $("#otgButton").hide();
                     }, 1000);
 
-                    setTimeout(function () {
-                        $("#makerText2").html("");
-
-                    }, 2000);
-
                 } else {
-                    $("#makerText2").html("<br><h5>Could not clock in!</h5>");
+                    $("#makerText2").html("<h5>Could not clock in!</h5>");
                 }
             },
             error: function (clockres, status) {
@@ -315,7 +310,7 @@ function setClockOutFunctionality() {
                             TIME_SHOULD_RUN = false;
                             setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
-                            $("#makerText2").html("<br><h5>Successfully clocked out!</h5>");
+                            $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
                             $("#clientRole").css("opacity", "1");
                             $("#makerSelectedClient").css("opacity", "1");
@@ -340,10 +335,6 @@ function setClockOutFunctionality() {
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
                             }, 1000);
-
-                            setTimeout(function () {
-                                $("#makerText2").html("");
-                            }, 2000);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }

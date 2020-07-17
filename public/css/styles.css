@@ -50,6 +50,9 @@ body {
 .navItem{
     cursor: pointer;
 }
+.h5, .h6 {
+    cursor: pointer;
+}
 
 nav {
     display: inline-block;
@@ -502,7 +505,7 @@ th {
 #makerText2 {
     opacity: 0;
     height: 90px;
-    margin-top: 50px;
+    margin-top: 60px;
     transition: opacity 0.5s ease-in-out;
 }
 
@@ -522,7 +525,7 @@ th {
 }
 
 #clockPrompt {
-    height: 30px;
+    height: 40px;
     justify-content: center;
     text-align: center;
     opacity: 0;
