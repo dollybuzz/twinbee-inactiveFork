@@ -212,9 +212,6 @@ function setClockInFunctionality() {
         availableCredits();
     });
 
-    $("#otgButton").css("opacity", "0");
-
-
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
@@ -232,6 +229,7 @@ function setClockInFunctionality() {
                     $("#makerText2").html("<br><h5>Successfully clocked in!</h5>");
                     $("#makerText2").css("opacity", "1");
                     $("#clockPrompt").css("opacity", "1");
+                    $("#otgButton").css("opacity", "0");
 
                     setTimeout(function () {
                         $("#makerText2").css("opacity", "0");
@@ -337,7 +335,7 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
-                                $("#otgButton").show();
+                                $("#otgButton").css("opacity", "1");
                             }, 2000);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
