@@ -116,7 +116,6 @@ class TimeReportingService {
     }
 
 
-
     //TODO: Optimize.  This is an initial knowingly-naive approach.
     /**
      *
@@ -176,16 +175,12 @@ class TimeReportingService {
         let timeSheets = await getAllSheets();
 
         for (var sheet of timeSheets) {
-            let filter = await makerIdFilter(makerId, sheet.makerId).catch(err => {
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
-            let relationshipFilter = await relationshipIdFilter(relationshipId, sheet.relationshipId).catch(err => {
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
+            let makerIdIsGood = makerId === "" || makerId.toString() === sheet.makerId.toString();
+            let relationshipIdIsGood = relationshipId === "" || relationshipId.toString() === sheet.relationshipId.toString();
+            let adminNoteIsGood = sheet.adminNote ? sheet.adminNote.includes(adminNote) : false;
 
-            if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId) && filter && sheet.adminNote.includes(adminNote) && relationshipFilter) {
+            if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId)
+                && makerIdIsGood && adminNoteIsGood && relationshipIdIsGood) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
                     let details = await this.getSheetDetails(sheet);
@@ -288,14 +283,6 @@ class TimeReportingService {
         let makerName = this.makerMap[sheet.makerId] ? `${maker.firstName} ${maker.lastName}` : `Deleted maker ${sheet.makerId}`;
         return {duration: duration, clientName: clientName, clientCompany: clientCompany, makerName: makerName};
     }
-}
-
-
-async function makerIdFilter(makerId, sheetMakerId) {
-    return makerId === "" || makerId.toString() === sheetMakerId.toString();
-}
-async function relationshipIdFilter(relationshipId, sheetRelationshipId) {
-    return relationshipId === "" || relationshipId.toString() === sheetRelationshipId.toString();
 }
 
 async function sheetIsClosed(sheet) {
