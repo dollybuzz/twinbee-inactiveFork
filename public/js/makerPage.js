@@ -70,11 +70,11 @@ function timeClockFunctionality() {
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
-        "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>" +
+        "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
-        "            <div id=\"otgBlock\"><h6>Please select a time option:</h6></div>\n" +
-        "            <div><select class=\"form-control\" id=\"otgTime\"></select></div>\n" +
+        "            <div id=\"otgBlock\"></div>\n" +
+        "            <div id='otgTime'></div>\n" +
         "        </div>\n" +
         "    <div class=\"clockRow\" id=\"makerBottomRow\">\n" +
         "        <div id=\"empty\"></div>\n" +
@@ -132,13 +132,15 @@ function timeClockFunctionality() {
             $("#otgTime").css("opacity", "1");
             $("#otgButton").html("Back to Live Clock");
 
+            $("#otgBlock").html("<h6>Please select a time option:</h6>");
+
             //Populate drop down
-            $("#otgTime").html(
+            $("#otgTime").html("<select class='form-control' id='otgTime'>" +
                 "<option id='5m' value='5'>5 minutes</option>\n" +
                 "<option id='15m' value='15'>15 minutes</option>\n" +
                 "<option id='30m' value='30'>30 minutes</option>\n" +
                 "<option id='45m' value='45'>45 minutes</option>\n" +
-                "<option id='60m' value='60'>1 hour</option>\n");
+                "<option id='60m' value='60'>1 hour</option></select>\n");
         }
     });
 
@@ -210,6 +212,9 @@ function setClockInFunctionality() {
         availableCredits();
     });
 
+    $("#otgButton").css("opacity", "0");
+
+
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
@@ -234,6 +239,7 @@ function setClockInFunctionality() {
 
                     setTimeout(function () {
                         $("#makerText2").html("");
+                        $("#otgButton").hide();
                     }, 2000);
 
                 } else {
@@ -323,6 +329,7 @@ function setClockOutFunctionality() {
                             $("#makerSelectedClient").show();
                             $("#otgBlock").show();
                             $("#otgTime").show();
+                            $("#otgButton").show();
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
@@ -330,6 +337,7 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
+                                $("#otgButton").show();
                             }, 2000);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
