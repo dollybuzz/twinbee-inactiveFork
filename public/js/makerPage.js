@@ -76,8 +76,10 @@ function timeClockFunctionality() {
         "            <div id=\"otgBlock\"><h6>Please select a time option:</h6></div>\n" +
         "            <div><select class=\"form-control\" id=\"otgTime\"></select></div>\n" +
         "        </div>\n" +
-        "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
         "    <div class=\"clockRow\" id=\"makerBottomRow\">\n" +
+        "        <div id=\"empty\"></div>\n" +
+        "        <div id='clockPrompt'><div id='runningTime'></div></div>\n" +
+        "        <div id=\"empty\"></div>\n" +
         "        <div id=\"empty\"></div>\n" +
         "        <div id=\"clockButton\"><button type=\"button\" class=\"btn btn-select btn-circle btn-xl\" id=\"makerClock\">Clock In</button></div>\n" +
         "        <div id=\"empty\"></div>\n" +
@@ -121,8 +123,11 @@ function timeClockFunctionality() {
     //Event listener for On-the-Go
     $("#otgButton").on('click', function() {
         //Dynamically change the button functions
-        if($("#otgButton").html() != "Back to Live Clock")
+        if($("#otgButton").html() == "Back to Live Clock")
         {
+            timeClockFunctionality();
+        }
+        else {
             $("#otgBlock").css("opacity", "1");
             $("#otgTime").css("opacity", "1");
             $("#otgButton").html("Back to Live Clock");
@@ -133,11 +138,7 @@ function timeClockFunctionality() {
                 "<option id='15m' value='15'>15 minutes</option>\n" +
                 "<option id='30m' value='30'>30 minutes</option>\n" +
                 "<option id='45m' value='45'>45 minutes</option>\n" +
-                "<option id='60m' value='60'>1 hour</option>\n"
-            );
-        }
-        else {
-            timeClockFunctionality();
+                "<option id='60m' value='60'>1 hour</option>\n");
         }
     });
 
