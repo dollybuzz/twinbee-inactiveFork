@@ -294,7 +294,7 @@ class TimeSheetService {
         });
         let now = moment();
         let year = now.year();
-        let month = now.month() + 1;
+        let month = now.month();
         let day = now.date();
         let startTime = moment().year(year).month(month).date(day).hour(12).minute(0).second(0);
         let sheet = await this.openTimeSheet(relationship, startTime, task).catch(err => {
