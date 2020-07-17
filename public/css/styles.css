@@ -141,7 +141,8 @@ body a:hover {
 #revInvoicesButton,
 #YesBuy,
 #YesChange,
-#runReportButton {
+#runReportButton,
+#otgButton {
     font-size: 1.2em;
     color: white;
     background-color: #32444e;
@@ -492,12 +493,12 @@ th {
 }
 
 #clientRole, #taskBlock {
-    height: 75px;
+    height: 50px;
 }
 
 #clockPrompt {
+    display: inline;
     height: 30px;
-    margin-top: 20px;
     justify-content: center;
     text-align: center;
     opacity: 0;
@@ -507,6 +508,18 @@ th {
     text-align: center;
     height: 200px;
 
+}
+
+#otgBlock, #otgTime {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#otgRow {
+    display: grid;
+    grid-template-columns: 3fr 1fr 3fr;
+    place-items: center;
+    height: 45px;
 }
 
 #twinbeeLogo {
