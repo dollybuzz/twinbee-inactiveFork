@@ -50,7 +50,8 @@ body {
 .navItem{
     cursor: pointer;
 }
-h5, h6 {
+
+h5, h6, #time, #pageTitle {
     cursor: default;
 }
 
