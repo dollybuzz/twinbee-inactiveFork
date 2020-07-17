@@ -7,7 +7,8 @@ const nodemailer = require('nodemailer');
 const {WebClient} = require('@slack/web-api');
 const slackToken = process.env.SLACK_TOKEN;
 const web = new WebClient(slackToken);
-
+const AWS = require('aws-sdk');
+AWS.config.update({region: 'us-east-1'});
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -22,6 +23,49 @@ const transporter = nodemailer.createTransport({
         expires: Number.parseInt(process.env.TWINBEE_OAUTH_TOKEN_EXPIRE, 10),
     },
 });
+
+exports.sendAWS = ()=>{
+    var params = {
+        Destination: { /* required */
+            ToAddresses: [
+                'TO EMAIL'
+            ]
+        },
+        Message: { /* required */
+            Body: { /* required */
+                Html: {
+                    Charset: "UTF-8",
+                    Data: "Hello!"
+                },
+                Text: {
+                    Charset: "UTF-8",
+                    Data: "Hello2!"
+                }
+            },
+            Subject: {
+                Charset: 'UTF-8',
+                Data: 'Test email'
+            }
+        },
+        Source: 'FROM EMAIL', /* required */
+        ReplyToAddresses: [
+            'REPLY EMAIL',
+            /* more items */
+        ],
+    };
+
+// Create the promise and SES service object
+    var sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(params).promise();
+
+// Handle promise's fulfilled/rejected states
+    sendPromise.then(
+        function(data) {
+            console.log(data.MessageId);
+        }).catch(
+        function(err) {
+            console.error(err, err.stack);
+        });
+};
 
 /**
  * Sends an email to the designated email with designated subject
