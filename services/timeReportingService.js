@@ -195,6 +195,7 @@ class TimeReportingService {
                         clientName: details.clientName,
                         company: details.clientCompany,
                         makerName: details.makerName,
+                        adminNote: sheet.adminNote,
                         task: sheet.task,
                         plan: sheet.planId
                     });
