@@ -41,7 +41,7 @@ module.exports = {
                 "present": ["occupation"],
                 "positiveIntegerOnly": ["makerId"],
                 "noSpaces": ["clientId", "planId"],
-                "positiveDecimalAllowed": [],
+                "positiveDecimalAllowed": ["hourlyRate"],
                 "decimalAllowed": []
             }, req.body);
         if (!validationResult.isValid) {

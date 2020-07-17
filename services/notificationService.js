@@ -51,11 +51,34 @@ exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject)
  */
 exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
     let subject = "Welcome to Freedom Makers!";
-    let content = "<h1>Welcome!</h1><br>" +
-        "<p>Your account is ready! Sign in at our " +
-        "<a href='https://www.freedom-makers-hours.com'>Freedom Makers Portal</a> to get started!</p>" +
-        "<br><br>" +
-        "This email was sent to notify you of your account's successful setup.  No unsubscribe necessary.";
+    let content = `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
+<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
+
+    <div id="landingContainer"
+         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
+        <div id="intentionallyEmpty"></div>
+        <div id="landingLogo" style="width: inherit;padding: 15px;">
+            <img src="/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
+        </div>
+    </div>
+    <div id="pageTitle"
+         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
+        <h2 style="color: #dbb459;">Welcome!</h2>
+    </div>
+</header>
+<div id="landingMain" style="background-color: white;width: 100%;height: 35vh;text-align: center;padding-top: 250px; font-size: larger">
+    <p>Your account is ready! <br>Sign in at our
+        <a href='https://www.freedom-makers-hours.com'>Freedom Makers Portal</a> to get started!</p>
+    <br><br>
+</div>
+<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
+    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
+    <div class="copyright">
+        <h6>©2020 <img src="/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo"></h6>
+    </div>
+</div>
+</body>
+`
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
     transporter.sendMail({to: toEmail, subject: subject, html: content}, (error) => {
         if (error) {

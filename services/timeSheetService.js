@@ -197,6 +197,7 @@ class TimeSheetService {
         // get online sheets
         for (var i = 0; i < sheetsForMaker.length; ++i) {
             let currentSheet = sheetsForMaker[i];
+            console.log(currentSheet)
             if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0") {
                 onlineSheets.push(currentSheet);
                 console.log(currentSheet);
