@@ -178,8 +178,9 @@ class TimeReportingService {
 
         for (var sheet of timeSheets) {
             let makerIdIsGood = makerId === "" || (sheet.makerId && makerId.toString() === sheet.makerId.toString());
-            let relationshipIdIsGood = sheet.relationshipId ? relationshipId.toString() === sheet.relationshipId.toString() : relationshipId === "";
-            let adminNoteIsGood = sheet.adminNote ? sheet.adminNote.includes(adminNote) : adminNote === "";
+            let relationshipIdIsGood = relationshipId === "" || (sheet.relationshipId && relationshipId.toString() === sheet.relationshipId.toString());
+            let adminNoteIsGood = adminNote === "" || (sheet.adminNote && sheet.adminNote.toString().toLowerCase().includes(adminNote.toString().toLowerCase()));
+
 
             if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId)
                 && makerIdIsGood && adminNoteIsGood && relationshipIdIsGood) {

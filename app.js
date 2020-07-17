@@ -392,7 +392,7 @@ app.get("/api/getEnvironment",
 
 (async function() {
     setTimeout(async function () {
-        console.log(await timeReportingService.getReportForClientMakerPair("", "", "", "", "", ""))
+        console.log(await timeReportingService.getReportForClientMakerPair("", "", "", "", "", "59"))
 
     }, 1000)
 })();
