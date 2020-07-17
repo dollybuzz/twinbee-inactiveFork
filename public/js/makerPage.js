@@ -70,7 +70,7 @@ function timeClockFunctionality() {
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
-        "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
+        `            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n` +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"otgBlock\"></div>\n" +
@@ -153,6 +153,8 @@ function timeClockFunctionality() {
                 if($("#taskEntry").val().length === 0) {
                     valid = false;
                     message += "A task is required!";
+                    $("#clockPrompt").css("transition", "none");
+                    $("#clockPrompt").css("opacity", "1");
                 }
 
                 if(valid) {
@@ -205,8 +207,8 @@ function timeClockFunctionality() {
                 let sheet = innerRes[i];
                 if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = false;
-                    $("#taskBlock").css("opacity", "0");
-                    $("#taskEntry").css("opacity", "0");
+                    //$("#taskBlock").css("opacity", "0");
+                    //$("#taskEntry").css("opacity", "0");
                     $("#clientRole").css("opacity", "0");
                     $("#clockPrompt").css("opacity", "1");
                     $("#makerSelectedClient").css("opacity", "0");
@@ -214,15 +216,15 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
 
                     setTimeout(function () {
-                        $("#taskBlock").hide();
-                        $("#taskEntry").hide();
+                        //("#taskBlock").hide();
+                        //$("#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
                         $("#makerSelectedClient").hide();
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                    $("#taskBlock").css("opacity", "1");
-                    $("#taskEntry").css("opacity", "1");
+                    //$("#taskBlock").css("opacity", "1");
+                    //$("#taskEntry").css("opacity", "1");
                     $("#clientRole").css("opacity", "1");
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
@@ -295,23 +297,25 @@ function setClockInFunctionality() {
 
 function setClockOutFunctionality() {
     runningTime();
+    $("#taskBlock").html("<h6>Update task:</h6>");
     $("#clientRole").css("opacity", "0");
     $("#makerSelectedClient").css("opacity", "0");
     $("#clockPrompt").css("opacity", "1");
     $("#clientCredit").css("opacity", "0");
     $("#availcredit").css("opacity", "0");
-    $("#taskBlock").css("opacity", "0");
-    $("#taskEntry").css("opacity", "0");
+    //$("#taskBlock").css("opacity", "0");
+    //$("#taskEntry").css("opacity", "0");
     $("#otgBlock").css("opacity", "0");
     $("#otgTime").css("opacity", "0");
+
 
     setTimeout(function () {
         $("#makerSelectedClient").hide();
         $("#clientRole").hide();
         $("#clientCredit").hide();
         $("#availcredit").hide();
-        $("#taskBlock").hide();
-        $("#taskEntry").hide();
+        //$("#taskBlock").hide();
+        //$("#taskEntry").hide();
         $("#otgBlock").hide();
         $("#otgTime").hide();
     }, 1500);
@@ -340,7 +344,8 @@ function setClockOutFunctionality() {
                     url: "api/clockOut",
                     method: "post",
                     data: {
-                        auth: id_token
+                        auth: id_token,
+                        newTask: $("#taskEntry").val()
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -348,19 +353,20 @@ function setClockOutFunctionality() {
                             TIME_SHOULD_RUN = false;
                             setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
+                            $("#taskBlock").html("<h6>Please enter in a task:</h6>");
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
                             $("#clientRole").css("opacity", "1");
                             $("#makerSelectedClient").css("opacity", "1");
                             $("#clientCredit").css("opacity", "1");
                             $("#availcredit").css("opacity", "1");
-                            $("#taskBlock").css("opacity", "1");
-                            $("#taskEntry").css("opacity", "1");
+                            //$("#taskBlock").css("opacity", "1");
+                            //$("#taskEntry").css("opacity", "1");
                             $("#otgBlock").css("opacity", "0");
                             $("#otgTime").css("opacity", "0");
                             $("#taskEntry").val("");
-                            $("#taskBlock").show();
-                            $("#taskEntry").show();
+                            //$("#taskBlock").show();
+                            //$("#taskEntry").show();
                             $("#clientCredit").show();
                             $("#clientRole").show();
                             $("#availcredit").show();

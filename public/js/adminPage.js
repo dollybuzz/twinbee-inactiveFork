@@ -2687,11 +2687,14 @@ function runReportFunctionality() {
                     if (minutes >= 0 || minutes < 0) {
                         message += ` ${minutes} minutes `;
                     }
+
+                    let shiftEnd = moment(item.timeOut).format("YYYY-MM-DD");
+
                     $("#reportContent").append('\n' +
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
                         '   <td>' + item.timeOut + '</td>' +
-                        '   <td>' + item.clientName + '</td>' +
+                        '   <td>' + shiftEnd + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
