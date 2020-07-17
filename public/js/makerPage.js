@@ -60,7 +60,7 @@ function timeClockFunctionality() {
     $("#userMainContent").html(
         "<div id='otgRow'>" +
         "            <div id=\"empty\"></div>\n" +
-        "            <div id=\"otgButton\"><button type='button 'class='btn btn-select btn-circle btn-xl' id='otgButton'>On-the-Go</button></div>\n" +
+        "            <button type='button 'class='btn btn-select btn-circle btn-xl' id='otgButton'>On-the-Go</button>\n" +
         "            <div id=\"empty\"></div>\n" +
         "</div>\n" +
         "<div class=\"clockBlock\">\n" +
@@ -68,10 +68,9 @@ function timeClockFunctionality() {
         "            <div id=\"clientRole\"><h6>Please select your Client and Role:</h6></div>\n" +
         "            <div><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
-        "            <div id=\"makerText1\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
-        "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\" +" +
+        "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"otgBlock\"><h6>Please select a time option:</h6></div>\n" +
