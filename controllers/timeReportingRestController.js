@@ -22,18 +22,26 @@ module.exports = {
      *      {
      *          sheets:[
      *              {
-     *                  id: timesheet id,
-     *                  duration: length of time worked
-     *                  clientName: client's name,
-     *                  makerName: maker's name,
-     *                  occupation: maker's occupation
+     *                   id: timesheet id,
+     *                   duration: length of time worked
+     *                   timeIn: sheet clock in time,
+     *                   timeOut: sheet clock out time,
+     *                   clientName: client's name,
+     *                   company: client's company name,
+     *                   makerName: maker's name,
+     *                   task: task on timesheet,
+     *                   plan: plan on timesheet
      *              },
      *              {
-     *                  id: timesheet id,
-     *                  duration: length of time worked
-     *                  clientName: client's name,
-     *                  makerName: maker's name,
-     *                  makerName: maker's occupation
+     *                   id: timesheet id,
+     *                   duration: length of time worked
+     *                   timeIn: sheet clock in time,
+     *                   timeOut: sheet clock out time,
+     *                   clientName: client's name,
+     *                   company: client's company name,
+     *                   makerName: maker's name,
+     *                   task: task on timesheet,
+     *                   plan: plan on timesheet
      *              },...
      *          ]
      *          total: total time of all timesheets
