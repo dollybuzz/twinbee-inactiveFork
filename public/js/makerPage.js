@@ -146,14 +146,17 @@ function timeClockFunctionality() {
             $("#makerClock").html("Submit");
             $("#makerClock").off("click");
             $("#makerClock").on('click', function() {
+                $("#clockPrompt").html("<span id='errormessage' style='color:red'></span>");
                 let message = "";
                 let valid = true;
+
                 if($("#taskEntry").val().length === 0) {
                     valid = false;
                     message += "A task is required!";
                 }
+
                 if(valid) {
-                    $("#clockPrompt").html("");
+                    $("#errormessage").html("");
                     $.ajax({
                         url: "/api/makerOnTheGo",
                         method: "post",
@@ -174,15 +177,13 @@ function timeClockFunctionality() {
                             }, 1000);
                         },
                         error: function (res, status) {
-                            $("#optionsClient").html("Could not add entry!");
+                            $("#errormessage").html("Could not add entry!");
                         }
                     });
                 }
                 else {
-                    $("#clockPrompt").html(`<h5>${message}</h5>`);
-                    $("#clockPrompt").css("color", "red");
+                    $("#errormessage").html(message);
                 }
-
             });
         }
     });
