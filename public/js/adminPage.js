@@ -2695,8 +2695,8 @@ function runReportFunctionality() {
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
-                        '   <td>' + item.adminNote + '</td>' +
-                        `   <td> ${message}</td></tr>`);
+                        `   <td> ${message}</td>` +
+                        '   <td>' + item.adminNote + '</td></tr>');
                 }
                 let totalhours = Number.parseInt(timeres.total) / 60;
                 let totalminutes = Number.parseInt(timeres.total) % 60;
