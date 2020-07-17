@@ -142,7 +142,8 @@ body a:hover {
 #YesBuy,
 #YesChange,
 #runReportButton,
-#otgButton {
+#otgButton,
+#liveClockButton {
     font-size: 1.2em;
     color: white;
     background-color: #32444e;
@@ -476,6 +477,22 @@ th {
     color: white;
 }
 
+#submitClock {
+    width: 250px;
+    height: 250px;
+    padding: 10px 16px;
+    border-radius: 100%;
+    font-size: 45px;
+    color: white;
+    background-color: #dbb459;
+    text-align: center;
+}
+
+#submitClock:hover {
+    background-color: #32444e;
+    color: white;
+}
+
 #makerText2 {
     opacity: 0;
     height: 90px;
@@ -493,12 +510,12 @@ th {
     transition: opacity 0.5s ease-in-out;
 }
 
-#clientRole, #taskBlock {
-    height: 50px;
+#clientRole, #taskBlock, #otgBlock{
+    height: 40px;
+    margin-top: 10px;
 }
 
 #clockPrompt {
-    display: inline;
     height: 30px;
     justify-content: center;
     text-align: center;

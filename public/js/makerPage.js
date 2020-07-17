@@ -118,6 +118,22 @@ function timeClockFunctionality() {
         }
     });
 
+    //Event listener for On-the-Go
+    $("#otgButton").on('click', function() {
+        $("#otgBlock").css("opacity", "1");
+        $("#otgTask").css("opacity", "1");
+
+        //Dynamically change the button functions
+        let otgBtn = document.getElementById("otgButton");
+        otgBtn.setAttribute('id', 'liveClockButton');
+        $("#liveClockButton").html("Live Clock");
+
+        let clockBtn = document.getElementById("makerClock");
+        clockBtn.setAttribute('id', 'submitClock');
+        $("#submitClock").html("Submit");
+    });
+
+
     //Getting timesheets to manage user navigation away
     $.ajax({
         url: "/api/getMyTimeSheetsMaker",
@@ -629,4 +645,8 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
+
+    $("#liveClockButton").on('click', function() {
+        timeClockFunctionality();
+    });
 });//end document ready
