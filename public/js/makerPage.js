@@ -218,8 +218,8 @@ function timeClockFunctionality() {
                     setTimeout(function () {
                         //$("#taskBlock").hide();
                         //$("#taskEntry").hide();
-                        $("#clientRole").hide();
-                        $("#availcredit").hide();
+                        //$("#clientRole").hide();
+                        //$("#availcredit").hide();
                         $("#makerSelectedClient").hide();
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
@@ -311,9 +311,9 @@ function setClockOutFunctionality() {
 
     setTimeout(function () {
         $("#makerSelectedClient").hide();
-        $("#clientRole").hide();
-        $("#clientCredit").hide();
-        $("#availcredit").hide();
+        //$("#clientRole").hide();
+        //$("#clientCredit").hide();
+        //$("#availcredit").hide();
         //$("#taskBlock").hide();
         //$("#taskEntry").hide();
         $("#otgBlock").hide();
@@ -367,9 +367,9 @@ function setClockOutFunctionality() {
                             $("#taskEntry").val("");
                             $("#taskBlock").show();
                             $("#taskEntry").show();
-                            $("#clientCredit").show();
-                            $("#clientRole").show();
-                            $("#availcredit").show();
+                            //$("#clientCredit").show();
+                            //$("#clientRole").show();
+                            //$("#availcredit").show();
                             $("#makerSelectedClient").show();
                             $("#otgBlock").show();
                             $("#otgTime").show();
@@ -705,8 +705,6 @@ $(document).ready(function () {
             $(this).css("font-style", 'normal');
         }
     });
-
-    $("#makerSelectedClient").append("<option>Loading...</option>");
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
