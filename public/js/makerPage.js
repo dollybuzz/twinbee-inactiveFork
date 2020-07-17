@@ -70,7 +70,7 @@ function timeClockFunctionality() {
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
-        "            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n" +
+        `            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\" value='${$("#taskEntry").val()}'></div>\n` +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"otgBlock\"></div>\n" +
@@ -207,8 +207,8 @@ function timeClockFunctionality() {
                 let sheet = innerRes[i];
                 if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = false;
-                    $("#taskBlock").css("opacity", "0");
-                    $("#taskEntry").css("opacity", "0");
+                    //$("#taskBlock").css("opacity", "0");
+                    //$("#taskEntry").css("opacity", "0");
                     $("#clientRole").css("opacity", "0");
                     $("#clockPrompt").css("opacity", "1");
                     $("#makerSelectedClient").css("opacity", "0");
@@ -216,15 +216,15 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
 
                     setTimeout(function () {
-                        $("#taskBlock").hide();
-                        $("#taskEntry").hide();
+                        //("#taskBlock").hide();
+                        //$("#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
                         $("#makerSelectedClient").hide();
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                    $("#taskBlock").css("opacity", "1");
-                    $("#taskEntry").css("opacity", "1");
+                    //$("#taskBlock").css("opacity", "1");
+                    //$("#taskEntry").css("opacity", "1");
                     $("#clientRole").css("opacity", "1");
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
@@ -302,8 +302,8 @@ function setClockOutFunctionality() {
     $("#clockPrompt").css("opacity", "1");
     $("#clientCredit").css("opacity", "0");
     $("#availcredit").css("opacity", "0");
-    $("#taskBlock").css("opacity", "0");
-    $("#taskEntry").css("opacity", "0");
+    //$("#taskBlock").css("opacity", "0");
+    //$("#taskEntry").css("opacity", "0");
     $("#otgBlock").css("opacity", "0");
     $("#otgTime").css("opacity", "0");
 
@@ -312,8 +312,8 @@ function setClockOutFunctionality() {
         $("#clientRole").hide();
         $("#clientCredit").hide();
         $("#availcredit").hide();
-        $("#taskBlock").hide();
-        $("#taskEntry").hide();
+        //$("#taskBlock").hide();
+        //$("#taskEntry").hide();
         $("#otgBlock").hide();
         $("#otgTime").hide();
     }, 1500);
@@ -356,13 +356,13 @@ function setClockOutFunctionality() {
                             $("#makerSelectedClient").css("opacity", "1");
                             $("#clientCredit").css("opacity", "1");
                             $("#availcredit").css("opacity", "1");
-                            $("#taskBlock").css("opacity", "1");
-                            $("#taskEntry").css("opacity", "1");
+                            //$("#taskBlock").css("opacity", "1");
+                            //$("#taskEntry").css("opacity", "1");
                             $("#otgBlock").css("opacity", "0");
                             $("#otgTime").css("opacity", "0");
                             $("#taskEntry").val("");
-                            $("#taskBlock").show();
-                            $("#taskEntry").show();
+                            //$("#taskBlock").show();
+                            //$("#taskEntry").show();
                             $("#clientCredit").show();
                             $("#clientRole").show();
                             $("#availcredit").show();
