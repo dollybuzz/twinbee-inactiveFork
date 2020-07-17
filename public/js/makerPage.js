@@ -70,7 +70,7 @@ function timeClockFunctionality() {
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
-        `            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\" value='${$("#taskEntry").val()}'></div>\n` +
+        `            <div><input class=\"form-control\" type=\"text\" id=\"taskEntry\" name=\"taskEntry\"></div>\n` +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"otgBlock\"></div>\n" +
@@ -225,6 +225,7 @@ function timeClockFunctionality() {
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     //$("#taskBlock").css("opacity", "1");
                     //$("#taskEntry").css("opacity", "1");
+                    $("#taskBlock").html("<h6>Update task:</h6>");
                     $("#clientRole").css("opacity", "1");
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
@@ -297,6 +298,7 @@ function setClockInFunctionality() {
 
 function setClockOutFunctionality() {
     runningTime();
+    $("#taskBlock").html("<h6>Update task:</h6>");
     $("#clientRole").css("opacity", "0");
     $("#makerSelectedClient").css("opacity", "0");
     $("#clockPrompt").css("opacity", "1");
@@ -306,6 +308,7 @@ function setClockOutFunctionality() {
     //$("#taskEntry").css("opacity", "0");
     $("#otgBlock").css("opacity", "0");
     $("#otgTime").css("opacity", "0");
+
 
     setTimeout(function () {
         $("#makerSelectedClient").hide();
@@ -342,7 +345,8 @@ function setClockOutFunctionality() {
                     url: "api/clockOut",
                     method: "post",
                     data: {
-                        auth: id_token
+                        auth: id_token,
+                        newTask: $("#taskEntry").val()
                     },
                     dataType: "json",
                     success: function (clockres, status) {
@@ -350,6 +354,7 @@ function setClockOutFunctionality() {
                             TIME_SHOULD_RUN = false;
                             setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
+                            $("#taskBlock").html("<h6>Please enter in a task:</h6>");
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
                             $("#clientRole").css("opacity", "1");
