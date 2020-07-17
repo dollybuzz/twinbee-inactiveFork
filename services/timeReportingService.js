@@ -116,7 +116,6 @@ class TimeReportingService {
     }
 
 
-
     //TODO: Optimize.  This is an initial knowingly-naive approach.
     /**
      *
@@ -154,14 +153,22 @@ class TimeReportingService {
      * @param end - first day excluded from report
      * @param makerId - id of maker to use as constraint
      * @param clientId - id of client to use as constraint
+     * @param adminNote - admin note to use as constraint
+     * @param relationshipId - relationshipId to use as constraint
      * @returns {Promise<{sheets:[], duration: total time logged}>}
      */
-    async getReportForClientMakerPair(start, end, makerId, clientId) {
+    async getReportForClientMakerPair(start, end, makerId, clientId, adminNote, relationshipId) {
         if (!makerId) {
             makerId = "";
         }
         if (!clientId) {
             clientId = "";
+        }
+        if (!adminNote) {
+            adminNote = "";
+        }
+        if (!relationshipId) {
+            relationshipId = "";
         }
         let totalTime = 0;
         let obj = {};
@@ -170,12 +177,13 @@ class TimeReportingService {
         let timeSheets = await getAllSheets();
 
         for (var sheet of timeSheets) {
-            let filter = await makerIdFilter(makerId, sheet.makerId).catch(err => {
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
+            let makerIdIsGood = makerId === "" || (sheet.makerId && makerId.toString() === sheet.makerId.toString());
+            let relationshipIdIsGood = relationshipId === "" || (sheet.relationshipId && relationshipId.toString() === sheet.relationshipId.toString());
+            let adminNoteIsGood = adminNote === "" || (sheet.adminNote && sheet.adminNote.toString().toLowerCase().includes(adminNote.toString().toLowerCase()));
 
-            if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId) && filter) {
+
+            if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId)
+                && makerIdIsGood && adminNoteIsGood && relationshipIdIsGood) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
                     let details = await this.getSheetDetails(sheet);
@@ -280,13 +288,10 @@ class TimeReportingService {
     }
 }
 
-
-async function makerIdFilter(makerId, sheetMakerId) {
-    return makerId === "" || makerId.toString() === sheetMakerId.toString();
-}
-
 async function sheetIsClosed(sheet) {
-    return sheet.timeIn[0].toString() !== "0" && sheet.timeOut.toString() !== "0";
+    if (!sheet || !sheet.timeIn.length || !sheet.timeOut.length)
+        return false;
+    return sheet.timeIn[0].toString() !== "0" && sheet.timeOut[0].toString() !== "0";
 }
 
 async function sheetRelationshipMatches(sheet, relationshipId) {

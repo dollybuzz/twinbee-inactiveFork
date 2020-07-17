@@ -15,6 +15,8 @@ module.exports = {
      *     "makerId": id of maker to retrieve report on,
      *     "clientId": id of client to retrieve report on,
      *     "start": inclusive beginning of reporting time,
+     *     "adminNote": filter constraint (sheet admin note must contain this value if passed),
+     *     "relationshipId":filter constraint (sheet admin note must match this value if passed),
      *     "end": exclusive ending of reporting time,
      *     "auth": authentication credentials; either master or token
      * }
@@ -51,7 +53,8 @@ module.exports = {
         console.log("Attempting to grab time report for client/maker pair from REST...");
         console.log(req.body);
         res.send(await timeReportingService
-            .getReportForClientMakerPair(req.body.start, req.body.end, req.body.makerId, req.body.clientId)
+            .getReportForClientMakerPair(req.body.start, req.body.end, req.body.makerId,
+                req.body.clientId, req.body.adminNote, req.body.relationshipId)
             .catch(err => {
                 console.log(err);
                 notifyAdmin(err.toString());
