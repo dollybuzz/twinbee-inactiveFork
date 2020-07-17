@@ -66,7 +66,7 @@ function timeClockFunctionality() {
         "<div class=\"clockBlock\">\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"clientRole\"><h6>Please select your Client and Role:</h6></div>\n" +
-        "            <div><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
+        "            <div id='selectClientRole'><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
@@ -207,8 +207,6 @@ function timeClockFunctionality() {
                 let sheet = innerRes[i];
                 if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = false;
-                    //$("#taskBlock").css("opacity", "0");
-                    //$("#taskEntry").css("opacity", "0");
                     $("#clientRole").css("opacity", "0");
                     $("#clockPrompt").css("opacity", "1");
                     $("#makerSelectedClient").css("opacity", "0");
@@ -216,11 +214,8 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
 
                     setTimeout(function () {
-                        //$("#taskBlock").hide();
-                        //$("#taskEntry").hide();
-                        //$("#clientRole").hide();
-                        //$("#availcredit").hide();
-                        $("#makerSelectedClient").hide();
+                        $("#selectClientRole").html("");
+                        //$("#makerSelectedClient").hide();
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     $("#taskBlock").css("opacity", "1");
@@ -228,8 +223,9 @@ function timeClockFunctionality() {
                     $("#clientRole").css("opacity", "1");
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
+                    //$("#selectClientRole").html("<select class=\"form-control\" id=\"makerSelectedClient\"></select>");
                     $("#makerSelectedClient").css("opacity", "1");
-                    $("#otgButton").hide();
+                    //$("#otgButton").hide();
                 }
             }
             if (clockedOut) {
@@ -307,15 +303,16 @@ function setClockOutFunctionality() {
     //$("#taskEntry").css("opacity", "0");
     $("#otgBlock").css("opacity", "0");
     $("#otgTime").css("opacity", "0");
-
+    $("#taskBlock").html("<h6>Please enter in a task:</h6>");
 
     setTimeout(function () {
-        $("#makerSelectedClient").hide();
+        //$("#makerSelectedClient").hide();
         //$("#clientRole").hide();
         //$("#clientCredit").hide();
         //$("#availcredit").hide();
         //$("#taskBlock").hide();
         //$("#taskEntry").hide();
+        $("selectClientRole").html("");
         $("#otgBlock").hide();
         $("#otgTime").hide();
     }, 1500);
@@ -351,34 +348,37 @@ function setClockOutFunctionality() {
                     success: function (clockres, status) {
                         if (clockres) {
                             TIME_SHOULD_RUN = false;
-                            setClockInFunctionality();
+                            //setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
-                            $("#taskBlock").html("<h6>Please enter in a task:</h6>");
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
-                            $("#clientRole").css("opacity", "1");
-                            $("#makerSelectedClient").css("opacity", "1");
-                            $("#clientCredit").css("opacity", "1");
-                            $("#availcredit").css("opacity", "1");
+                            //$("#clientRole").css("opacity", "1");
+                            //$("#makerSelectedClient").css("opacity", "1");
+                            //$("#clientCredit").css("opacity", "1");
+                            //$("#availcredit").css("opacity", "1");
                             //$("#taskBlock").css("opacity", "1");
                             //$("#taskEntry").css("opacity", "1");
-                            $("#otgBlock").css("opacity", "0");
-                            $("#otgTime").css("opacity", "0");
-                            $("#taskEntry").val("");
-                            $("#taskBlock").show();
-                            $("#taskEntry").show();
+                            //$("#otgBlock").css("opacity", "0");
+                            //$("#otgTime").css("opacity", "0");
+                            //$("#taskEntry").val("");
+                            //$("#taskBlock").show();
+                            //$("#taskEntry").show();
                             //$("#clientCredit").show();
                             //$("#clientRole").show();
                             //$("#availcredit").show();
-                            $("#makerSelectedClient").show();
-                            $("#otgBlock").show();
-                            $("#otgTime").show();
-                            $("#otgButton").show();
-                            $("#otgButton").css("opacity", "1");
+                            //$("#makerSelectedClient").show();
+                            //$("#otgBlock").show();
+                            //$("#otgTime").show();
+                            //$("#otgButton").show();
+                            //$("#otgButton").css("opacity", "1");
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
                             }, 1000);
+
+                            setTimeout(function () {
+                                timeClockFunctionality();
+                            }, 1500);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
