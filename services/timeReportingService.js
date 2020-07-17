@@ -256,6 +256,11 @@ class TimeReportingService {
 
     async getSheetDetails(sheet) {
 
+        if (sheet.timeIn.toString() === "00:00:00") //deleted sheet
+        {
+            return {duration: 0, clientName: "Deleted Sheet", clientCompany: "Deleted Sheet", makerName: "Deleted Sheet"};
+        }
+
         let startMoment = moment(sheet.timeIn);
         let endMoment = moment(sheet.timeOut);
 

@@ -335,7 +335,7 @@ module.exports = {
 
 
     /**
-     * ENDPONT: /api/onTheGo
+     * ENDPONT: /api/makerOnTheGo
      *
      * Logs a preset amount of time for the requesting maker.
      * Provides all time-bucket and time-sheet automation that clockOut and clockIn offer.
@@ -377,7 +377,7 @@ module.exports = {
     /**
      * ENDPONT: /api/onTheGo
      *
-     * Logs a preset amount of time for the requesting maker.
+     * Logs a preset amount of time for the maker in the given relationship.
      * Provides all time-bucket and time-sheet automation that clockOut and clockIn offer.
      * Looks for values in the body in the form:
      * {
