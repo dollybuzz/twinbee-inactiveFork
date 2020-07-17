@@ -145,7 +145,9 @@ function timeClockFunctionality() {
             $("#makerClock").html("Submit");
             $("#makerClock").off("click");
             $("#makerClock").on('click', function() {
-                alert("this is where the api endpoint is called");
+                let valid = true;
+                if("#taskEntry").
+
             });
         }
     });

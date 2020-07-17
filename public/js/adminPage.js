@@ -2591,6 +2591,7 @@ function runReportFunctionality() {
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
         '            <th scope="col">Time Sheet ID</th>\n' +
+        '            <th scope="col">Shift End Date</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Company</th>\n' +
@@ -2688,6 +2689,7 @@ function runReportFunctionality() {
                     $("#reportContent").append('\n' +
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
+                        '   <td>' + item.timeOut + '</td>' +
                         '   <td>' + item.clientName + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + (item.company || 'No Company') + '</td>' +
