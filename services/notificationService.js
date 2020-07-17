@@ -58,7 +58,7 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
          style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
         <div id="intentionallyEmpty"></div>
         <div id="landingLogo" style="width: inherit;padding: 15px;">
-            <img src="cid:fmLogo@twinbee.com" id="actualImage" alt="Freedom Makers Logo">
+            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
         </div>
     </div>
     <div id="pageTitle"
@@ -74,7 +74,7 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
 <div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
     This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
     <div class="copyright">
-        <h6>©2020 <img src="cid:twinbeeLogo@twinbee.com" id="twinbeeLogo" alt="TwinBee Logo"></h6>
+        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo"></h6>
     </div>
 </div>
 </body>
@@ -83,20 +83,7 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
     transporter.sendMail({
         to: toEmail,
         subject: subject,
-        html: content,
-        attachments:
-            [
-                {
-                    filename: 'TwinBee.png',
-                    path: __dirname + '../public/img/TwinBee.png',
-                    cid: 'twinbeeLogo@twinbee.com' //same cid value as in the html img src
-                },
-                {
-                    filename: 'freedom-makers-logo.png',
-                    path: __dirname +'../public/img/freedom-makers-logo.png',
-                    cid: 'fmLogo@twinbee.com' //same cid value as in the html img src
-                }
-            ]
+        html: content
     }, (error) => {
         if (error) {
             console.log(error);
