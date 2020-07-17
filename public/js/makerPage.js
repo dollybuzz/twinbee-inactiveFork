@@ -127,10 +127,10 @@ function timeClockFunctionality() {
         let dynamicBtn = document.getElementById("otgButton");
         dynamicBtn.setAttribute('id', 'liveClockButton');
         $("#liveClockButton").html("Live Clock");
+    });
 
-        $("#liveClockButton").on('click', function() {
-                timeClockFunctionality();
-        });
+    $("#liveClockButton").on('click', function() {
+        timeClockFunctionality();
     });
 
     //Getting timesheets to manage user navigation away
