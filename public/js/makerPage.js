@@ -141,6 +141,12 @@ function timeClockFunctionality() {
                 "<option id='30m' value='30'>30 minutes</option>\n" +
                 "<option id='45m' value='45'>45 minutes</option>\n" +
                 "<option id='60m' value='60'>1 hour</option></select>\n");
+
+            $("#makerClock").html("Submit");
+            $("#makerClock").off("click");
+            $("#makerClock").on('click', function() {
+                alert("this is where the api endpoint is called");
+            });
         }
     });
 
@@ -233,11 +239,12 @@ function setClockInFunctionality() {
 
                     setTimeout(function () {
                         $("#makerText2").css("opacity", "0");
+                        $("#otgButton").hide();
                     }, 1000);
 
                     setTimeout(function () {
                         $("#makerText2").html("");
-                        $("#otgButton").hide();
+
                     }, 2000);
 
                 } else {
@@ -328,6 +335,7 @@ function setClockOutFunctionality() {
                             $("#otgBlock").show();
                             $("#otgTime").show();
                             $("#otgButton").show();
+                            $("#otgButton").css("opacity", "1");
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
@@ -335,7 +343,6 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#makerText2").html("");
-                                $("#otgButton").css("opacity", "1");
                             }, 2000);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
