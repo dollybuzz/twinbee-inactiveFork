@@ -230,6 +230,7 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
                     $("#makerSelectedClient").css("opacity", "1");
+                    $("#otgButton").hide();
                 }
             }
             if (clockedOut) {
