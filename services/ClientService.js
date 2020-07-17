@@ -25,16 +25,35 @@ let updateClient = (customerId, keyValuePairs) => {
 
 let notifyClientOutOfCredits = email => {
     emailService.sendEmail(
-        {
-            to: email,
-            subject: "Freedom Makers - Out of credits!",
-            html: `<html lang='en'>
-                                <head><style></style><title>Freedom Makers Hours</title></head>
-                                <body><h1>Freedom Makers</h1>
-                                <h4>You're out of credits!</h4>
-                                <h5>Please <a href="https://www.freedom-makers-hours.com">log in</a> to pay any overdue fees and refill your credits as needed!</h5>
-                                </body></html>`
-        })
+            email, "Freedom Makers - Out of credits!",
+            `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
+<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
+
+    <div id="landingContainer"
+         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
+        <div id="intentionallyEmpty"></div>
+        <div id="landingLogo" style="width: inherit;padding: 15px;">
+            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
+        </div>
+    </div>
+    <div id="pageTitle"
+         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
+        <h2 style="color: #dbb459;">Freedom Makers</h2>
+    </div>
+</header>
+<div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
+                                <h3>You're out of credits!</h3>
+                                <h4>Please <a href="https://www.freedom-makers-hours.com">log in</a> to pay any overdue fees and refill your credits as needed!</h4>
+<br>
+
+</div>
+<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
+    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
+    <div class="copyright">
+        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
+    </div>
+</div>
+</body>`)
 };
 
 
@@ -44,6 +63,9 @@ let notifyClientOutOfCredits = email => {
  *
  */
 class ClientService {
+    test(a){
+        notifyClientOutOfCredits(a)
+    }
 
     /**
      * Note: no setup for the service is necessary. The ClientService object
@@ -70,7 +92,33 @@ class ClientService {
         let customerName = `${customerPaymentCombo.customer.first_name} ${customerPaymentCombo.customer.last_name}`;
         let paymentType = customerPaymentCombo.payment_source.type;
         await emailService.emailFMAdmin("Payment source added!",
-            `${customerName} added a new ${paymentType} for payments!`)
+            `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
+<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
+
+    <div id="landingContainer"
+         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
+        <div id="intentionallyEmpty"></div>
+        <div id="landingLogo" style="width: inherit;padding: 15px;">
+            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
+        </div>
+    </div>
+    <div id="pageTitle"
+         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
+        <h2 style="color: #dbb459;">Freedom Makers</h2>
+    </div>
+</header>
+<div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
+                                <h4>${customerName} added a new ${paymentType} for payments!</h4>
+<br>
+
+</div>
+<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
+    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
+    <div class="copyright">
+        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
+    </div>
+</div>
+</body>`)
             .catch(error => {
                 console.log(error);
                 emailService.notifyAdmin(error.toString());
@@ -680,9 +728,36 @@ class ClientService {
 
         let client = await this.getClientById(customerId);
         emailService.emailFMAdmin("Hours added!",
-            `${client.first_name} ${client.last_name} has manually added ${numHours} for time bucket ${planId}`);
+            `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
+<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
+
+    <div id="landingContainer"
+         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
+        <div id="intentionallyEmpty"></div>
+        <div id="landingLogo" style="width: inherit;padding: 15px;">
+            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
+        </div>
+    </div>
+    <div id="pageTitle"
+         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
+        <h2 style="color: #dbb459;">Hours added!</h2>
+    </div>
+</header>
+<div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
+                                <h4>${client.first_name} ${client.last_name} has manually added ${numHours} for time bucket ${planId}</h4>
+<br>
+
+</div>
+<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
+    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
+    <div class="copyright">
+        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
+    </div>
+</div>
+</body>`);
         return true;
     }
+
 
     async subscriptionRenewed(parsedBody) {
         if (parsedBody.event_type === "subscription_renewed") {
