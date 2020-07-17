@@ -123,15 +123,16 @@ function timeClockFunctionality() {
         $("#otgBlock").css("opacity", "1");
         $("#otgTask").css("opacity", "1");
 
-        //Dynamically change the button function
-        let dynamicBtn = document.getElementById("otgButton");
-        dynamicBtn.setAttribute('id', 'liveClockButton');
+        //Dynamically change the button functions
+        let otgBtn = document.getElementById("otgButton");
+        otgBtn.setAttribute('id', 'liveClockButton');
         $("#liveClockButton").html("Live Clock");
+
+        let clockBtn = document.getElementById("makerClock");
+        clockBtn.setAttribute('id', 'submitClock');
+        $("#submitClock").html("Submit");
     });
 
-    $("#liveClockButton").on('click', function() {
-        timeClockFunctionality();
-    });
 
     //Getting timesheets to manage user navigation away
     $.ajax({
@@ -644,4 +645,8 @@ $(document).ready(function () {
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
+
+    $("#liveClockButton").on('click', function() {
+        timeClockFunctionality();
+    });
 });//end document ready

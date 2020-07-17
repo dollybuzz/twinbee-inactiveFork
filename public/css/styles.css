@@ -477,6 +477,22 @@ th {
     color: white;
 }
 
+#submitClock {
+    width: 250px;
+    height: 250px;
+    padding: 10px 16px;
+    border-radius: 100%;
+    font-size: 45px;
+    color: white;
+    background-color: #dbb459;
+    text-align: center;
+}
+
+#submitClock:hover {
+    background-color: #32444e;
+    color: white;
+}
+
 #makerText2 {
     opacity: 0;
     height: 90px;
@@ -500,7 +516,6 @@ th {
 }
 
 #clockPrompt {
-    display: inline;
     height: 30px;
     justify-content: center;
     text-align: center;
