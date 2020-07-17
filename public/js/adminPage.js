@@ -2597,6 +2597,7 @@ function runReportFunctionality() {
         '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Shift Duration</th>\n' +
+        '            <th scope="col">Admin Note</th>\n' +
         '        </thead><tbody id="reportContent">' +
         '</tbody>');
     //Pre-populate Report drop down options
@@ -2694,6 +2695,7 @@ function runReportFunctionality() {
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
+                        '   <td>' + item.adminNote + '</td>' +
                         `   <td> ${message}</td></tr>`);
                 }
                 let totalhours = Number.parseInt(timeres.total) / 60;
