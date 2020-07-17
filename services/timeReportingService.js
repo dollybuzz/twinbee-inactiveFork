@@ -29,10 +29,10 @@ class TimeReportingService {
             start = "2020-01-01 00:00:00";
         }
         if (!end) {
-            end = moment();
+            end = moment().add(1, "d");
         }
         let preferredStart = moment(start);
-        let preferredEnd = moment(end);
+        let preferredEnd = moment(end).add(1, "d");
         return {start: preferredStart, end: preferredEnd};
     }
 
