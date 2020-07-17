@@ -66,7 +66,7 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
         <h2 style="color: #dbb459;">Welcome!</h2>
     </div>
 </header>
-<div id="landingMain" style="background-color: white;width: 100%;height: 35vh;text-align: center;padding-top: 250px; font-size: larger">
+<div id="landingMain" style="background-color: white;width: 100%;height: 30vh;text-align: center;padding-top: 250px; font-size: larger">
     <p>Your account is ready! <br>Sign in at our
         <a href='https://www.freedom-makers-hours.com'>Freedom Makers Portal</a> to get started!</p>
     <br><br>
@@ -74,7 +74,7 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
 <div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
     This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
     <div class="copyright">
-        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo"></h6>
+        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
     </div>
 </div>
 </body>
