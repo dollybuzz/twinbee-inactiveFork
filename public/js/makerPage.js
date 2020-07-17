@@ -216,16 +216,15 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
 
                     setTimeout(function () {
-                        ("#taskBlock").hide();
-                        $("#taskEntry").hide();
+                        //$("#taskBlock").hide();
+                        //$("#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
                         $("#makerSelectedClient").hide();
-                        $(".clockBlock").append("<div id='dynEmpty'></div><div id='dynEmpty'></div><div id='dynEmpty'></div><div id='updateTaskBlock'><h6>Update task:</h6></div><div><input class='form-control' type='text' id='updateTaskEntry' name='updateTaskEntry'></div><div id='dynEmpty'></div>");
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                    //$("#taskBlock").css("opacity", "1");
-                    //$("#taskEntry").css("opacity", "1");
+                    $("#taskBlock").css("opacity", "1");
+                    $("#taskEntry").css("opacity", "1");
                     $("#clientRole").css("opacity", "1");
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
@@ -315,11 +314,10 @@ function setClockOutFunctionality() {
         $("#clientRole").hide();
         $("#clientCredit").hide();
         $("#availcredit").hide();
-        $("#taskBlock").hide();
-        $("#taskEntry").hide();
+        //$("#taskBlock").hide();
+        //$("#taskEntry").hide();
         $("#otgBlock").hide();
         $("#otgTime").hide();
-        $(".clockBlock").append("<div id='dynEmpty'></div><div id='dynEmpty'></div><div id='dynEmpty'></div><div id='updateTaskBlock'><h6>Update task:</h6></div><div><input class='form-control' type='text' id='updateTaskEntry' name='updateTaskEntry'></div><div id='dynEmpty'></div>");
     }, 1500);
 
     $("#makerClock").off("click");
