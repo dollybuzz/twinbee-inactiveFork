@@ -146,7 +146,7 @@ function timeClockFunctionality() {
             $("#makerClock").off("click");
             $("#makerClock").on('click', function() {
                 let valid = true;
-                if("#taskEntry").
+                //if("#taskEntry").
 
             });
         }
