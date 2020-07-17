@@ -118,6 +118,21 @@ function timeClockFunctionality() {
         }
     });
 
+    //Event listener for On-the-Go
+    $("#otgButton").on('click', function() {
+        $("#otgBlock").css("opacity", "1");
+        $("#otgTask").css("opacity", "1");
+
+        //Dynamically change the button function
+        let dynamicBtn = document.getElementById("otgButton");
+        dynamicBtn.setAttribute('id', 'liveClockButton');
+        $("#liveClockButton").html("Live Clock");
+
+        $("#liveClockButton").on('click', function() {
+                timeClockFunctionality();
+        });
+    });
+
     //Getting timesheets to manage user navigation away
     $.ajax({
         url: "/api/getMyTimeSheetsMaker",

@@ -142,7 +142,8 @@ body a:hover {
 #YesBuy,
 #YesChange,
 #runReportButton,
-#otgButton {
+#otgButton,
+#liveClockButton {
     font-size: 1.2em;
     color: white;
     background-color: #32444e;
@@ -493,8 +494,9 @@ th {
     transition: opacity 0.5s ease-in-out;
 }
 
-#clientRole, #taskBlock {
-    height: 50px;
+#clientRole, #taskBlock, #otgBlock{
+    height: 40px;
+    margin-top: 10px;
 }
 
 #clockPrompt {
