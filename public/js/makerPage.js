@@ -153,6 +153,8 @@ function timeClockFunctionality() {
                 if($("#taskEntry").val().length === 0) {
                     valid = false;
                     message += "A task is required!";
+                    $("#clockPrompt").css("transition", "none");
+                    $("#clockPrompt").css("opacity", "1");
                 }
 
                 if(valid) {
