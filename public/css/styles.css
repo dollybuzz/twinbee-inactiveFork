@@ -50,7 +50,7 @@ body {
 .navItem{
     cursor: pointer;
 }
-.h5, .h6 {
+h5, h6 {
     cursor: pointer;
 }
 
@@ -504,7 +504,7 @@ th {
 
 #makerText2 {
     opacity: 0;
-    height: 90px;
+    height: 30px;
     margin-top: 60px;
     transition: opacity 0.5s ease-in-out;
 }
