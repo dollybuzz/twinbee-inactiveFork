@@ -258,8 +258,8 @@ function setClockOutFunctionality() {
     $("#availcredit").css("opacity", "0");
     $("#taskBlock").css("opacity", "0");
     $("#taskEntry").css("opacity", "0");
-    $("otgBlock").css("opacity", "0");
-    $("otgTime").css("opacity", "0");
+    $("#otgBlock").css("opacity", "0");
+    $("#otgTime").css("opacity", "0");
 
     setTimeout(function () {
         $("#makerSelectedClient").hide();

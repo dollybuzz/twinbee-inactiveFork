@@ -591,3 +591,7 @@ th {
 .alert {
     height: 50px;
 }
+
+#empty {
+    opacity: 0;
+}
