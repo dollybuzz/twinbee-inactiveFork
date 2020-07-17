@@ -88,12 +88,12 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
             [
                 {
                     filename: 'TwinBee.png',
-                    path: '../public/img/TwinBee.png',
+                    path: __dirname + '../public/img/TwinBee.png',
                     cid: 'twinbeeLogo@twinbee.com' //same cid value as in the html img src
                 },
                 {
                     filename: 'freedom-makers-logo.png',
-                    path: '../public/img/freedom-makers-logo.png',
+                    path: __dirname +'../public/img/freedom-makers-logo.png',
                     cid: 'fmLogo@twinbee.com' //same cid value as in the html img src
                 }
             ]
