@@ -135,7 +135,7 @@ function timeClockFunctionality() {
             $("#otgBlock").html("<h6>Please select a time option:</h6>");
 
             //Populate drop down
-            $("#otgTime").html("<select class='form-control'>" +
+            $("#otgTime").html("<select class='form-control' id='otgValues'>" +
                 "<option id='5m' value='5'>5 minutes</option>\n" +
                 "<option id='15m' value='15'>15 minutes</option>\n" +
                 "<option id='30m' value='30'>30 minutes</option>\n" +
