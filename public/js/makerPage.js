@@ -216,11 +216,12 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
 
                     setTimeout(function () {
-                        //("#taskBlock").hide();
-                        //$("#taskEntry").hide();
+                        ("#taskBlock").hide();
+                        $("#taskEntry").hide();
                         $("#clientRole").hide();
                         $("#availcredit").hide();
                         $("#makerSelectedClient").hide();
+                        $(".clockBlock").append("<div id='dynEmpty'></div><div id='dynEmpty'></div><div id='dynEmpty'></div><div id='updateTaskBlock'><h6>Update task:</h6></div><div><input class='form-control' type='text' id='updateTaskEntry' name='updateTaskEntry'></div><div id='dynEmpty'></div>");
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     //$("#taskBlock").css("opacity", "1");
@@ -297,7 +298,6 @@ function setClockInFunctionality() {
 
 function setClockOutFunctionality() {
     runningTime();
-    $("#taskBlock").html("<h6>Update task:</h6>");
     $("#clientRole").css("opacity", "0");
     $("#makerSelectedClient").css("opacity", "0");
     $("#clockPrompt").css("opacity", "1");
@@ -314,10 +314,11 @@ function setClockOutFunctionality() {
         $("#clientRole").hide();
         $("#clientCredit").hide();
         $("#availcredit").hide();
-        //$("#taskBlock").hide();
-        //$("#taskEntry").hide();
+        $("#taskBlock").hide();
+        $("#taskEntry").hide();
         $("#otgBlock").hide();
         $("#otgTime").hide();
+        $(".clockBlock").append("<div id='dynEmpty'></div><div id='dynEmpty'></div><div id='dynEmpty'></div><div id='updateTaskBlock'><h6>Update task:</h6></div><div><input class='form-control' type='text' id='updateTaskEntry' name='updateTaskEntry'></div><div id='dynEmpty'></div>");
     }, 1500);
 
     $("#makerClock").off("click");
@@ -365,8 +366,8 @@ function setClockOutFunctionality() {
                             $("#otgBlock").css("opacity", "0");
                             $("#otgTime").css("opacity", "0");
                             $("#taskEntry").val("");
-                            //$("#taskBlock").show();
-                            //$("#taskEntry").show();
+                            $("#taskBlock").show();
+                            $("#taskEntry").show();
                             $("#clientCredit").show();
                             $("#clientRole").show();
                             $("#availcredit").show();

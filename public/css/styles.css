@@ -51,7 +51,7 @@ body {
     cursor: pointer;
 }
 
-h5, h6, #time, #pageTitle {
+h5, h6, p,  #time, #pageTitle {
     cursor: default;
 }
 
@@ -516,11 +516,11 @@ th {
 }
 
 #taskBlock, #taskEntry, #clientRole, #makerSelectedClient,
-#clockPrompt, #clientCredit, #availcredit {
+#clockPrompt, #clientCredit, #availcredit, #updateTaskBlock, #updateTaskEntry {
     transition: opacity 0.5s ease-in-out;
 }
 
-#clientRole, #taskBlock, #otgBlock{
+#clientRole, #taskBlock, #otgBlock, #updateTaskBlock{
     height: 41px;
     margin-top: 10px;
 }
