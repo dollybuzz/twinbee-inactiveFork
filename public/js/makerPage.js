@@ -258,6 +258,8 @@ function setClockOutFunctionality() {
     $("#availcredit").css("opacity", "0");
     $("#taskBlock").css("opacity", "0");
     $("#taskEntry").css("opacity", "0");
+    $("otgBlock").css("opacity", "0");
+    $("otgTime").css("opacity", "0");
 
     setTimeout(function () {
         $("#makerSelectedClient").hide();
@@ -266,6 +268,8 @@ function setClockOutFunctionality() {
         $("#availcredit").hide();
         $("#taskBlock").hide();
         $("#taskEntry").hide();
+        $("#otgBlock").hide();
+        $("#otgTime").hide();
     }, 1500);
 
     $("#makerClock").off("click");
@@ -308,6 +312,8 @@ function setClockOutFunctionality() {
                             $("#availcredit").css("opacity", "1");
                             $("#taskBlock").css("opacity", "1");
                             $("#taskEntry").css("opacity", "1");
+                            $("#otgBlock").css("opacity", "0");
+                            $("#otgTime").css("opacity", "0");
                             $("#taskEntry").val("");
                             $("#taskBlock").show();
                             $("#taskEntry").show();
@@ -315,6 +321,8 @@ function setClockOutFunctionality() {
                             $("#clientRole").show();
                             $("#availcredit").show();
                             $("#makerSelectedClient").show();
+                            $("#otgBlock").show();
+                            $("#otgTime").show();
 
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
