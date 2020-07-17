@@ -156,12 +156,18 @@ class TimeReportingService {
      * @param clientId - id of client to use as constraint
      * @returns {Promise<{sheets:[], duration: total time logged}>}
      */
-    async getReportForClientMakerPair(start, end, makerId, clientId) {
+    async getReportForClientMakerPair(start, end, makerId, clientId, adminNote, relationshipId) {
         if (!makerId) {
             makerId = "";
         }
         if (!clientId) {
             clientId = "";
+        }
+        if (!adminNote) {
+            adminNote = "";
+        }
+        if (!relationshipId) {
+            relationshipId = "";
         }
         let totalTime = 0;
         let obj = {};
@@ -174,8 +180,12 @@ class TimeReportingService {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
+            let relationshipFilter = await relationshipIdFilter(relationshipId, sheet.relationshipId).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+            });
 
-            if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId) && filter) {
+            if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId) && filter && sheet.adminNote.includes(adminNote) && relationshipFilter) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
                     let details = await this.getSheetDetails(sheet);
@@ -284,9 +294,14 @@ class TimeReportingService {
 async function makerIdFilter(makerId, sheetMakerId) {
     return makerId === "" || makerId.toString() === sheetMakerId.toString();
 }
+async function relationshipIdFilter(relationshipId, sheetRelationshipId) {
+    return relationshipId === "" || relationshipId.toString() === sheetRelationshipId.toString();
+}
 
 async function sheetIsClosed(sheet) {
-    return sheet.timeIn[0].toString() !== "0" && sheet.timeOut.toString() !== "0";
+    if (!sheet || !sheet.timeIn.length || !sheet.timeOut.length)
+        return false;
+    return sheet.timeIn[0].toString() !== "0" && sheet.timeOut[0].toString() !== "0";
 }
 
 async function sheetRelationshipMatches(sheet, relationshipId) {
