@@ -225,7 +225,6 @@ function timeClockFunctionality() {
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     //$("#taskBlock").css("opacity", "1");
                     //$("#taskEntry").css("opacity", "1");
-                    $("#taskBlock").html("<h6>Update task:</h6>");
                     $("#clientRole").css("opacity", "1");
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
