@@ -149,6 +149,11 @@ body a:hover {
     background-color: #32444e;
 }
 
+#otgButton {
+    opacity: 1;
+    transition: 0.5s ease-in-out;
+}
+
 #updatePaymentButton:hover,
 #revInvoicesButton:hover,
 #YesBuy:hover,
