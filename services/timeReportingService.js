@@ -153,6 +153,8 @@ class TimeReportingService {
      * @param end - first day excluded from report
      * @param makerId - id of maker to use as constraint
      * @param clientId - id of client to use as constraint
+     * @param adminNote - admin note to use as constraint
+     * @param relationshipId - relationshipId to use as constraint
      * @returns {Promise<{sheets:[], duration: total time logged}>}
      */
     async getReportForClientMakerPair(start, end, makerId, clientId, adminNote, relationshipId) {
@@ -177,7 +179,7 @@ class TimeReportingService {
         for (var sheet of timeSheets) {
             let makerIdIsGood = makerId === "" || makerId.toString() === sheet.makerId.toString();
             let relationshipIdIsGood = relationshipId === "" || relationshipId.toString() === sheet.relationshipId.toString();
-            let adminNoteIsGood = sheet.adminNote ? sheet.adminNote.includes(adminNote) : false;
+            let adminNoteIsGood = sheet.adminNote ? sheet.adminNote.includes(adminNote) : adminNote === "";
 
             if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId)
                 && makerIdIsGood && adminNoteIsGood && relationshipIdIsGood) {
