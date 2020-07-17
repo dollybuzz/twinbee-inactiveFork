@@ -177,8 +177,8 @@ class TimeReportingService {
         let timeSheets = await getAllSheets();
 
         for (var sheet of timeSheets) {
-            let makerIdIsGood = makerId === "" || makerId.toString() === sheet.makerId.toString();
-            let relationshipIdIsGood = relationshipId === "" || relationshipId.toString() === sheet.relationshipId.toString();
+            let makerIdIsGood = makerId === "" || (sheet.makerId && makerId.toString() === sheet.makerId.toString());
+            let relationshipIdIsGood = sheet.relationshipId ? relationshipId.toString() === sheet.relationshipId.toString() : relationshipId === "";
             let adminNoteIsGood = sheet.adminNote ? sheet.adminNote.includes(adminNote) : adminNote === "";
 
             if (await sheetIsClosed(sheet) && sheet.clientId.includes(clientId)
