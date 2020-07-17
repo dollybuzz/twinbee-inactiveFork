@@ -2730,7 +2730,6 @@ function runReportFunctionality() {
     });
 }
 
-
 function padIntToTwoPlaces(int){
     let intString = int.toString();
     if (intString.length === 1){
@@ -2738,6 +2737,8 @@ function padIntToTwoPlaces(int){
     }
     return intString;
 }
+
+//Rollup
 function rollupReportFunctionality() {
     //Creating the table
     $("#userMainContent").html(
@@ -2784,9 +2785,9 @@ function rollupReportFunctionality() {
                 for (var item of timeres) {
                     let duration = moment.duration(Number.parseInt(item.totalTime) * 60000);
                     let days = Number.parseInt(padIntToTwoPlaces(duration.days()));
-                    let hours = padIntToTwoPlaces(duration.hours() + (days * 24));
-                    let minutes = padIntToTwoPlaces(duration.minutes());
-                    let seconds = padIntToTwoPlaces(duration.seconds());
+                    let hours = duration.hours() + (days * 24);
+                    let minutes = (duration.minutes());
+                    //let seconds = padIntToTwoPlaces(duration.seconds());
 
                     let penniesOwed = Number.parseInt(item.penniesOwed);
                     if (penniesOwed) {
@@ -2796,7 +2797,7 @@ function rollupReportFunctionality() {
                             '   <td>' + item.freedomMaker + '</td>' +
                             '   <td>' + item.client + '</td>' +
                             '   <td>' + item.occupation + '</td>' +
-                            `   <td>${hours}:${minutes}:${seconds}</td>` +
+                            `   <td>${hours} h ${minutes} m</td>` +
                             `   <td> <strong><em>$${penniesOwed / 100}</em></strong></td></tr>`);
                     }
                 }
