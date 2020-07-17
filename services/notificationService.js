@@ -83,6 +83,8 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
     transporter.sendMail({to: toEmail, subject: subject, html: content}, (error) => {
         if (error) {
             console.log(error);
+            exports.notifyAdmin(error)
+            exports.notifyAdmin(error.toString())
             reject(error);
         }
         resolve();

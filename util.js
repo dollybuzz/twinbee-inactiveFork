@@ -58,6 +58,7 @@ let validatorMap = {
 
 
 module.exports = {
+
     /**
      *  validates parameters
      * {
