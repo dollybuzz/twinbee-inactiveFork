@@ -121,12 +121,21 @@ function timeClockFunctionality() {
     //Event listener for On-the-Go
     $("#otgButton").on('click', function() {
         $("#otgBlock").css("opacity", "1");
-        $("#otgTask").css("opacity", "1");
+        $("#otgTime").css("opacity", "1");
+
+        //Populate drop down
+        $("#otgTime").html(
+            "<option id='5m' value='5'>5 minutes</option>\n" +
+            "<option id='15m' value='15'>15 minutes</option>\n" +
+            "<option id='30m' value='30'>30 minutes</option>\n" +
+            "<option id='45m' value='45'>45 minutes</option>\n" +
+            "<option id='60m' value='60'>1 hour</option>\n"
+        );
 
         //Dynamically change the button functions
         let otgBtn = document.getElementById("otgButton");
         otgBtn.setAttribute('id', 'liveClockButton');
-        $("#liveClockButton").html("Live Clock");
+        $("#liveClockButton").html("Back to Live Clock");
 
         let clockBtn = document.getElementById("makerClock");
         clockBtn.setAttribute('id', 'submitClock');
