@@ -66,7 +66,7 @@ function timeClockFunctionality() {
         "<div class=\"clockBlock\">\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"clientRole\"><h6>Please select your Client and Role:</h6></div>\n" +
-        "            <div><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
+        "            <div id='selectClientRole'><select class=\"form-control\" id=\"makerSelectedClient\"></select></div>\n" +
         "            <div id=\"clientCredit\"><h6>Client's available credit:</h6><span id=\"availcredit\"></span></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "            <div id=\"taskBlock\"><h6>Please enter in a task:</h6></div>\n" +
@@ -207,8 +207,6 @@ function timeClockFunctionality() {
                 let sheet = innerRes[i];
                 if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = false;
-                    //$("#taskBlock").css("opacity", "0");
-                    //$("#taskEntry").css("opacity", "0");
                     $("#clientRole").css("opacity", "0");
                     $("#clockPrompt").css("opacity", "1");
                     $("#makerSelectedClient").css("opacity", "0");
@@ -223,13 +221,13 @@ function timeClockFunctionality() {
                         $("#makerSelectedClient").css("visibility", "hidden");
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                    //$("#taskBlock").css("opacity", "1");
-                    //$("#taskEntry").css("opacity", "1");
-                    $("#taskBlock").html("<h6>Update task:</h6>");
+                    $("#taskBlock").css("opacity", "1");
+                    $("#taskEntry").css("opacity", "1");
                     $("#clientRole").css("opacity", "1");
                     $("#availcredit").css("opacity", "1");
                     $("#clientCredit").css("opacity", "1");
                     $("#makerSelectedClient").css("opacity", "1");
+                    //$("#otgButton").hide();
                 }
             }
             if (clockedOut) {
@@ -298,7 +296,6 @@ function setClockInFunctionality() {
 
 function setClockOutFunctionality() {
     runningTime();
-    $("#taskBlock").html("<h6>Update task:</h6>");
     $("#clientRole").css("opacity", "0");
     $("#makerSelectedClient").css("opacity", "0");
     $("#clockPrompt").css("opacity", "1");
@@ -308,7 +305,7 @@ function setClockOutFunctionality() {
     //$("#taskEntry").css("opacity", "0");
     $("#otgBlock").css("opacity", "0");
     $("#otgTime").css("opacity", "0");
-
+    $("#taskBlock").html("<h6>Please enter in a task:</h6>");
 
     setTimeout(function () {
         $("#makerSelectedClient").css("visibility", "hidden");
@@ -352,22 +349,10 @@ function setClockOutFunctionality() {
                     success: function (clockres, status) {
                         if (clockres) {
                             TIME_SHOULD_RUN = false;
-                            setClockInFunctionality();
+                            //setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
-                            $("#taskBlock").html("<h6>Please enter in a task:</h6>");
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
-                            $("#clientRole").css("opacity", "1");
-                            $("#makerSelectedClient").css("opacity", "1");
-                            $("#clientCredit").css("opacity", "1");
-                            $("#availcredit").css("opacity", "1");
-                            //$("#taskBlock").css("opacity", "1");
-                            //$("#taskEntry").css("opacity", "1");
-                            $("#otgBlock").css("opacity", "0");
-                            $("#otgTime").css("opacity", "0");
-                            $("#taskEntry").val("");
-                            //$("#taskBlock").show();
-                            //$("#taskEntry").show();
                             $("#clientCredit").css("visibility", "visible");
                             $("#clientRole").css("visibility", "visible");
                             $("#availcredit").css("visibility", "visible");
@@ -380,6 +365,10 @@ function setClockOutFunctionality() {
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
                             }, 1000);
+
+                            setTimeout(function () {
+                                timeClockFunctionality();
+                            }, 1500);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
@@ -706,8 +695,6 @@ $(document).ready(function () {
             $(this).css("font-style", 'normal');
         }
     });
-
-    $("#makerSelectedClient").append("<option>Loading...</option>");
 
     //shifts the logo
     $("#landingLogo").css("width", "20%");
