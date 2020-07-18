@@ -357,6 +357,7 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#taskBlock").html("<h6>Please enter in a task:</h6>");
+                                $("#taskEntry").val("");
                                 $("#makerText2").css("opacity", "0");
                                 $("#clientCredit").css("opacity", "1");
                                 $("#clientRole").css("opacity", "1");
