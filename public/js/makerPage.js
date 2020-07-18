@@ -343,7 +343,7 @@ function setClockOutFunctionality() {
                     success: function (clockres, status) {
                         if (clockres) {
                             TIME_SHOULD_RUN = false;
-                            //setClockInFunctionality();
+                            setClockInFunctionality();
                             $("#clockPrompt").css("opacity", "0");
                             $("#makerText2").html("<h5>Successfully clocked out!</h5>");
                             $("#makerText2").css("opacity", "1");
@@ -356,6 +356,7 @@ function setClockOutFunctionality() {
                             $("#otgButton").css("visibility", "visible");
 
                             setTimeout(function () {
+                                $("#taskBlock").html("<h6>Please enter in a task:</h6>");
                                 $("#makerText2").css("opacity", "0");
                                 $("#clientCredit").css("opacity", "1");
                                 $("#clientRole").css("opacity", "1");
@@ -364,7 +365,7 @@ function setClockOutFunctionality() {
                                 $("#otgBlock").css("opacity", "1");
                                 $("#otgTime").css("opacity", "1");
                                 $("#otgButton").css("opacity", "1");
-                            }, 1000);
+                            }, 1500);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
