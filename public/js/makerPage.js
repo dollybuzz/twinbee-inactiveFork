@@ -274,13 +274,13 @@ function setClockInFunctionality() {
                 if (clockres) {
                     setClockOutFunctionality();
                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
-                    $("#taskBlock").html("<h6>Update task:</h6>");
                     taskValue = $("#taskEntry").val();
                     $("#makerText2").css("opacity", "1");
                     $("#clockPrompt").css("opacity", "1");
                     $("#otgButton").css("opacity", "0");
 
                     setTimeout(function () {
+                        $("#taskBlock").html("<h6>Update task:</h6>");
                         $("#makerText2").css("opacity", "0");
                         $("#otgButton").css("visibility", "hidden");
                     }, 1000);
