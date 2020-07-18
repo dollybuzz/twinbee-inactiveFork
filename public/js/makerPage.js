@@ -218,9 +218,9 @@ function timeClockFunctionality() {
                     setTimeout(function () {
                         //("#taskBlock").hide();
                         //$("#taskEntry").hide();
-                        $("#clientRole").hide();
-                        $("#availcredit").hide();
-                        $("#makerSelectedClient").hide();
+                        $("#clientRole").css("visibility", "hidden");
+                        $("#availcredit").css("visibility", "hidden");
+                        $("#makerSelectedClient").css("visibility", "hidden");
                     }, 1500)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     //$("#taskBlock").css("opacity", "1");
@@ -280,7 +280,7 @@ function setClockInFunctionality() {
 
                     setTimeout(function () {
                         $("#makerText2").css("opacity", "0");
-                        $("#otgButton").hide();
+                        $("#otgButton").css("visibility", "hidden");
                     }, 1000);
 
                 } else {
@@ -311,14 +311,14 @@ function setClockOutFunctionality() {
 
 
     setTimeout(function () {
-        $("#makerSelectedClient").hide();
-        $("#clientRole").hide();
-        $("#clientCredit").hide();
-        $("#availcredit").hide();
+        $("#makerSelectedClient").css("visibility", "hidden");
+        $("#clientRole").css("visibility", "hidden");
+        $("#clientCredit").css("visibility", "hidden");
+        $("#availcredit").css("visibility", "hidden");
         //$("#taskBlock").hide();
         //$("#taskEntry").hide();
-        $("#otgBlock").hide();
-        $("#otgTime").hide();
+        $("#otgBlock").css("visibility", "hidden");
+        $("#otgTime").css("visibility", "hidden");
     }, 1500);
 
     $("#makerClock").off("click");
@@ -368,13 +368,13 @@ function setClockOutFunctionality() {
                             $("#taskEntry").val("");
                             //$("#taskBlock").show();
                             //$("#taskEntry").show();
-                            $("#clientCredit").show();
-                            $("#clientRole").show();
-                            $("#availcredit").show();
-                            $("#makerSelectedClient").show();
-                            $("#otgBlock").show();
-                            $("#otgTime").show();
-                            $("#otgButton").show();
+                            $("#clientCredit").css("visibility", "visible");
+                            $("#clientRole").css("visibility", "visible");
+                            $("#availcredit").css("visibility", "visible");
+                            $("#makerSelectedClient").css("visibility", "visible");
+                            $("#otgBlock").css("visibility", "visible");
+                            $("#otgTime").css("visibility", "visible");
+                            $("#otgButton").css("visibility", "visible");
                             $("#otgButton").css("opacity", "1");
 
                             setTimeout(function () {
