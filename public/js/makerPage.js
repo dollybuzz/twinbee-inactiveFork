@@ -5,6 +5,7 @@ let TEST_ENVIRONMENT = false;
 let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
 let TIME_SHOULD_RUN = false;
+let taskValue = "";
 let navMapper = {
     main: function () {
         window.location.replace(`/login?token=${id_token}`);;
@@ -214,6 +215,7 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
                     $("#otgButton").css("opacity", "0");
                     $("#taskBlock").html("<h6>Update task:</h6>");
+                    $("#taskEntry").html(taskValue);
 
                     setTimeout(function () {
                         $("#clientRole").css("visibility", "hidden");
@@ -273,6 +275,7 @@ function setClockInFunctionality() {
                     setClockOutFunctionality();
                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
                     $("#taskBlock").html("<h6>Update task:</h6>");
+                    taskValue = $("#taskEntry").val();
                     $("#makerText2").css("opacity", "1");
                     $("#clockPrompt").css("opacity", "1");
                     $("#otgButton").css("opacity", "0");
@@ -359,7 +362,8 @@ function setClockOutFunctionality() {
 
                             setTimeout(function () {
                                 $("#taskBlock").html("<h6>Please enter in a task:</h6>");
-                                $("#taskEntry").val("");
+                                taskValue = "";
+                                $("#taskEntry").val(taskValue);
                                 $("#makerText2").css("opacity", "0");
                                 $("#clientCredit").css("opacity", "1");
                                 $("#clientRole").css("opacity", "1");
