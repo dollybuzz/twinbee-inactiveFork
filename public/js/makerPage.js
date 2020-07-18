@@ -257,6 +257,8 @@ function setClockInFunctionality() {
         availableCredits();
     });
 
+    $("#taskBlock").html("<h6>Update task:</h6>");
+
     $("#makerClock").on('click', function () {
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
@@ -365,10 +367,6 @@ function setClockOutFunctionality() {
                             setTimeout(function () {
                                 $("#makerText2").css("opacity", "0");
                             }, 1000);
-
-                            setTimeout(function () {
-                                timeClockFunctionality();
-                            }, 1500);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
