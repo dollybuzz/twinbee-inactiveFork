@@ -273,6 +273,7 @@ function setClockInFunctionality() {
             dataType: "json",
             success: function (clockres, status) {
                 if (clockres) {
+                    $("#taskBlock").html("<h6>Update task:</h6>");
                     setClockOutFunctionality();
                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
                     taskValue = $("#taskEntry").val();
@@ -281,7 +282,6 @@ function setClockInFunctionality() {
                     $("#otgButton").css("opacity", "0");
 
                     setTimeout(function () {
-                        $("#taskBlock").html("<h6>Update task:</h6>");
                         $("#makerText2").css("opacity", "0");
                         $("#otgButton").css("visibility", "hidden");
                     }, 1000);
