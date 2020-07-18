@@ -219,7 +219,7 @@ function timeClockFunctionality() {
                         $("#availcredit").css("visibility", "hidden");
                         $("#makerSelectedClient").css("visibility", "hidden");
                         $("#otgButton").css("visibility", "hidden");
-                    }, 1500)
+                    }, 1000)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     $("#taskBlock").css("opacity", "1");
                     $("#taskEntry").css("opacity", "1");
@@ -311,7 +311,7 @@ function setClockOutFunctionality() {
         $("#availcredit").css("visibility", "hidden");
         $("#otgBlock").css("visibility", "hidden");
         $("#otgTime").css("visibility", "hidden");
-    }, 1500);
+    }, 1000);
 
     $("#makerClock").off("click");
     $("#makerClock").css("background-color", "#32444e");
@@ -367,7 +367,7 @@ function setClockOutFunctionality() {
                                 $("#otgBlock").css("opacity", "1");
                                 $("#otgTime").css("opacity", "1");
                                 $("#otgButton").css("opacity", "1");
-                            }, 1500);
+                            }, 1000);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
                         }
