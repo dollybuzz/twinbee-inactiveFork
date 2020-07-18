@@ -215,7 +215,7 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
                     $("#otgButton").css("opacity", "0");
                     $("#taskBlock").html("<h6>Update task:</h6>");
-                    $("#taskEntry").html(taskValue);
+                    $("#taskEntry").val(taskValue);
 
                     setTimeout(function () {
                         $("#clientRole").css("visibility", "hidden");
