@@ -2693,8 +2693,8 @@ function runReportFunctionality() {
                     $("#reportContent").append('\n' +
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
-                        '   <td>' + item.timeOut + '</td>' +
                         '   <td>' + shiftEnd + '</td>' +
+                        '   <td>' + item.clientName + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
