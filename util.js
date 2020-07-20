@@ -92,7 +92,8 @@ module.exports = {
         if (!validator.isValid) {
             let tracer = new Error();
             console.log(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace:${JSON.stringify(tracer.stack)}`);
-            notifyAdmin(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace:${JSON.stringify(tracer.stack)}`);
+            notifyAdmin(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace coming shortly.`);
+            notifyAdmin(tracer.stack);
         }
         return validator;
     }

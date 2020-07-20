@@ -95,6 +95,23 @@ class TimeSheetRepository {
         return result;
     }
 
+    async getOnlineSheetsByMakerId(id){
+        let sql = 'SELECT * ' +
+            'FROM time_sheet ' +
+            'WHERE end_time = "0000-00-00 00:00:00" ' +
+            'AND start_time != "0000-00-00 00:00:00" ' +
+            'AND maker_id = ?;';
+        let sqlParams = [id];
+        let result;
+        result = await repoMaster.query(sql, sqlParams).catch(e => {
+            notificationService.notifyAdmin(e.toString());
+            console.log(e);
+            result = [];
+        });
+        console.log(`Online sheets retrieved for maker ${id}`);
+        return result;
+    }
+
     async getAllSheets() {
         let sql = 'SELECT * ' +
             'FROM time_sheet';

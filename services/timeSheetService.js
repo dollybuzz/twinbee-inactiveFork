@@ -33,7 +33,9 @@ class TimeSheetService {
             error.reason += timeIn ? "" : "timeIn was invalid\n";
             error.reason += timeOut ? "" : "timeOut was invalid\n";
             console.log(error.status, error.reason);
-            emailService.notifyAdmin(error.status + error.reason + JSON.stringify(tracer.stack));
+            emailService.notifyAdmin(error.status);
+            emailService.notifyAdmin(error.reason);
+            emailService.notifyAdmin(tracer.stack);
             return error;
         }
         let id = await timeSheetRepo.createSheet(makerId, clientId,
@@ -92,18 +94,25 @@ class TimeSheetService {
         }
 
         console.log(`Getting online sheets for maker ${makerId}`);
-        let sheetsForMaker = await this.getSheetsByMaker(makerId).catch(error => {
+        let sheetsForMaker = await timeSheetRepo.getOnlineSheetsByMakerId(makerId).catch(error => {
             console.log(error);
-            emailService.notifyAdmin(error.toString())
+            emailService.notifyAdmin(error.toString());
+            let tracer = new Error();
+            console.log(tracer.stack);
+            emailService.notifyAdmin(tracer.stack);
+            return false;
         });
         let onlineSheets = [];
-        // get online sheets
-        for (var i = 0; i < sheetsForMaker.length; ++i) {
-            let currentSheet = sheetsForMaker[i];
-            if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0") {
-                onlineSheets.push(currentSheet);
-                console.log(currentSheet);
-            }
+        for (var sheet of sheetsForMaker) {
+            let refinedSheet = await createSheetFromRow(sheet).catch(error => {
+                console.log(error);
+                emailService.notifyAdmin(error.toString());
+                let tracer = new Error();
+                console.log(tracer.stack);
+                emailService.notifyAdmin(tracer.stack);
+                return false;
+            });;
+            onlineSheets.push(refinedSheet);
         }
         return onlineSheets;
     }

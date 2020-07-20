@@ -147,7 +147,8 @@ class AuthService {
         let tracer = new Error();
 
         console.log(message);
-        emailService.notifyAdmin(message+ "\n" + JSON.stringify(tracer.stack));
+        emailService.notifyAdmin(message);
+        emailService.notifyAdmin(tracer.stack);
         return false;
     }
 }

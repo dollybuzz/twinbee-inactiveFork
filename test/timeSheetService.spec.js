@@ -254,9 +254,9 @@ describe ("Get Online Sheets For Maker Test", function () {
         sinon.restore();
     });
 
-    it('Should grab all online sheets', async function() {
-        let onlineSheetsStub = sinon.stub(timeSheetService, "getSheetsByMaker")
-            .resolves([timeSheetRefined1, timeSheetRefined2]);
+    it('Should grab all online sheets for a maker', async function() {
+        let onlineSheetsStub = sinon.stub(timeSheetRepo, "getOnlineSheetsByMakerId")
+            .resolves([timeSheetBasic1]);
         let actualSheets = await timeSheetService.getOnlineSheets(1);
         expect(actualSheets).to.deep.equal([timeSheetRefined1]);
     });

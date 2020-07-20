@@ -145,6 +145,7 @@ exports.notifyAdmin = content => {
     }).catch(err => {
         console.log(err + `     Trace: ${JSON.stringify(tracer.stack)}`);
         exports.notifyAdmin(err.toString());
+        exports.notifyAdmin(tracer.stack);
     });
 };
 
