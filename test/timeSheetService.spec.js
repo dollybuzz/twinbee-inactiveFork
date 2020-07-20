@@ -93,10 +93,18 @@ describe('Time Clock Service Test', function () {
     });
 
     it('Should clock out a user', async function () {
-        let onlinesheetsstub = sinon.stub(timeSheetService, 'getOnlineSheets')
+        let onlineSheetsStub = sinon.stub(timeSheetService, 'getOnlineSheets')
             .resolves([timeSheetRefined4]);
+        let closeSheetStub = sinon.stub(timeSheetService, 'closeTimeSheet')
+            .resolves(timeSheetRefined4Closed);
+        let makerIsOnlineStub = sinon.stub(timeSheetService, 'makerIsOnline')
+            .resolves(false);
+        let updateBucketStub = sinon.stub(timeSheetService, 'updateBucketWithSheet')
+            .callsFake(function () {
+            });
         let actual = await timeSheetService.clockOut("asdf");
-
+        sinon.assert.calledOnce(timeSheetService.updateBucketWithSheet);
+        sinon.assert.calledOnce(timeSheetService.closeTimeSheet);
         expect(actual).to.equal(true);
     });
 });
@@ -238,6 +246,30 @@ describe("Last Online Sheet Test", function () {
     });
 });
 
+describe ("Get Online Sheets For Maker Test", function () {
+    beforeEach(function () {
+
+    });
+    afterEach(function () {
+        sinon.restore();
+    });
+
+    it('Should grab all online sheets', async function() {
+        let onlineSheetsStub = sinon.stub(timeSheetService, "getSheetsByMaker")
+            .resolves([timeSheetRefined1, timeSheetRefined2]);
+        let actualSheets = await timeSheetService.getOnlineSheets(1);
+        expect(actualSheets).to.deep.equal([timeSheetRefined1]);
+    });
+    it('Should return false if no makerId is passed', async function() {
+        let actualSheets = await timeSheetService.getOnlineSheets();
+        expect(actualSheets).to.equal(false);
+    });
+    it('Should return an empty array if no online sheets are present', async function() {
+        let onlineSheetsStub = sinon.stub(timeSheetService, "getSheetsByMaker")
+            .resolves([]);
+    })
+});
+
 
 describe("Maker Is Online Test", function () {
     beforeEach(function () {
@@ -311,11 +343,6 @@ describe('Time Sheet Service Test', function () {
     beforeEach(function () {
         let getAllSheetsStub = sinon.stub(timeSheetRepo, 'getAllSheets')
             .resolves([timeSheetBasic1, timeSheetBasic2, timeSheetBasic3]);
-        let getByMakerStub = sinon.stub(timeSheetRepo, 'getSheetsByMaker')
-            .withArgs(1)
-            .resolves([timeSheetBasic1, timeSheetBasic2])
-            .withArgs(-1)
-            .resolves([]);
         let getByClientStub = sinon.stub(timeSheetRepo, 'getSheetsByClient')
             .withArgs('a')
             .resolves([timeSheetBasic1, timeSheetBasic3])
@@ -350,17 +377,17 @@ describe('Time Sheet Service Test', function () {
     });
 
     it('Should grab all sheets for a given maker', async function () {
+        let getByMakerStub = sinon.stub(timeSheetRepo, 'getSheetsByMaker')
+            .withArgs(1)
+            .resolves([timeSheetBasic1, timeSheetBasic2])
+            .withArgs(-1)
+            .resolves([]);
         let actual = await timeSheetService.getSheetsByMaker(1);
         expect(actual).to.deep.equal([timeSheetRefined1, timeSheetRefined2]);
     });
 
     it('Should fail to find sheets for a nonexistent maker', async function () {
-        let actual = await timeSheetService.getSheetsByMaker(-1);
-        expect(actual).to.deep.equal([]);
-    });
-
-    it('Should fail to find sheets for a nonexistent maker', async function () {
-        let actual = await timeSheetService.getSheetsByMaker(null);
+        let actual = await timeSheetService.getSheetsByMaker(999999);
         expect(actual).to.deep.equal([]);
     });
 
