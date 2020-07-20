@@ -5,6 +5,8 @@ const clientId = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(clientId);
 const compare = util.promisify(require('bcrypt').compare);
 const emailService = require('./notificationService.js');
+
+
 class AuthService {
     constructor() {
     };
