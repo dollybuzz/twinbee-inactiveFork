@@ -218,7 +218,12 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
+        if (!sheetsForMaker.length)
+        {
+            return null;
+        }
         let currentSheet = sheetsForMaker[sheetsForMaker.length - 1];
+
         let inMoment = moment(currentSheet.timeIn);
         let now = await this.getCurrentMoment().catch(error => {
             console.log(error);
