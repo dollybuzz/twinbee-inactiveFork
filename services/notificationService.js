@@ -77,8 +77,9 @@ exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject)
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
     exports.sendAWS(toEmail, subject, content);
     } else {
-        console.log("An email would have been sent, but we aren't on the live site.");
-        exports.notifyAdmin("An email would have been sent, but we aren't on the live site.");
+        let message = `An email would have been sent with subject ${subject}, but we aren't on the live site.`;
+        console.log(message);
+        exports.notifyAdmin(message);
     }
 });
 
