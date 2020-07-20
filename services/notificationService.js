@@ -77,8 +77,8 @@ exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject)
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
     exports.sendAWS(toEmail, subject, content);
     } else {
-        console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
-        exports.notifyAdmin("An email would have been sent to admins about an error, but we aren't on the live site.");
+        console.log("An email would have been sent, but we aren't on the live site.");
+        exports.notifyAdmin("An email would have been sent, but we aren't on the live site.");
     }
 });
 
@@ -123,8 +123,9 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
     exports.sendAWS(toEmail, subject, content);
     } else {
-        console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
-        exports.notifyAdmin("An email would have been sent to admins about an error, but we aren't on the live site.");
+        let message = "A welcome email would have been sent, but we aren't on the live site.";
+        console.log(message);
+        exports.notifyAdmin(message);
     }
 });
 
@@ -142,7 +143,7 @@ exports.notifyAdmin = content => {
         channel: channel,
     }).catch(err => {
         console.log(err + `     Trace: ${JSON.stringify(tracer.stack)}`);
-        exports.notifyAdmin(err.toString())
+        exports.notifyAdmin(err.toString());
     });
 };
 
@@ -157,6 +158,8 @@ exports.emailFMAdmin = (subject, content) => {
         console.log(`Emailing Freedom Makers!`);
         exports.sendAWS(process.env.FREEDOM_MAKERS_ADMIN_EMAIL, subject, content);
     } else {
-        console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
+        let message = "An email would have been sent to FM admins, but we aren't on the live site.";
+        console.log(message);
+        exports.notifyAdmin(message);
     }
 };
