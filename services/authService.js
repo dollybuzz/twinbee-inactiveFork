@@ -143,7 +143,7 @@ class AuthService {
             console.log(`Email was: ${payload['email']}`);
             return payload['email'];
         }
-        let message = `Failed to grab email from token. Googles result was ${JSON.stringify(ticket)}`;
+        let message = `Failed to grab email from token. Google's result was ${JSON.stringify(ticket)}`;
         let tracer = new Error();
 
         console.log(message);
