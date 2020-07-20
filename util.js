@@ -14,7 +14,6 @@ let validatorMap = {
     "positiveIntegerOnly": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate) {
-            console.log(body[keyString])
             if (!body[keyString] || !Number.parseInt(body[keyString])
                 || body[keyString].toString().includes("-") || body[keyString].toString().includes(" ") || body[keyString].toString().includes(".")) {
                 valid.isValid = false;
