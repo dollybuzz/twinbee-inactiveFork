@@ -21,6 +21,7 @@ class AuthService {
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
+            return false;
         });
         if (!email) {
             return false;
@@ -34,10 +35,21 @@ class AuthService {
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
+            return false;
         });
 
-        let body = response.body;
-        let makers = JSON.parse(body);
+        let makers;
+        try{
+            makers = JSON.parse(response.body);
+        }
+        catch (e) {
+            let tracer = new Error();
+            console.log(e);
+            console.log(tracer.stack);
+            emailService.notifyAdmin(e);
+            emailService.notifyAdmin(tracer.stack);
+            return false;
+        }
 
         for (var i = 0; i < makers.length; ++i) {
             if (makers[i].email.toLowerCase() === email.toLowerCase()) {
@@ -55,6 +67,7 @@ class AuthService {
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
+            return false;
         });
         if (!email) {
             return false;
@@ -68,10 +81,22 @@ class AuthService {
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
+            return false;
         });
 
-        let body = response.body;
-        let clients = JSON.parse(body);
+
+        let clients;
+        try{
+            clients = JSON.parse(response.body);
+        }
+        catch (e) {
+            let tracer = new Error();
+            console.log(e);
+            console.log(tracer.stack);
+            emailService.notifyAdmin(e);
+            emailService.notifyAdmin(tracer.stack);
+            return false;
+        }
 
         for (var i = 0; i < clients.length; ++i) {
             if (clients[i].customer.email.toLowerCase() === email.toLowerCase()) {
