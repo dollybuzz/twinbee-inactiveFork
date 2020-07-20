@@ -33,7 +33,9 @@ class TimeSheetService {
             error.reason += timeIn ? "" : "timeIn was invalid\n";
             error.reason += timeOut ? "" : "timeOut was invalid\n";
             console.log(error.status, error.reason);
-            emailService.notifyAdmin(error.status + error.reason + JSON.stringify(tracer.stack));
+            emailService.notifyAdmin(error.status);
+            emailService.notifyAdmin(error.reason);
+            emailService.notifyAdmin(tracer.stack);
             return error;
         }
         let id = await timeSheetRepo.createSheet(makerId, clientId,
@@ -76,8 +78,48 @@ class TimeSheetService {
     }
 
     /**
-     * Retrieves timesheets for online makers
      *
+     * @param makerId
+     * @returns {Promise<[TimeSheet]>} all timesheets for the given maker where clock-out == 0000-00-00 00:00:00
+     */
+    async getOnlineSheets(makerId) {
+        if (!makerId) {
+            let message = "No id was passed to getOnlineSheets";
+            let tracer = new Error();
+            console.log(message);
+            console.log(tracer.stack);
+            emailService.notifyAdmin(tracer.stack);
+            emailService.notifyAdmin(message);
+            return false;
+        }
+
+        console.log(`Getting online sheets for maker ${makerId}`);
+        let sheetsForMaker = await timeSheetRepo.getOnlineSheetsByMakerId(makerId).catch(error => {
+            console.log(error);
+            emailService.notifyAdmin(error.toString());
+            let tracer = new Error();
+            console.log(tracer.stack);
+            emailService.notifyAdmin(tracer.stack);
+            return false;
+        });
+        let onlineSheets = [];
+        for (var sheet of sheetsForMaker) {
+            let refinedSheet = await createSheetFromRow(sheet).catch(error => {
+                console.log(error);
+                emailService.notifyAdmin(error.toString());
+                let tracer = new Error();
+                console.log(tracer.stack);
+                emailService.notifyAdmin(tracer.stack);
+                return false;
+            });;
+            onlineSheets.push(refinedSheet);
+        }
+        return onlineSheets;
+    }
+
+    /**
+     * Retrieves timesheets for online makers
+     * TODO: Revisit repo, have DB handle filtering
      * @returns {Promise<[timesheet]>}
      */
     async getOnlineMakerSheets() {
@@ -143,7 +185,13 @@ class TimeSheetService {
      */
     async getSheetsByMaker(id) {
         if (!id) {
-            return [];
+            let message = "No id was passed to getSheetsByMaker";
+            let tracer = new Error();
+            console.log(message);
+            console.log(tracer.stack);
+            emailService.notifyAdmin(tracer.stack);
+            emailService.notifyAdmin(message);
+            return false;
         }
         let sheets = await timeSheetRepo.getSheetsByMaker(id).catch(err => {
             console.log(err);
@@ -185,30 +233,6 @@ class TimeSheetService {
     /**
      *
      * @param makerId
-     * @returns {Promise<[TimeSheet]>} all timesheets for the given maker where clock-out == 0000-00-00 00:00:00
-     */
-    async getOnlineSheets(makerId) {
-        console.log(`Getting online sheets for maker ${makerId}`);
-        let sheetsForMaker = await this.getSheetsByMaker(makerId).catch(error => {
-            console.log(error);
-            emailService.notifyAdmin(error.toString())
-        });
-        let onlineSheets = [];
-        // get online sheets
-        for (var i = 0; i < sheetsForMaker.length; ++i) {
-            let currentSheet = sheetsForMaker[i];
-            console.log(currentSheet)
-            if (currentSheet.timeIn[0].toString() !== "0" && currentSheet.timeOut[0].toString() === "0") {
-                onlineSheets.push(currentSheet);
-                console.log(currentSheet);
-            }
-        }
-        return onlineSheets;
-    }
-
-    /**
-     *
-     * @param makerId
      * @returns {Promise<[TimeSheet]>} all the most recent time sheet
      * for the given maker where clock-out == 0000-00-00 00:00:00
      */
@@ -218,12 +242,13 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
+        if (!sheetsForMaker.length)
+        {
+            return null;
+        }
         let currentSheet = sheetsForMaker[sheetsForMaker.length - 1];
+
         let inMoment = moment(currentSheet.timeIn);
-        let now = await this.getCurrentMoment().catch(error => {
-            console.log(error);
-            emailService.notifyAdmin(error.toString())
-        });
         currentSheet.secondsOnline = await this.getSecondsSince(inMoment).catch(error => {
             console.log(error);
             emailService.notifyAdmin(error.toString())
@@ -428,6 +453,16 @@ class TimeSheetService {
      * @param newTask - updated task if any
      */
     async clockOut(token, newTask) {
+        if (!token){
+            let message = "No token (or a bad token) was passed to clockOut";
+            let tracer = new Error();
+            console.log(message);
+            console.log(tracer.stack);
+            emailService.notifyAdmin(tracer.stack);
+            emailService.notifyAdmin(message);
+            return false;
+        }
+
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getMakerIdByToken`,
@@ -438,12 +473,25 @@ class TimeSheetService {
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
+            return false;
         });
-        let idResponse = JSON.parse(result.body);
+        let idResponse;
+        try {
+            idResponse = JSON.parse(result.body);
+        }
+        catch (e) {
+            let tracer = new Error();
+            console.log(e);
+            emailService.notifyAdmin(e);
+            console.log(tracer.stack);
+            emailService.notifyAdmin(tracer.stack);
+            return false;
+        }
         let makerId = idResponse.id;
         let onlineSheets = await this.getOnlineSheets(makerId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
+            return false;
         });
 
 
@@ -453,8 +501,13 @@ class TimeSheetService {
             let rightNow = await this.getCurrentMoment().catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
+                return false;
             });
-            let closedSheet = await this.closeTimeSheet(currentSheet, rightNow, newTask);
+            let closedSheet = await this.closeTimeSheet(currentSheet, rightNow, newTask).catch(err => {
+                console.log(err);
+                emailService.notifyAdmin(err.toString());
+                return false;
+            });
             this.updateBucketWithSheet(closedSheet);
             console.log("Update client bucket due do clock-out request sent");
         }
@@ -462,6 +515,12 @@ class TimeSheetService {
         return !(await this.makerIsOnline(makerId));
     }
 
+
+    /**
+     *
+     * @param makerId
+     * @returns {Promise<boolean>}
+     */
     async makerIsOnline(makerId) {
         let sheets = await this.getSheetsByMaker(makerId).catch(err => {
             console.log(err);

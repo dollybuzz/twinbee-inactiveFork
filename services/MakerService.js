@@ -415,6 +415,14 @@ class MakerService {
      * @returns {Promise<void>}
      */
     async getMakerCurrentTimeSheet(id) {
+        if (!id){
+            let message = "id wasn't valid";
+            let tracer = new Error();
+            console.log(tracer.stack);
+            console.log(message);
+            emailService.notifyAdmin(message);
+            emailService.notifyAdmin(tracer.stack);
+        }
         console.log(`Getting online time sheet for maker ${id}`);
         let result = await request({
             method: 'POST',
@@ -427,9 +435,15 @@ class MakerService {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-
-        let timeSheet = JSON.parse(result.body);
-
+        let timeSheet;
+        try {
+            timeSheet = JSON.parse(result.body);
+        }
+        catch (e) {
+            console.log(e);
+            emailService.notifyAdmin(e);
+            return false;
+        }
         return timeSheet;
     }
 

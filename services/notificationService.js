@@ -3,53 +3,47 @@ lots of help from https://www.woolha.com/tutorials/node-js-send-email-using-gmai
 as well as nodemailer and google api docs.
 * */
 
-const nodemailer = require('nodemailer');
 const {WebClient} = require('@slack/web-api');
 const slackToken = process.env.SLACK_TOKEN;
 const web = new WebClient(slackToken);
 const AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        type: 'OAuth2',
-        user: process.env.NOTIFIER_EMAIL,
-        clientId: process.env.TWINBEE_CLIENT_ID,
-        clientSecret: process.env.TWINBEE_CLIENT_SECRET,
-        refreshToken: process.env.TWINBEE_OAUTH_REFRESH_TOKEN,
-        accessToken: process.env.TWINBEE_OAUTH_ACCESS_TOKEN,
-        expires: Number.parseInt(process.env.TWINBEE_OAUTH_TOKEN_EXPIRE, 10),
-    },
-});
 
-exports.sendAWS = ()=>{
+
+/**
+ * AWS SES send function.  Sends email with current credentials and configurations.
+ * Reply-to and from will both be visible as the currently configured email.
+ *
+ * @param toEmail   - address to send to
+ * @param subject   - email subject as it will appear in the recipient's inbox
+ * @param content   - email content as it will appear for the recipient (html or plain text)
+ */
+exports.sendAWS = (toEmail, subject, content) => {
     var params = {
         Destination: { /* required */
             ToAddresses: [
-                'TO EMAIL'
+                toEmail
             ]
         },
         Message: { /* required */
             Body: { /* required */
                 Html: {
                     Charset: "UTF-8",
-                    Data: "Hello!"
+                    Data: content
                 },
                 Text: {
                     Charset: "UTF-8",
-                    Data: "Hello2!"
+                    Data: content
                 }
             },
             Subject: {
                 Charset: 'UTF-8',
-                Data: 'Test email'
+                Data: subject
             }
         },
-        Source: 'FROM EMAIL', /* required */
+        Source: process.env.NOTIFIER_EMAIL, /* required */
         ReplyToAddresses: [
-            'REPLY EMAIL',
+            process.env.NOTIFIER_EMAIL,
             /* more items */
         ],
     };
@@ -59,13 +53,16 @@ exports.sendAWS = ()=>{
 
 // Handle promise's fulfilled/rejected states
     sendPromise.then(
-        function(data) {
+        function (data) {
             console.log(data.MessageId);
         }).catch(
-        function(err) {
+        function (err) {
             console.error(err, err.stack);
+            exports.notifyAdmin(err);
+            exports.notifyAdmin(err.stack);
         });
 };
+
 
 /**
  * Sends an email to the designated email with designated subject
@@ -74,26 +71,27 @@ exports.sendAWS = ()=>{
  * @param toEmail   - email to send to
  * @param subject   - subject of email
  * @param content   - content
- * @returns {Promise<unknown>}
  */
 exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject) => {
+    if (process.env.TWINBEE_LIVE) {
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
-    transporter.sendMail({to: toEmail, subject: subject, html: content}, (error) => {
-        if (error) {
-            console.log(error);
-            reject(error);
-        }
-        resolve();
-    });
+    exports.sendAWS(toEmail, subject, content);
+    } else {
+        let message = `An email would have been sent with subject ${subject}, but we aren't on the live site.`;
+        console.log(message);
+        exports.notifyAdmin(message);
+    }
 });
+
+
 /**
  * Sends a welcome email with a link to the live website to the designated
  * email address
  *
  * @param toEmail   - email to send to
- * @returns {Promise<unknown>}
  */
 exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
+    if (process.env.TWINBEE_LIVE) {
     let subject = "Welcome to Freedom Makers!";
     let content = `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
 <header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
@@ -124,19 +122,12 @@ exports.sendWelcome = toEmail => new Promise((resolve, reject) => {
 </body>
 `
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
-    transporter.sendMail({
-        to: toEmail,
-        subject: subject,
-        html: content
-    }, (error) => {
-        if (error) {
-            console.log(error);
-            exports.notifyAdmin(error)
-            exports.notifyAdmin(error.toString())
-            reject(error);
-        }
-        resolve();
-    });
+    exports.sendAWS(toEmail, subject, content);
+    } else {
+        let message = "A welcome email would have been sent, but we aren't on the live site.";
+        console.log(message);
+        exports.notifyAdmin(message);
+    }
 });
 
 /**
@@ -153,7 +144,8 @@ exports.notifyAdmin = content => {
         channel: channel,
     }).catch(err => {
         console.log(err + `     Trace: ${JSON.stringify(tracer.stack)}`);
-        exports.notifyAdmin(err.toString())
+        exports.notifyAdmin(err.toString());
+        exports.notifyAdmin(tracer.stack);
     });
 };
 
@@ -163,23 +155,13 @@ exports.notifyAdmin = content => {
  * @param content - email content
  * @returns {Promise<>}
  */
-exports.emailFMAdmin = (subject, content) => new Promise((resolve, reject) => {
+exports.emailFMAdmin = (subject, content) => {
     if (process.env.TWINBEE_LIVE) {
         console.log(`Emailing Freedom Makers!`);
-        setTimeout(() => {
-            transporter.sendMail({
-                to: process.env.FREEDOM_MAKERS_ADMIN_EMAIL,
-                subject: subject,
-                html: content
-            }, (error) => {
-                if (error) {
-                    console.log(error);
-                    reject(error);
-                }
-                resolve();
-            });
-        }, 3000);
+        exports.sendAWS(process.env.FREEDOM_MAKERS_ADMIN_EMAIL, subject, content);
     } else {
-        console.log("An email would have been sent to admins about an error, but we aren't on the live site.");
+        let message = "An email would have been sent to FM admins, but we aren't on the live site.";
+        console.log(message);
+        exports.notifyAdmin(message);
     }
-});
+};

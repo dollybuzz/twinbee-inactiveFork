@@ -14,7 +14,6 @@ let validatorMap = {
     "positiveIntegerOnly": async function (keysToValidate, body) {
         let valid = {isValid: true, message: ""};
         for (var keyString of keysToValidate) {
-            console.log(body[keyString])
             if (!body[keyString] || !Number.parseInt(body[keyString])
                 || body[keyString].toString().includes("-") || body[keyString].toString().includes(" ") || body[keyString].toString().includes(".")) {
                 valid.isValid = false;
@@ -92,7 +91,8 @@ module.exports = {
         if (!validator.isValid) {
             let tracer = new Error();
             console.log(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace:${JSON.stringify(tracer.stack)}`);
-            notifyAdmin(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace:${JSON.stringify(tracer.stack)}`);
+            notifyAdmin(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace coming shortly.`);
+            notifyAdmin(tracer.stack);
         }
         return validator;
     }
