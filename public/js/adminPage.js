@@ -2586,6 +2586,8 @@ function runReportFunctionality() {
         "<input class='form-control' type='date' id='endDate' name='endDate'></div>");
     $(".reportOptionsTime").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptionsTime").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
+    $(".reportOptionsTime").append("<div><label for='maker'>Relationship ID:</label><select class='form-control' id='relIdSearch'>\n</select></div>");
+    $(".reportOptionsTime").append("<div><label for='maker'>Admin Note:</label><input class='form-control' type='text' id='adminNoteSearch' name='adminNoteSearch'></div>");
     $(".reportOptionsTime").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
@@ -2655,6 +2657,64 @@ function runReportFunctionality() {
             }
         });
     });
+
+    $.ajax({
+        url: "/api/getAllClients",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (clientres, clientstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getAllRelationships",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (relres, relstatus) {
+                            //Create table
+                            let clientMap = {};
+                            let makerMap = {};
+                            for (var item of clientres) {
+                                if (item.customer.first_name) {
+                                    clientMap[item.customer.id] = item.customer;
+                                }
+                            }
+                            for (var item of makerres) {
+                                makerMap[item.id] = item;
+                            }
+
+                            relres.forEach(item => {
+                                $("#relIdSearch").html(`<option value="${item.id}">${item.id} - ${clientMap[item.clientId].first_name} ${clientMap[item.clientId].last_name} - ${makerMap[item.makerId].firstName} ${makerMap[item.makerId].lastName}</option>`);
+                            });
+
+                        },
+                        error: function (relres, relstatus) {
+                            $("#userMainContent").html("Plan Relationship isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Maker Relationship isn't working!");
+                }
+            });
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+
+
     //Event Listeners
     //Run Report
     $("#runReportButton").on('click', function () {
