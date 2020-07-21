@@ -23,7 +23,6 @@ class AuthService {
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         if (!email) {
             return false;
@@ -37,7 +36,6 @@ class AuthService {
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
 
         let makers;
@@ -69,7 +67,6 @@ class AuthService {
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         if (!email) {
             return false;
@@ -83,7 +80,6 @@ class AuthService {
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
 
 
@@ -117,14 +113,12 @@ class AuthService {
             console.log(err);
             console.log("Error grabbing admin list");
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         console.log("Who's token is this?");
         let email = await this.getEmailFromToken(creds).catch(err => {
             console.log(err);
             console.log("Error grabbing email from token");
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         if (!email) {
             return false;

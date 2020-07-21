@@ -122,7 +122,6 @@ class ClientService {
             .catch(error => {
                 console.log(error);
                 emailService.notifyAdmin(error.toString());
-                return false;
             });
         return "Successfully notified admin";
     }
@@ -723,7 +722,6 @@ class ClientService {
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
 
         let client = await this.getClientById(customerId);

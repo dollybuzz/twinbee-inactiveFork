@@ -5,6 +5,8 @@ const emailService = require('./notificationService.js');
 
 class TimeReportingService {
     constructor() {
+        this.clientMap = null;
+        this.makerMap = null;
         this.setup();
     };
 
@@ -12,18 +14,33 @@ class TimeReportingService {
         this.makerMap = await getMakerMap();
         this.clientMap = await getClientMap();
     }
+
     async validateMaps(clientId, makerId) {
         if (!this.clientMap[clientId]) {
             console.log(`Couldn't find client ${clientId}. Double checking reporting service client map!`);
-            this.clientMap = await getClientMap();
+            this.clientMap = await getClientMap().catch(err=>{
+                console.log(err);
+                emailService.notifyAdmin(err);
+                emailService.notifyAdmin("Failed to validate reporting maps.");
+            });
         }
         if (!this.makerMap[makerId.toString()]) {
             console.log(`Couldn't find maker ${makerId} Double checking reporting service maker map!`);
-            this.makerMap = await getMakerMap();
+            this.makerMap = await getMakerMap().catch(err=>{
+                console.log(err);
+                emailService.notifyAdmin(err);
+                emailService.notifyAdmin("Failed to validate reporting maps.");
+            });
         }
         return true;
     }
 
+    /**
+     * Converts two datetime strings into an object containing moments.
+     * @param start - period start in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
+     * @param end   - period end in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
+     * @returns {Promise<{start: moment, end: moment}>}
+     */
     async timePeriodToMoments(start, end) {
         if (!start) {
             start = "2020-01-01 00:00:00";
@@ -72,6 +89,16 @@ class TimeReportingService {
     }
 
 
+    /**
+     * Retrieves a time report for the maker with the passed token. Optionally constrains report to time
+     * period and specific client.
+     *
+     * @param start - (optional) period start in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
+     * @param end   - (optional) period end in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
+     * @param token - token of requesting maker
+     * @param client- (optional) id of client to constrain report to
+     * @returns {Promise<{sheets: *[], duration: total, time, logged}>}
+     */
     async getMyTimeReportMaker(start, end, token, client) {
         let response = await request({
             method: 'POST',
@@ -82,7 +109,8 @@ class TimeReportingService {
             }
         }).catch(err => {
             console.log(err);
-            emailService.notifyAdmin(err.toString());
+            emailService.notifyAdmin(`Failure in getMyTimeReportMaker, contents were: Start: ${start}, End: ${end}, Token: ${token}, Client: ${client}`);
+            emailService.notifyAdmin(err);
         });
 
         let {id} = JSON.parse(response.body);
@@ -91,11 +119,23 @@ class TimeReportingService {
     }
 
 
+    /**
+     * Retrieves a rollup report for the given relationships.
+     *
+     * @param start             - (optional) period start in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
+     * @param end               - (optional) period end in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
+     * @param relationshipList  - list of relationships to retrieve report for
+     * @returns {Promise<[{relationshipId, freedomMaker, client, occupation, totalTime, penniesOwed},...]>}
+     */
     async getTimeReport(start, end, relationshipList) {
         let rollupRows = [];
 
         for (var relationship of relationshipList) {
-            await this.validateMaps(relationship.clientId, relationship.makerId);
+            await this.validateMaps(relationship.clientId, relationship.makerId).catch(error => {
+                console.log(error);
+                emailService.notifyAdmin(error);
+                emailService.notifyAdmin(`Catastrophic failure in reports; maps failed to validate.`)
+            });
 
             let hoursReport = await this.getReportForRelationship(start, end, relationship.id);
             let makerName = this.makerMap[relationship.makerId] ? `${this.makerMap[relationship.makerId].firstName} ${this.makerMap[relationship.makerId].lastName}`
@@ -123,8 +163,8 @@ class TimeReportingService {
      * relationship members and logged time for the time period. Each element of the returned
      * array contains the data for a single relationship.
      *
-     * @param start - start time (inclusive) for the report in a moment.js readable format
-     * @param end   - end time (exlusive) for the report in a moment.js readable format
+     * @param start             - (optional) period start in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
+     * @param end               - (optional) period end in form 'YYYY-MM-DD HH:mm:ss' INCLUSIVE
      * @returns {Promise<[]>}
      */
     async getTimeRollup(start, end) {
@@ -278,7 +318,11 @@ class TimeReportingService {
             emailService.notifyAdmin(err.toString());
         });
 
-        await this.validateMaps(sheet.clientId, sheet.makerId);
+        await this.validateMaps(sheet.clientId, sheet.makerId).catch(function(error) {
+            console.log(error);
+            emailService.notifyAdmin(error);
+            emailService.notifyAdmin(`Catastrophic failure in reports; maps failed to validate.`);
+        });
 
         let client = this.clientMap[sheet.clientId];
         let maker = this.makerMap[sheet.makerId];
@@ -361,6 +405,5 @@ async function getAllSheets() {
     });
     return JSON.parse(response.body);
 }
-
 
 module.exports = new TimeReportingService();
