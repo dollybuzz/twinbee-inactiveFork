@@ -174,6 +174,7 @@ function timeClockFunctionality() {
                         success: function(res, status) {
                             $("#makerText2").css("opacity", "1");
                             $("#makerText2").html("<h5>Successfully submitted entry!</h5>");
+                            $("#taskEntry").val("");
                             availableCredits();
 
                             setTimeout(function () {
