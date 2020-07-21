@@ -2694,6 +2694,7 @@ function runReportFunctionality() {
                                 makerMap[item.id] = item;
                             }
 
+                            $("#relIdSearch").html("<option value=''></option>");
                             relres.forEach(item => {
                                 $("#relIdSearch").append(`<option value="${item.id}">${item.id} - ${clientMap[item.clientId].first_name} ${clientMap[item.clientId].last_name} - ${makerMap[item.makerId].firstName} ${makerMap[item.makerId].lastName}</option>`);
                             });
