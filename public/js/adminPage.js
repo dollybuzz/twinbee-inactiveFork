@@ -2582,8 +2582,8 @@ function runReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptionsTime").append("<div><label for='startEndDate'>Start/End Date:</label><input class='form-control' type='date' id='startDate' name='startDate'>");
-    $(".reportOptionsTime").append("<input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsTime").append("<div><label for='startEndDate'>Start/End Date:</label><input class='form-control' type='date' id='startDate' name='startDate'>" +
+        "<input class='form-control' type='date' id='endDate' name='endDate'></div>");
     $(".reportOptionsTime").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptionsTime").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
     $(".reportOptionsTime").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
