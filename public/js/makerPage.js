@@ -150,6 +150,7 @@ function timeClockFunctionality() {
                 $("#clockPrompt").html("<span id='errormessage' style='color:red'></span>");
                 let message = "";
                 let valid = true;
+                let entryVal = $("#taskEntry").val();
 
                 if($("#taskEntry").val().length === 0) {
                     valid = false;
@@ -169,7 +170,7 @@ function timeClockFunctionality() {
                             token: id_token,
                             relationshipId: $("#makerSelectedClient").val(),
                             minutes: $("#otgValues").val(),
-                            task: $("#taskEntry").val()
+                            task: entryVal
                         },
                         dataType: "json",
                         success: function(res, status) {
