@@ -2,6 +2,7 @@ const sinon = require('sinon');
 const {expect} = require('chai');
 const nock = require('nock');
 const reportingService = require('../services/timeReportingService.js');
+const emailService = require("../services/notificationService.js");
 
 describe('Get Sheet Details Test', function () {
 
@@ -114,7 +115,7 @@ describe('Get Sheet Details Test', function () {
     });
 
     it('Should successfully grab the sheet details with a deleted maker', async function () {
-        let validateStub = sinon.stub(reportingService, "validateMaps").resolves(true)
+        let validateStub = sinon.stub(reportingService, "validateMaps").resolves(true);
         let clientId = 1;
         let makerId = 5;
         let actual = await reportingService.getSheetDetails(
@@ -138,7 +139,8 @@ describe('Get Sheet Details Test', function () {
         });
     });
 
-    it('Should fail on moment.js failure', async function () {
+    it('Should fail on validation failure', async function () {
+        let emailServiceStub = sinon.stub(emailService, "notifyAdmin").callsFake(function (){});
         sinon.stub(reportingService, "validateMaps").callsFake(function () {
             return new Promise((resolve, reject) => {
                 reject();
@@ -159,13 +161,8 @@ describe('Get Sheet Details Test', function () {
                 relationshipId: 4
             }
         );
-        expect(actual).to.equal(false);
+        sinon.assert.calledTwice(emailService.notifyAdmin)
     });
-
-    it('Should fail on validation failure', function () {
-        throw new Error("Not tested")
-    });
-
 });
 
 describe('Reporting Map Setup Test', function () {
