@@ -323,7 +323,6 @@ class TimeReportingService {
             emailService.notifyAdmin(error);
             emailService.notifyAdmin(`Catastrophic failure in reports; maps failed to validate.`);
         });
-
         let client = this.clientMap[sheet.clientId];
         let maker = this.makerMap[sheet.makerId];
         let clientName = this.clientMap[sheet.clientId] ? `${client.first_name} ${client.last_name}` : `Deleted client ${sheet.clientId}`;

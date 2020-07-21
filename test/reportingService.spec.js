@@ -3,6 +3,13 @@ const {expect} = require('chai');
 const nock = require('nock');
 const reportingService = require('../services/timeReportingService.js');
 const emailService = require("../services/notificationService.js");
+const TimeSheet = require('../domain/entity/timeSheet');
+
+const timeSheetRefined1 = new TimeSheet(1, 1, 20.00, 'a', '2019-04-24 22:22:22', '0000-00-00 00:00:00', 'worker', 'No details given.', 1);
+const timeSheetRefined2 = new TimeSheet(2, 1, 20.00, 'b', '2019-04-23 22:00:00', '2019-04-23 23:00:00', 'worker', 'Added by admin: 1', 2);
+const timeSheetRefined3 = new TimeSheet(3, 2, 20.00, 'a', '2019-04-22 22:00:00', '2019-04-22 23:00:00', 'worker', 'Added by admin: 2', 3);
+const timeSheetRefined4 = new TimeSheet(4, 5, 20.00, 'a', '2019-04-22 22:00:00', '0000-00-00 00:00:00', 'worker', 'Added by admin: 2', 4);
+
 
 describe('Get Sheet Details Test', function () {
 
@@ -162,6 +169,62 @@ describe('Get Sheet Details Test', function () {
             }
         );
         sinon.assert.calledTwice(emailService.notifyAdmin)
+    });
+});
+
+
+describe('Get Report for Relationship Test', function () {
+
+    beforeEach(function () {
+        let validateStub = sinon.stub(reportingService, "validateMaps").resolves(true);
+        let scopeRelationship = nock(process.env.TWINBEE_URL)
+        .post('/api/getRelationshipById', {auth: process.env.TWINBEE_MASTER_AUTH, id: 2})
+        .reply(200,
+            JSON.stringify({id: 2, clientId: 'b', makerId: 2, occupation: "testOc", hourlyRate: 2})
+        );
+        let scopeAllSheets = nock(process.env.TWINBEE_URL)
+            .post('/api/getAllTimeSheets', {auth: process.env.TWINBEE_MASTER_AUTH})
+            .reply(200,
+                JSON.stringify([timeSheetRefined1,timeSheetRefined2, timeSheetRefined3, timeSheetRefined4])
+            );
+        reportingService.clientMap = {
+            "1": {
+                id: "1",
+                first_name: "clientFirst1",
+                last_name: "clientLast1",
+                company: "clientCompany1"
+            },
+            "2": {
+                id: "2",
+                first_name: "clientFirst2",
+                last_name: "clientLast2",
+            }
+        };
+        reportingService.makerMap = {
+            "1": {
+                id: "1",
+                firstName: "makerFirst1",
+                lastName: "makerLast1"
+            },
+            "2": {
+                id: "2",
+                firstName: "makerFirst2",
+                lastName: "makerLast2",
+            }
+        };
+    });
+
+    afterEach(function () {
+        sinon.restore();
+    });
+
+    it('Should successfully grab the report with results normally', async function () {
+        let actual = await reportingService.getReportForRelationship('2019-01-01 01:00:00', '2019-09-01 01:00:00', 2)
+        expect(actual).to.deep.equal({
+            sheets:[{id:2, duration: 60, plan:20, clientName: "Deleted client b", company: "Deleted Client", makerName: "makerFirst1 makerLast1", occupation: "testOc"}],
+            penniesOwed:2,
+            total: 60
+        })
     });
 });
 
