@@ -1477,7 +1477,7 @@ function relationshipFunctionality(res) {
                                 "</div></div>");
                             $("#relationshipTable").append('\n' +
                                 '        <thead class="thead">\n' +
-                                '            <th scope="col">Relationship ID</th>\n' +
+                                '            <th scope="col" style="width: 200px">Relationship ID</th>\n' +
                                 '            <th scope="col">Client </th>\n' +
                                 '            <th scope="col">Company</th>\n' +
                                 '            <th scope="col">Freedom Maker</th>\n' +
@@ -2591,7 +2591,7 @@ function runReportFunctionality() {
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Time Sheet ID</th>\n' +
+        '            <th scope="col" style="width: 200px">Time Sheet ID</th>\n' +
         '            <th scope="col">Shift End Date</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
@@ -2823,7 +2823,7 @@ function rollupReportFunctionality() {
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Relationship ID</th>\n' +
+        '            <th scope="col" style="width: 200px">Relationship ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Occupation</th>\n' +

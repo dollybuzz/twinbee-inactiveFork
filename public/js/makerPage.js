@@ -493,7 +493,7 @@ function timeSheetFunctionality(res) {
     //Populate table but do not show
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Timesheet ID</th>\n' +
+        '            <th scope="col" style="width: 200px">Timesheet ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Clock In (PST/PDT)</th>\n' +
