@@ -24,6 +24,7 @@ class ChargebeeService {
     constructor() {
     };
 
+
     /**
      * Retrieves all plans from the environment as chargebee entries.
      * Note that in order to access meaningful data, an intermediate object is
@@ -54,6 +55,7 @@ class ChargebeeService {
         }
         return list;
     }
+
 
     /**
      * Creates a new plan in the  environment.
@@ -94,6 +96,7 @@ class ChargebeeService {
         });
     }
 
+
     /**
      * Retrieves a chargebee plan object by chargebee plan id.
      *
@@ -116,6 +119,7 @@ class ChargebeeService {
             });
         })
     }
+
 
     /**
      * Updates a plan with new values. Note that the plan id is
@@ -149,6 +153,7 @@ class ChargebeeService {
         })
     }
 
+
     /**
      * Deletes a plan by chargebee plan id
      * @param planId
@@ -164,6 +169,7 @@ class ChargebeeService {
             }
         });
     }
+
 
     /**
      * Retrieves all subscriptions as entries as follows:
@@ -200,6 +206,7 @@ class ChargebeeService {
         }
         return list;
     }
+
 
     /**
      * Creates a new subscription for an existing customer.
@@ -254,6 +261,7 @@ class ChargebeeService {
         })
     }
 
+
     /**
      * Retrieves a subscription object by chargebee subscription id.
      * @param subscriptionId    - id of the subscription to retrieve
@@ -276,6 +284,7 @@ class ChargebeeService {
         })
     }
 
+
     /**
      * Revert's planned changes to a subscription.
      *
@@ -297,6 +306,7 @@ class ChargebeeService {
             });
         })
     }
+
 
     /**
      * Retrieves a subscription object by chargebee subscription id, including
@@ -321,6 +331,7 @@ class ChargebeeService {
             });
         })
     }
+
 
     /**
      * Updates a subscription with new values. Note that
@@ -377,6 +388,7 @@ class ChargebeeService {
         })
     }
 
+
     /**
      * Updates a subscription with new values. Note that
      * the pricePerHour will override defaults. Created for use
@@ -409,6 +421,7 @@ class ChargebeeService {
             });
         })
     }
+
 
     /**
      * Gets all subscriptions (up to 100) for a given client. Looks
@@ -457,6 +470,7 @@ class ChargebeeService {
         }))
     }
 
+
     /**
      * cancels a subscription by chargebee subscription id
      * @param subscriptionId    - subscription to be cancelled
@@ -478,16 +492,17 @@ class ChargebeeService {
         });
     }
 
+
     /**
      * Pauses a subscription at the end of the current term.
      *
-     * @param subscription to be paused.
+     * @param subscriptionId to be paused.
      * @returns {Promise<>}
      */
-    async pauseSubscription(subscription) {
-        console.log(`Pausing subscription ${subscription}...`);
+    async pauseSubscription(subscriptionId) {
+        console.log(`Pausing subscription ${subscriptionId}...`);
         return new Promise(((resolve, reject) => {
-            chargebee.subscription.pause(subscription, {
+            chargebee.subscription.pause(subscriptionId, {
                 pause_option: "end_of_term"
             }).request(function (error, result) {
                 if (error) {
@@ -505,13 +520,13 @@ class ChargebeeService {
     /**
      * Immediately resumes a paused subscription at the end of the current term.
      *
-     * @param subscription to be paused.
+     * @param subscriptionId to be paused.
      * @returns {Promise<>}
      */
-    async resumePausedSubscription(subscription) {
-        console.log(`Resuming subscription ${subscription}...`);
+    async resumePausedSubscription(subscriptionId) {
+        console.log(`Resuming subscription ${subscriptionId}...`);
         return new Promise(((resolve, reject) => {
-            chargebee.subscription.resume(subscription, {
+            chargebee.subscription.resume(subscriptionId, {
                 resume_option: "immediately"
             }).request(function (error, result) {
                 if (error) {

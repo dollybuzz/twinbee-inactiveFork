@@ -382,7 +382,7 @@ async function getMakerMap() {
     }).catch(err => {
         console.log(err);
         emailService.notifyAdmin(err.toString());
-    })
+    });
     let makers = JSON.parse(response.body);
     let makerMap = {};
     for (var maker of makers) {
