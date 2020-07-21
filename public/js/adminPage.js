@@ -2730,7 +2730,7 @@ function runReportFunctionality() {
                 start: $("#startDate").val(),
                 end: $("#endDate").val(),
                 relationshipId: $("#relIdSearch").val(),
-                adminNote: $("adminNoteSearch").val().toLowerCase(),
+                adminNote: $("#adminNoteSearch").val().toLowerCase(),
             },
             dataType: "json",
             success: function (timeres, timestatus) {
