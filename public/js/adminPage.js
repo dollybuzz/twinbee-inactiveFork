@@ -2626,6 +2626,7 @@ function runReportFunctionality() {
             }
         });
     });
+
     $("#makerRepSearch").on("change", function () {
         $.ajax({
             url: "/api/getAllMakers",
@@ -2713,7 +2714,6 @@ function runReportFunctionality() {
         }
     });
 
-
     //Event Listeners
     //Run Report
     $("#runReportButton").on('click', function () {
@@ -2727,7 +2727,9 @@ function runReportFunctionality() {
                 makerId: $("#makerReport").val(),
                 clientId: $("#clientReport").val(),
                 start: $("#startDate").val(),
-                end: $("#endDate").val()
+                end: $("#endDate").val(),
+                relationshipId: $("#relIdSearch").val(),
+                adminNote: $("adminNoteSearch").val().toLowerCase(),
             },
             dataType: "json",
             success: function (timeres, timestatus) {

@@ -275,7 +275,7 @@ class TimeSheetService {
 
     async openTimeSheet(relationship, startMoment, task) {
         let newSheet = await this.createTimeSheet(relationship.makerId, relationship.planId, relationship.clientId,
-            moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), '0000-00-00 00:00:00', task, "Created Normally", relationship.id).catch(error => {
+            moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), '0000-00-00 00:00:00', task, "Live Clock", relationship.id).catch(error => {
             console.log(error);
             emailService.notifyAdmin(error.toString());
         });
