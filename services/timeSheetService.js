@@ -100,7 +100,6 @@ class TimeSheetService {
             let tracer = new Error();
             console.log(tracer.stack);
             emailService.notifyAdmin(tracer.stack);
-            return false;
         });
         let onlineSheets = [];
         for (var sheet of sheetsForMaker) {
@@ -110,8 +109,7 @@ class TimeSheetService {
                 let tracer = new Error();
                 console.log(tracer.stack);
                 emailService.notifyAdmin(tracer.stack);
-                return false;
-            });;
+            });
             onlineSheets.push(refinedSheet);
         }
         return onlineSheets;
@@ -298,12 +296,10 @@ class TimeSheetService {
         let relationship = await this.extractRelationship(relationshipId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         if (!(await this.tokenIsInSheetRelationship(token, relationship).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         }))){
             return false;
         }
@@ -315,7 +311,6 @@ class TimeSheetService {
         let relationship = await this.extractRelationship(relationshipId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         let now = moment();
         let year = now.year();
@@ -325,23 +320,19 @@ class TimeSheetService {
         let sheet = await this.openTimeSheet(relationship, startTime, task).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         let endTime = startTime.add(minutes, 'm');
         sheet = await this.closeTimeSheet(sheet, endTime).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         await this.updateBucketWithSheet(sheet).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         sheet = await this.updateTimesheet(sheet.id, sheet.planId, sheet.timeIn, sheet.timeOut, sheet.task, "On the Go!").catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         return sheet;
     }
@@ -421,7 +412,6 @@ class TimeSheetService {
         if (!(await this.tokenIsInSheetRelationship(token, relationship).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString())}))) {
-            return false;
         }
         if (await this.makerIsOnline(relationship.makerId).catch(err => {
             console.log(err);
@@ -473,7 +463,6 @@ class TimeSheetService {
         }).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
         let idResponse;
         try {
@@ -491,7 +480,6 @@ class TimeSheetService {
         let onlineSheets = await this.getOnlineSheets(makerId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
-            return false;
         });
 
 
@@ -501,12 +489,10 @@ class TimeSheetService {
             let rightNow = await this.getCurrentMoment().catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
-                return false;
             });
             let closedSheet = await this.closeTimeSheet(currentSheet, rightNow, newTask).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
-                return false;
             });
             this.updateBucketWithSheet(closedSheet);
             console.log("Update client bucket due do clock-out request sent");
