@@ -485,9 +485,9 @@ function timeSheetFunctionality(res) {
         "</div></div>");
     //Report Buttons
     $(".reportOptionsMaker").append("<div id='empty'></div>");
-    $(".reportOptionsMaker").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
-    $(".reportOptionsMaker").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
-    $(".reportOptionsMaker").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptionsMaker").append("<div id='uniform'><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptionsMaker").append("<div id='uniform'><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsMaker").append("<div id='uniform'><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptionsMaker").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
     $(".reportOptionsMaker").append("<div id='empty'></div>");
     //Populate table but do not show
