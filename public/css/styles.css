@@ -181,6 +181,10 @@ body a:hover {
     height: 100px;
 }
 
+#uniform {
+    width: 300px;
+}
+
 .reportOptionsMaker {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
