@@ -2602,7 +2602,7 @@ function runReportFunctionality() {
         '        </thead><tbody id="reportContent">' +
         '</tbody>');
     //Pre-populate Report drop down options
-    $("#clientRepSearch").on("keypress", function () {
+    $("#clientRepSearch").on("keyup touchend", function () {
         $.ajax({
             url: "/api/getAllClients",
             method: "post",
@@ -2627,7 +2627,7 @@ function runReportFunctionality() {
         });
     });
 
-    $("#makerRepSearch").on("keypress", function () {
+    $("#makerRepSearch").on("keyup touchend", function () {
         $.ajax({
             url: "/api/getAllMakers",
             method: "post",
