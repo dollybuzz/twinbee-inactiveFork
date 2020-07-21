@@ -2762,7 +2762,7 @@ function runReportFunctionality() {
                         '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
                         `   <td> ${message}</td>` +
-                        '   <td>' + item.adminNote || "" + '</td></tr>');
+                        '   <td>' + (item.adminNote || '') + '</td></tr>');
                 }
                 let totalhours = Number.parseInt(timeres.total) / 60;
                 let totalminutes = Number.parseInt(timeres.total) % 60;
