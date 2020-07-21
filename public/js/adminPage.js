@@ -1477,7 +1477,7 @@ function relationshipFunctionality(res) {
                                 "</div></div>");
                             $("#relationshipTable").append('\n' +
                                 '        <thead class="thead">\n' +
-                                '            <th scope="col">Relationship ID</th>\n' +
+                                '            <th scope="col" style="width: 200px">Relationship ID</th>\n' +
                                 '            <th scope="col">Client </th>\n' +
                                 '            <th scope="col">Company</th>\n' +
                                 '            <th scope="col">Freedom Maker</th>\n' +
@@ -2574,7 +2574,7 @@ function verifyClearSheet() {
 function runReportFunctionality() {
     //Creating the table
     $("#userMainContent").html(
-        "<div class='reportOptions'></div>" +
+        "<div class='reportOptionsTime'></div>" +
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
@@ -2582,15 +2582,16 @@ function runReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
-    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
-    $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
-    $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
-    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $(".reportOptionsTime").append("<div id='uniform'><label for='startEndDate'>Start/End Date:</label><input class='form-control' type='date' id='startDate' name='startDate'>" +
+        "<input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsTime").append("<div id='uniform'><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptionsTime").append("<div id='uniform'><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
+    $(".reportOptionsTime").append("<div id='uniform'><label for='maker'>Admin Note/Relationship ID:</label><input class='form-control' type='text' id='adminNoteSearch' name='adminNoteSearch'><select class='form-control' id='relIdSearch'>\n</select></div>");
+    $(".reportOptionsTime").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Time Sheet ID</th>\n' +
+        '            <th scope="col" style="width: 200px">Time Sheet ID</th>\n' +
         '            <th scope="col">Shift End Date</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
@@ -2625,6 +2626,7 @@ function runReportFunctionality() {
             }
         });
     });
+
     $("#makerRepSearch").on("change", function () {
         $.ajax({
             url: "/api/getAllMakers",
@@ -2655,6 +2657,64 @@ function runReportFunctionality() {
             }
         });
     });
+
+    $.ajax({
+        url: "/api/getAllClients",
+        method: "post",
+        data: {
+            auth: id_token
+        },
+        dataType: "json",
+        success: function (clientres, clientstatus) {
+            $.ajax({
+                url: "/api/getAllMakers",
+                method: "post",
+                data: {
+                    auth: id_token
+                },
+                dataType: "json",
+                success: function (makerres, makerstatus) {
+                    $.ajax({
+                        url: "/api/getAllRelationships",
+                        method: "post",
+                        data: {
+                            auth: id_token
+                        },
+                        dataType: "json",
+                        success: function (relres, relstatus) {
+                            //Create table
+                            let clientMap = {};
+                            let makerMap = {};
+                            for (var item of clientres) {
+                                if (item.customer.first_name) {
+                                    clientMap[item.customer.id] = item.customer;
+                                }
+                            }
+                            for (var item of makerres) {
+                                makerMap[item.id] = item;
+                            }
+
+                            $("#relIdSearch").html("<option value=''></option>");
+                            relres.forEach(item => {
+                                $("#relIdSearch").append(`<option value="${item.id}">${item.id} - ${clientMap[item.clientId].first_name} ${clientMap[item.clientId].last_name} - ${makerMap[item.makerId].firstName} ${makerMap[item.makerId].lastName}</option>`);
+                            });
+
+                        },
+                        error: function (relres, relstatus) {
+                            $("#userMainContent").html("Plan Relationship isn't working!");
+                        }
+                    });
+                },
+                error: function (makerres, makerstatus) {
+                    $("#userMainContent").html("Maker Relationship isn't working!");
+                }
+            });
+        },
+        error: function (clientres, clientstatus) {
+            $("#userMainContent").html("Client Relationship isn't working! Please refresh the page. Contact support if the problem persists.");
+        }
+    });
+
     //Event Listeners
     //Run Report
     $("#runReportButton").on('click', function () {
@@ -2668,7 +2728,9 @@ function runReportFunctionality() {
                 makerId: $("#makerReport").val(),
                 clientId: $("#clientReport").val(),
                 start: $("#startDate").val(),
-                end: $("#endDate").val()
+                end: $("#endDate").val(),
+                relationshipId: $("#relIdSearch").val(),
+                adminNote: $("#adminNoteSearch").val().toLowerCase(),
             },
             dataType: "json",
             success: function (timeres, timestatus) {
@@ -2693,8 +2755,8 @@ function runReportFunctionality() {
                     $("#reportContent").append('\n' +
                         '<tr class="reportRow">' +
                         '   <td scope="row">' + item.id + '</td>' +
-                        '   <td>' + item.timeOut + '</td>' +
                         '   <td>' + shiftEnd + '</td>' +
+                        '   <td>' + item.clientName + '</td>' +
                         '   <td>' + item.makerName + '</td>' +
                         '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
@@ -2745,7 +2807,7 @@ function padIntToTwoPlaces(int){
 function rollupReportFunctionality() {
     //Creating the table
     $("#userMainContent").html(
-        "<div class='reportOptions'></div>" +
+        "<div class='reportOptionsRoll'></div>" +
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
@@ -2753,15 +2815,15 @@ function rollupReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptions").append("<div id='empty'></div>");
-    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
-    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
-    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
-    $(".reportOptions").append("<div id='empty'></div>");
+    $(".reportOptionsRoll").append("<div id='empty'></div>");
+    $(".reportOptionsRoll").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptionsRoll").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsRoll").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $(".reportOptionsRoll").append("<div id='empty'></div>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Relationship ID</th>\n' +
+        '            <th scope="col" style="width: 200px">Relationship ID</th>\n' +
         '            <th scope="col">Freedom Maker</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Occupation</th>\n' +

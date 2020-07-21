@@ -174,6 +174,7 @@ function timeClockFunctionality() {
                         success: function(res, status) {
                             $("#makerText2").css("opacity", "1");
                             $("#makerText2").html("<h5>Successfully submitted entry!</h5>");
+                            $("#taskEntry").val("");
                             availableCredits();
 
                             setTimeout(function () {
@@ -485,15 +486,15 @@ function timeSheetFunctionality(res) {
         "</div></div>");
     //Report Buttons
     $(".reportOptionsMaker").append("<div id='empty'></div>");
-    $(".reportOptionsMaker").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
-    $(".reportOptionsMaker").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
-    $(".reportOptionsMaker").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptionsMaker").append("<div id='uniform'><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptionsMaker").append("<div id='uniform'><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsMaker").append("<div id='uniform'><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptionsMaker").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
     $(".reportOptionsMaker").append("<div id='empty'></div>");
     //Populate table but do not show
     $("#sheetsTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Timesheet ID</th>\n' +
+        '            <th scope="col" style="width: 200px">Timesheet ID</th>\n' +
         '            <th scope="col">Client</th>\n' +
         '            <th scope="col">Company</th>\n' +
         '            <th scope="col">Clock In (PST/PDT)</th>\n' +
