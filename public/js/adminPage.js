@@ -2586,7 +2586,7 @@ function runReportFunctionality() {
         "<input class='form-control' type='date' id='endDate' name='endDate'></div>");
     $(".reportOptionsTime").append("<div id='uniform'><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptionsTime").append("<div id='uniform'><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
-    $(".reportOptionsTime").append("<div id='uniform'><label for='maker'>Admin Note/Relationship ID:</label><input class='form-control' type='text' id='adminNoteSearch' name='adminNoteSearch'><select class='form-control' id='relIdSearch'>\n</select></div>");
+    $(".reportOptionsTime").append("<div id='uniform'><label for='maker'>Admin Note/Relationship ID:</label><input class='form-control' type='text' id='adminNoteSearch' name='adminNoteSearch' placeholder='No specified Admin Note'><select class='form-control' id='relIdSearch'>\n</select></div>");
     $(".reportOptionsTime").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
@@ -2602,7 +2602,7 @@ function runReportFunctionality() {
         '        </thead><tbody id="reportContent">' +
         '</tbody>');
     //Pre-populate Report drop down options
-    $("#clientRepSearch").on("change", function () {
+    $("#clientRepSearch").on("keypress", function () {
         $.ajax({
             url: "/api/getAllClients",
             method: "post",
@@ -2627,7 +2627,7 @@ function runReportFunctionality() {
         });
     });
 
-    $("#makerRepSearch").on("change", function () {
+    $("#makerRepSearch").on("keypress", function () {
         $.ajax({
             url: "/api/getAllMakers",
             method: "post",
@@ -2694,7 +2694,7 @@ function runReportFunctionality() {
                                 makerMap[item.id] = item;
                             }
 
-                            $("#relIdSearch").html("<option value=''></option>");
+                            $("#relIdSearch").html("<option value=''>No selected relationship</option>");
                             relres.forEach(item => {
                                 $("#relIdSearch").append(`<option value="${item.id}">${item.id} - ${clientMap[item.clientId].first_name} ${clientMap[item.clientId].last_name} - ${makerMap[item.makerId].firstName} ${makerMap[item.makerId].lastName}</option>`);
                             });
@@ -2762,7 +2762,7 @@ function runReportFunctionality() {
                         '   <td>' + (item.company || 'No Company') + '</td>' +
                         '   <td>' + item.plan + '</td>' +
                         `   <td> ${message}</td>` +
-                        '   <td>' + item.adminNote + '</td></tr>');
+                        '   <td>' + (item.adminNote || '') + '</td></tr>');
                 }
                 let totalhours = Number.parseInt(timeres.total) / 60;
                 let totalminutes = Number.parseInt(timeres.total) % 60;
@@ -2778,8 +2778,8 @@ function runReportFunctionality() {
                     totalmessage += ` ${totalminutes} minutes `;
                 }
 
-                $("#reportContent").append('<tfoot><th id="repTotal">Total Time:</th>' +
-                    '<td>' + totalmessage + '</td></tfoot>');
+                $("#reportContent").append('<th id="repTotal" colspan="1">Total Time:</th>' +
+                    '<td>' + totalmessage + '</td>');
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
@@ -2865,7 +2865,7 @@ function rollupReportFunctionality() {
                             '   <td>' + item.client + '</td>' +
                             '   <td>' + item.occupation + '</td>' +
                             `   <td>${hours} h ${minutes} m</td>` +
-                            `   <td> <strong><em>$${penniesOwed / 100}</em></strong></td></tr>`);
+                            `   <td> <strong><em>$${(penniesOwed / 100).toFixed(2)}</em></strong></td></tr>`);
                     }
                 }
             },
