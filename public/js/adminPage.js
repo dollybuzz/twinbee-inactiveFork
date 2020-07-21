@@ -2719,7 +2719,7 @@ function runReportFunctionality() {
     //Run Report
     $("#runReportButton").on('click', function () {
         $("#reportTable").css("opacity", "1");
-        $("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $("#topRow").append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin: auto"></span>');
         $.ajax({
             url: "/api/getTimeForMakerClientPair",
             method: "post",
@@ -2734,6 +2734,7 @@ function runReportFunctionality() {
             },
             dataType: "json",
             success: function (timeres, timestatus) {
+                $(".spinner-border").remove();
                 $("#reportContent").html("");
                 for (var item of timeres.sheets) {
                     let hours = item.duration / 60;
@@ -2835,7 +2836,7 @@ function rollupReportFunctionality() {
     //Run Report
     $("#runReportButton").on('click', function () {
         $("#reportTable").css("opacity", "1");
-        $("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $("#topRow").append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin: auto"></span>');
         $.ajax({
             url: "/api/getTimeRollup",
             method: "post",
@@ -2846,6 +2847,7 @@ function rollupReportFunctionality() {
             },
             dataType: "json",
             success: function (timeres, timestatus) {
+                $(".spinner-border").remove();
                 $("#reportContent").html("");
                 for (var item of timeres) {
                     let duration = moment.duration(Number.parseInt(item.totalTime) * 60000);
