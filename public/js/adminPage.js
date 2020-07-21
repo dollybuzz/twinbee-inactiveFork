@@ -2574,7 +2574,7 @@ function verifyClearSheet() {
 function runReportFunctionality() {
     //Creating the table
     $("#userMainContent").html(
-        "<div class='reportOptions'></div>" +
+        "<div class='reportOptionsTime'></div>" +
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
@@ -2582,11 +2582,11 @@ function runReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
-    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
-    $(".reportOptions").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
-    $(".reportOptions").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
-    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $(".reportOptionsTime").append("<div><label for='startEndDate'>Start/End Date:</label><input class='form-control' type='date' id='startDate' name='startDate'>");
+    $(".reportOptionsTime").append("<input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsTime").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
+    $(".reportOptionsTime").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
+    $(".reportOptionsTime").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +
@@ -2745,7 +2745,7 @@ function padIntToTwoPlaces(int){
 function rollupReportFunctionality() {
     //Creating the table
     $("#userMainContent").html(
-        "<div class='reportOptions'></div>" +
+        "<div class='reportOptionsRoll'></div>" +
         "<div id=\"buttonsTop\"></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
@@ -2753,11 +2753,11 @@ function rollupReportFunctionality() {
         "    </table>\n" +
         "</div></div>");
     //Report Buttons
-    $(".reportOptions").append("<div id='empty'></div>");
-    $(".reportOptions").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
-    $(".reportOptions").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
-    $(".reportOptions").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
-    $(".reportOptions").append("<div id='empty'></div>");
+    $(".reportOptionsRoll").append("<div id='empty'></div>");
+    $(".reportOptionsRoll").append("<div><label for='startDate'>Start Date:</label><input class='form-control' type='date' id='startDate' name='startDate'></div>");
+    $(".reportOptionsRoll").append("<div><label for='endDate'>End Date:</label><input class='form-control' type='date' id='endDate' name='endDate'></div>");
+    $(".reportOptionsRoll").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
+    $(".reportOptionsRoll").append("<div id='empty'></div>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
         '        <thead class="thead">\n' +

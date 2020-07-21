@@ -174,7 +174,15 @@ body a:hover {
     height: 45px;
 }
 
-.reportOptions {
+.reportOptionsTime {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    place-items: center;
+    height: 100px;
+}
+
+
+.reportOptionsRoll {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     place-items: center;
