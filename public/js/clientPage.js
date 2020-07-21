@@ -413,7 +413,7 @@ function subscriptionFunctionality(res) {
         "</div></div>");
     $("#subscriptionTable").append('\n' +
         '        <thead class="thead">\n' +
-        '            <th scope="col">Subscription ID</th>\n' +
+        '            <th scope="col" style="width:260px">Subscription ID</th>\n' +
         '            <th scope="col">Plan</th>\n' +
         '            <th scope="col">Monthly Hours</th>\n' +
         '            <th scope="col">Pending Changes</th>\n' +

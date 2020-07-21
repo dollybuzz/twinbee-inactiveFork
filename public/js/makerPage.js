@@ -159,6 +159,7 @@ function timeClockFunctionality() {
                 }
 
                 if(valid) {
+                    $("#taskEntry").val("");
                     $("#errormessage").html("");
                     $.ajax({
                         url: "/api/makerOnTheGo",
@@ -174,7 +175,6 @@ function timeClockFunctionality() {
                         success: function(res, status) {
                             $("#makerText2").css("opacity", "1");
                             $("#makerText2").html("<h5>Successfully submitted entry!</h5>");
-                            $("#taskEntry").val("");
                             availableCredits();
 
                             setTimeout(function () {
@@ -474,7 +474,6 @@ function runClock(startingTime){
 
 //Previous Hours Methods
 function timeSheetFunctionality(res) {
-
     //Create table
     $("#userMainContent").html(
         "<div class='reportOptionsMaker'></div>" +
@@ -534,7 +533,7 @@ function timeSheetFunctionality(res) {
     //Run Report
     $("#runReportButton").on('click', function () {
         $("#reportTable").css("opacity", "1");
-        $("#reportContent").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $("#topRow").append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin: auto"></span>');
         $.ajax({
             url: "/api/getMakerTimeReport",
             method: "post",
@@ -547,6 +546,7 @@ function timeSheetFunctionality(res) {
             },
             dataType: "json",
             success: function (timeres, timestatus) {
+                $(".spinner-border").remove();
                 $("#reportContent").html("");
                 for (var item of timeres.sheets) {
                     let hours = item.duration / 60;
