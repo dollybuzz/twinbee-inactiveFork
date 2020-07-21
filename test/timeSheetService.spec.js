@@ -128,7 +128,7 @@ describe("Open Sheet Test", function () {
     it('Should open a new sheet', async function () {
         let startMoment = moment();
         let actual = await timeSheetService.openTimeSheet(relationship, startMoment, "task");
-        expect(actual).to.deep.equal(new TimeSheet(1, 1, "1", "1", moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), "0000-00-00 00:00:00", "task", "Created Normally", 1));
+        expect(actual).to.deep.equal(new TimeSheet(1, 1, "1", "1", moment(startMoment).format('YYYY-MM-DD HH:mm:ss'), "0000-00-00 00:00:00", "task", "Live Clock", 1));
     });
 });
 
