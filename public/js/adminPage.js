@@ -2586,8 +2586,7 @@ function runReportFunctionality() {
         "<input class='form-control' type='date' id='endDate' name='endDate'></div>");
     $(".reportOptionsTime").append("<div><label for='client'>Client:</label><input class='form-control' type='text' id='clientRepSearch' name='clientRepSearch'><select class='form-control' id='clientReport'>\n</select></div>");
     $(".reportOptionsTime").append("<div><label for='maker'>Freedom Maker:</label><input class='form-control' type='text' id='makerRepSearch' name='makerRepSearch'><select class='form-control' id='makerReport'>\n</select></div>");
-    $(".reportOptionsTime").append("<div><label for='maker'>Relationship ID:</label><select class='form-control' id='relIdSearch'>\n</select></div>");
-    $(".reportOptionsTime").append("<div><label for='maker'>Admin Note:</label><input class='form-control' type='text' id='adminNoteSearch' name='adminNoteSearch'></div>");
+    $(".reportOptionsTime").append("<div><label for='maker'>Admin Note/Relationship ID:</label><input class='form-control' type='text' id='adminNoteSearch' name='adminNoteSearch'><select class='form-control' id='relIdSearch'>\n</select></div>");
     $(".reportOptionsTime").append("<button type='button' class='btn btn-select btn-circle btn-xl' id='runReportButton'>Run Report</button>");
     //Populate table but do not show
     $("#reportTable").html('\n' +
@@ -2695,7 +2694,7 @@ function runReportFunctionality() {
                             }
 
                             relres.forEach(item => {
-                                $("#relIdSearch").html(`<option value="${item.id}">${item.id} - ${clientMap[item.clientId].first_name} ${clientMap[item.clientId].last_name} - ${makerMap[item.makerId].firstName} ${makerMap[item.makerId].lastName}</option>`);
+                                $("#relIdSearch").append(`<option value="${item.id}">${item.id} - ${clientMap[item.clientId].first_name} ${clientMap[item.clientId].last_name} - ${makerMap[item.makerId].firstName} ${makerMap[item.makerId].lastName}</option>`);
                             });
 
                         },
