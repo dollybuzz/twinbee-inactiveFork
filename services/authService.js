@@ -11,10 +11,22 @@ class AuthService {
     constructor() {
     };
 
+
+    /**
+     * Checks to see if the credentials belong to the master
+     * @param creds - credentials to be checked
+     * @returns {Promise<boolean>}
+     */
     async accessorIsMaster(creds) {
         return creds === process.env.TWINBEE_MASTER_AUTH;
     }
 
+
+    /**
+     * Checks if the credentials belong to a maker
+     * @param creds - credentials to be checked
+     * @returns {Promise<boolean>}
+     */
     async accessorIsMaker(creds) {
         if (creds === process.env.TWINBEE_MASTER_AUTH) {
             return  false;
@@ -60,6 +72,12 @@ class AuthService {
          return false;
     }
 
+
+    /**
+     * Checks if the credentials belong to a client
+     * @param creds - credentials to be checked
+     * @returns {Promise<boolean>}
+     */
     async accessorIsClient(creds) {
         if (creds === process.env.TWINBEE_MASTER_AUTH) {
             return  false;
@@ -82,7 +100,6 @@ class AuthService {
             emailService.notifyAdmin(err.toString());
         });
 
-
         let clients;
         try{
             clients = JSON.parse(response.body);
@@ -104,6 +121,12 @@ class AuthService {
         return false;
     }
 
+
+    /**
+     * Checks if the credentials belong to an admin
+     * @param creds - credentials to check
+     * @returns {Promise<boolean>}
+     */
     async accessorIsAdmin(creds) {
         if (creds === process.env.TWINBEE_MASTER_AUTH) {
             return  false;
@@ -145,6 +168,12 @@ class AuthService {
         return false;
     }
 
+
+    /**
+     *  Retrieves an email from a google token
+     * @param token - google token to be dereferenced
+     * @returns {Promise<string|boolean>}
+     */
     async getEmailFromToken(token) {
         console.log("getting email from token:");
         if (token === process.env.TWINBEE_MASTER_AUTH){
