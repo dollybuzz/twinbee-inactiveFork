@@ -2602,7 +2602,7 @@ function runReportFunctionality() {
         '        </thead><tbody id="reportContent">' +
         '</tbody>');
     //Pre-populate Report drop down options
-    $("#clientRepSearch").on("change", function () {
+    $("#clientRepSearch").on("keypress", function () {
         $.ajax({
             url: "/api/getAllClients",
             method: "post",
@@ -2627,7 +2627,7 @@ function runReportFunctionality() {
         });
     });
 
-    $("#makerRepSearch").on("change", function () {
+    $("#makerRepSearch").on("keypress", function () {
         $.ajax({
             url: "/api/getAllMakers",
             method: "post",
@@ -2694,7 +2694,7 @@ function runReportFunctionality() {
                                 makerMap[item.id] = item;
                             }
 
-                            $("#relIdSearch").html("<option value=''></option>");
+                            $("#relIdSearch").html("<option value=''>No relationship</option>");
                             relres.forEach(item => {
                                 $("#relIdSearch").append(`<option value="${item.id}">${item.id} - ${clientMap[item.clientId].first_name} ${clientMap[item.clientId].last_name} - ${makerMap[item.makerId].firstName} ${makerMap[item.makerId].lastName}</option>`);
                             });
@@ -2778,8 +2778,8 @@ function runReportFunctionality() {
                     totalmessage += ` ${totalminutes} minutes `;
                 }
 
-                $("#reportContent").append('<tfoot><th id="repTotal">Total Time:</th>' +
-                    '<td>' + totalmessage + '</td></tfoot>');
+                $("#reportContent").append('<th id="repTotal" colspan="1">Total Time:</th>' +
+                    '<td>' + totalmessage + '</td>');
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
