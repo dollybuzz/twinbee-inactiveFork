@@ -2865,7 +2865,7 @@ function rollupReportFunctionality() {
                             '   <td>' + item.client + '</td>' +
                             '   <td>' + item.occupation + '</td>' +
                             `   <td>${hours} h ${minutes} m</td>` +
-                            `   <td> <strong><em>$${penniesOwed / 100}</em></strong></td></tr>`);
+                            `   <td> <strong><em>$${(penniesOwed / 100).toFixed(2)}</em></strong></td></tr>`);
                     }
                 }
             },
