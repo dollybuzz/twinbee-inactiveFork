@@ -584,7 +584,11 @@ class ChargebeeService {
      * @param customerId- customer that is adding hours
      * @returns {Promise<>}
      */
-    async chargeCustomerNow(plan, numHours, customerId) {
+    async chargeCustomerNow(plan, numHours, customerId, autoCollection) {
+
+        if (!autoCollection){
+            autoCollection = "on";
+        }
 
         let subscriptionEntries = await this.getSubscriptionsByClient(customerId).catch(error => {
             console.log(error);
@@ -623,14 +627,24 @@ class ChargebeeService {
             message += `${minutes} minute(s) `;
         }
 
-        chargebee.invoice.charge({
+
+        chargebee.invoice.create({
             customer_id: customerId,
-            amount: calculatedPrice.toString(),
-            description: `Buy ${message} for ${plan}`
-        }).request(function (error, result) {
+            charges:[{
+                amount: calculatedPrice.toString(),
+                description: `Buy ${message} for ${plan}`
+            }],
+            auto_collection: autoCollection
+        }).request( (error, result) => {
             if (error) {
                 console.log(error);
                 notifyAdmin(error);
+                if (error.api_error_code.toString() === "payment_method_not_present"){
+                    let message = "Retrying without auto collection...";
+                    console.log(message);
+                    notifyAdmin(message);
+                    return this.chargeCustomerNow(plan, numHours, customerId, "off");
+                }
             } else {
                 console.log(`Purchase complete for ${customerId}, attempting to update time bucket`);
                 let response = request({
