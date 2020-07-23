@@ -306,12 +306,6 @@ label {
     height: 150px;
 }
 
-#introMessage {
-    transition: opacity 0.5s ease-in;
-    opacity: 0;
-
-}
-
 .clockBlock {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
@@ -523,6 +517,9 @@ th {
 
 #makerText1, #clientText1 {
     text-align: center;
+    transition: opacity 0.5s ease-in;
+    opacity: 0;
+
 }
 
 #makerText2 {

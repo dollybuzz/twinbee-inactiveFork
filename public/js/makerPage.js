@@ -63,14 +63,14 @@ function showMain() {
 };
 
 function mainFunctionality() {
-    $("#makerText1").html(`<h5 id="introMessage" style="opacity:1">Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
+    $("#makerText1").html(`<h5>Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
                 "<br>" +
                 "We are so excited to introduce you to our new application.</h5><br>" +
                 "<h6>This page is currently underway.<br><br>" +
                 "Please navigate to 'Time Clock' to get started!<br><br>" +
                 "Please know your client relationship may not be set up yet.<br>" +
                 "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
-    $("#introMessage").css("opacity", "1");
+    $("#makerText1").css("opacity", "1");
 };
 
 //Google
