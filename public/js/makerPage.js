@@ -63,7 +63,7 @@ function showMain() {
 };
 
 function mainFunctionality() {
-    $("#makerText1").html(`<h5>Hello <span id="googleUser"></span>!` +
+    $("#makerText1").html(`<h5>Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
                 "<br>" +
                 "We are so excited to introduce you to our new application.</h5><br><br>" +
                 "<h6>This page is currently underway, but you will spend most of your time in 'Time Clock'.<br>" +
