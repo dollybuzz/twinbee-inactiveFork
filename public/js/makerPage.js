@@ -687,7 +687,7 @@ function clientFunctionality(res) {
 }
 
 $(document).ready(function () {
-    $.ajax({
+    /*$.ajax({
         url: "/api/getEnvironment",
         method: "get",
         dataType: "json",
@@ -701,7 +701,7 @@ $(document).ready(function () {
             TEST_ENVIRONMENT = true;
             onSignIn();
         }
-    });
+    });*/
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");

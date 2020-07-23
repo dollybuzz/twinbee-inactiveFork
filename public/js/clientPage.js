@@ -707,7 +707,7 @@ function timeSheetFunctionality() {
 }
 
 $(document).ready(function () {
-    $.ajax({
+    /*$.ajax({
         url: "/api/getEnvironment",
         method: "get",
         dataType: "json",
@@ -721,13 +721,12 @@ $(document).ready(function () {
             TEST_ENVIRONMENT = true;
             onSignIn();
         }
-    });
+    });*/
 
     //Shows Client any alerts
     setTimeout(function () {
         showAlerts();
     }, 1000);
-
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
