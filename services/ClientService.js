@@ -742,7 +742,7 @@ class ClientService {
     </div>
 </header>
 <div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
-                                <h4>${client.first_name} ${client.last_name} has manually added ${numHours} for time bucket ${planId}</h4>
+                                <h4>${client.first_name} ${client.last_name} has manually added ${numHours} hour(s) for time bucket ${planId}</h4>
 <br>
 
 </div>
