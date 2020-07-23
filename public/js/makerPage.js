@@ -61,7 +61,7 @@ function createBody() {
 function mainFunctionality() {
 
     $("#makerText1").html(`<h5>Hello <span id="googleUser"></span>!<br>` +
-        "We are so excited to get you started with our new application.</h5><br><br>" +
+        "We are so excited to introduce you to our new application.</h5><br><br>" +
         "<h6>This page is currently underway, but you will spend most of your time in 'Time Clock'.<br>" +
         "Navigate there to get started!<br><br>Please know your client relationship may not be set up yet.<br>" +
         "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
