@@ -101,6 +101,26 @@ function showFunction(functionality, endpoint) {
 }
 
 //Main Methods
+function showMain(){
+    //Contains any main tab functionality
+    mainFunctionality();
+
+};
+
+function mainFunctionality () {
+    //Shows Client any alerts
+    setTimeout(function () {
+        showAlerts();
+        $("#clientText1").html(`<h5>Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
+            "<br>" +
+            "We are so excited to introduce you to our new application.</h5><br><br>" +
+            "<h6>This page is currently underway.<br>" +
+            "Please navigate to 'Manage Available Hours' then to 'Update Payment Method' to get started!<br><br>" +
+            "Please know you will see banner alerts if you have any existing invoices.<br>" +
+            "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
+    }, 1000);
+};
+
 function showAlerts() {
     $.ajax({
         url: "/api/getAllMyTimeBuckets",
@@ -115,12 +135,12 @@ function showAlerts() {
             {
                 if(Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0)
                 {
-                    $("#clientTopRow").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                    $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
                         "<span aria-hidden='true'>&times;</span></button></div>");
                 }
                 else if(Number.parseInt(bucketres.buckets[plan]) <= 0)
                 {
-                    $("#clientTopRow").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You are out of available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                    $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You are out of available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
                         "<span aria-hidden='true'>&times;</span></button></div>");
                 }
             }
@@ -141,7 +161,7 @@ function showAlerts() {
         success: function (invoiceres, invoicestatus) {
             if(invoiceres.invoicesPresent)
             {
-                $("#clientTopRow").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have ${invoiceres.numInvoices} outstanding invoice(s)!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
+                $("#clientAlerts").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have ${invoiceres.numInvoices} outstanding invoice(s)!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
                     "<span aria-hidden='true'>&times;</span></button></div>");
             }
         },
@@ -150,6 +170,19 @@ function showAlerts() {
         }
     });
 }
+
+//Google
+onSignIn = function (googleUser) {
+    GOOGLE_USER = googleUser;
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
+
+    let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
+    let name = TEST_ENVIRONMENT ? null : profile.getName();
+    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
+
+    showMain();
+};
+
 
 //Available Hours Methods
 function openHostedPage(getPageEndpoint) {
@@ -722,11 +755,6 @@ $(document).ready(function () {
             onSignIn();
         }
     });*/
-
-    //Shows Client any alerts
-    setTimeout(function () {
-        showAlerts();
-    }, 1000);
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
