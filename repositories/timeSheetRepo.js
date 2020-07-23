@@ -53,7 +53,7 @@ class TimeSheetRepository {
     async getSheetsByMaker(id) {
         let sql = 'SELECT * ' +
             'FROM time_sheet ' +
-            'WHERE maker_id = ?';
+            'WHERE maker_id = ? ORDER BY id DESC';
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
@@ -68,7 +68,7 @@ class TimeSheetRepository {
     async getTimeSheet(id) {
         let sql = 'SELECT * ' +
             'FROM time_sheet ' +
-            'WHERE id = ?';
+            'WHERE id = ? ORDER BY id DESC';
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
@@ -83,7 +83,7 @@ class TimeSheetRepository {
     async getSheetsByClient(id) {
         let sql = 'SELECT * ' +
             'FROM time_sheet ' +
-            'WHERE client_id = ?';
+            'WHERE client_id = ? ORDER BY id DESC';
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
@@ -100,7 +100,8 @@ class TimeSheetRepository {
             'FROM time_sheet ' +
             'WHERE end_time = "0000-00-00 00:00:00" ' +
             'AND start_time != "0000-00-00 00:00:00" ' +
-            'AND maker_id = ?;';
+            'AND maker_id = ?' +
+            ' ORDER BY id DESC;';
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
@@ -114,7 +115,7 @@ class TimeSheetRepository {
 
     async getAllSheets() {
         let sql = 'SELECT * ' +
-            'FROM time_sheet';
+            'FROM time_sheet ORDER BY id DESC';
         let sqlParams = [];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
