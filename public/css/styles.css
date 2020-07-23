@@ -618,6 +618,8 @@ th {
 
 .alert {
     height: 50px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
 }
 
 #empty {
