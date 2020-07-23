@@ -116,7 +116,6 @@ class ClientRepository {
     }
 
     getClientByEmail(email) {
-
         return new Promise((resolve, reject)=> {
             chargebee.customer.list({
                 "email[is]": email
@@ -126,11 +125,16 @@ class ClientRepository {
                     console.log(error);
                     reject(error);
                 } else {
+                    console.log(result);
                         var entry = result.list[0];
-                        var customer = entry.customer || null;
-                        console.log("Customer retrieved by email successfully");
+                        var customer = null;
+                        if (result.list.length){
+                            customer = entry.customer || null;
+                            console.log("getClientByEmail found no client with that email.")
+                        }else {
+                            console.log("Customer retrieved by email successfully");
+                        }
                         resolve(customer);
-
                 }
             });
         })

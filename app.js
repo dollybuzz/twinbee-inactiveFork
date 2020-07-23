@@ -21,6 +21,7 @@ const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
 const chargebeeservice = require('./services/chargebeeService.js');
 const timeReportingService = require('./services/timeReportingService.js');
+const cr = require('./repositories/clientRepo.js');
 const ts = require('./services/timeSheetService.js');
 
 require('moment')().format('YYYY-MM-DD HH:mm:ss');
