@@ -507,6 +507,10 @@ th {
     color: white;
 }
 
+#makerText1 {
+    text-align: center;
+}
+
 #makerText2 {
     opacity: 0;
     height: 30px;

@@ -8,7 +8,8 @@ let TIME_SHOULD_RUN = false;
 let taskValue = "";
 let navMapper = {
     main: function () {
-        window.location.replace(`/login?token=${id_token}`);;
+        window.location.replace(`/login?token=${id_token}`);
+        mainFunctionality();
     },
 
     timeclock: function () {
@@ -54,6 +55,17 @@ function createBody() {
     $("#userMainContent").append('<div id="buttonsBottom"></div>');
     $("#buttonsBottom").hide();
 };
+
+
+//Main Methods
+function mainFunctionality() {
+
+    $("#makerText1").html(`<h5>Hello <span id="googleUser"></span>!<br>` +
+        "We are so excited to get you started with our new application.</h5><br><br>" +
+        "<h6>This page is currently underway, but you will spend most of your time in 'Time Clock'.<br>" +
+        "Navigate there to get started!<br><br>Please know your client relationship may not be set up yet.<br>" +
+        "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
+}
 
 //Time Clock Methods
 function timeClockFunctionality() {
