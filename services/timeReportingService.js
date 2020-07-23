@@ -17,7 +17,9 @@ class TimeReportingService {
 
     async validateMaps(clientId, makerId) {
         if (!this.clientMap || !this.makerMap){
+            emailService.notifyAdmin("Maps were bad, trying to recover");
             await this.setup().catch(err => catchNotification(err));
+            emailService.notifyAdmin(this.clientMap ? "Recovery successful." : "Recovery failed");
         }
         if (!this.clientMap[clientId]) {
             console.log(`Couldn't find client ${clientId}. Double checking reporting service client map!`);
