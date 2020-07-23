@@ -11,8 +11,8 @@ class TimeReportingService {
     };
 
     async setup(){
-        this.makerMap = await getMakerMap().catch(err => catchNotification(err));;
-        this.clientMap = await getClientMap().catch(err => catchNotification(err));;
+        this.makerMap = await getMakerMap().catch(err => catchNotification(err));
+        this.clientMap = await getClientMap().catch(err => catchNotification(err));
     }
 
     async validateMaps(clientId, makerId) {
@@ -136,7 +136,7 @@ class TimeReportingService {
         for (var relationship of relationshipList) {
             await this.validateMaps(relationship.clientId, relationship.makerId).catch(error => catchCatastrophe(error));
 
-            let hoursReport = await this.getReportForRelationship(start, end, relationship.id).catch(err => catchNotification(err));;
+            let hoursReport = await this.getReportForRelationship(start, end, relationship.id).catch(err => catchNotification(err));
             let makerName = this.makerMap[relationship.makerId] ? `${this.makerMap[relationship.makerId].firstName} ${this.makerMap[relationship.makerId].lastName}`
                 : `Deleted Maker ${relationship.makerId}`;
             let clientName = this.clientMap[relationship.clientId] ? `${this.clientMap[relationship.clientId].first_name} ${this.clientMap[relationship.clientId].last_name}`
@@ -225,7 +225,7 @@ class TimeReportingService {
                 && makerIdIsGood && adminNoteIsGood && relationshipIdIsGood) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
-                    let details = await this.getSheetDetails(sheet).catch(err => catchNotification(err));;
+                    let details = await this.getSheetDetails(sheet).catch(err => catchNotification(err));
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
@@ -264,8 +264,8 @@ class TimeReportingService {
         let totalTime = 0;
         let obj = {};
         let sheets = [];
-        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => catchNotification(err));;
-        let timeSheets = await getAllSheets().catch(err => catchNotification(err));;
+        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => catchNotification(err));
+        let timeSheets = await getAllSheets().catch(err => catchNotification(err));
         let response = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
