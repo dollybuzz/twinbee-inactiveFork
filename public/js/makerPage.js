@@ -70,6 +70,7 @@ function mainFunctionality() {
                 "Please navigate to 'Time Clock' to get started!<br><br>" +
                 "Please know your client relationship may not be set up yet.<br>" +
                 "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
+    $("#introMessage").css("opacity", "1");
 };
 
 //Google

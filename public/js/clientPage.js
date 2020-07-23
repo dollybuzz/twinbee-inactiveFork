@@ -111,13 +111,14 @@ function mainFunctionality () {
     //Shows Client any alerts
     setTimeout(function () {
         showAlerts();
-        $("#clientText1").html(`<h5 id="introMessage" style="opacity:1">Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
+        $("#clientText1").html(`<h5 id="introMessage">Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
             "<br>" +
             "We are so excited to introduce you to our new application.</h5><br>" +
             "<h6>This page is currently underway.<br><br>" +
             "Please navigate to 'Manage Available Hours' then to 'Update Payment Method' to get started!<br><br>" +
             "Please know you will see banner alerts if you have any existing invoices.<br>" +
             "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
+        $("#introMessage").css("opacity", "1");
     }, 1000);
 };
 
