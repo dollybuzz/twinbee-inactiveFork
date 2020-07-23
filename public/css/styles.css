@@ -507,7 +507,7 @@ th {
     color: white;
 }
 
-#makerText1 {
+#makerText1, #clientText1 {
     text-align: center;
 }
 

@@ -6,6 +6,7 @@ let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
 let TIME_SHOULD_RUN = false;
 let taskValue = "";
+
 let navMapper = {
     main: function () {
         window.location.replace(`/login?token=${id_token}`);
@@ -54,6 +55,35 @@ function createBody() {
     $("#userMainContent").append('<div id="buttonsBottom"></div>');
     $("#buttonsBottom").hide();
 };
+
+//Main Methods
+function showMain() {
+    //Contains any main tab functionality
+    mainFunctionality();
+};
+
+function mainFunctionality() {
+    $("#makerText1").html(`<h5>Hello <span id="googleUser"></span>!` +
+                "<br>" +
+                "We are so excited to introduce you to our new application.</h5><br><br>" +
+                "<h6>This page is currently underway, but you will spend most of your time in 'Time Clock'.<br>" +
+                "Navigate there to get started!<br><br>" +
+                "Please know your client relationship may not be set up yet.<br>" +
+                "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
+};
+
+//Google
+onSignIn = function (googleUser) {
+    GOOGLE_USER = googleUser;
+    id_token = TEST_ENVIRONMENT ? null : googleUser.getAuthResponse().id_token;
+
+    let profile = TEST_ENVIRONMENT ? null : googleUser.getBasicProfile();
+    let name = TEST_ENVIRONMENT ? null : profile.getName();
+    $("#googleUser").html(TEST_ENVIRONMENT ? "test" : name);
+
+    showMain();
+};
+
 
 //Time Clock Methods
 function timeClockFunctionality() {
