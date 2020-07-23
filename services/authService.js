@@ -64,7 +64,7 @@ class AuthService {
         }
 
         for (var i = 0; i < makers.length; ++i) {
-            if (makers[i].email.toLowerCase() === email.toLowerCase()) {
+            if (makers[i].email.toLowerCase() === email.toLowerCase() && !makers[i].deleted) {
                 return true
             }
         }
