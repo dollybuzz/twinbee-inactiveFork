@@ -8,8 +8,9 @@ let TIME_SHOULD_RUN = false;
 let taskValue = "";
 let navMapper = {
     main: function () {
-        window.location.replace(`/login?token=${id_token}`);
         mainFunctionality();
+        //window.location.replace(`/login?token=${id_token}`);
+
     },
 
     timeclock: function () {
