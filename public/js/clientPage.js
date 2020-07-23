@@ -111,7 +111,6 @@ function mainFunctionality () {
     //Shows Client any alerts
     setTimeout(function () {
         showAlerts();
-        $(".alert").css("opacity", "1");
     }, 1000);
 
     setTimeout(function() {
@@ -123,7 +122,7 @@ function mainFunctionality () {
             "Please know you will see banner alerts if you have any existing invoices.<br>" +
             "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
         $("#clientText1").css("opacity", "1");
-    }, 1200);
+    }, 1500);
 };
 
 function showAlerts() {
