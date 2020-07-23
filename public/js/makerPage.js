@@ -504,7 +504,7 @@ function timeSheetFunctionality(res) {
         '        </thead><tbody id="reportContent">' +
         '</tbody>');
     //Pre-populate Report drop down options
-    $("#clientRepSearch").on("change", function () {
+    $("#clientRepSearch").on("keypress input", function () {
         $.ajax({
             url: "/api/getMyClients",
             method: "post",
@@ -587,8 +587,8 @@ function timeSheetFunctionality(res) {
                     totalmessage += ` ${totalminutes} minutes `;
                 }
 
-                $("#reportContent").append('<tfoot><th id="repTotal">Total Time:</th>' +
-                    '<td>' + totalmessage + '</td></tfoot>');
+                $("#reportContent").append('<th id="repTotal" colspan="1">Total Time:</th>' +
+                    '<td>' + totalmessage + '</td>');
             },
             error: function (timeres, timestatus) {
                 $("#userMainContent").html("Run Reports isn't working!");
