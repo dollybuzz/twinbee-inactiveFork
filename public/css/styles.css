@@ -298,6 +298,14 @@ label {
     height: 150px;
 }
 
+.introblock {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    vertical-align: center;
+    text-align: center;
+    height: 150px;
+}
+
 .clockBlock {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
