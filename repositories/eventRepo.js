@@ -1,7 +1,5 @@
-//TODO; have errors send us notifications rather than "throw"
-
 const repoMaster = require("./repoMaster.js");
-const {notifyAdmin} = require("../services/notificationService");
+const {logCaughtError} = require('../util.js');
 
 class EventRepository {
     constructor() {
@@ -13,7 +11,7 @@ class EventRepository {
             let sqlParams = [eventId];
             repoMaster.query(sql, sqlParams, function (err, result) {
                 if (err) {
-                    notifyAdmin(err.toString());
+                    logCaughtError(err.toString());
                     console.log(`Duplicate Event not created: Event ${eventId}`);
                     resolve(false);
                 }

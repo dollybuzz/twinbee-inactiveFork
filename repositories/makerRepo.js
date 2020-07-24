@@ -1,6 +1,5 @@
-
+const {logCaughtError} = require('../util.js');
 const repoMaster = require('./repoMaster.js');
-const notificationService = require('../services/notificationService.js');
 
 class MakerRepository {
     constructor() {
@@ -13,10 +12,7 @@ class MakerRepository {
         let sql = 'INSERT INTO maker(first_name, last_name, email, unique_descriptor) VALUES (?, ?, ?, ?)';
         let sqlParams = [firstName, lastName, email, unique];
         repoMaster.query(sql, sqlParams, function (err, result) {
-            if (err) {
-                console.log(err);
-                notificationService.notifyAdmin(err.toString());
-            }
+            if (err) {logCaughtError(err)}
         });
         console.log(`Maker with last name ${lastName} created`)
     }
@@ -28,10 +24,7 @@ class MakerRepository {
         let sql = 'UPDATE maker SET first_name = ?, last_name = ?, email = ?, unique_descriptor = ? WHERE id = ?';
         let sqlParams = [firstName, lastName, email, unique, id];
         repoMaster.query(sql, sqlParams, function (err, result) {
-            if (err) {
-                console.log(err);
-                notificationService.notifyAdmin(err.toString());
-            }
+            if (err) {logCaughtError(err)}
         });
         console.log(`Maker ${id} updated`);
     }
@@ -40,10 +33,7 @@ class MakerRepository {
         let sql = 'UPDATE maker SET deleted = true where id = ?';
         let sqlParams = [id];
         repoMaster.query(sql, sqlParams, function (err, result) {
-            if (err) {
-                console.log(err);
-                notificationService.notifyAdmin(err.toString());
-            }
+            if (err) {logCaughtError(err)}
         });
         console.log(`Maker ${id} marked as deleted`);
     }
@@ -56,8 +46,9 @@ class MakerRepository {
             'WHERE end_time - start_time < 0 ' +
             'GROUP BY maker.id';
         let sqlParams = [];
-        let result = await repoMaster.query(sql, sqlParams).catch(e => {
-            console.log(e);
+        let result;
+        result = await repoMaster.query(sql, sqlParams).catch(e => {
+            logCaughtError(e);
             result = [];
         });
         console.log("Online makers retrieved from database");
@@ -67,8 +58,9 @@ class MakerRepository {
     async getMakerById(id) {
         let sql = 'SELECT * FROM maker WHERE id = ?';
         let sqlParam = [id];
-        let result = await repoMaster.query(sql, sqlParam).catch(e => {
-            console.log(e);
+        let result;
+        result = await repoMaster.query(sql, sqlParam).catch(e => {
+            logCaughtError(e);
             result = [];
         });
         console.log(`Maker ${id} retrieved from database`);
@@ -88,9 +80,8 @@ class MakerRepository {
                 if (numRetries === 0) {
                     reject();
                 }
-                console.log(e);
                 result = [];
-                notificationService.notifyAdmin(e.toString());
+                logCaughtError(e);
             });
             console.log("All makers retrieved from database");
             resolve(result);
@@ -100,9 +91,9 @@ class MakerRepository {
     async getMakerIdByEmail(email) {
         let sql = 'SELECT id FROM maker WHERE email = ?';
         let sqlParam = [email];
-        let result = await repoMaster.query(sql, sqlParam).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+        let result;
+        result = await repoMaster.query(sql, sqlParam).catch(e => {
+            logCaughtError(e);
             result = [];
         });
         console.log(`Maker ID retrieved for maker with email ${email}`);
