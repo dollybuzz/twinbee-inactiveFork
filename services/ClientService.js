@@ -25,8 +25,8 @@ let updateClient = (customerId, keyValuePairs) => {
 
 let notifyClientOutOfCredits = email => {
     emailService.sendEmail(
-            email, "Freedom Makers - Out of credits!",
-            `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
+        email, "Freedom Makers - Out of credits!",
+        `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
 <header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
 
     <div id="landingContainer"
@@ -63,7 +63,7 @@ let notifyClientOutOfCredits = email => {
  *
  */
 class ClientService {
-    test(a){
+    test(a) {
         notifyClientOutOfCredits(a)
     }
 
@@ -223,8 +223,7 @@ class ClientService {
             customer.company = company;
             updateClient(clientId, customer);
             clientRepo.updateClient(clientId, newFirstName, newLastName, newEmail, newPhone, company);
-        }
-        else{
+        } else {
             let err = `Error updating client: \n${clientId}\n${newFirstName}\n${newLastName}\n${newEmail}\n${newPhone}\n${company}`;
             console.log(err);
             emailService.notifyAdmin(err);
@@ -290,7 +289,7 @@ class ClientService {
      */
     async createNewClient(firstName, lastName, customerEmail, phoneNumber, company) {
         console.log(`Creating new client with last name ${lastName}...`);
-        let client =  await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(err => {
+        let client = await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(err => {
             emailService.notifyAdmin(err.toString());
             console.log(err)
         });
@@ -763,7 +762,7 @@ class ClientService {
     async subscriptionRenewed(parsedBody) {
         if (parsedBody.event_type === "subscription_renewed") {
             console.log("Subscription renewal request received");
-            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err=>{
+            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
@@ -773,14 +772,14 @@ class ClientService {
     async subscriptionCreated(parsedBody) {
         if (parsedBody.event_type === "subscription_created") {
             console.log("Subscription creation request received");
-            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err=>{
+            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err => {
                 console.log(err);
                 emailService.notifyAdmin(err.toString());
             });
         }
     }
 
-    async doIHaveInvoices(clientId){
+    async doIHaveInvoices(clientId) {
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/doesCustomerHaveInvoices`,
@@ -798,7 +797,7 @@ class ClientService {
     }
 
     async getAllMyRelationships(clientId) {
-        let relationships = await this.getRelationshipsForClient(clientId).catch(err=>{
+        let relationships = await this.getRelationshipsForClient(clientId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
@@ -856,7 +855,7 @@ class ClientService {
      */
     async getClientByEmail(email) {
         console.log(`Getting client by email...`);
-        let client = await clientRepo.getClientByEmail(email).catch(err=>{
+        let client = await clientRepo.getClientByEmail(email).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
@@ -866,11 +865,30 @@ class ClientService {
 
     async getTimeBucket(clientId, planId) {
         console.log(`Getting available credit for ${clientId}'s time bucket`);
-        let bucketObj = await this.getTimeBucketsByClientId(clientId).catch(err=>{
+        let bucketObj = this.getTimeBucketsByClientId(clientId).catch(err => {
             console.log(err);
             emailService.notifyAdmin(err.toString());
         });
-        return {minutes: bucketObj.buckets[planId]};
+        let response = request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/retrieveBucketRate`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'clientId': clientId,
+                'planId':planId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+
+        response = await response;
+        bucketObj = await bucketObj;
+        if (!bucketObj.buckets) {
+            bucketObj.buckets = {};
+        }
+        let {price} = JSON.parse(response.body);
+        return {minutes: (bucketObj.buckets[planId] || 0), price: price};
     }
 
 }

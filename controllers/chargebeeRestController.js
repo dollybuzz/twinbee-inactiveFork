@@ -281,9 +281,9 @@ module.exports = {
      * that rate is used. Otherwise, the plan's default rate is used.
      * Looks for data in the body as follows:
      * {
-     *     "planId": planId name / bucket name (bucket name and planId should always be identical),
      *     "auth": authentication credentials; either master or token,
-     *     "token": requester's token
+     *     "clientId": id of desired client to check
+     *     "planId": planId name / bucket name (bucket name and planId should always be identical),
      * }
      *
      * @returns subscription{}
@@ -294,7 +294,7 @@ module.exports = {
 
         let validationResult = await validateParams(
             {
-                "present": ["token"],
+                "present": ["clientId"],
                 "positiveIntegerOnly": [],
                 "noSpaces": ["planId"],
                 "positiveDecimalAllowed": [],
@@ -304,12 +304,7 @@ module.exports = {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            let email = await getEmailFromToken(req.body.token)
-                .catch(err => logCaughtError(err));
-            let customer = await chargebeeService.getCustomerByEmail(email)
-                .catch(err => logCaughtError(err));
-            console.log(customer);
-            let subscription = await chargebeeService.getPlanPriceForCustomer(customer.id, req.body.planId)
+            let subscription = await chargebeeService.getPlanPriceForCustomer(req.body.clientId, req.body.planId)
                 .catch(err => logCaughtError(err));
             res.send(subscription);
         }

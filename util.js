@@ -92,8 +92,8 @@ module.exports = {
         }
         if (!validator.isValid) {
             let tracer = new Error();
-            this.logCaughtError(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace coming shortly.`);
-            this.logCaughtError(tracer.stack);
+            module.exports.logCaughtError(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace coming shortly.`);
+            module.exports.logCaughtError(tracer.stack);
         }
         return validator;
     },
