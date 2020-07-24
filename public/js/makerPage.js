@@ -247,39 +247,37 @@ function manageNavAway() {
         success: function (innerRes, innerStatus) {
             var clockedOut = true;
             workingForClient = innerRes.clientName;
-            for (var i = 0; i < innerRes.length; ++i) {
-                let sheet = innerRes[i];
-                if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
-                    clockedOut = false;
-                    $("#clientRole").css("opacity", "0");
-                    $("#clockPrompt").css("opacity", "1");
-                    $("#makerSelectedClient").css("opacity", "0");
-                    $("#clientCredit").css("opacity", "0");
-                    $("#availcredit").css("opacity", "0");
-                    $("#otgButton").css("opacity", "0");
-                    $("#taskBlock").html("<h6>Update task:</h6>");
-                    $("#taskEntry").val(taskValue);
+            if (innerRes.timeOut === "0" && innerRes.timeIn !== "0") {
+                clockedOut = false;
+                $("#clientRole").css("opacity", "0");
+                $("#clockPrompt").css("opacity", "1");
+                $("#makerSelectedClient").css("opacity", "0");
+                $("#clientCredit").css("opacity", "0");
+                $("#availcredit").css("opacity", "0");
+                $("#otgButton").css("opacity", "0");
+                $("#taskBlock").html("<h6>Update task:</h6>");
+                $("#taskEntry").val(taskValue);
 
-                    setTimeout(function () {
-                        $("#clientRole").css("visibility", "hidden");
-                        $("#availcredit").css("visibility", "hidden");
-                        $("#makerSelectedClient").css("visibility", "hidden");
-                        $("#otgButton").css("visibility", "hidden");
-                        $("#clientCredit").css("visibility", "hidden");
-                        $("#workingMessage").show();
-                        $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
-                        $("#workingMessage").css("visibility", "visible");
-                        $("#workingMessage").css("opacity", "1");
-                    }, 1000)
-                } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
-                    $("#taskBlock").css("opacity", "1");
-                    $("#taskEntry").css("opacity", "1");
-                    $("#clientRole").css("opacity", "1");
-                    $("#availcredit").css("opacity", "1");
-                    $("#clientCredit").css("opacity", "1");
-                    $("#makerSelectedClient").css("opacity", "1");
-                }
+                setTimeout(function () {
+                    $("#clientRole").css("visibility", "hidden");
+                    $("#availcredit").css("visibility", "hidden");
+                    $("#makerSelectedClient").css("visibility", "hidden");
+                    $("#otgButton").css("visibility", "hidden");
+                    $("#clientCredit").css("visibility", "hidden");
+                    $("#workingMessage").show();
+                    $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
+                    $("#workingMessage").css("visibility", "visible");
+                    $("#workingMessage").css("opacity", "1");
+                }, 1000)
+            } else if (innerRes.timeOut !== "0" && innerRes.timeIn !== "0") {
+                $("#taskBlock").css("opacity", "1");
+                $("#taskEntry").css("opacity", "1");
+                $("#clientRole").css("opacity", "1");
+                $("#availcredit").css("opacity", "1");
+                $("#clientCredit").css("opacity", "1");
+                $("#makerSelectedClient").css("opacity", "1");
             }
+
             if (clockedOut) {
                 setClockInFunctionality();
             } else {
@@ -287,7 +285,7 @@ function manageNavAway() {
             }
         },
         error: function (innerRes, innerStatus) {
-            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+            $("#userMainContent").html("Could not get current time sheet!");
         }
     });
 }
