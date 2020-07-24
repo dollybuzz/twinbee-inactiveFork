@@ -19,7 +19,7 @@ module.exports ={
             {link: "", text: "Review Time Sheets", id:"reviewTimeSheets"}
         ];
         let footerLinks = [
-            {link: "", text: "Report a problem"},
+            {link: "", text: "Report a technical problem"},
             {link: "", text: "FAQ"}
         ];
 
