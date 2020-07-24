@@ -312,6 +312,7 @@ function setClockInFunctionality() {
         if($("#makerSelectedClient").val() === null) {
             $("#clockPrompt").css("opacity", "1");
             $("#clockPrompt").html("You do not have a client set up. Please contact Freedom Makers.");
+            $(".spinner-border").remove();
 
         } else {
             $.ajax({
