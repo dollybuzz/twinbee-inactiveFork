@@ -245,7 +245,7 @@ function manageNavAway() {
         //Managing user navigation away
         success: function (innerRes, innerStatus) {
             var clockedOut = true;
-            if (innerRes.timeOut === "0" && innerRes.timeIn !== "0") {
+            if (innerRes) {
                 clockedOut = false;
                 $("#clientRole").css("opacity", "0");
                 $("#clockPrompt").css("opacity", "1");
@@ -267,7 +267,7 @@ function manageNavAway() {
                     $("#workingMessage").css("visibility", "visible");
                     $("#workingMessage").css("opacity", "1");
                 }, 1000)
-            } else if (innerRes.timeOut !== "0" && innerRes.timeIn !== "0") {
+            } else {
                 $("#taskBlock").css("opacity", "1");
                 $("#taskEntry").css("opacity", "1");
                 $("#clientRole").css("opacity", "1");
