@@ -257,7 +257,7 @@ function timeClockFunctionality() {
                         $("#availcredit").css("visibility", "hidden");
                         $("#makerSelectedClient").css("visibility", "hidden");
                         $("#otgButton").css("visibility", "hidden");
-                        $("#workingMessage").html(`You are curently working for ${workingForClient}.`);
+                        $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
                     }, 1000)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     $("#taskBlock").css("opacity", "1");
