@@ -399,6 +399,15 @@ app.post("/api/retrieveBucketRate",
 app.post("/api/dereferenceToken",
     authController.authorizeMaster,
     authRestController.getEmailFromToken);
+app.post("/api/welcomeClient",
+    authController.authorizeMaster,
+    notificationRestController.sendClientWelcome);
+app.post("/api/welcomeMaker",
+    authController.authorizeMaster,
+    notificationRestController.sendMakerWelcome);
+app.post("/api/notifyAdminClientUpdate",
+    authController.authorizeMaster,
+    notificationRestController.notifyAdminClientUpdate);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

@@ -67,5 +67,100 @@ module.exports = {
             notificationService.notifyAdmin(req.body.message);
             res.send({status: "Request Sent"});
         }
+    },
+
+
+    /**
+     * ENDPOINT: /api/welcomeClient
+     * Sends a welcome email to the given client. Looks for data in the body in the form:
+     * {
+     *     "auth": authentication credentials; either master or token,
+     *     "clientEmail": email address of client to welcome
+     * }
+     * @returns {Promise<[{},...]>}
+     */
+    sendClientWelcome: async (req, res) =>{
+        console.log("Welcoming client via rest!");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["customerEmail", "auth"],
+                "positiveIntegerOnly": [],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            notificationService.sendClientWelcome(req.body.clientEmail);
+            res.send({status: "Request Sent"});
+        }
+    },
+
+
+    /**
+     * ENDPOINT: /api/welcomeMaker
+     * Sends a welcome email to the given maker. Looks for data in the body in the form:
+     * {
+     *     "auth": authentication credentials; either master or token,
+     *     "makerEmail": email address of maker to welcome
+     * }
+     * @returns {Promise<[{},...]>}
+     */
+    sendMakerWelcome: async (req, res) =>{
+        console.log("Welcoming maker via rest!");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["makerEmail", "auth"],
+                "positiveIntegerOnly": [],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            notificationService.sendMakerWelcome(req.body.makerEmail);
+            res.send({status: "Request Sent"});
+        }
+    },
+
+
+    /**
+     * ENDPOINT: /api/notifyAdminClientUpdate
+     * Notifies app admins of a client's purchase details:
+     * {
+     *     "auth": authentication credentials; either master or token,
+     *     "planId": plan for which hours were purchased,
+     *     "numHours": number of hours purchased,
+     *     "clientName": name of purchasing client
+     * }
+     * @returns {Promise<[{},...]>}
+     */
+    notifyAdminClientUpdate: async (req, res) =>{
+        console.log("Notifying app admin of client purchase via rest!");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["planId", "auth", "clientName"],
+                "positiveIntegerOnly": ["numHours"],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            notificationService.emailFMAdminClientUpdate(req.body.planId, req.body.numHours, req.body.clientName);
+            res.send({status: "Request Sent"});
+        }
     }
 };

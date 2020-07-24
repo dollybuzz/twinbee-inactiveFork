@@ -417,7 +417,7 @@ class TimeSheetService {
      * @param token         - token of the requesting maker
      * @param relationshipId- relationship between maker and paying client
      * @param task          - maker's task for the session
-     * @returns {Promise<boolean>} indicating whether the clock-in was received and processed successfully
+     * @returns {Promise<void>} indicating whether the clock-in was received and processed successfully
      */
     async clockIn(token, task, relationshipId) {
         let relationship = await this.extractRelationship(relationshipId).catch(err => {
@@ -447,7 +447,7 @@ class TimeSheetService {
         });
 
         console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
-        return Number.isInteger(newSheet.id);
+        return await this.getLastOnlineSheet(relationshipId.makerId).catch(error => emailService.notifyAdmin(error));
     }
 
     /**
