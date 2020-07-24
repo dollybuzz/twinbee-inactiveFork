@@ -1,7 +1,8 @@
 const util = require('util');
 const request = util.promisify(require('request'));
 const {logCaughtError} = require('../util.js');
-const authRepo = require('../repositories/authRepo.js');const {OAuth2Client} = require('google-auth-library');
+const authRepo = require('../repositories/authRepo.js');
+const {OAuth2Client} = require('google-auth-library');
 const clientId = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(clientId);
 const compare = util.promisify(require('bcrypt').compare);
