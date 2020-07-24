@@ -304,9 +304,9 @@ module.exports = {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            let subscription = await chargebeeService.getPlanPriceForCustomer(req.body.clientId, req.body.planId)
+            let price = await chargebeeService.getPlanPriceForCustomer(req.body.clientId, req.body.planId)
                 .catch(err => logCaughtError(err));
-            res.send(subscription);
+            res.send({price: price});
         }
     },
 
