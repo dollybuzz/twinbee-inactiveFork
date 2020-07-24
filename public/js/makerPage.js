@@ -298,7 +298,7 @@ function setClockInFunctionality() {
     });
 
     $("#makerClock").on('click', function () {
-        let workingForClient = document.getElementById("makerSelectedClient")[0].innerHTML.split(" -")[0];
+        workingForClient = document.getElementById("makerSelectedClient")[0].innerHTML.split(" -")[0];
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
             url: "api/clockIn",
