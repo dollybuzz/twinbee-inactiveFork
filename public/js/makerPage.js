@@ -236,7 +236,7 @@ function timeClockFunctionality() {
 function manageNavAway() {
     //Determines functionality when user navigates away by timesheets
     $.ajax({
-        url: "/api/getMyTimeSheetsMaker",
+        url: "/api/getMyCurrentTimeSheet",
         method: "post",
         data: {
             auth: id_token,
@@ -246,6 +246,7 @@ function manageNavAway() {
         //Managing user navigation away
         success: function (innerRes, innerStatus) {
             var clockedOut = true;
+            workingForClient = innerRes.clientName;
             for (var i = 0; i < innerRes.length; ++i) {
                 let sheet = innerRes[i];
                 if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
@@ -307,7 +308,6 @@ function setClockInFunctionality() {
     });
 
     $("#makerClock").on('click', function () {
-        workingForClient = $("#makerSelectedClient :selected").text().split(" -")[0];
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         if($("#makerSelectedClient").val() === null) {
             $("#clockPrompt").css("opacity", "1");
