@@ -105,7 +105,8 @@ module.exports = {
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/dereferenceToken`,
             form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'token': token
             }
         }).catch(err => module.exports.logCaughtError(err));
 
