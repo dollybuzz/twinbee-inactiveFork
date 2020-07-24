@@ -286,6 +286,41 @@ class ChargebeeService {
 
 
     /**
+     * Retrieves a subscription object by chargebee subscription id.
+     * @param customerId
+     * @param planId
+     * @returns {Promise<subscription>}
+     */
+    async getPlanPriceForCustomer(customerId, planId) {
+        console.log(`Retrieving price for customer ${customerId} with plan ${planId}`);
+        let planPrice = null;
+        let err = null;
+        let listObject = await chargebee.subscription.list({
+            limit: 2,
+            "customer_id[is]": customerId,
+            "plan_id[is]": planId,
+            "sort_by[desc]" : "created_at"
+        }).request().catch(error => {
+            notifyAdmin();
+            console.log(error);
+            err = error;
+        });
+        if (err){
+            return null;
+        }
+        if (listObject && listObject.length && listObject.length > 0){
+            let assumedValidEntry = listObject[0];
+            let subscription = assumedValidEntry.subscription;
+            return subscription.plan_unit_price;
+        }
+        else{
+            let plan = await this.retrievePlan(planId);
+            return plan.price;
+        }
+    }
+
+
+    /**
      * Revert's planned changes to a subscription.
      *
      * @param subscriptionId - subscription to be reverted

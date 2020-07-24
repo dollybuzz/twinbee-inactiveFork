@@ -72,8 +72,10 @@ class RepoMaster {
                         console.log("Attempting to recover.");
                         dbMaster.conn = await mysql.createConnection(dbOptions);
                         await dbMaster.activateConnection(dbMaster, numRetries).catch(error => {
-                            console.log(error);
-                            notifyAdmin(error);
+                            if (error) {
+                                console.log(error);
+                                notifyAdmin(error);
+                            }
                         });
                         dbMaster.query = util.promisify(dbMaster.conn.query).bind(dbMaster.conn);
                         let message = "Recovered successfully.";
