@@ -291,9 +291,9 @@ class ChargebeeService {
      * @returns {Promise<null|*>}
      */
     async getCustomerByEmail(email){
-        console.log("Retrieving customer by email");
+        console.log(`Retrieving customer by email ${email}`);
         let err;
-        let result = await chargebee.customer.list({"email[is]":email,"sort_by[desc]" : "created_at"})
+        let result = await chargebee.customer.list({"email[is]":email,"sort_by[desc]" : "created_at"}).request()
             .catch(error => err = error);
         if (err){
             notifyAdmin(err);
@@ -303,7 +303,7 @@ class ChargebeeService {
         if (!result.list || result.list.length === 0){
             return null;
         }
-        return result.list.customer;
+        return result.list[0].customer;
     }
 
 

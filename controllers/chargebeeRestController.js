@@ -287,6 +287,7 @@ module.exports = {
                     console.log(err);
                     notifyAdmin(err);
                 });
+            console.log(customer);
             let subscription = await chargebeeService.getPlanPriceForCustomer(customer.id, req.body.planId)
                 .catch(err => {
                     console.log(err);

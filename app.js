@@ -387,6 +387,9 @@ app.post("/api/makerOnTheGo",
     authController.authorizeMaker,
     authController.authorizeMaster,
     timeSheetRestController.makerOnTheGo);
+app.post("/api/retrieveBucketRate",
+    authController.authorizeClient,
+    chargebeeRestController.retrieveBucketRate);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
