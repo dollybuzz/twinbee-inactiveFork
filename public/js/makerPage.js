@@ -309,45 +309,50 @@ function setClockInFunctionality() {
     $("#makerClock").on('click', function () {
         workingForClient = $("#makerSelectedClient :selected").text().split(" -")[0];
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        $.ajax({
-            url: "api/clockIn",
-            method: "post",
-            data: {
-                auth: id_token,
-                relationshipId: $("#makerSelectedClient").val(),
-                task: $("#taskEntry").val()
-            },
-            dataType: "json",
-            success: function (clockres, status) {
-                if (clockres) {
-                    $("#taskBlock").html("<h6>Update task:</h6>");
-                    setClockOutFunctionality();
-                    $("#makerText2").html("<h5>Successfully clocked in!</h5>");
-                    taskValue = $("#taskEntry").val();
-                    $("#makerText2").css("opacity", "1");
-                    $("#clockPrompt").css("opacity", "1");
-                    $("#otgButton").css("opacity", "0");
+        if($("#makerSelectedClient").val() === null)
+        {
+            $("#clockPrompt").css("opacity", "1");
+        }            $("#clockPrompt").html("You do not have a client set up. Please contact Freedom Makers.");
 
+    else {
+            $.ajax({
+                url: "api/clockIn",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    relationshipId: $("#makerSelectedClient").val(),
+                    task: $("#taskEntry").val()
+                },
+                dataType: "json",
+                success: function (clockres, status) {
+                    if (clockres) {
+                        $("#taskBlock").html("<h6>Update task:</h6>");
+                        setClockOutFunctionality();
+                        $("#makerText2").html("<h5>Successfully clocked in!</h5>");
+                        taskValue = $("#taskEntry").val();
+                        $("#makerText2").css("opacity", "1");
+                        $("#clockPrompt").css("opacity", "1");
+                        $("#otgButton").css("opacity", "0");
 
-                    setTimeout(function () {
-                        $("#makerText2").css("opacity", "0");
-                        $("#otgButton").css("visibility", "hidden");
-                        $("#workingMessage").show();
-                        $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
-                        $("#workingMessage").css("opacity", "1");
-                        $("#workingMessage").css("visibility", "visible");
-                    }, 1000);
+                        setTimeout(function () {
+                            $("#makerText2").css("opacity", "0");
+                            $("#otgButton").css("visibility", "hidden");
+                            $("#workingMessage").show();
+                            $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
+                            $("#workingMessage").css("opacity", "1");
+                            $("#workingMessage").css("visibility", "visible");
+                        }, 1000);
 
-                } else {
-                    $("#makerText2").html("<h5>Could not clock in!</h5>");
+                    } else {
+                        $("#makerText2").html("<h5>Could not clock in!</h5>");
+                    }
+                },
+                error: function (clockres, status) {
+                    $("#makerClock").html('Clock In');
+                    $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
                 }
-            },
-            error: function (clockres, status) {
-                $("#makerClock").html('Clock In');
-                $("#userMainContent").html("Clock not working! Please refresh the page. Contact support if the problem persists.");
-            }
-        });
-
+            });
+        }
     });
 }
 

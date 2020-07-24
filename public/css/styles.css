@@ -561,7 +561,7 @@ th {
 
 #clockButton {
     text-align: center;
-    height: 200px;
+    height: auto;
 
 }
 
