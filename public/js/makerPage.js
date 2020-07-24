@@ -309,12 +309,11 @@ function setClockInFunctionality() {
     $("#makerClock").on('click', function () {
         workingForClient = $("#makerSelectedClient :selected").text().split(" -")[0];
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        if($("#makerSelectedClient").val() === null)
-        {
+        if($("#makerSelectedClient").val() === null) {
             $("#clockPrompt").css("opacity", "1");
-        }            $("#clockPrompt").html("You do not have a client set up. Please contact Freedom Makers.");
+            $("#clockPrompt").html("You do not have a client set up. Please contact Freedom Makers.");
 
-    else {
+        } else {
             $.ajax({
                 url: "api/clockIn",
                 method: "post",
