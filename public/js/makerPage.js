@@ -250,6 +250,9 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
                     $("#otgButton").css("opacity", "0");
                     $("#taskBlock").html("<h6>Update task:</h6>");
+                    $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
+                    $("#workingMessage").css("visibility", "visible");
+                    $("#workingMessage").css("opacity", "1");
                     $("#taskEntry").val(taskValue);
 
                     setTimeout(function () {
@@ -257,7 +260,6 @@ function timeClockFunctionality() {
                         $("#availcredit").css("visibility", "hidden");
                         $("#makerSelectedClient").css("visibility", "hidden");
                         $("#otgButton").css("visibility", "hidden");
-                        $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
                     }, 1000)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     $("#taskBlock").css("opacity", "1");
@@ -312,10 +314,14 @@ function setClockInFunctionality() {
                     $("#taskBlock").html("<h6>Update task:</h6>");
                     setClockOutFunctionality();
                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
+                    $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
+                    $("#workingMessage").css("visibility", "visible");
+                    $("#workingMessage").css("opacity", "1");
                     taskValue = $("#taskEntry").val();
                     $("#makerText2").css("opacity", "1");
                     $("#clockPrompt").css("opacity", "1");
                     $("#otgButton").css("opacity", "0");
+
 
                     setTimeout(function () {
                         $("#makerText2").css("opacity", "0");
@@ -396,6 +402,7 @@ function setClockOutFunctionality() {
                             $("#otgBlock").css("visibility", "visible");
                             $("#otgTime").css("visibility", "visible");
                             $("#otgButton").css("visibility", "visible");
+                            $("#workingMessage").css("opacity", "0");
 
                             setTimeout(function () {
                                 $("#taskBlock").html("<h6>Please enter in a task:</h6>");
@@ -409,6 +416,7 @@ function setClockOutFunctionality() {
                                 $("#otgBlock").css("opacity", "1");
                                 $("#otgTime").css("opacity", "1");
                                 $("#otgButton").css("opacity", "1");
+                                $("#workingMessage").css("visibility", "hidden");
                             }, 1000);
                         } else {
                             $("#clockPrompt").html("<h5>An error occurred! Please refresh and check your time sheet.</h5>");
