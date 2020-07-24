@@ -1,5 +1,4 @@
 var moment = require('moment');
-
 var chargebee = require("chargebee");
 chargebee.configure({
     site: process.env.CHARGEBEE_SITE,
@@ -8,6 +7,7 @@ chargebee.configure({
 const util = require('util');
 const request = util.promisify(require('request'));
 const {notifyAdmin} = require("./notificationService");
+const {logCaughtError} = require('../util.js');
 
 
 //TODO: Add validation
