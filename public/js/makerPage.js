@@ -246,8 +246,6 @@ function manageNavAway() {
         //Managing user navigation away
         success: function (innerRes, innerStatus) {
             var clockedOut = true;
-            console.log(innerRes);
-            workingForClient = innerRes.clientName;
             if (innerRes.timeOut === "0" && innerRes.timeIn !== "0") {
                 clockedOut = false;
                 $("#clientRole").css("opacity", "0");
@@ -280,6 +278,7 @@ function manageNavAway() {
             }
 
             if (clockedOut) {
+                workingForClient = innerRes.clientName;
                 setClockInFunctionality();
             } else {
                 setClockOutFunctionality();
