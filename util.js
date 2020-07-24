@@ -118,7 +118,7 @@ module.exports = {
             uri: `${process.env.TWINBEE_URL}/api/notifyAdmin`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
-                'message': `${error.message}\n  ${error.stack}`
+                'message': `${error.message}\n  ${error.stack} \n${new Error().stack}`
             }
         }).catch(err => {
             console.log(err);
