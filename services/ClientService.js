@@ -290,10 +290,13 @@ class ClientService {
      */
     async createNewClient(firstName, lastName, customerEmail, phoneNumber, company) {
         console.log(`Creating new client with last name ${lastName}...`);
-        return await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(err => {
+        let client =  await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(err => {
             emailService.notifyAdmin(err.toString());
             console.log(err)
         });
+
+        emailService.sendClientWelcome(customerEmail);
+        return client;
     }
 
     /**

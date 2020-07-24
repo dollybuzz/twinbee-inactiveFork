@@ -49,7 +49,7 @@ class MakerService {
             emailService.notifyAdmin(err.toString());
         });
         console.log(id);
-        emailService.sendWelcome(email);
+        emailService.sendMakerWelcome(email);
         return new Maker(id, firstName, lastName, email, unique);
     }
 

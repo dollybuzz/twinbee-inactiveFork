@@ -35,7 +35,6 @@ class ClientRepository {
                         }
                     });
                     console.log("Customer added to DB");
-                    notificationService.sendWelcome(customerEmail);
                     resolve(customer);
                 }
             });
