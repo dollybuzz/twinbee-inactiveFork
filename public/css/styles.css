@@ -158,6 +158,11 @@ body a:hover {
     transition: 0.5s ease-in-out;
 }
 
+#workingMessage {
+    opacity: 0;
+    transition: 0.5s ease-in-out;
+}
+
 #updatePaymentButton:hover,
 #revInvoicesButton:hover,
 #YesBuy:hover,

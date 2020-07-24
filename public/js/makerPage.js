@@ -6,6 +6,7 @@ let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
 let TIME_SHOULD_RUN = false;
 let taskValue = "";
+let workingForClient = "";
 
 let navMapper = {
     main: function () {
@@ -92,7 +93,7 @@ function timeClockFunctionality() {
     $("#userMainContent").html(
         "<div id='otgRow'>" +
         "            <div id=\"empty\"></div>\n" +
-        "            <button type='button 'class='btn btn-select btn-circle btn-xl' id='otgButton'>On-the-Go</button>\n" +
+        "            <div><button type='button 'class='btn btn-select btn-circle btn-xl' id='otgButton'>On-the-Go</button><h5 id='workingMessage'></h5></div>\n" +
         "            <div id=\"empty\"></div>\n" +
         "</div>\n" +
         "<div class=\"clockBlock\">\n" +
@@ -256,6 +257,7 @@ function timeClockFunctionality() {
                         $("#availcredit").css("visibility", "hidden");
                         $("#makerSelectedClient").css("visibility", "hidden");
                         $("#otgButton").css("visibility", "hidden");
+                        $("#workingMessage").html(`You are curently working for ${workingForClient}.`);
                     }, 1000)
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     $("#taskBlock").css("opacity", "1");
@@ -294,6 +296,7 @@ function setClockInFunctionality() {
     });
 
     $("#makerClock").on('click', function () {
+        let workingForClient = document.getElementById("makerSelectedClient")[0].innerHTML.split(" -")[0];
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
             url: "api/clockIn",
