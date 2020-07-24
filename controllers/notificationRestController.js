@@ -64,15 +64,13 @@ module.exports = {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-
-            let message = null;
             try{
-                message = JSON.parse(req.body.message)
+                req.body.message = JSON.parse(req.body.message)
             }
             catch (e) {
                 console.log(e);
             }
-            notificationService.notifyAdmin(message ? message : req.body.message);
+            notificationService.notifyAdmin(req.body.message);
             res.send({status: "Request Sent"});
         }
     }

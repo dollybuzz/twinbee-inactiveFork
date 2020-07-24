@@ -1,5 +1,4 @@
-const  bakupEmailService = require("./services/notificationService");
-const {notifyAdmin} = require('./services/notificationService.js');
+const  backupEmailService = require("./services/notificationService");
 const util = require('util');
 const request = util.promisify(require('request'));
 
@@ -93,9 +92,8 @@ module.exports = {
         }
         if (!validator.isValid) {
             let tracer = new Error();
-            console.log(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace:${JSON.stringify(tracer.stack)}`);
-            notifyAdmin(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace coming shortly.`);
-            notifyAdmin(tracer.stack);
+            this.logCaughtError(`Failed to validate! \nParameters:\n${JSON.stringify(paramArrayMap)}\nBody:\n${JSON.stringify(body)}\nTrace coming shortly.`);
+            this.logCaughtError(tracer.stack);
         }
         return validator;
     },
@@ -120,11 +118,11 @@ module.exports = {
             uri: `${process.env.TWINBEE_URL}/api/notifyAdmin`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
-                'message': error
+                'message': JSON.stringify(error)
             }
         }).catch(err => {
             console.log(err);
-            bakupEmailService.notifyAdmin(err);
+            backupEmailService.notifyAdmin(err);
         });
 
         return JSON.parse(response.body);
