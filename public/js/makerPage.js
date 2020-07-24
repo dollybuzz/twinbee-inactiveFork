@@ -6,7 +6,6 @@ let NAV_MAP_TEXT = "";
 let SELECTED_NAV_MAP = null;
 let TIME_SHOULD_RUN = false;
 let taskValue = "";
-let workingForClient = "";
 
 let navMapper = {
     main: function () {
@@ -264,7 +263,7 @@ function manageNavAway() {
                     $("#otgButton").css("visibility", "hidden");
                     $("#clientCredit").css("visibility", "hidden");
                     $("#workingMessage").show();
-                    $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
+                    $("#workingMessage").html(`You are currently working for ${innerRes.clientName}.`);
                     $("#workingMessage").css("visibility", "visible");
                     $("#workingMessage").css("opacity", "1");
                 }, 1000)
@@ -278,7 +277,6 @@ function manageNavAway() {
             }
 
             if (clockedOut) {
-                workingForClient = innerRes.clientName;
                 setClockInFunctionality();
             } else {
                 setClockOutFunctionality();
@@ -337,7 +335,7 @@ function setClockInFunctionality() {
                             $("#makerText2").css("opacity", "0");
                             $("#otgButton").css("visibility", "hidden");
                             $("#workingMessage").show();
-                            $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
+                            $("#workingMessage").html(`You are currently working for ${clockRes.clientName}.`);
                             $("#workingMessage").css("opacity", "1");
                             $("#workingMessage").css("visibility", "visible");
                         }, 1000);
