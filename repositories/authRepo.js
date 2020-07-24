@@ -20,7 +20,7 @@ class AuthRepository {
                 }
                 console.log(e);
                 result = [];
-                notificationService.notifyAdmin(e.toString());
+                notificationService.notifyAdmin(e);
                 if (e.toString().includes("Cannot enqueue Query after fatal error.")) {
                     await repoMaster.activateConnection(repoMaster, 3);
                     console.log(`Trying to get admin again, ${numRetries} retries left`);
