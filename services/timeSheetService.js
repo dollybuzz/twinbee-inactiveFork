@@ -251,6 +251,22 @@ class TimeSheetService {
             console.log(error);
             emailService.notifyAdmin(error.toString())
         });
+
+        let result = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getClient`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'id': currentSheet.clientId
+            }
+        }).catch(err => {
+            console.log(err);
+            emailService.notifyAdmin(err.toString());
+        });
+        let client = JSON.parse(result.body);
+
+        currentSheet.clientName = client.deleted ? "Deleted Client" : `${client.first_name} ${client.last_name}`;
+
         return currentSheet;
     }
 
