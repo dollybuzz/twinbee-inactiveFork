@@ -4,6 +4,7 @@ const util = require('util');
 const request = util.promisify(require('request'));
 const emailService = require('./notificationService.js');
 const chargebee = require("chargebee");
+const {logCaughtError} = require('../util.js');
 chargebee.configure({
     site: process.env.CHARGEBEE_SITE,
     api_key: process.env.CHARGEBEE_API_KEY
@@ -15,8 +16,7 @@ let updateClient = (customerId, keyValuePairs) => {
     console.log(keyValuePairs);
     chargebee.customer.update(customerId, keyValuePairs).request(function (error, result) {
         if (error) {
-            console.log(error);
-            emailService.notifyAdmin(error.toString());
+            logCaughtError(error);
         } else {
             console.log(`Client ${customerId} updated successfully`)
         }
@@ -118,11 +118,7 @@ class ClientService {
         <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
     </div>
 </div>
-</body>`)
-            .catch(error => {
-                console.log(error);
-                emailService.notifyAdmin(error.toString());
-            });
+</body>`).catch(e => logCaughtError(e));
         return "Successfully notified admin";
     }
 
@@ -135,10 +131,7 @@ class ClientService {
     async updateClientMetadata(clientId, keyValuePairs) {
         console.log(`Updating client ${clientId} metadata with data: `);
         console.log(keyValuePairs);
-        let customer = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err.toString());
-            console.log(err)
-        });
+        let customer = await this.getClientById(clientId).catch(e=>logCaughtError(e));
         if (!customer.meta_data) {
             customer.meta_data = {};
         }
@@ -150,10 +143,7 @@ class ClientService {
 
     async deleteTimeBucket(clientId, planBucket) {
         console.log(`Updating client ${clientId}, deleting time bucket ${planBucket}...`);
-        let client = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err.toString());
-            console.log(err)
-        });
+        let client = await this.getClientById(clientId).catch(e=>logCaughtError(e));
         if (!client.meta_data) {
             console.log("Client had no metadata; creating now...");
             client.meta_data = {};
@@ -175,10 +165,7 @@ class ClientService {
      */
     async updateClientRemainingMinutes(clientId, planBucket, minuteChange) {
         console.log(`Updating client ${clientId} time bucket ${planBucket} with ${minuteChange} minutes...`);
-        let client = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err.toString());
-            console.log(err)
-        });
+        let client = await this.getClientById(clientId).catch(e=>logCaughtError(e));
         if (!client.meta_data) {
             console.log("Client had no metadata; creating now...");
             client.meta_data = {};
@@ -211,10 +198,7 @@ class ClientService {
      */
     async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone, company) {
         console.log(`Updating client ${clientId} contact info...`);
-        let customer = await this.getClientById(clientId).catch(err => {
-            emailService.notifyAdmin(err.toString());
-            console.log(err)
-        });
+        let customer = await this.getClientById(clientId).catch(e=>logCaughtError(e));
         if (customer) {
             customer.first_name = newFirstName;
             customer.last_name = newLastName;
@@ -271,10 +255,7 @@ class ClientService {
      * @returns {Promise<[entry]>}
      */
     async getAllClients() {
-        return await clientRepo.getAllClients().catch(err => {
-            emailService.notifyAdmin(err.toString());
-            console.log(err)
-        });
+        return await clientRepo.getAllClients().catch(e=>logCaughtError(e));
     }
 
     /**
@@ -289,12 +270,17 @@ class ClientService {
      */
     async createNewClient(firstName, lastName, customerEmail, phoneNumber, company) {
         console.log(`Creating new client with last name ${lastName}...`);
-        let client = await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(err => {
-            emailService.notifyAdmin(err.toString());
-            console.log(err)
-        });
+        let client = await clientRepo.createClient(firstName, lastName, customerEmail, phoneNumber, company).catch(e=>logCaughtError(e));
 
-        emailService.sendClientWelcome(customerEmail);
+        request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/welcomeClient`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'clientEmail': customerEmail
+            }
+        }).catch(err => logCaughtError(err));
+
         return client;
     }
 
@@ -305,10 +291,7 @@ class ClientService {
      */
     async getClientById(id) {
         console.log(`Getting data for client ${id}...`);
-        let clientData = await clientRepo.getClientById(id).catch(err => {
-            emailService.notifyAdmin(err.toString());
-            console.log(err)
-        });
+        let clientData = await clientRepo.getClientById(id).catch(err => logCaughtError(err));
         return clientData;
     }
 
@@ -327,10 +310,7 @@ class ClientService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id': id
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let body = response.body;
         let sheets = JSON.parse(body);
@@ -341,10 +321,7 @@ class ClientService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let makerMap = {};
         let makers = JSON.parse(makerResponse.body);
@@ -368,19 +345,11 @@ class ClientService {
      */
     async deleteClientById(chargebeeId) {
         console.log(`Deleting client ${chargebeeId}...`);
-        await this.deleteAllSubscriptions(chargebeeId)
-            .catch(error => {
-                console.log(error);
-                emailService.notifyAdmin(error.toString());
-            });
+        await this.deleteAllSubscriptions(chargebeeId).catch(err => logCaughtError(err));
         console.log(`Deleting client ${chargebeeId}...`);
-        await this.deleteAllRelationships(chargebeeId)
-            .catch(error => {
-                console.log(error);
-                emailService.notifyAdmin(error.toString());
-            });
+        await this.deleteAllRelationships(chargebeeId).catch(err => logCaughtError(err));
         clientRepo.deleteClient(chargebeeId);
-        await this.updateClientMetadata(chargebeeId, {"deleted": "true"});
+        await this.updateClientMetadata(chargebeeId, {"deleted": "true"}).catch(err => logCaughtError(err));
     }
 
     /**
@@ -391,7 +360,7 @@ class ClientService {
      */
     async deleteAllSubscriptions(clientId) {
         console.log(`Deleting all subscriptions for ${clientId}`);
-        let subscriptionList = await this.getSubscriptionsForClient(clientId);
+        let subscriptionList = await this.getSubscriptionsForClient(clientId).catch(err => logCaughtError(err));
         for (var i = 0; i < subscriptionList.length; ++i) {
             let entry = subscriptionList[i];
             if (entry.customer.id === clientId) {
@@ -402,10 +371,7 @@ class ClientService {
                         'auth': process.env.TWINBEE_MASTER_AUTH,
                         'subscriptionId': entry.subscription.id
                     }
-                }).catch(err => {
-                    console.log(err);
-                    emailService.notifyAdmin(err.toString());
-                });
+                }).catch(err => logCaughtError(err));
             }
         }
     }
@@ -423,10 +389,7 @@ class ClientService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let subscriptions = JSON.parse(result.body);
         let list = [];
@@ -456,10 +419,7 @@ class ClientService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 "subscriptionId": subscriptionId
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let subscription = JSON.parse(result.body);
 
@@ -486,10 +446,8 @@ class ClientService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'subscriptionId': subscriptionId
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
+
         let subscription = JSON.parse(result.body);
         return subscription.customer_id === clientId ? subscription : false;
     }
@@ -511,10 +469,8 @@ class ClientService {
                     'auth': process.env.TWINBEE_MASTER_AUTH,
                     'subscriptionId': subscriptionId
                 }
-            }).catch(err => {
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
+            }).catch(err => logCaughtError(err));
+
             return result.body && result.body.length > 0;
         } else {
             return false;
@@ -534,10 +490,8 @@ class ClientService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
+
         relationshipList = JSON.parse(relationshipList.body);
         let finalList = [];
         for (var relationship of relationshipList) {
@@ -556,7 +510,7 @@ class ClientService {
      */
     async deleteAllRelationships(clientId) {
         console.log(`Attempting to delete relationships for ${clientId}`);
-        let relationshipList = await this.getRelationshipsForClient(clientId);
+        let relationshipList = await this.getRelationshipsForClient(clientId).catch(err => logCaughtError(err));
         for await (var relationship of relationshipList) {
             if (relationship.clientId === clientId) {
                 console.log("Relationship found.");
@@ -587,10 +541,7 @@ class ClientService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let makers = JSON.parse(response.body);
 
@@ -600,10 +551,7 @@ class ClientService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let relationships = JSON.parse(result.body);
         let makerMap = {};
@@ -627,10 +575,7 @@ class ClientService {
     };
 
     async getAllTimeBuckets() {
-        let clients = await this.getAllClients().catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let clients = await this.getAllClients().catch(err => logCaughtError(err));
         let timeBuckets = [];
         for (var i = 0; i < clients.length; ++i) {
             let client = clients[i].customer;
@@ -649,10 +594,7 @@ class ClientService {
 
 
     async getTimeBucketsByClientId(id) {
-        let client = await this.getClientById(id).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let client = await this.getClientById(id).catch(err => logCaughtError(err));
         let obj = {};
         obj.first_name = client.first_name;
         obj.last_name = client.last_name;
@@ -679,8 +621,7 @@ class ClientService {
             }).request(function (error, result) {
                 if (error) {
                     //handle error
-                    console.log(error);
-                    emailService.notifyAdmin(error.toString());
+                    logCaughtError(error);
                     reject(error);
                 } else {
                     console.log("Successfully retrieved update payment page");
@@ -698,12 +639,11 @@ class ClientService {
         let minutes = subscription.plan_quantity * 60;
         let planId = subscription.plan_id;
         if (await eventRepo.createEvent(parsedBody.id).catch(error => {
-            console.log(error);
-            emailService.notifyAdmin(error.toString());
+            logCaughtError(error);
             return error
         })) {
             console.log("New event, updating minutes");
-            return await this.updateClientRemainingMinutes(customerId, planId, minutes);
+            return this.updateClientRemainingMinutes(customerId, planId, minutes);
         } else {
             console.log(`Duplicate subscription blocked: ${parsedBody}`);
             return false;
@@ -712,7 +652,9 @@ class ClientService {
 
     async chargeMeNow(planId, numHours, customerId) {
         console.log(`Attempting to charge ${customerId} for ${numHours} ${planId} hours...`);
-        let result = await request({
+        let success = true;
+        let client = this.getClientById(customerId);
+        let result = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/creditNow`,
             form: {
@@ -722,42 +664,26 @@ class ClientService {
                 'customerId': customerId
             }
         }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
+            logCaughtError(err);
+            success = false;
         });
 
-        let client = await this.getClientById(customerId);
-        emailService.emailFMAdmin("Hours added!",
-            `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
-<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
+        await result;
+        await client;
 
-    <div id="landingContainer"
-         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
-        <div id="intentionallyEmpty"></div>
-        <div id="landingLogo" style="width: inherit;padding: 15px;">
-            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
-        </div>
-    </div>
-    <div id="pageTitle"
-         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
-        <h2 style="color: #dbb459;">Hours added!</h2>
-    </div>
-</header>
-<div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
-                                <h4>${client.first_name} ${client.last_name} has manually added ${numHours} hour(s) for time bucket ${planId}</h4>
-<br>
+        request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/notifyAdminClientUpdate`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'planId': planId,
+                'numHours': numHours,
+                'clientName': `${client.first_name} ${client.last_name}`
+            }
+        }).catch(err => logCaughtError(err));
 
-</div>
-<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
-    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
-    <div class="copyright">
-        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
-    </div>
-</div>
-</body>`);
-        return true;
+        return success;
     }
-
 
     async subscriptionRenewed(parsedBody) {
         if (parsedBody.event_type === "subscription_renewed") {
