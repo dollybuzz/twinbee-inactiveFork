@@ -1,4 +1,4 @@
-const notificationService = require('../services/notificationService.js');
+const {logCaughtError} = require('../util.js');
 const repoMaster = require('./repoMaster.js');
 class RelationshipRepository {
     constructor() {
@@ -11,8 +11,7 @@ class RelationshipRepository {
             let sqlParams = [makerId, clientId, planId, occupation, hourlyRate];
             repoMaster.query(sql, sqlParams, function (err, result) {
                 if (err) {
-                    notificationService.notifyAdmin(err.toString());
-                    console.log(err);
+                    logCaughtError(err);
                     reject(err)
                 }
                 console.log(`Relationship ${result.insertId} successfully created`);
@@ -26,10 +25,7 @@ class RelationshipRepository {
             'plan_id = ?, occupation = ?, maker_id = ? WHERE id = ?';
         let sqlParams = [planId, occupation, makerId, id];
         repoMaster.query(sql, sqlParams, function (err, result) {
-            if (err) {
-                notificationService.notifyAdmin(err.toString());
-                console.log(err);
-            }
+            if (err) {logCaughtError(err)}
             console.log(`Relationship ${id} updated`);
         });
     }
@@ -38,10 +34,7 @@ class RelationshipRepository {
         let sql = 'DELETE FROM relationship where id = ?';
         let sqlParams = [id];
         repoMaster.query(sql, sqlParams, function (err, result) {
-            if (err) {
-                notificationService.notifyAdmin(err.toString());
-                console.log(err);
-            }
+            if (err) {logCaughtError(err)}
         });
         console.log(`Relationship ${id}  deleted`);
     }
@@ -52,8 +45,7 @@ class RelationshipRepository {
         let sqlParam = [];
         let result;
         result = await repoMaster.query(sql, sqlParam).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log("All relationships retrieved from database");
@@ -67,8 +59,7 @@ class RelationshipRepository {
         let sqlParam = [makerId];
         let result;
         result = await repoMaster.query(sql, sqlParam).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`Relationships retrieved for maker ${makerId}`);
@@ -80,8 +71,7 @@ class RelationshipRepository {
         let sqlParam = [id];
         let result;
         result = await repoMaster.query(sql, sqlParam).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`Relationship ID retrieved for relationship ${id}`);
@@ -93,8 +83,7 @@ class RelationshipRepository {
         let sqlParam = [clientId];
         let result;
         result = await repoMaster.query(sql, sqlParam).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`Relationship ID retrieved for client ${clientId}`);

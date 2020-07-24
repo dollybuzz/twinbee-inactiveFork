@@ -1,7 +1,5 @@
-//TODO; have errors send us notifications rather than "throw"
-
+const {logCaughtError} = require('../util.js');
 const repoMaster = require("./repoMaster.js");
-const notificationService = require('../services/notificationService.js');
 
 class TimeSheetRepository {
     constructor() {
@@ -12,11 +10,7 @@ class TimeSheetRepository {
             ' VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         let sqlParams = [makerId, clientId, rate, startTime, endTime, task, adminNote, relationshipId];
         let result;
-        result = await repoMaster.query(sql, sqlParams).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
-            return ('error; client or maker might not exist');
-        });
+        result = await repoMaster.query(sql, sqlParams).catch(e => logCaughtError(e));
         console.log(`Sheet ${result.insertId} successfully created`);
         return result.insertId;
     }
@@ -26,8 +20,7 @@ class TimeSheetRepository {
         let sqlParams = [rate, startTime, endTime, task, adminNote, id];
         repoMaster.query(sql, sqlParams, function (err, result) {
             if (err) {
-                console.log(err);
-                notificationService.notifyAdmin(err.toString());
+                logCaughtError(err);
                 return false;
             }
             console.log(`Sheet ${id} successfully updated.`);
@@ -41,10 +34,7 @@ class TimeSheetRepository {
             "admin_note = ? WHERE id = ?";
         let sqlParams = [adminNote, id];
         repoMaster.query(sql, sqlParams, function (err, result) {
-            if (err) {
-                console.log(err);
-                notificationService.notifyAdmin(err.toString());
-            }
+            if (err) {logCaughtError(err)}
         });
         console.log(`Sheet ${id} cleared`)
     }
@@ -57,8 +47,7 @@ class TimeSheetRepository {
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`Retrieved sheets for maker ${id}`);
@@ -72,8 +61,7 @@ class TimeSheetRepository {
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`Retrieved sheet ${id}`);
@@ -87,8 +75,7 @@ class TimeSheetRepository {
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`Sheets retrieved for client ${id}`);
@@ -105,8 +92,7 @@ class TimeSheetRepository {
         let sqlParams = [id];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`Online sheets retrieved for maker ${id}`);
@@ -119,8 +105,7 @@ class TimeSheetRepository {
         let sqlParams = [];
         let result;
         result = await repoMaster.query(sql, sqlParams).catch(e => {
-            notificationService.notifyAdmin(e.toString());
-            console.log(e);
+            logCaughtError(e);
             result = [];
         });
         console.log(`All sheets retrieved`);

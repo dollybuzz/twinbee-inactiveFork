@@ -1,6 +1,5 @@
-
 const repoMaster = require('./repoMaster.js');
-const notificationService = require('../services/notificationService.js');
+const {logCaughtError} = require('../util.js');
 class AuthRepository {
     constructor() {
     };
@@ -18,9 +17,8 @@ class AuthRepository {
                 if (numRetries === 0){
                     reject();
                 }
-                console.log(e);
+                logCaughtError(e);
                 result = [];
-                notificationService.notifyAdmin(e);
                 if (e.toString().includes("Cannot enqueue Query after fatal error.")) {
                     await repoMaster.activateConnection(repoMaster, 3);
                     console.log(`Trying to get admin again, ${numRetries} retries left`);
