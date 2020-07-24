@@ -36,7 +36,7 @@ class RepoMaster {
         this.activateConnection(this, 5).catch(error => {
             if(error) {
                 console.log(error);
-                notificationService.notifyAdmin(error.toString());
+                notificationService.notifyAdmin(error);
             }
         });
     }
