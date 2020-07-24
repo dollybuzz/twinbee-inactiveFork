@@ -246,25 +246,18 @@ function timeClockFunctionality() {
                 let sheet = innerRes[i];
                 if (sheet.timeOut[0] === "0" && sheet.timeIn[0] !== "0") {
                     clockedOut = false;
-                    $("#clientRole").css("opacity", "0");
                     $("#clockPrompt").css("opacity", "1");
-                    $("#makerSelectedClient").css("opacity", "0");
-                    $("#clientCredit").css("opacity", "0");
-                    $("#availcredit").css("opacity", "0");
-                    $("#otgButton").css("opacity", "0");
+                    $("#workingMessage").css("opacity", "1");
                     $("#taskBlock").html("<h6>Update task:</h6>");
                     $("#workingMessage").show();
                     $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
                     $("#workingMessage").css("visibility", "visible");
-                    $("#workingMessage").css("opacity", "1");
                     $("#taskEntry").val(taskValue);
-
-                    setTimeout(function () {
-                        $("#clientRole").css("visibility", "hidden");
-                        $("#availcredit").css("visibility", "hidden");
-                        $("#makerSelectedClient").css("visibility", "hidden");
-                        $("#otgButton").css("visibility", "hidden");
-                    }, 1000)
+                    $("#clientRole").css("visibility", "hidden");
+                    $("#availcredit").css("visibility", "hidden");
+                    $("#makerSelectedClient").css("visibility", "hidden");
+                    $("#otgButton").css("visibility", "hidden");
+                    $("#clientCredit").css("visibility", "hidden");
                 } else if (sheet.timeOut[0] !== "0" && sheet.timeIn[0] !== "0") {
                     $("#taskBlock").css("opacity", "1");
                     $("#taskEntry").css("opacity", "1");
@@ -302,7 +295,6 @@ function setClockInFunctionality() {
     });
 
     $("#makerClock").on('click', function () {
-        $("#workingMessage").show();
         workingForClient = document.getElementById("makerSelectedClient")[0].innerHTML.split(" -")[0];
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
@@ -319,6 +311,7 @@ function setClockInFunctionality() {
                     $("#taskBlock").html("<h6>Update task:</h6>");
                     setClockOutFunctionality();
                     $("#makerText2").html("<h5>Successfully clocked in!</h5>");
+                    $("#workingMessage").show();
                     $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
                     $("#workingMessage").css("visibility", "visible");
                     $("#workingMessage").css("opacity", "1");
@@ -410,6 +403,7 @@ function setClockOutFunctionality() {
                             $("#workingMessage").css("opacity", "0");
 
                             setTimeout(function () {
+                                $("#workingMessage").hide();
                                 $("#taskBlock").html("<h6>Please enter in a task:</h6>");
                                 taskValue = "";
                                 $("#taskEntry").val(taskValue);
