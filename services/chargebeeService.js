@@ -284,6 +284,28 @@ class ChargebeeService {
         })
     }
 
+    /**
+     * Retrieves a customer by email using chargebee's built in filtering.
+     * Returns the most recent match.
+     * @param email - email of customer to retrieve.
+     * @returns {Promise<null|*>}
+     */
+    async getCustomerByEmail(email){
+        console.log("Retrieving customer by email");
+        let err;
+        let result = await chargebee.customer.list({"email[is]":email,"sort_by[desc]" : "created_at"})
+            .catch(error => err = error);
+        if (err){
+            notifyAdmin(err);
+            console.log(err);
+            return null;
+        }
+        if (!result.list || result.list.length === 0){
+            return null;
+        }
+        return result.list.customer;
+    }
+
 
     /**
      * Retrieves a subscription object by chargebee subscription id.

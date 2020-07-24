@@ -1,4 +1,5 @@
 const chargebeeService = require('../services/chargebeeService.js');
+const authService = require('../services/authService.js');
 const {notifyAdmin} = require("../services/notificationService");
 const {validateParams} = require("../util.js");
 
@@ -33,7 +34,7 @@ module.exports = {
         console.log(req.body);
         let plans = await chargebeeService.getAllPlans().catch(err => {
             console.log(err);
-            notifyAdmin(err.toString());
+            notifyAdmin(err);
         });
         res.send(plans);
     },
@@ -66,7 +67,7 @@ module.exports = {
             res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
                 req.body.pricePerHour, req.body.planDescription).catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             }));
         }
     },
@@ -101,7 +102,7 @@ module.exports = {
             let planActual = await chargebeeService.retrievePlan(req.body.planId)
                 .catch(err => {
                     console.log(err);
-                    notifyAdmin(err.toString());
+                    notifyAdmin(err);
                 });
             res.send({plan: planActual});
         }
@@ -197,10 +198,10 @@ module.exports = {
     getAllSubscriptions: async function (req, res) {
         console.log("Attempting to get all subscriptions from REST: ");
         console.log(req.body);
-        let subscriptions = await chargebeeService.getAllSubscriptions().catch(e => console.log(e))
+        let subscriptions = await chargebeeService.getAllSubscriptions()
             .catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             });
         res.send(subscriptions);
     },
@@ -240,9 +241,58 @@ module.exports = {
                 req.body.planQuantity, req.body.startDate)
                 .catch(err => {
                     console.log(err);
-                    notifyAdmin(err.toString());
+                    notifyAdmin(err);
                 });
             res.send(sub);
+        }
+    },
+
+    /**
+     * /api/retrieveBucketRate
+     * Retrieves the hourly rate of a plan for the associated client bucket. If a
+     * customer has a customized rate due to a discounted or penaltied subscription,
+     * that rate is used. Otherwise, the plan's default rate is used.
+     * Looks for data in the body as follows:
+     * {
+     *     "planId": planId name / bucket name (bucket name and planId should always be identical),
+     *     "auth": authentication credentials; either master or token,
+     *     "token": requester's token
+     * }
+     *
+     * @returns subscription{}
+     */
+    retrieveBucketRate: async function (req, res) {
+        console.log("Attempting to retrieve bucket rate from REST: ");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["token"],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["planId"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await authService.getEmailFromToken(req.body.token)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err);
+                });
+            let customer = await chargebeeService.getCustomerByEmail(email)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err);
+                });
+            let subscription = await chargebeeService.getPlanPriceForCustomer(customer.id, req.body.planId)
+                .catch(err => {
+                    console.log(err);
+                    notifyAdmin(err);
+                });
+            res.send(subscription);
         }
     },
 
@@ -277,7 +327,7 @@ module.exports = {
             let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
                 .catch(err => {
                     console.log(err);
-                    notifyAdmin(err.toString());
+                    notifyAdmin(err);
                 });
             res.send(subscription);
         }
@@ -314,7 +364,7 @@ module.exports = {
             let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
                 .catch(err => {
                     console.log(err);
-                    notifyAdmin(err.toString());
+                    notifyAdmin(err);
                 });
             res.send(subscription);
         }
@@ -351,7 +401,7 @@ module.exports = {
             let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
                 .catch(err => {
                     console.log(err);
-                    notifyAdmin(err.toString());
+                    notifyAdmin(err);
                 });
             res.send(subscription);
         }
@@ -393,7 +443,7 @@ module.exports = {
                 req.body.planQuantity, req.body.pricePerHour)
                 .catch(err => {
                     console.log(err);
-                    notifyAdmin(err.toString());
+                    notifyAdmin(err);
                 });
             res.send(subscription);
         }
@@ -463,7 +513,7 @@ module.exports = {
         } else {
             chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId).catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             });
             res.send({});
         }
@@ -512,7 +562,7 @@ module.exports = {
         } else {
             res.send(await chargebeeService.getSubscriptionsByClient(req.body.id).catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             }));
         }
     },
@@ -548,7 +598,7 @@ module.exports = {
         } else {
             res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             }));
         }
     },
@@ -584,7 +634,7 @@ module.exports = {
         } else {
             res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             }));
         }
     },
@@ -622,7 +672,7 @@ module.exports = {
         } else {
             res.send(await chargebeeService.doesCustomerHaveInvoices(req.body.clientId).catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             }));
         }
     },
@@ -658,7 +708,7 @@ module.exports = {
         } else {
             res.send(await chargebeeService.getInvoicesForCustomer(req.body.clientId).catch(err => {
                 console.log(err);
-                notifyAdmin(err.toString());
+                notifyAdmin(err);
             }));
         }
     },
@@ -680,7 +730,7 @@ module.exports = {
         console.log(req.body);
         res.send(await chargebeeService.getAllTransactions().catch(err => {
             console.log(err);
-            notifyAdmin(err.toString());
+            notifyAdmin(err);
         }));
     }
 };
