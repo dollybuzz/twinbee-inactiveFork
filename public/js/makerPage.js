@@ -229,8 +229,12 @@ function timeClockFunctionality() {
         }
     });
 
+    //Manages actions when user navigates away
+    manageNavAway();
+}
 
-    //Getting timesheets to manage user navigation away
+function manageNavAway() {
+    //Determines functionality when user navigates away by timesheets
     $.ajax({
         url: "/api/getMyTimeSheetsMaker",
         method: "post",
