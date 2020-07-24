@@ -246,6 +246,7 @@ function manageNavAway() {
         //Managing user navigation away
         success: function (innerRes, innerStatus) {
             var clockedOut = true;
+            console.log(innerRes);
             workingForClient = innerRes.clientName;
             if (innerRes.timeOut === "0" && innerRes.timeIn !== "0") {
                 clockedOut = false;
