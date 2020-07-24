@@ -186,6 +186,11 @@ module.exports = {
      *     "bucket": plan id for the requested bucket,
      *     "auth": valid authentication
      * }
+     * returns data in the form:
+     * {
+     *     minutes: number of minutes the client has available for the given plan/bucket,
+     *     price: hourly rate in pennies the client pays for this plan
+     * }
      * @param req
      * @param res
      * @returns {Promise<void>}
