@@ -108,7 +108,7 @@ module.exports = {
             }
         }).catch(err => module.exports.logCaughtError(err));
 
-        return JSON.parse(response.body);
+        return response.body;
     },
 
     logCaughtError: (error) =>{
@@ -124,7 +124,5 @@ module.exports = {
             console.log(err);
             backupEmailService.notifyAdmin(err);
         });
-
-        return JSON.parse(response.body);
     }
 };
