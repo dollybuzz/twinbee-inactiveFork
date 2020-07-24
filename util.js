@@ -108,7 +108,7 @@ module.exports = {
             }
         }).catch(err => module.exports.logCaughtError(err));
 
-        return response.body;
+        return JSON.parse(response.body);
     },
 
     logCaughtError: (error) =>{
@@ -118,7 +118,7 @@ module.exports = {
             uri: `${process.env.TWINBEE_URL}/api/notifyAdmin`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
-                'message': JSON.stringify(error)
+                'message': `${error.message}\n  ${error.stack}`
             }
         }).catch(err => {
             console.log(err);
