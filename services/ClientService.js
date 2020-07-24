@@ -688,20 +688,14 @@ class ClientService {
     async subscriptionRenewed(parsedBody) {
         if (parsedBody.event_type === "subscription_renewed") {
             console.log("Subscription renewal request received");
-            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err => {
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
+            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err => logCaughtError(err));
         }
     }
 
     async subscriptionCreated(parsedBody) {
         if (parsedBody.event_type === "subscription_created") {
             console.log("Subscription creation request received");
-            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err => {
-                console.log(err);
-                emailService.notifyAdmin(err.toString());
-            });
+            return await new ClientService().webHookBucketUpdate(parsedBody).catch(err => logCaughtError(err));
         }
     }
 
@@ -713,30 +707,21 @@ class ClientService {
                 'clientId': clientId,
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let body = JSON.parse(result.body);
         return {invoicesPresent: body.invoicesPresent, numInvoices: body.numInvoices};
     }
 
     async getAllMyRelationships(clientId) {
-        let relationships = await this.getRelationshipsForClient(clientId).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let relationships = await this.getRelationshipsForClient(clientId).catch(err => logCaughtError(err));
         let result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let makerMap = {};
         let makers = JSON.parse(result.body);
@@ -761,8 +746,7 @@ class ClientService {
                 }
             }).request(function (error, result) {
                 if (error) {
-                    console.log(error);
-                    emailService.notifyAdmin(error.toString());
+                    logCaughtError(error);
                     reject(error);
                 } else {
                     var hosted_page = result.hosted_page;
@@ -781,20 +765,14 @@ class ClientService {
      */
     async getClientByEmail(email) {
         console.log(`Getting client by email...`);
-        let client = await clientRepo.getClientByEmail(email).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let client = await clientRepo.getClientByEmail(email).catch(err => logCaughtError(err));
         console.log(`Client was ${client.id}`);
         return client;
     }
 
     async getTimeBucket(clientId, planId) {
         console.log(`Getting available credit for ${clientId}'s time bucket`);
-        let bucketObj = this.getTimeBucketsByClientId(clientId).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let bucketObj = this.getTimeBucketsByClientId(clientId).catch(err => logCaughtError(err));
         let response = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/retrieveBucketRate`,
@@ -803,10 +781,7 @@ class ClientService {
                 'clientId': clientId,
                 'planId':planId
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         response = await response;
         bucketObj = await bucketObj;

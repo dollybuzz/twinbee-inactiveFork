@@ -447,7 +447,7 @@ class TimeSheetService {
         });
 
         console.log(`Clock-in request sent for ${relationship.makerId} at time ${rightNow}`);
-        return await this.getLastOnlineSheet(relationshipId.makerId).catch(error => emailService.notifyAdmin(error));
+        return await this.getLastOnlineSheet(relationship.makerId).catch(error => emailService.notifyAdmin(error));
     }
 
     /**
