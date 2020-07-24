@@ -121,6 +121,9 @@ function timeClockFunctionality() {
         "    </div>"
     );
 
+    //hide working message
+    $("#workingMessage").hide();
+
     //Populating drop down selection
     $.ajax({
         url: "/api/getAllMyRelationshipsMaker",
@@ -250,6 +253,7 @@ function timeClockFunctionality() {
                     $("#availcredit").css("opacity", "0");
                     $("#otgButton").css("opacity", "0");
                     $("#taskBlock").html("<h6>Update task:</h6>");
+                    $("#workingMessage").show();
                     $("#workingMessage").html(`You are currently working for ${workingForClient}.`);
                     $("#workingMessage").css("visibility", "visible");
                     $("#workingMessage").css("opacity", "1");
@@ -298,6 +302,7 @@ function setClockInFunctionality() {
     });
 
     $("#makerClock").on('click', function () {
+        $("#workingMessage").show();
         workingForClient = document.getElementById("makerSelectedClient")[0].innerHTML.split(" -")[0];
         $("#makerClock").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         $.ajax({
