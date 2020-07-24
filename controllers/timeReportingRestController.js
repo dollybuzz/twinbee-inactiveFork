@@ -1,7 +1,6 @@
 const timeReportingService = require('../services/timeReportingService.js');
-const {notifyAdmin} = require("../services/notificationService.js");
-const authService = require('../services/authService.js');
 const {validateParams} = require("../util.js");
+const {logCaughtError} = require('../util.js');
 
 module.exports = {
 
@@ -55,10 +54,7 @@ module.exports = {
         res.send(await timeReportingService
             .getReportForClientMakerPair(req.body.start, req.body.end, req.body.makerId,
                 req.body.clientId, req.body.adminNote, req.body.relationshipId)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            .catch(err => logCaughtError(err)));
     },
 
 
@@ -102,10 +98,7 @@ module.exports = {
 
         res.send(await timeReportingService
             .getMyTimeReportMaker(req.body.start, req.body.end, req.body.token, req.body.clientId)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            .catch(err => logCaughtError(err)));
     },
 
 
@@ -147,9 +140,6 @@ module.exports = {
 
         res.send(await timeReportingService
             .getTimeRollup(req.body.start, req.body.end)
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            .catch(err => logCaughtError(err)));
     }
 };

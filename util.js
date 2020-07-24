@@ -1,4 +1,7 @@
+const  bakupEmailService = require("./services/notificationService");
 const {notifyAdmin} = require('./services/notificationService.js');
+const util = require('util');
+const request = util.promisify(require('request'));
 
 let validatorMap = {
     "present": async function (keysToValidate, body) {
@@ -95,5 +98,34 @@ module.exports = {
             notifyAdmin(tracer.stack);
         }
         return validator;
+    },
+
+    dereferenceToken: async (token) =>{
+        let response = await request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/dereferenceToken`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => module.exports.logCaughtError(err));
+
+        return JSON.parse(response.body);
+    },
+
+    logCaughtError: (error) =>{
+         console.log(error);
+        request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/notifyAdmin`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'message': JSON.stringify(error)
+            }
+        }).catch(err => {
+            console.log(err);
+            bakupEmailService.notifyAdmin(err);
+        });
+
+        return JSON.parse(response.body);
     }
 };

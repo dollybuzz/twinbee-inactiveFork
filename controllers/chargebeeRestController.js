@@ -1,11 +1,53 @@
 const chargebeeService = require('../services/chargebeeService.js');
-const authService = require('../services/authService.js');
-const {notifyAdmin} = require("../services/notificationService");
 const {validateParams} = require("../util.js");
+const {logCaughtError} = require('../util.js');
+const getEmailFromToken = require("../util.js").dereferenceToken;
 
 
 module.exports = {
 
+
+    /**
+     * ENDPOINT: /api/updateMySubscription
+     * Updates a subscription with new values. Note that
+     * the pricePerHour will override defaults. This can be used
+     * to create "custom" subscriptions. Use caution when doing so.
+     * The revised subscription is returned. Looks for values in the body as follows:
+     * {
+     *     "subscriptionId": id of subscription to be modified,
+     *     "planQuantity": new number of hours to use,
+     *     "auth": client's authentication token
+     * }
+     *
+     * @returns subscription{}
+     */
+    updateMySubscription: async function (req, res) {
+        console.log("Attempting to update subscription from  REST by client request: ");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["subscriptionId", "auth"],
+                "positiveDecimalAllowed": ["planQuantity"]
+            },req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let subscriptionOwner = await chargebeeService.getCustomerOfSubscription(req.body.subscriptionId).catch(err => logCaughtError(err));
+            let clientEmail = await getEmailFromToken(req.body.auth).catch(err => logCaughtError(err));
+            let client = await chargebeeService.getCustomerByEmail(clientEmail).catch(err => logCaughtError(err));
+            console.log(client.id);
+            console.log(subscriptionOwner.id);
+            if (client.id === subscriptionOwner.id) {
+                res.send(await chargebeeService.updateSubscriptionForCustomer(req.body.subscriptionId,
+                    req.body.planQuantity).catch(err => logCaughtError(err)));
+            } else
+                res.send(false);
+        }
+    },
+    
+    
     /**
      * ENDPOINT: /api/getAllPlans
      * Retrieves all plans from the {TEST} environment as chargebee entries.
@@ -32,10 +74,7 @@ module.exports = {
     getAllPlans: async function (req, res) {
         console.log("Attempting to get all plans from REST: ");
         console.log(req.body);
-        let plans = await chargebeeService.getAllPlans().catch(err => {
-            console.log(err);
-            notifyAdmin(err);
-        });
+        let plans = await chargebeeService.getAllPlans().catch(err => logCaughtError(err));
         res.send(plans);
     },
 
@@ -62,13 +101,10 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await chargebeeService.createPlan(req.body.planId, req.body.invoiceName,
-                req.body.pricePerHour, req.body.planDescription).catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            }));
+                req.body.pricePerHour, req.body.planDescription).catch(err => logCaughtError(err)));
         }
     },
 
@@ -97,13 +133,10 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let planActual = await chargebeeService.retrievePlan(req.body.planId)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             res.send({plan: planActual});
         }
     },
@@ -134,7 +167,7 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             chargebeeService.updatePlan(req.body.planId, req.body.planId,
                 req.body.planInvoiceName, req.body.planPrice);
@@ -164,7 +197,7 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             chargebeeService.deletePlan(req.body.planId);
             res.send({status: "delete request processed"});
@@ -199,10 +232,7 @@ module.exports = {
         console.log("Attempting to get all subscriptions from REST: ");
         console.log(req.body);
         let subscriptions = await chargebeeService.getAllSubscriptions()
-            .catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            });
+            .catch(err => logCaughtError(err));
         res.send(subscriptions);
     },
 
@@ -235,14 +265,11 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let sub = await chargebeeService.createSubscription(req.body.planId, req.body.customerId,
                 req.body.planQuantity, req.body.startDate)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             res.send(sub);
         }
     },
@@ -275,24 +302,15 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            let email = await authService.getEmailFromToken(req.body.token)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+            let email = await getEmailFromToken(req.body.token)
+                .catch(err => logCaughtError(err));
             let customer = await chargebeeService.getCustomerByEmail(email)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             console.log(customer);
             let subscription = await chargebeeService.getPlanPriceForCustomer(customer.id, req.body.planId)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             res.send(subscription);
         }
     },
@@ -323,13 +341,10 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let subscription = await chargebeeService.retrieveSubscription(req.body.subscriptionId)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             res.send(subscription);
         }
     },
@@ -360,13 +375,10 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             res.send(subscription);
         }
     },
@@ -397,13 +409,10 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let subscription = await chargebeeService.cancelScheduledChanges(req.body.subscriptionId)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             res.send(subscription);
         }
     },
@@ -438,14 +447,11 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let subscription = await chargebeeService.updateSubscription(req.body.subscriptionId, req.body.planId,
                 req.body.planQuantity, req.body.pricePerHour)
-                .catch(err => {
-                    console.log(err);
-                    notifyAdmin(err);
-                });
+                .catch(err => logCaughtError(err));
             res.send(subscription);
         }
     },
@@ -473,7 +479,7 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             chargebeeService.cancelSubscription(req.body.subscriptionId);
             res.send({status: `subscription cancellation request sent for subscription: ${req.body.subscriptionId}`});
@@ -510,12 +516,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId).catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            });
+            chargebeeService.chargeCustomerNow(req.body.planId, req.body.numHours, req.body.customerId).catch(err => logCaughtError(err));
             res.send({});
         }
     },
@@ -559,12 +562,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await chargebeeService.getSubscriptionsByClient(req.body.id).catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            }));
+            res.send(await chargebeeService.getSubscriptionsByClient(req.body.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -595,12 +595,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            }));
+            res.send(await chargebeeService.pauseSubscription(req.body.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -631,12 +628,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            }));
+            res.send(await chargebeeService.resumePausedSubscription(req.body.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -669,12 +663,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await chargebeeService.doesCustomerHaveInvoices(req.body.clientId).catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            }));
+            res.send(await chargebeeService.doesCustomerHaveInvoices(req.body.clientId).catch(err => logCaughtError(err)));
         }
     },
 
@@ -705,12 +696,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await chargebeeService.getInvoicesForCustomer(req.body.clientId).catch(err => {
-                console.log(err);
-                notifyAdmin(err);
-            }));
+            res.send(await chargebeeService.getInvoicesForCustomer(req.body.clientId).catch(err => logCaughtError(err)));
         }
     },
 
@@ -729,9 +717,6 @@ module.exports = {
     getAllTransactions: async function (req, res) {
         console.log(`Attempting to retrieve all transactions from REST`);
         console.log(req.body);
-        res.send(await chargebeeService.getAllTransactions().catch(err => {
-            console.log(err);
-            notifyAdmin(err);
-        }));
+        res.send(await chargebeeService.getAllTransactions().catch(err => logCaughtError(err)));
     }
 };

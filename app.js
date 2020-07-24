@@ -13,6 +13,7 @@ const chargebeeRestController = require('./controllers/chargebeeRestController.j
 const timeReportingRestController = require('./controllers/timeReportingRestController.js');
 const authController = require('./controllers/authController.js');
 const notificationRestController = require('./controllers/notificationRestController.js');
+const authRestController = require('./controllers/authRestController.js');
 const app = express();
 const bodyParser = require('body-parser');
 const makerService = require('./services/MakerService.js');
@@ -339,7 +340,7 @@ app.post("/api/getMyTimeBucket",
     clientRestController.getMyTimeBucket);
 app.post("/api/updateMySubscription",
     authController.authorizeClient,
-    clientRestController.updateMySubscription);
+    chargebeeRestController.updateMySubscription);
 app.post("/api/getMyMakers",
     authController.authorizeClient,
     clientRestController.getMyMakers);
@@ -367,10 +368,15 @@ app.post("/api/doIHaveInvoices",
     authController.authorizeClient,
     authController.authorizeMaster,
     clientRestController.doIHaveInvoices);
-app.post("/api/notifyAdmin", 
+app.post("/api/technicalHelp",
     authController.authorizeAdmin,
+    authController.authorizeClient,
+    authController.authorizeMaker,
     authController.authorizeMaster,
     notificationRestController.restBugReport);
+app.post("/api/notifyAdmin",
+    authController.authorizeMaster,
+    notificationRestController.notifyAdmin);
 app.post("/api/getMakerTimeReport",
     authController.authorizeMaker,
     authController.authorizeMaster,
@@ -390,6 +396,9 @@ app.post("/api/makerOnTheGo",
 app.post("/api/retrieveBucketRate",
     authController.authorizeClient,
     chargebeeRestController.retrieveBucketRate);
+app.post("/api/dereferenceToken",
+    authController.authorizeMaster,
+    authRestController.getEmailFromToken);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

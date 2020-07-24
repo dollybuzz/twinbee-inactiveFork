@@ -1,5 +1,5 @@
 const timeSheetService = require('../services/timeSheetService.js');
-const {notifyAdmin} = require("../services/notificationService");
+const {logCaughtError} = require('../util.js');
 const {validateParams} = require("../util.js");
 
 module.exports = {
@@ -29,10 +29,7 @@ module.exports = {
      */
     getAllTimeSheets: async (req, res) => {
         console.log("Attempting to get all timesheets from REST");
-        let timeSheets = await timeSheetService.getAllTimeSheets().catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString())
-        });
+        let timeSheets = await timeSheetService.getAllTimeSheets().catch(err => logCaughtError(err));
         res.send(timeSheets);
     },
 
@@ -65,13 +62,10 @@ module.exports = {
         let validationResult = await validateParams({"present": ["id"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let id = req.body.id;
-            let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString())
-            });
+            let clientTimeSheets = await timeSheetService.getSheetsByClient(id).catch(err => logCaughtError(err));
             res.send(clientTimeSheets);
         }
     },
@@ -104,17 +98,11 @@ module.exports = {
         let validationResult = await validateParams({"present": ["id"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let id = req.body.id;
-            let sheet = await timeSheetService.getTimeSheet(id).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString())
-            });
-            console.log(await timeSheetService.getTimeSheet(id).catch(err => {
-                    console.log(err);
-                    notifyAdmin(err.toString())
-                })
+            let sheet = await timeSheetService.getTimeSheet(id).catch(err => logCaughtError(err));
+            console.log(await timeSheetService.getTimeSheet(id).catch(err => logCaughtError(err))
             );
             res.send(sheet);
         }
@@ -149,13 +137,10 @@ module.exports = {
         let validationResult = await validateParams({"present": ["id"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let id = req.body.id;
-            let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString())
-            });
+            let makerTimeSheet = await timeSheetService.getSheetsByMaker(id).catch(err => logCaughtError(err));
             res.send(makerTimeSheet);
         }
     },
@@ -181,7 +166,7 @@ module.exports = {
         let validationResult = await validateParams({"present": ["id", "planId", "timeIn", "timeOut"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             timeSheetService.updateTimesheet(req.body.id, req.body.planId,
                 req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail);
@@ -204,7 +189,7 @@ module.exports = {
         let validationResult = await validateParams({"present": ["id", "detail"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             timeSheetService.clearTimeSheet(req.body.id, req.body.detail);
             res.send({});
@@ -236,13 +221,10 @@ module.exports = {
         let validationResult = await validateParams({"present": ["makerId", "planId", "clientId", "timeIn", "timeOut", "relationshipId"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let createdSheet = await timeSheetService.createTimeSheet(req.body.makerId, req.body.planId, req.body.clientId,
-                req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail, req.body.relationshipId).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString())
-            });
+                req.body.timeIn, req.body.timeOut, req.body.task, req.body.detail, req.body.relationshipId).catch(err => logCaughtError(err));
             if (!createdSheet.id) {
                 res.send(undefined);
             }
@@ -267,13 +249,10 @@ module.exports = {
         let validationResult = await validateParams({"present": ["auth", "relationshipId"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await timeSheetService.clockIn(req.body.auth, req.body.task,
-                req.body.relationshipId).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+                req.body.relationshipId).catch(err => logCaughtError(err)));
         }
     },
 
@@ -297,12 +276,9 @@ module.exports = {
         let validationResult = await validateParams({"present": ["auth"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await timeSheetService.clockOut(req.body.auth, req.body.newTask).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            res.send(await timeSheetService.clockOut(req.body.auth, req.body.newTask).catch(err => logCaughtError(err)));
         }
     },
 
@@ -324,12 +300,9 @@ module.exports = {
         let validationResult = await validateParams({"present": ["auth", "makerId"]}, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await timeSheetService.getLastOnlineSheet(req.body.makerId).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            res.send(await timeSheetService.getLastOnlineSheet(req.body.makerId).catch(err => logCaughtError(err)));
         }
     },
 
@@ -367,7 +340,7 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await timeSheetService.makerOnTheGo(req.body.token, req.body.relationshipId, req.body.minutes, req.body.task));
         }
@@ -406,7 +379,7 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await timeSheetService.logOnTheGo(req.body.relationshipId, req.body.minutes, req.body.task));
         }

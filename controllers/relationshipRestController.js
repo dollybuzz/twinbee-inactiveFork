@@ -1,5 +1,5 @@
 const relationshipService = require('../services/relationshipService');
-const {notifyAdmin} = require("../services/notificationService");
+const {logCaughtError} = require('../util.js');
 const {validateParams} = require("../util.js");
 
 module.exports = {
@@ -46,13 +46,10 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             res.send(await relationshipService.createRelationship(req.body.makerId,
-                req.body.clientId, req.body.planId, req.body.occupation, req.body.hourlyRate).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+                req.body.clientId, req.body.planId, req.body.occupation, req.body.hourlyRate).catch(err => logCaughtError(err)));
         }
     },
 
@@ -93,12 +90,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await relationshipService.getRelationshipsByMakerId(req.body.id).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            res.send(await relationshipService.getRelationshipsByMakerId(req.body.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -139,12 +133,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await relationshipService.getRelationshipsByClientId(req.body.id).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            res.send(await relationshipService.getRelationshipsByClientId(req.body.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -184,12 +175,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await relationshipService.getRelationshipById(req.body.id).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            res.send(await relationshipService.getRelationshipById(req.body.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -226,10 +214,7 @@ module.exports = {
     getAllRelationships: async (req, res) =>{
         console.log("Attempting to get all relationships from REST");
         console.log(req.body);
-        res.send(await relationshipService.getAllRelationships().catch(err => {
-            console.log(err);
-            notifyAdmin(err.toString());
-        }));
+        res.send(await relationshipService.getAllRelationships().catch(err => logCaughtError(err)));
     },
 
     /**
@@ -259,12 +244,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await relationshipService.deleteRelationship(req.body.id).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            res.send(await relationshipService.deleteRelationship(req.body.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -306,12 +288,9 @@ module.exports = {
             }, req.body);
         if (!validationResult.isValid) {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
-            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId).catch(err => {
-                console.log(err);
-                notifyAdmin(err.toString());
-            }));
+            res.send(await relationshipService.updateRelationship(req.body.id, req.body.planId, req.body.occupation, req.body.makerId).catch(err => logCaughtError(err)));
         }
     },
 };
