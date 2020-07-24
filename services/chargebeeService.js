@@ -177,7 +177,7 @@ class ChargebeeService {
      *     subscription: {subscription data},
      *     customer: {customer to whom the subscription belongs}
      * }
-     * @returns {Promise<entry>}
+     * @returns {Promise<[]>}
      */
     async getAllSubscriptions() {
         console.log("Getting all subscriptions...");
@@ -189,7 +189,13 @@ class ChargebeeService {
             console.log(error);
             notifyAdmin(error)
         });
-        let list = listObject.list;
+
+        let list = [];
+        for (let item of listObject.list){
+            if (item.subscription.status === "active" || item.subscription.current_term_start){
+                list.push(item);
+            }
+        }
         while (listObject.next_offset) {
             listObject = await chargebee.subscription.list({
                 limit: 100,
@@ -200,8 +206,10 @@ class ChargebeeService {
                 console.log(error);
                 notifyAdmin(error)
             });
-            for (var item of listObject.list) {
-                list.push(item);
+            for (let item of listObject.list) {
+                if (item.subscription.status === "active" || item.subscription.current_term_start){
+                    list.push(item);
+                }
             }
         }
         return list;
