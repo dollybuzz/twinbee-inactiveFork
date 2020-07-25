@@ -478,8 +478,31 @@ function subscriptionFunctionality(res) {
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>$' + (subscription.plan_quantity * (subscription.plan_unit_price)/100).toFixed(2) + '</td>' +
+                '   <td><span id="subscriptionPrice"></td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
+        }
+        //Get new plan quantity to update subscription Price on table
+        if(subscription.has_scheduled_changes) {
+            $.ajax({
+                url: "/api/getMySubscriptionChanges",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    token: id_token,
+                    subscriptionId: subscription.id
+                },
+                dataType: "json",
+                success: function (retres, retstatus) {
+                    $("#subscriptionPrice").html(`$${(subscription.plan_quantity * subscription.plan_amount/100).toFixed(2)}`);
+                },
+                error: function (retres, retstatus) {
+                    $("#userMainContent").html("Could not calculate next charge for changed subscription!");
+                }
+            });
+        }
+        else
+        {
+            $("#subscriptionPrice").html(`$${(subscription.plan_quantity * subscription.plan_amount/100).toFixed(2)}`);
         }
     });
     $("#subscriptionTable").append('\n</tbody>');
