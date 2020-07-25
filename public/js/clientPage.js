@@ -472,7 +472,7 @@ function subscriptionFunctionality(res) {
             (scheduled ? changes = "Yes" : changes = "No");
 
             //Get new plan quantity to update subscription Price on table
-            if (scheduled && subscription.next_billing_at != undefined) {
+            if (scheduled) {
                 $.ajax({
                     url: "/api/getMySubscriptionChanges",
                     method: "post",
@@ -483,14 +483,17 @@ function subscriptionFunctionality(res) {
                     },
                     dataType: "json",
                     success: function (changeres, changestatus) {
-                        subPrice = `$${(changeres.plan_quantity * changeres.plan_amount / 100).toFixed(2)}`;
+                        console.log(changeres);
+                        subPrice = `$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`;
                     },
                     error: function (changeres, changestatus) {
                         $("#userMainContent").html("Could not calculate next charge for changed subscription!");
                     }
                 });
-            } else {
-                subPrice = `$${(subscription.plan_quantity * subscription.plan_amount / 100).toFixed(2)}`;
+            } else if (subscription.status != "cancelled") {
+                console.log(subscription.plan_quantity);
+                console.log(subscription.plan_amount)
+                subPrice = `$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}`;
             }
 
             $("#subscriptionTable").append('\n' +
@@ -640,7 +643,7 @@ function subscriptionModForm(res, status) {
                         dataType: "json",
                         success: function (undores, undostatus) {
                             $("#cancelChange").html("");
-                            $("#cancelChange").append("<h5>Successfully canceled change request!</h5>");
+                            $("#cancelChange").append("<h5>Successfully cancelled change request!</h5>");
                             setTimeout(function () {
                                 showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
                             }, 1000);
