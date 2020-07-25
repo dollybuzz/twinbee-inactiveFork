@@ -68,7 +68,7 @@ exports.sendAWS = (toEmail, subject, content) => {
  * @param content   - content
  */
 exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject) => {
-    if (process.env.TWINBEE_LIVE) {
+    if (true) {
     console.log(`Sending an email to ${toEmail} with subject ${subject}`);
     exports.sendAWS(toEmail, subject, content);
     } else {
@@ -85,7 +85,7 @@ exports.sendEmail = (toEmail, subject, content) => new Promise((resolve, reject)
  * @param toEmail   - email to send to
  */
 exports.sendClientWelcome = toEmail => new Promise((resolve, reject) => {
-    if (process.env.TWINBEE_LIVE) {
+    if (true) {
         let subject = "Welcome to Freedom Makers!";
         let content = `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
 <header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
@@ -132,7 +132,7 @@ exports.sendClientWelcome = toEmail => new Promise((resolve, reject) => {
  * @param toEmail   - email to send to
  */
 exports.sendMakerWelcome = toEmail => new Promise((resolve, reject) => {
-    if (process.env.TWINBEE_LIVE) {
+    if (true) {
     let subject = "Welcome to Freedom Makers!";
     let content = `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
 <header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
