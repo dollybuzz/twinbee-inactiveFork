@@ -492,10 +492,10 @@ function subscriptionFunctionality(res) {
                     subscriptionId: subscription.id
                 },
                 dataType: "json",
-                success: function (retres, retstatus) {
-                    $("#subscriptionPrice").html(`$${(subscription.plan_quantity * subscription.plan_amount/100).toFixed(2)}`);
+                success: function (changeres, changestatus) {
+                    $("#subscriptionPrice").html(`$${(changeres.subscription.plan_quantity * changeres.subscription.plan_amount/100).toFixed(2)}`);
                 },
-                error: function (retres, retstatus) {
+                error: function (changeres, changestatus) {
                     $("#userMainContent").html("Could not calculate next charge for changed subscription!");
                 }
             });
