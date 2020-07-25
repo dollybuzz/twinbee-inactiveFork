@@ -365,7 +365,8 @@ function buyForm() {
                     let timeInMinutes = numHours * 60 + numMin;
                     let planSelect = $("#buyPlan").val();
 
-                    $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) and ${$("#buyMin").val()} minute(s) for your plan ${$("#buyPlan").val()}?</h5>`);
+                    $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) and ${$("#buyMin").val()} minute(s) for your plan ${$("#buyPlan").val()}?</h5><br>` +
+                    `<h6>You will be immediately charged $${(timeInMinutes * (Math.floor(parseFloat(planres.price))/100)).toFixed(2)} upon successful purchase.</h6>`);
                     $("#optionsClient").append("<div id='selectionYorN'></div>");
                     $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
                     $("#selectionYorN").append("<button id='YesBuy' type='button' class='btn btn-default'>Yes</button>");
