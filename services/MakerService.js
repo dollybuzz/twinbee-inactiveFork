@@ -9,7 +9,7 @@ class MakerService {
     };
 
     /**
-     * Retrives a list of all makers.
+     * Retrieves a list of all makers.
      *
      * @returns {Promise<[Maker]>}
      */
