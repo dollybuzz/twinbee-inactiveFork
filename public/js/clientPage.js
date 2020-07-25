@@ -471,16 +471,6 @@ function subscriptionFunctionality(res) {
             let subPrice = "";
             (scheduled ? changes = "Yes" : changes = "No");
 
-            $("#subscriptionTable").append('\n' +
-                '<tr class="subscriptionRow">' +
-                '   <td>' + subscription.id + '</td>' +
-                '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + subscription.plan_quantity + '</td>' +
-                '   <td>' + changes + '</td>' +
-                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + subPrice + '</td>' +
-                '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             //Get new plan quantity to update subscription Price on table
             if (scheduled && subscription.next_billing_at != undefined) {
                 $.ajax({
@@ -502,6 +492,17 @@ function subscriptionFunctionality(res) {
             } else {
                 subPrice = `$${(subscription.plan_quantity * subscription.plan_amount / 100).toFixed(2)}`;
             }
+
+            $("#subscriptionTable").append('\n' +
+                '<tr class="subscriptionRow">' +
+                '   <td>' + subscription.id + '</td>' +
+                '   <td>' + subscription.plan_id + '</td>' +
+                '   <td>' + subscription.plan_quantity + '</td>' +
+                '   <td>' + changes + '</td>' +
+                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
+                `   <td>` + subPrice + `</td>` +
+                '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
     });
     $("#subscriptionTable").append('\n</tbody>');
