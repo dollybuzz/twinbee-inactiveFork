@@ -85,7 +85,7 @@ module.exports = {
 
         let validationResult = await validateParams(
             {
-                "present": ["customerEmail", "auth"],
+                "present": ["clientEmail", "auth"],
                 "positiveIntegerOnly": [],
                 "noSpaces": [],
                 "positiveDecimalAllowed": [],
