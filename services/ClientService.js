@@ -2,7 +2,6 @@ const clientRepo = require('../repositories/clientRepo.js');
 const eventRepo = require('../repositories/eventRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
-const emailService = require('./notificationService.js');
 const chargebee = require("chargebee");
 const {logCaughtError} = require('../util.js');
 chargebee.configure({
@@ -23,41 +22,19 @@ let updateClient = (customerId, keyValuePairs) => {
     });
 };
 
+
 let notifyClientOutOfCredits = email => {
-    emailService.sendEmail(
-        email, "Freedom Makers - Out of credits!",
-        `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
-<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
-
-    <div id="landingContainer"
-         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
-        <div id="intentionallyEmpty"></div>
-        <div id="landingLogo" style="width: inherit;padding: 15px;">
-            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
-        </div>
-    </div>
-    <div id="pageTitle"
-         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
-        <h2 style="color: #dbb459;">Freedom Makers</h2>
-    </div>
-</header>
-<div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
-                                <h3>You're out of credits!</h3>
-                                <h4>Please <a href="https://www.freedom-makers-hours.com">log in</a> to pay any overdue fees and refill your credits as needed!</h4>
-<br>
-
-</div>
-<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
-    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
-    <div class="copyright">
-        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
-    </div>
-</div>
-</body>`)
+    request({
+        method: 'POST',
+        uri: `${process.env.TWINBEE_URL}/api/notifyClientOutOfCredits`,
+        form: {
+            'auth': process.env.TWINBEE_MASTER_AUTH,
+            'email': email
+        }
+    }).catch(err => logCaughtError(err));
 };
 
 
-//TODO: Add validation
 /**
  * Service that works with chargebee's customer objects
  *
@@ -79,47 +56,31 @@ class ClientService {
         }
     };
 
+
     /**
      * Sends an email alert to the Freedom Makers admin
      * with details of a customer and paymentSource.
-     * To be called on "payment source added" event.
+     * To be called on "payment source added" webhook event.
      *
-     * @param customerPaymentCombo - object containing a chargebee customer and payment_source
      * @returns {Promise<>}
+     * @param webhookData   - chargebee webhook data
      */
     async paymentSourceAdded(webhookData) {
         let customerPaymentCombo = webhookData.content;
         let customerName = `${customerPaymentCombo.customer.first_name} ${customerPaymentCombo.customer.last_name}`;
         let paymentType = customerPaymentCombo.payment_source.type;
-        await emailService.emailFMAdmin("Payment source added!",
-            `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
-<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
 
-    <div id="landingContainer"
-         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
-        <div id="intentionallyEmpty"></div>
-        <div id="landingLogo" style="width: inherit;padding: 15px;">
-            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
-        </div>
-    </div>
-    <div id="pageTitle"
-         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
-        <h2 style="color: #dbb459;">Freedom Makers</h2>
-    </div>
-</header>
-<div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
-                                <h4>${customerName} added a new ${paymentType} for payments!</h4>
-<br>
+        request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/notifyFMAdminPaymentSourceAdded`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'customerName': customerName,
+                'paymentType': paymentType
+            }
+        }).catch(err => logCaughtError(err));
 
-</div>
-<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
-    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
-    <div class="copyright">
-        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
-    </div>
-</div>
-</body>`).catch(e => logCaughtError(e));
-        return "Successfully notified admin";
+        return "Requested admin notification";
     }
 
     /**
@@ -209,8 +170,7 @@ class ClientService {
             clientRepo.updateClient(clientId, newFirstName, newLastName, newEmail, newPhone, company);
         } else {
             let err = `Error updating client: \n${clientId}\n${newFirstName}\n${newLastName}\n${newEmail}\n${newPhone}\n${company}`;
-            console.log(err);
-            emailService.notifyAdmin(err);
+            logCaughtError(err);
         }
     }
 
