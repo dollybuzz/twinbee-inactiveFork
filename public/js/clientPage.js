@@ -478,7 +478,7 @@ function subscriptionFunctionality(res) {
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                `   <td> $${((subscription.plan_quantity*subscription.plan_unit_price)/100).toFixed(2)} </td>` +
+                '   <td>$' + (subscription.plan_quantity * (subscription.plan_unit_price)/100).toFixed(2) + '</td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
     });
