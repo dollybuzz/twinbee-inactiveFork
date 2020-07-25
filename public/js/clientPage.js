@@ -235,7 +235,6 @@ function timeBucketFunctionality(res) {
         let hours = (Number.parseInt(res.buckets[plan]) / 60);
         let minutes = (Number.parseInt(res.buckets[plan])) % 60;
         let message = "";
-        let message = "";
         if (hours >= 0) {
             message += ` ${Math.floor(hours)} hours `;
         }
