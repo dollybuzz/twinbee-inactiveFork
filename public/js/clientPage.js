@@ -480,29 +480,27 @@ function subscriptionFunctionality(res) {
                 '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td><span id="subscriptionPrice"></td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
-        }
-        //Get new plan quantity to update subscription Price on table
-        if(subscription.has_scheduled_changes) {
-            $.ajax({
-                url: "/api/getMySubscriptionChanges",
-                method: "post",
-                data: {
-                    auth: id_token,
-                    token: id_token,
-                    subscriptionId: subscription.id
-                },
-                dataType: "json",
-                success: function (changeres, changestatus) {
-                    $("#subscriptionPrice").html(`$${(changeres.plan_quantity * changeres.plan_amount/100).toFixed(2)}`);
-                },
-                error: function (changeres, changestatus) {
-                    $("#userMainContent").html("Could not calculate next charge for changed subscription!");
-                }
-            });
-        }
-        else
-        {
-            $("#subscriptionPrice").html(`$${(subscription.plan_quantity * subscription.plan_amount/100).toFixed(2)}`);
+            //Get new plan quantity to update subscription Price on table
+            if (scheduled) {
+                $.ajax({
+                    url: "/api/getMySubscriptionChanges",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        token: id_token,
+                        subscriptionId: subscription.id
+                    },
+                    dataType: "json",
+                    success: function (changeres, changestatus) {
+                        $("#subscriptionPrice").html(`$${(changeres.plan_quantity * changeres.plan_amount / 100).toFixed(2)}`);
+                    },
+                    error: function (changeres, changestatus) {
+                        $("#userMainContent").html("Could not calculate next charge for changed subscription!");
+                    }
+                });
+            } else {
+                $("#subscriptionPrice").html(`$${(subscription.plan_quantity * subscription.plan_amount / 100).toFixed(2)}`);
+            }
         }
     });
     $("#subscriptionTable").append('\n</tbody>');
