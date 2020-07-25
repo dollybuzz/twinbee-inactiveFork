@@ -335,7 +335,7 @@ function setClockInFunctionality() {
                             $("#makerText2").css("opacity", "0");
                             $("#otgButton").css("visibility", "hidden");
                             $("#workingMessage").show();
-                            $("#workingMessage").html(`You are currently working for ${clockRes.clientName}.`);
+                            $("#workingMessage").html(`You are currently working for ${clockres.clientName}.`);
                             $("#workingMessage").css("opacity", "1");
                             $("#workingMessage").css("visibility", "visible");
                         }, 1000);
