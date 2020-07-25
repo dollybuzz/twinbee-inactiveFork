@@ -468,6 +468,7 @@ function subscriptionFunctionality(res) {
         if (item && !subscription.deleted) {
             let scheduled = subscription.has_scheduled_changes;
             let changes = "";
+            let subPrice = "";
             (scheduled ? changes = "Yes" : changes = "No");
 
             $("#subscriptionTable").append('\n' +
@@ -475,13 +476,13 @@ function subscriptionFunctionality(res) {
                 '   <td>' + subscription.id + '</td>' +
                 '   <td>' + subscription.plan_id + '</td>' +
                 '   <td>' + subscription.plan_quantity + '</td>' +
-                "   <td>" + changes + "</td>" +
+                '   <td>' + changes + '</td>' +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td><span id="subscriptionPrice"></td>' +
+                '   <td>' + subPrice + '</td>' +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             //Get new plan quantity to update subscription Price on table
-            if (scheduled) {
+            if (scheduled && subscription.next_billing_at != undefined) {
                 $.ajax({
                     url: "/api/getMySubscriptionChanges",
                     method: "post",
@@ -492,14 +493,14 @@ function subscriptionFunctionality(res) {
                     },
                     dataType: "json",
                     success: function (changeres, changestatus) {
-                        $("#subscriptionPrice").html(`$${(changeres.plan_quantity * changeres.plan_amount / 100).toFixed(2)}`);
+                        subPrice = `$${(changeres.plan_quantity * changeres.plan_amount / 100).toFixed(2)}`;
                     },
                     error: function (changeres, changestatus) {
                         $("#userMainContent").html("Could not calculate next charge for changed subscription!");
                     }
                 });
             } else {
-                $("#subscriptionPrice").html(`$${(subscription.plan_quantity * subscription.plan_amount / 100).toFixed(2)}`);
+                subPrice = `$${(subscription.plan_quantity * subscription.plan_amount / 100).toFixed(2)}`;
             }
         }
     });
