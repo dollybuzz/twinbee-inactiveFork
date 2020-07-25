@@ -1,26 +1,22 @@
-
+const {logCaughtError} = require('../util.js');
 const makerRepo = require('../repositories/makerRepo.js');
 const util = require('util');
 const request = util.promisify(require('request'));
 const Maker = require('../domain/entity/maker.js');
-const emailService = require('./notificationService.js');
 
 class MakerService {
     constructor() {
     };
 
     /**
-     * Retrives a list of all makers.
+     * Retrieves a list of all makers.
      *
      * @returns {Promise<[Maker]>}
      */
     async getAllMakers() {
         console.log("Getting all makers...");
         let makers = [];
-        let repoResult = await makerRepo.getAllMakers().catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let repoResult = await makerRepo.getAllMakers().catch(err => logCaughtError(err));
         repoResult.forEach(item => {
             let newObj = new Maker(item.id, item.first_name, item.last_name, item.email, item.deleted, item.unique_descriptor);
             makers.push(newObj);
@@ -40,16 +36,20 @@ class MakerService {
      */
     async createNewMaker(firstName, lastName, email, unique) {
         console.log("Creating new maker...");
-        await makerRepo.createMaker(firstName, lastName, email, unique).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
-        let id = await makerRepo.getMakerIdByEmail(email).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        await makerRepo.createMaker(firstName, lastName, email, unique).catch(err => logCaughtError(err));
+        let id = await makerRepo.getMakerIdByEmail(email).catch(err => logCaughtError(err));
         console.log(id);
-        emailService.sendMakerWelcome(email);
+
+
+        request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/welcomeMaker`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'makerEmail': email
+            }
+        }).catch(err => logCaughtError(err));
+
         return new Maker(id, firstName, lastName, email, unique);
     }
 
@@ -62,10 +62,7 @@ class MakerService {
     async getOnlineMakers() {
         console.log("Getting online makers...");
         let onliners = [];
-        let retrieved = await makerRepo.getOnlineMakers().catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let retrieved = await makerRepo.getOnlineMakers().catch(err => logCaughtError(err));
         retrieved.forEach(item => {
             let online = new Maker(item.maker_id, item.first_name, item.last_name, item.email, item.unique_descriptor);
             onliners.push(online);
@@ -79,10 +76,7 @@ class MakerService {
      * @returns {Promise<unknown>}
      */
     async getMakerIdByEmail(email) {
-        return await makerRepo.getMakerIdByEmail(email).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        return await makerRepo.getMakerIdByEmail(email).catch(err => logCaughtError(err));
     }
 
     /**
@@ -97,10 +91,7 @@ class MakerService {
      */
     async updateMaker(id, firstName, lastName, email, unique) {
         console.log(`Updating maker ${id}...`);
-        await makerRepo.updateMaker(id, firstName, lastName, email, unique).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        await makerRepo.updateMaker(id, firstName, lastName, email, unique).catch(err => logCaughtError(err));
         return this.getMakerById(id);
     }
 
@@ -110,10 +101,7 @@ class MakerService {
      */
     async deleteMaker(id) {
         console.log(`Deleting maker ${id}...`);
-        await this.deleteAllRelationships(id).catch(err=>{
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });;
+        await this.deleteAllRelationships(id).catch(err => logCaughtError(err));
         makerRepo.deleteMaker(id);
     }
 
@@ -131,10 +119,7 @@ class MakerService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let relationshipList = JSON.parse(result.body);
         let newRelationshipList = [];
@@ -144,17 +129,16 @@ class MakerService {
             }
         }
         relationshipList = newRelationshipList;
+
         let clients = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
         clients = JSON.parse(clients.body);
+
         let clientMap = {};
 
         for (var entry of clients) {
@@ -184,7 +168,7 @@ class MakerService {
      */
     async deleteAllRelationships(maker) {
         console.log(`Attempting to delete relationships for ${maker}`);
-        let relationshipList = await this.getRelationshipsForMaker(maker);
+        let relationshipList = await this.getRelationshipsForMaker(maker).catch(err => logCaughtError(err));
         console.log(relationshipList);
         for await (var relationship of relationshipList) {
             console.log(relationship);
@@ -219,10 +203,7 @@ class MakerService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id': id
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let sheets = JSON.parse(result.body);
 
@@ -233,10 +214,7 @@ class MakerService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let clients = JSON.parse(result.body);
         let clientMap = {};
@@ -266,11 +244,10 @@ class MakerService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id': relationshipId
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
+
         let relationship = JSON.parse(result.body);
+
         if (relationship.makerId !== makerId) {
             return false;
         }
@@ -282,10 +259,8 @@ class MakerService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'relationshipObj': relationship
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
+
         let client = JSON.parse(result.body);
         relationship.clientName = client.name;
         return relationship;
@@ -300,15 +275,15 @@ class MakerService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id': relationshipId
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
         let body = JSON.parse(result.body);
+
         if (body.makerId !== makerId) {
             return false;
         }
+
         let occupation = body.occupation;
+
         result = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeBucket`,
@@ -317,10 +292,8 @@ class MakerService {
                 'id': body.clientId,
                 'planId': body.planId
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
+
         body = JSON.parse(result.body);
         body.occupation = occupation;
         return body;
@@ -340,10 +313,7 @@ class MakerService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let clients = JSON.parse(result.body);
 
@@ -353,10 +323,8 @@ class MakerService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
+
         let relationships = JSON.parse(result.body);
         let clientMap = {};
         let alreadyOnList = {};
@@ -395,10 +363,7 @@ class MakerService {
      */
     async getMakerById(id) {
         console.log(`Getting maker data for maker ${id}`);
-        let result = await makerRepo.getMakerById(id).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        let result = await makerRepo.getMakerById(id).catch(err => logCaughtError(err));
 
         if (result[0]) {
             let maker = result[0];
@@ -418,10 +383,8 @@ class MakerService {
         if (!id){
             let message = "id wasn't valid";
             let tracer = new Error();
-            console.log(tracer.stack);
-            console.log(message);
-            emailService.notifyAdmin(message);
-            emailService.notifyAdmin(tracer.stack);
+            logCaughtError(tracer.stack);
+            logCaughtError(message);
         }
         console.log(`Getting online time sheet for maker ${id}`);
         let result = await request({
@@ -431,17 +394,14 @@ class MakerService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'makerId': id
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
+
         let timeSheet;
         try {
             timeSheet = JSON.parse(result.body);
         }
         catch (e) {
-            console.log(e);
-            emailService.notifyAdmin(e);
+            logCaughtError(e);
             return false;
         }
         return timeSheet;
@@ -467,10 +427,7 @@ class MakerService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'makerId': id
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let timeSheet = JSON.parse(result.body);
 

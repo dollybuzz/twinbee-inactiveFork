@@ -85,7 +85,7 @@ module.exports = {
 
         let validationResult = await validateParams(
             {
-                "present": ["customerEmail", "auth"],
+                "present": ["clientEmail", "auth"],
                 "positiveIntegerOnly": [],
                 "noSpaces": [],
                 "positiveDecimalAllowed": [],
@@ -127,6 +127,69 @@ module.exports = {
             notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             notificationService.sendMakerWelcome(req.body.makerEmail);
+            res.send({status: "Request Sent"});
+        }
+    },
+
+
+    /**
+     * ENDPOINT: /api/notifyClientOutOfCredits
+     * Notifies client that they are out of credits:
+     * {
+     *     "auth": authentication credentials; either master or token,
+     *     "email": email of client to be notified
+     * }
+     * @returns {Promise<[{},...]>}
+     */
+    notifyClientOutOfCredits: async (req, res) =>{
+        console.log("Notifying app admin of client purchase via rest!");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["email", "auth"],
+                "positiveIntegerOnly": [],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            notificationService.notifyClientOutOfCredits(req.body.email);
+            res.send({status: "Request Sent"});
+        }
+    },
+
+
+    /**
+     * ENDPOINT: /api/notifyFMAdminPaymentSourceAdded
+     * Notifies admin that a payment source has been added:
+     * {
+     *     "auth": authentication credentials; either master or token,
+     *     "customerName": name of customer that added a payment source,
+     *     "paymentType": type of payment added
+     * }
+     * @returns {Promise<[{},...]>}
+     */
+    notifyFMAdminPaymentSourceAdded: async (req, res) =>{
+        console.log("Notifying app admin of client purchase via rest!");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["customerName","paymentType", "auth"],
+                "positiveIntegerOnly": [],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            notificationService.notifyFMAdminPaymentSourceAdded(req.body.customerName, req.body.paymentType);
             res.send({status: "Request Sent"});
         }
     },

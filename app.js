@@ -408,6 +408,12 @@ app.post("/api/welcomeMaker",
 app.post("/api/notifyAdminClientUpdate",
     authController.authorizeMaster,
     notificationRestController.notifyAdminClientUpdate);
+app.post("/api/notifyClientOutOfCredits",
+    authController.authorizeMaster,
+    notificationRestController.notifyClientOutOfCredits);
+app.post("/api/notifyFMAdminPaymentSourceAdded",
+    authController.authorizeMaster,
+    notificationRestController.notifyFMAdminPaymentSourceAdded);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

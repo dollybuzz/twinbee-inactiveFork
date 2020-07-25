@@ -1,40 +1,38 @@
 const moment = require('moment');
 const util = require('util');
 const request = util.promisify(require('request'));
-const emailService = require('./notificationService.js');
+const {logCaughtError} = require('../util.js');
 
 class TimeReportingService {
     constructor() {
         this.clientMap = null;
         this.makerMap = null;
-        this.setup().catch(err => catchNotification(err));
+        this.setup().catch(err => logCaughtError(err));
     };
 
     async setup(){
-        this.makerMap = await getMakerMap().catch(err => catchNotification(err));
-        this.clientMap = await getClientMap().catch(err => catchNotification(err));
+        this.makerMap = await getMakerMap().catch(err => logCaughtError(err));
+        this.clientMap = await getClientMap().catch(err => logCaughtError(err));
     }
 
     async validateMaps(clientId, makerId) {
         if (!this.clientMap || !this.makerMap){
-            emailService.notifyAdmin("Maps were bad, trying to recover");
-            await this.setup().catch(err => catchNotification(err));
-            emailService.notifyAdmin(this.clientMap ? "Recovery successful." : "Recovery failed");
+            logCaughtError("Maps were bad, trying to recover");
+            await this.setup().catch(err => logCaughtError(err));
+            logCaughtError(this.clientMap ? "Recovery successful." : "Recovery failed");
         }
         if (!this.clientMap[clientId]) {
             console.log(`Couldn't find client ${clientId}. Double checking reporting service client map!`);
             this.clientMap = await getClientMap().catch(err=>{
-                console.log(err);
-                emailService.notifyAdmin(err);
-                emailService.notifyAdmin("Failed to validate reporting maps.");
+                logCaughtError(err);
+                logCaughtError("Failed to validate reporting maps.");
             });
         }
         if (!this.makerMap[makerId.toString()]) {
             console.log(`Couldn't find maker ${makerId} Double checking reporting service maker map!`);
             this.makerMap = await getMakerMap().catch(err=>{
-                console.log(err);
-                emailService.notifyAdmin(err);
-                emailService.notifyAdmin("Failed to validate reporting maps.");
+                logCaughtError(err);
+                logCaughtError("Failed to validate reporting maps.");
             });
         }
         return true;
@@ -63,7 +61,7 @@ class TimeReportingService {
         if (!clientId) {
             clientId = "";
         }
-        let timePeriod = await this.timePeriodToMoments(start, end);
+        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
         let obj = {
             list: [],
             total: 0
@@ -75,10 +73,7 @@ class TimeReportingService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let entries = JSON.parse(response.body);
 
@@ -112,15 +107,11 @@ class TimeReportingService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'token': token
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(`Failure in getMyTimeReportMaker, contents were: Start: ${start}, End: ${end}, Token: ${token}, Client: ${client}`);
-            emailService.notifyAdmin(err);
-        });
+        }).catch(err => logCaughtError(err));
 
         let {id} = JSON.parse(response.body);
 
-        return await this.getReportForClientMakerPair(start, end, id, client).catch(err => catchNotification(err));
+        return await this.getReportForClientMakerPair(start, end, id, client).catch(err => logCaughtError(err));
     }
 
 
@@ -138,7 +129,7 @@ class TimeReportingService {
         for (var relationship of relationshipList) {
             await this.validateMaps(relationship.clientId, relationship.makerId).catch(error => catchCatastrophe(error));
 
-            let hoursReport = await this.getReportForRelationship(start, end, relationship.id).catch(err => catchNotification(err));
+            let hoursReport = await this.getReportForRelationship(start, end, relationship.id).catch(err => logCaughtError(err));
             let makerName = this.makerMap[relationship.makerId] ? `${this.makerMap[relationship.makerId].firstName} ${this.makerMap[relationship.makerId].lastName}`
                 : `Deleted Maker ${relationship.makerId}`;
             let clientName = this.clientMap[relationship.clientId] ? `${this.clientMap[relationship.clientId].first_name} ${this.clientMap[relationship.clientId].last_name}`
@@ -175,14 +166,11 @@ class TimeReportingService {
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
             }
-        }).catch(err => {
-            console.log(err);
-            emailService.notifyAdmin(err.toString());
-        });
+        }).catch(err => logCaughtError(err));
 
         let relationships = JSON.parse(response.body);
 
-        return await this.getTimeReport(start, end, relationships).catch(err => catchNotification(err));
+        return await this.getTimeReport(start, end, relationships).catch(err => logCaughtError(err));
     }
 
     /**
@@ -214,8 +202,8 @@ class TimeReportingService {
         let totalTime = 0;
         let obj = {};
         let sheets = [];
-        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => catchNotification(err));
-        let timeSheets = await getAllSheets().catch(err => catchNotification(err));
+        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
+        let timeSheets = await getAllSheets().catch(err => logCaughtError(err));
 
         for (var sheet of timeSheets) {
             let makerIdIsGood = makerId === "" || (sheet.makerId && makerId.toString() === sheet.makerId.toString());
@@ -227,7 +215,7 @@ class TimeReportingService {
                 && makerIdIsGood && adminNoteIsGood && relationshipIdIsGood) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
-                    let details = await this.getSheetDetails(sheet).catch(err => catchNotification(err));
+                    let details = await this.getSheetDetails(sheet).catch(err => logCaughtError(err));
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
@@ -266,8 +254,8 @@ class TimeReportingService {
         let totalTime = 0;
         let obj = {};
         let sheets = [];
-        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => catchNotification(err));
-        let timeSheets = await getAllSheets().catch(err => catchNotification(err));
+        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
+        let timeSheets = await getAllSheets().catch(err => logCaughtError(err));
         let response = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
@@ -275,13 +263,14 @@ class TimeReportingService {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
                 'id': relationshipId
             }
-        }).catch(err => catchNotification(err));
+        }).catch(err => logCaughtError(err));
         let relationship = JSON.parse(response.body);
+
         for (var sheet of timeSheets) {
-            if (await sheetIsClosed(sheet) && await sheetRelationshipMatches(sheet, relationshipId)) {
+            if (await sheetIsClosed(sheet).catch(err => logCaughtError(err)) && await sheetRelationshipMatches(sheet, relationshipId).catch(err => logCaughtError(err))) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
-                    let details = await this.getSheetDetails(sheet, endMoment).catch(err => catchNotification(err));
+                    let details = await this.getSheetDetails(sheet, endMoment).catch(err => logCaughtError(err));
                     sheets.push({
                         id: sheet.id,
                         duration: details.duration,
@@ -311,7 +300,7 @@ class TimeReportingService {
         let startMoment = moment(sheet.timeIn);
         let endMoment = moment(sheet.timeOut);
 
-        let duration = await getMinutesBetweenMoments(startMoment, endMoment).catch(err => catchNotification(err));
+        let duration = await getMinutesBetweenMoments(startMoment, endMoment).catch(err => logCaughtError(err));
 
         await this.validateMaps(sheet.clientId, sheet.makerId).catch(error => catchCatastrophe(error));
         let client = this.clientMap[sheet.clientId];
@@ -351,7 +340,7 @@ async function getClientMap() {
         form: {
             'auth': process.env.TWINBEE_MASTER_AUTH
         }
-    }).catch(err => catchNotification(err));
+    }).catch(err => logCaughtError(err));
     let clients = JSON.parse(response.body);
     let clientMap = {};
     for (var entry of clients) {
@@ -367,7 +356,7 @@ async function getMakerMap() {
         form: {
             'auth': process.env.TWINBEE_MASTER_AUTH
         }
-    }).catch(err => catchNotification(err));
+    }).catch(err => logCaughtError(err));
     let makers = JSON.parse(response.body);
     let makerMap = {};
     for (var maker of makers) {
@@ -383,17 +372,12 @@ async function getAllSheets() {
         form: {
             'auth': process.env.TWINBEE_MASTER_AUTH
         }
-    }).catch(err => catchNotification(err));
+    }).catch(err => logCaughtError(err));
     return JSON.parse(response.body);
 }
 
-function catchNotification(err){
-    console.log(err);
-    emailService.notifyAdmin(err);
-}
 function catchCatastrophe(err){
-    console.log(err);
-    emailService.notifyAdmin(err);
-    emailService.notifyAdmin(`Catastrophic failure in reports; maps failed to validate.`);
+    logCaughtError(err);
+    logCaughtError(`Catastrophic failure in reports; maps failed to validate.`);
 }
 module.exports = new TimeReportingService();
