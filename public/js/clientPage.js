@@ -494,7 +494,7 @@ function subscriptionFunctionality(res) {
                     }
                 });
             } else if (subscription.status != "cancelled") {
-                $("#subPrice").html(`$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)})`;
+                $("#subPrice").html(`$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}`);
             }
             else {
                 $("#subPrice").html(`Terminated`);
