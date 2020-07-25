@@ -468,11 +468,11 @@ function subscriptionFunctionality(res) {
         if (item && !subscription.deleted) {
             let scheduled = subscription.has_scheduled_changes;
             let changes = "";
-            let subPrice = "";
             (scheduled ? changes = "Yes" : changes = "No");
 
             //Get new plan quantity to update subscription Price on table
-            if (scheduled) {
+            let subPrice = "";
+            if (subscription.has_scheduled_changes) {
                 $.ajax({
                     url: "/api/getMySubscriptionChanges",
                     method: "post",
@@ -491,9 +491,10 @@ function subscriptionFunctionality(res) {
                     }
                 });
             } else if (subscription.status != "cancelled") {
-                console.log(subscription.plan_quantity);
-                console.log(subscription.plan_amount)
                 subPrice = `$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}`;
+            }
+            else {
+                subPrice = "Terminated";
             }
 
             $("#subscriptionTable").append('\n' +
