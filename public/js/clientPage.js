@@ -366,7 +366,7 @@ function buyForm() {
                     let planSelect = $("#buyPlan").val();
 
                     $("#optionsClient").html(`<h5>Are you sure you want to buy ${$("#buyHours").val()} hour(s) and ${$("#buyMin").val()} minute(s) for your plan ${$("#buyPlan").val()}?</h5><br>` +
-                    `<h6>You will be immediately charged $${(timeInMinutes * (Math.floor(parseFloat(planres.price))/100)).toFixed(2)} upon successful purchase.</h6>`);
+                    `<h6>You will be immediately charged $${((timeInMinutes * (parseFloat(planres.price)/100))/60).toFixed(2)} upon successful purchase.</h6>`);
                     $("#optionsClient").append("<div id='selectionYorN'></div>");
                     $("#selectionYorN").append("<button id='NoBuy' type='button' class='btn btn-default'>No</button>");
                     $("#selectionYorN").append("<button id='YesBuy' type='button' class='btn btn-default'>Yes</button>");
@@ -478,7 +478,7 @@ function subscriptionFunctionality(res) {
                 "   <td>" + changes + "</td>" +
                 '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                 '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>$' + (Math.floor(parseFloat(subscription.plan_quantity*subscription.plan_unit_price))/100).toFixed(2) + '</td>' +
+                `   <td> $${((subscription.plan_quantity*subscription.plan_unit_price)/100).toFixed(2)} </td>` +
                 '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
     });
