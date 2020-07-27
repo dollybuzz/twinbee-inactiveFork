@@ -1089,18 +1089,21 @@ function subscriptionFunctionality(res) {
         let cancelled = moment.unix(item.cancelled_at);
         let difference = now.diff(cancelled, 'days');
 
-        if (item && !subscription.deleted && difference < 10) {
-            $("#subscriptionTable").append('\n' +
-                '<tr class="subscriptionRow">' +
-                '   <td scope="row">' + subscription.id + '</td>' +
-                '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
-                '   <td>' + (customer.company || 'No Company') + '</td>' +
-                '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + subscription.plan_quantity + '</td>' +
-                "   <td>" + changes + "</td>" +
-                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td></tr>'
-            );
+        if (item && !subscription.deleted) {
+            if(subscription.status != "cancelled" || difference < 30)
+            {
+                $("#subscriptionTable").append('\n' +
+                    '<tr class="subscriptionRow">' +
+                    '   <td scope="row">' + subscription.id + '</td>' +
+                    '   <td>' + `${customer.first_name} ${customer.last_name}` + '</td>' +
+                    '   <td>' + (customer.company || 'No Company') + '</td>' +
+                    '   <td>' + subscription.plan_id + '</td>' +
+                    '   <td>' + subscription.plan_quantity + '</td>' +
+                    "   <td>" + changes + "</td>" +
+                    '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                    '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td></tr>'
+                );
+            }
         }
     });
     $("#subscriptionTable").append('\n</tbody>');
