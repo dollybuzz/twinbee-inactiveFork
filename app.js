@@ -16,23 +16,20 @@ const timeReportingRestController = require('./controllers/timeReportingRestCont
 const authController = require('./controllers/authController.js');
 const notificationRestController = require('./controllers/notificationRestController.js');
 const authRestController = require('./controllers/authRestController.js');
-const app = express();
 const bodyParser = require('body-parser');
 const makerService = require('./services/MakerService.js');
 const es = require('./services/notificationService.js');
 const mr = require('./repositories/makerRepo.js');
 const cs = require('./services/ClientService.js');
-const chargebeeservice = require('./services/chargebeeService.js');
+const chargebeeService = require('./services/chargebeeService.js');
 const timeReportingService = require('./services/timeReportingService.js');
-const cr = require('./repositories/clientRepo.js');
 const ts = require('./services/timeSheetService.js');
-
-require('moment')().format('YYYY-MM-DD HH:mm:ss');
-var chargebee = require("chargebee");
-const authRepo = require("./repositories/authRepo");
 const emailService = require("./services/notificationService");
+var chargebee = require("chargebee");
 chargebee.configure({site : process.env.CHARGEBEE_SITE,
     api_key : process.env.CHARGEBEE_API_KEY});
+
+const app = express();
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
 app.set('ip',  process.env.IP || "0.0.0.0");
@@ -46,10 +43,9 @@ app.get("/googlee47aeec58d0a4570.html", (req, res) => {res.render("googlee47aeec
 app.get("/", landingPageController.renderLanding);
 app.get("/home", landingPageController.renderLanding);
 app.get("/landing", landingPageController.renderLanding);
+app.get("/login", authController.loginNavigation);
 
 //api routes
-app.get("/login",
-    authController.loginNavigation);
 app.post("/api/getAllClients",
     authController.authorizeAdmin,
     authController.authorizeMaster,
