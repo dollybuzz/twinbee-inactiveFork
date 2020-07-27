@@ -90,8 +90,7 @@ class ClientService {
      * @param keyValuePairs - key/value pairs to add
      */
     async updateClientThreshold(clientId, bucket, thresholdMinutes) {
-        console.log(`Updating client ${clientId} metadata with data: `);
-        console.log(keyValuePairs);
+        console.log(`Updating client ${clientId} threshold for bucket ${bucket} to ${thresholdMinutes} minutes`);
         let customer = await this.getClientById(clientId).catch(e=>logCaughtError(e));
         if (!customer.meta_data) {
             customer.meta_data = {};
@@ -102,9 +101,7 @@ class ClientService {
         if (!customer.meta_data.threshold) {
             customer.meta_data.threshold = {};
         }
-        for (var key in keyValuePairs) {
-            customer.meta_data[key] = keyValuePairs[key];
-        }
+        customer.meta_data.threshold[bucket] = thresholdMinutes;
         updateClient(clientId, customer)
     }
 
