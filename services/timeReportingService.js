@@ -61,7 +61,7 @@ class TimeReportingService {
         if (!clientId) {
             clientId = "";
         }
-        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
+        let timePeriod = this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
         let obj = {
             list: [],
             total: 0
@@ -77,6 +77,7 @@ class TimeReportingService {
 
         let entries = JSON.parse(response.body);
 
+        timePeriod = await timePeriod;
         for (var entry of entries) {
             let transaction = entry.transaction;
             let date = moment.unix(transaction.date);
@@ -129,13 +130,15 @@ class TimeReportingService {
         for (var relationship of relationshipList) {
             await this.validateMaps(relationship.clientId, relationship.makerId).catch(error => catchCatastrophe(error));
 
-            let hoursReport = await this.getReportForRelationship(start, end, relationship.id).catch(err => logCaughtError(err));
+            let hoursReport = this.getReportForRelationship(start, end, relationship.id).catch(err => logCaughtError(err));
             let makerName = this.makerMap[relationship.makerId] ? `${this.makerMap[relationship.makerId].firstName} ${this.makerMap[relationship.makerId].lastName}`
                 : `Deleted Maker ${relationship.makerId}`;
             let clientName = this.clientMap[relationship.clientId] ? `${this.clientMap[relationship.clientId].first_name} ${this.clientMap[relationship.clientId].last_name}`
                 : `Deleted Client ${relationship.clientId}`;
-
             let rollupRow = {};
+
+            hoursReport = await hoursReport;
+
             rollupRow.relationshipId = relationship.id;
             rollupRow.freedomMaker = makerName;
             rollupRow.client = clientName;
@@ -202,8 +205,9 @@ class TimeReportingService {
         let totalTime = 0;
         let obj = {};
         let sheets = [];
-        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
+        let timePeriod = this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
         let timeSheets = await getAllSheets().catch(err => logCaughtError(err));
+        timePeriod = await timePeriod;
 
         for (var sheet of timeSheets) {
             let makerIdIsGood = makerId === "" || (sheet.makerId && makerId.toString() === sheet.makerId.toString());
@@ -254,9 +258,9 @@ class TimeReportingService {
         let totalTime = 0;
         let obj = {};
         let sheets = [];
-        let timePeriod = await this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
-        let timeSheets = await getAllSheets().catch(err => logCaughtError(err));
-        let response = await request({
+        let timePeriod = this.timePeriodToMoments(start, end).catch(err => logCaughtError(err));
+        let timeSheets = getAllSheets().catch(err => logCaughtError(err));
+        let response = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getRelationshipById`,
             form: {
@@ -264,10 +268,17 @@ class TimeReportingService {
                 'id': relationshipId
             }
         }).catch(err => logCaughtError(err));
+
+        response = await response;
         let relationship = JSON.parse(response.body);
+        timeSheets = await timeSheets;
+        timePeriod = await timePeriod;
 
         for (var sheet of timeSheets) {
-            if (await sheetIsClosed(sheet).catch(err => logCaughtError(err)) && await sheetRelationshipMatches(sheet, relationshipId).catch(err => logCaughtError(err))) {
+            let closed = sheetIsClosed(sheet).catch(err => logCaughtError(err));
+            let matches = sheetRelationshipMatches(sheet, relationshipId).catch(err => logCaughtError(err));
+
+            if (await closed && await matches) {
                 let endMoment = moment(sheet.timeOut);
                 if (endMoment.isBetween(timePeriod.start, timePeriod.end)) {
                     let details = await this.getSheetDetails(sheet, endMoment).catch(err => logCaughtError(err));
@@ -291,6 +302,7 @@ class TimeReportingService {
     }
 
     async getSheetDetails(sheet) {
+        await this.validateMaps(sheet.clientId, sheet.makerId).catch(error => catchCatastrophe(error));
 
         if (sheet.timeIn.toString() === "00:00:00") //deleted sheet
         {
@@ -299,15 +311,14 @@ class TimeReportingService {
 
         let startMoment = moment(sheet.timeIn);
         let endMoment = moment(sheet.timeOut);
-
-        let duration = await getMinutesBetweenMoments(startMoment, endMoment).catch(err => logCaughtError(err));
-
-        await this.validateMaps(sheet.clientId, sheet.makerId).catch(error => catchCatastrophe(error));
+        let duration = getMinutesBetweenMoments(startMoment, endMoment).catch(err => logCaughtError(err));
         let client = this.clientMap[sheet.clientId];
         let maker = this.makerMap[sheet.makerId];
         let clientName = this.clientMap[sheet.clientId] ? `${client.first_name} ${client.last_name}` : `Deleted client ${sheet.clientId}`;
         let clientCompany = this.clientMap[sheet.clientId] ? `${client.company || "No Company"}` : `Deleted Client`;
         let makerName = this.makerMap[sheet.makerId] ? `${maker.firstName} ${maker.lastName}` : `Deleted maker ${sheet.makerId}`;
+        duration = await duration;
+
         return {duration: duration, clientName: clientName, clientCompany: clientCompany, makerName: makerName};
     }
 }
