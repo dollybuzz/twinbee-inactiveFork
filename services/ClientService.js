@@ -622,6 +622,7 @@ class ClientService {
 
         if (client.meta_data && client.meta_data.buckets) {
             obj.buckets = client.meta_data.buckets;
+            obj.threshold = client.meta_data.threshold;
         } else {
             obj.buckets = {};
         }
@@ -808,8 +809,11 @@ class ClientService {
         if (!bucketObj.buckets) {
             bucketObj.buckets = {};
         }
+        if (!bucketObj.threshold) {
+            bucketObj.threshold = {};
+        }
         let {price} = JSON.parse(response.body);
-        return {minutes: (bucketObj.buckets[planId] || 0), price: price};
+        return {minutes: (bucketObj.buckets[planId] || 0), threshold: (bucketObj.threshold[planId] || 0), price: price};
     }
 
 }
