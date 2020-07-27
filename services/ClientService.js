@@ -323,7 +323,7 @@ class ClientService {
     async getSheetsByClient(id) {
         console.log(`Getting timesheets for client ${id}...`);
         let clientSheets = [];
-        let response = await request({
+        let sheetsResult = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByClientId`,
             form: {
@@ -331,10 +331,6 @@ class ClientService {
                 'id': id
             }
         }).catch(err => logCaughtError(err));
-
-        let body = response.body;
-        let sheets = JSON.parse(body);
-
         let makerResponse = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
@@ -342,9 +338,13 @@ class ClientService {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
         let makerMap = {};
+
+        await sheetsResult;
+        let sheets = JSON.parse(sheetsResult.body);
+        await makerResponse;
         let makers = JSON.parse(makerResponse.body);
+
         for (var maker of makers) {
             makerMap[maker.id] = maker;
         }
