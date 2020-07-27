@@ -131,9 +131,11 @@ class MakerService {
         let clientMap = {};
         let newRelationshipList = [];
 
-        await result;
-
+        result = await result;
+        console.log(result);
+        console.log(result.body);
         let relationshipList = JSON.parse(result.body);
+
         for (var ship of relationshipList) {
             if (ship.makerId == makerId) {
                 newRelationshipList.push(ship)
@@ -141,9 +143,8 @@ class MakerService {
         }
         relationshipList = newRelationshipList;
 
-        await clients;
+        clients = await clients;
         clients = JSON.parse(clients.body);
-
 
         for (var entry of clients) {
             clientMap[entry.customer.id] = entry.customer;
@@ -219,9 +220,9 @@ class MakerService {
         }).catch(err => logCaughtError(err));
         let clientMap = {};
 
-        await sheetsResult;
+        sheetsResult = await sheetsResult;
         let sheets = JSON.parse(sheetsResult.body);
-        await clientResult;
+        clientResult = await clientResult;
         let clients = JSON.parse(clientResult.body);
 
         for (var entry of clients) {
@@ -330,9 +331,9 @@ class MakerService {
         let alreadyOnList = {};
         let makersClients = [];
 
-        await clientsResult;
+        clientsResult = await clientsResult;
         let clients = JSON.parse(clientsResult.body);
-        await relationshipsResult;
+        relationshipsResult = await relationshipsResult;
         let relationships = JSON.parse(relationshipsResult.body);
 
         for (var i = 0; i < clients.length; ++i) {

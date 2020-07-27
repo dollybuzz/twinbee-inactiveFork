@@ -323,7 +323,7 @@ class ClientService {
     async getSheetsByClient(id) {
         console.log(`Getting timesheets for client ${id}...`);
         let clientSheets = [];
-        let sheetsResult = await request({
+        let sheetsResult = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByClientId`,
             form: {
@@ -331,7 +331,7 @@ class ClientService {
                 'id': id
             }
         }).catch(err => logCaughtError(err));
-        let makerResponse = await request({
+        let makerResponse = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
@@ -340,9 +340,9 @@ class ClientService {
         }).catch(err => logCaughtError(err));
         let makerMap = {};
 
-        await sheetsResult;
+        sheetsResult = await sheetsResult;
         let sheets = JSON.parse(sheetsResult.body);
-        await makerResponse;
+        makerResponse = await makerResponse;
         let makers = JSON.parse(makerResponse.body);
 
         for (var maker of makers) {
@@ -555,14 +555,14 @@ class ClientService {
      */
     async getMakersForClient(id) {
         console.log(`Getting makers for client ${id}...`);
-        let makersResponse = await request({
+        let makersResponse = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-        let relationshipsResponse = await request({
+        let relationshipsResponse = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
@@ -572,9 +572,9 @@ class ClientService {
         let makerMap = {};
         let clientMakers = [];
 
-        await makersResponse;
+        makersResponse = await makersResponse;
         let makers = JSON.parse(makersResponse.body);
-        await relationshipsResponse;
+        relationshipsResponse = await relationshipsResponse;
         let relationships = JSON.parse(relationshipsResponse.body);
 
         for (var i = 0; i < makers.length; ++i) {
@@ -688,8 +688,8 @@ class ClientService {
             success = false;
         });
 
-        await result;
-        await client;
+        result = await result;
+        client = await client;
 
         request({
             method: 'POST',
@@ -734,21 +734,24 @@ class ClientService {
     }
 
     async getAllMyRelationships(clientId) {
-        let relationships = await this.getRelationshipsForClient(clientId).catch(err => logCaughtError(err));
-        let result = await request({
+        let relationships = this.getRelationshipsForClient(clientId).catch(err => logCaughtError(err));
+        let result =  request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
         let makerMap = {};
+
+        result = await result;
         let makers = JSON.parse(result.body);
+
         for (var maker of makers) {
             makerMap[maker.id] = maker;
         }
 
+        relationships = await relationships;
         for (var relationship of relationships) {
             let maker = makerMap[relationship.makerId];
             relationship.makerName = maker.firstName + " " + maker.lastName;
