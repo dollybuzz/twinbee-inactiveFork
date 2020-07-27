@@ -483,14 +483,8 @@ function subscriptionFunctionality(res) {
                     },
                     dataType: "json",
                     success: function (changeres, changestatus) {
-                        //console.log(changeres);
-                        //console.log(changeres.plan_quantity);
-                        //console.log(changeres.plan_unit_price);
-                        //$("#subPrice").html(`$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`);
-                        //subPrice = `$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`;
-                        //console.log(subPrice);
                         $("#subscriptionTable").append('\n' +
-                            '<tr class="subscriptionRow">' +
+                            '<tr id="ajaxSubscriptionRow">' +
                             '   <td>' + subscription.id + '</td>' +
                             '   <td>' + subscription.plan_id + '</td>' +
                             '   <td>' + subscription.plan_quantity + '</td>' +
@@ -499,6 +493,11 @@ function subscriptionFunctionality(res) {
                             '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
                             `   <td>$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}</td>` +
                             '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
+
+                        $("#ajaxSubscriptionRow").click(function () {
+                            selectedRow = $(this);
+                            prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
+                        });
                     },
                     error: function (changeres, changestatus) {
                         $("#userMainContent").html("Could not calculate next charge for changed subscription!");
