@@ -731,7 +731,7 @@ $(document).ready(function () {
     //Report a technical problem
     $("#technicalReport").on('click', function () {
         $("textarea").val("");
-        $("#successSent").css("visibility", "hidden");
+        $("#successSent").html("");
         $("#SubmitIssue").on('click', function() {
             $.ajax({
                 url: "/api/technicalHelp",
@@ -743,7 +743,7 @@ $(document).ready(function () {
                 },
                 dataType: "json",
                 success: function (helpres, helpstatus) {
-                    $(".modal-footer").prepend("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px; visibility:visible'>Request sent!</p>");
+                    $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px; visibility:visible'>Request sent!</p>");
                     $("#SubmitIssue").off('click');
                 },
                 error: function (helpres, helpstatus) {
