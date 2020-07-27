@@ -323,7 +323,7 @@ class ClientService {
     async getSheetsByClient(id) {
         console.log(`Getting timesheets for client ${id}...`);
         let clientSheets = [];
-        let response = await request({
+        let sheetsResult = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByClientId`,
             form: {
@@ -331,10 +331,6 @@ class ClientService {
                 'id': id
             }
         }).catch(err => logCaughtError(err));
-
-        let body = response.body;
-        let sheets = JSON.parse(body);
-
         let makerResponse = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
@@ -342,9 +338,13 @@ class ClientService {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
         let makerMap = {};
+
+        await sheetsResult;
+        let sheets = JSON.parse(sheetsResult.body);
+        await makerResponse;
         let makers = JSON.parse(makerResponse.body);
+
         for (var maker of makers) {
             makerMap[maker.id] = maker;
         }
@@ -555,27 +555,27 @@ class ClientService {
      */
     async getMakersForClient(id) {
         console.log(`Getting makers for client ${id}...`);
-        let response = await request({
+        let makersResponse = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let makers = JSON.parse(response.body);
-
-        let result = await request({
+        let relationshipsResponse = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let relationships = JSON.parse(result.body);
         let makerMap = {};
         let clientMakers = [];
+
+        await makersResponse;
+        let makers = JSON.parse(makersResponse.body);
+        await relationshipsResponse;
+        let relationships = JSON.parse(relationshipsResponse.body);
 
         for (var i = 0; i < makers.length; ++i) {
             makerMap[makers[i].id] = makers[i];
@@ -589,8 +589,7 @@ class ClientService {
                 clientMakers.push({maker: maker, occupation: occupation});
             }
         }
-        console.log('List retrieved: ');
-        console.log(clientMakers);
+        console.log("Client's makers retrieved.");
         return clientMakers;
     };
 
@@ -622,6 +621,7 @@ class ClientService {
 
         if (client.meta_data && client.meta_data.buckets) {
             obj.buckets = client.meta_data.buckets;
+            obj.threshold = client.meta_data.threshold;
         } else {
             obj.buckets = {};
         }
@@ -808,8 +808,11 @@ class ClientService {
         if (!bucketObj.buckets) {
             bucketObj.buckets = {};
         }
+        if (!bucketObj.threshold) {
+            bucketObj.threshold = {};
+        }
         let {price} = JSON.parse(response.body);
-        return {minutes: (bucketObj.buckets[planId] || 0), price: price};
+        return {minutes: (bucketObj.buckets[planId] || 0), threshold: (bucketObj.threshold[planId] || 0), price: price};
     }
 
 }

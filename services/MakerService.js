@@ -113,16 +113,27 @@ class MakerService {
      */
     async getRelationshipsForMaker(makerId) {
         console.log(`Checking for relationships related to ${makerId}...`);
-        let result = await request({
+
+        let result = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
+        let clients = request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => logCaughtError(err));
+        let clientMap = {};
+        let newRelationshipList = [];
+
+        await result;
 
         let relationshipList = JSON.parse(result.body);
-        let newRelationshipList = [];
         for (var ship of relationshipList) {
             if (ship.makerId == makerId) {
                 newRelationshipList.push(ship)
@@ -130,16 +141,9 @@ class MakerService {
         }
         relationshipList = newRelationshipList;
 
-        let clients = await request({
-            method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
-            form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
-            }
-        }).catch(err => logCaughtError(err));
+        await clients;
         clients = JSON.parse(clients.body);
 
-        let clientMap = {};
 
         for (var entry of clients) {
             clientMap[entry.customer.id] = entry.customer;
@@ -192,11 +196,13 @@ class MakerService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByMaker(id) {
-        if (!id){
-            throw new Error()
-        }
         console.log(`Getting sheets for maker ${id}...`);
-        let result = await request({
+        if (!id){
+            logCaughtError("getSheetsByMaker had no id!");
+            return [];
+        }
+
+        let sheetsResult = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByMakerId`,
             form: {
@@ -204,20 +210,19 @@ class MakerService {
                 'id': id
             }
         }).catch(err => logCaughtError(err));
-
-        let sheets = JSON.parse(result.body);
-
-        console.log(`Getting client list for maker ${id}...`);
-        result = await request({
+        let clientResult =  request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let clients = JSON.parse(result.body);
         let clientMap = {};
+
+        await sheetsResult;
+        let sheets = JSON.parse(sheetsResult.body);
+        await clientResult;
+        let clients = JSON.parse(clientResult.body);
 
         for (var entry of clients) {
             clientMap[entry.customer.id] = entry.customer;
@@ -307,28 +312,28 @@ class MakerService {
      */
     async getClientListForMakerId(id) {
         console.log(`Getting client list for maker ${id}...`);
-        let result = await request({
+        let clientsResult = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let clients = JSON.parse(result.body);
-
-        result = await request({
+        let relationshipsResult = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let relationships = JSON.parse(result.body);
         let clientMap = {};
         let alreadyOnList = {};
         let makersClients = [];
+
+        await clientsResult;
+        let clients = JSON.parse(clientsResult.body);
+        await relationshipsResult;
+        let relationships = JSON.parse(relationshipsResult.body);
 
         for (var i = 0; i < clients.length; ++i) {
             clientMap[clients[i].customer.id] = clients[i].customer;
