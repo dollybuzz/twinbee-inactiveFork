@@ -18,7 +18,6 @@ module.exports ={
             {link: "", text: "My Clients", id: "manageClients"},
         ];
         let footerLinks = [
-            {link: "", text: "Report a technical problem"},
             {link: "", text: "FAQ"}
         ];
 

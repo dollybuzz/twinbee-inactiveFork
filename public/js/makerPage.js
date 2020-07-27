@@ -23,6 +23,10 @@ let navMapper = {
     manageClients: function () {
         showFunction(clientFunctionality, "/api/getMyClients");
     },
+
+    reportIssue: function () {
+        reportModal();
+    }
 };//end navMapper
 
 //Versatile Functions
@@ -709,6 +713,11 @@ function clientFunctionality(res) {
     }).mouseleave(function () {
         $(this).css('background-color', 'white');
     });
+}
+
+//Report a technical problem
+function reportModal () {
+
 }
 
 $(document).ready(function () {
