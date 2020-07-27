@@ -401,6 +401,8 @@ class MakerService {
                 'makerId': id
             }
         }).catch(err => logCaughtError(err));
+        if (!result.body)
+            return false;
 
         let timeSheet;
         try {
