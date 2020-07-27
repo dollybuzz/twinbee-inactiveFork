@@ -471,7 +471,6 @@ module.exports = {
             logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
             let email = await getEmailFromToken(req.body.token);
-            console.log(email)
             let client = await clientService.getClientByEmail(email);
             res.send(await clientService.updateClientThreshold(client.id, req.body.planId, parseInt(req.body.minutes))
                 .catch(err => logCaughtError(err)));
