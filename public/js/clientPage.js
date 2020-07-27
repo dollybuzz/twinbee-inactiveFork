@@ -462,7 +462,6 @@ function subscriptionFunctionality(res) {
         '        </thead><tbody>');
 
     //Populate table
-    let i = 1;
     res.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
@@ -473,7 +472,8 @@ function subscriptionFunctionality(res) {
         let cancelled = moment.unix(item.cancelled_at);
         let difference = now.diff(cancelled, 'days');
 
-        if (item && !subscription.deleted && difference < 10) {
+        let i = 1;
+        if (item && !subscription.deleted) {
             //Get new plan quantity to update subscription Price on table
             if (subscription.has_scheduled_changes) {
                 $.ajax({
@@ -518,7 +518,7 @@ function subscriptionFunctionality(res) {
                     `   <td>$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</td>` +
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
-            else {
+            else if (difference < 10){
                 $("#subscriptionTable").append('\n' +
                     '<tr class="subscriptionRow">' +
                     '   <td>' + subscription.id + '</td>' +
