@@ -1,11 +1,16 @@
 /*
-Authors: Dalia Faria, Greg Brown
-
+Application Authors: Dalia Faria, Greg Brown
  */
-const moment = require("moment");
 
+//direct dependencies
 const express = require("express");
+const bodyParser = require('body-parser');
 const sslRedirect = require('heroku-ssl-redirect');
+var chargebee = require("chargebee");
+chargebee.configure({site : process.env.CHARGEBEE_SITE,
+    api_key : process.env.CHARGEBEE_API_KEY});
+
+//routing and rest controllers
 const landingPageController = require('./controllers/landingPageController.js');
 const clientRestController = require('./controllers/clientRestController.js');
 const makerRestController = require('./controllers/makerRestController.js');
@@ -16,19 +21,8 @@ const timeReportingRestController = require('./controllers/timeReportingRestCont
 const authController = require('./controllers/authController.js');
 const notificationRestController = require('./controllers/notificationRestController.js');
 const authRestController = require('./controllers/authRestController.js');
-const bodyParser = require('body-parser');
-const makerService = require('./services/MakerService.js');
-const es = require('./services/notificationService.js');
-const mr = require('./repositories/makerRepo.js');
-const cs = require('./services/ClientService.js');
-const chargebeeService = require('./services/chargebeeService.js');
-const timeReportingService = require('./services/timeReportingService.js');
-const ts = require('./services/timeSheetService.js');
-const emailService = require("./services/notificationService");
-var chargebee = require("chargebee");
-chargebee.configure({site : process.env.CHARGEBEE_SITE,
-    api_key : process.env.CHARGEBEE_API_KEY});
 
+//Express configurations
 const app = express();
 app.set('view engine', 'ejs');
 app.set('port',  process.env.PORT || "8080");
