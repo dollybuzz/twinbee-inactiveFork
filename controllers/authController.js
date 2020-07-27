@@ -164,8 +164,11 @@ module.exports = {
         } else {
             console.log("Not authorized as Master");
             res.send('nope');
-            //TODO: res.render(accessNotAllowed)
         }
+    },
+    authorizePublic: (req, res, next) => {
+        console.log("Welcome, anyone!");
+        next()
     },
     authorizeSelfService: TEST_ENVIRONMENT ? (req, res, next) => {
         console.log("Test env, skipping auth");

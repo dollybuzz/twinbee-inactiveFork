@@ -371,6 +371,7 @@ app.post("/api/technicalHelp",
     authController.authorizeClient,
     authController.authorizeMaker,
     authController.authorizeMaster,
+    authController.authorizePublic,
     notificationRestController.restBugReport);
 app.post("/api/notifyAdmin",
     authController.authorizeMaster,
