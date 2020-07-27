@@ -166,23 +166,6 @@ module.exports = {
             res.send('nope');
         }
     },
-    authorizeSelfService: TEST_ENVIRONMENT ? (req, res, next) => {
-        console.log("Test env, skipping auth");
-        next()
-    } : async (req, res, next) => {
-        console.log("Attempting to authorize self service...");
-
-        //  throw new Error("Not yet implemented");
-
-        if (req[process.env.TWINBEE_IS_OK]  /* || updated == updater */) {
-            req[process.env.TWINBEE_IS_OK] = true;
-            next(req, res, next);
-        } else {
-            throw new Error("Not yet implemented");
-            //TODO: res.render(accessNotAllowed)
-        }
-    },
-
     loginNavigation: async (req, res) => {
         let userToken = req.query.token;
         if (await authService.accessorIsAdmin(userToken)) {
