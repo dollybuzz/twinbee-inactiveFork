@@ -113,12 +113,20 @@ module.exports = {
 
     logCaughtError: (error) =>{
          console.log(error);
+
+         let message = "";
+         if (error.message){
+             message += `error.message: ${error.message}\n`;
+         }
+        if (error.stack){
+            message += `error.stack: ${error.stack}\n`;
+        }
         request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/notifyAdmin`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH,
-                'message': `Straight object: ${error} \n error.message: ${error.message}\n  error.stack: ${error.stack} \n new trace: ${new Error().stack}`
+                'message': `object: ${error} \n${message}`
             }
         }).catch(err => {
             console.log(err);
