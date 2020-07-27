@@ -118,7 +118,6 @@ class ClientRepository {
                     logCaughtError(error);
                     reject(error);
                 } else {
-                    console.log(result);
                         var entry = result.list[0];
                         var customer = null;
                         if (result.list.length){

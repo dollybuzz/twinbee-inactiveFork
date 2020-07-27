@@ -425,6 +425,60 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/updateClientBucketThreshold
+     * Updates a client's notification threshold for the given time bucket
+     * of minutes (adds or subtracts). Looks for data in the body in the form:
+     * {
+     *     "id": id of the client to update,
+     *     "planId": id of the client's plan to update,
+     *     "minutes": positive or negative integer of minutes to use as a lower threshold,
+     *     "auth": authentication credentials; either master or token
+     * }
+     */
+    async updateClientBucketThreshold(req, res) {
+        console.log("Attempting to update client from REST: ");
+        console.log(req.body);
+        let validationResult = await validateParams({"present": ["id", "planId", "minutes"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await clientService.updateClientThreshold(req.body.id, req.body.planId, parseInt(req.body.minutes))
+                .catch(err => logCaughtError(err)));
+        }
+    },
+
+    /**
+     * ENDPOINT: /api/updateMyBucketThreshold
+     * Updates a client's notification threshold for the given time bucket
+     * of minutes (adds or subtracts). Looks for data in the body in the form:
+     * {
+     *     "token": token of the requesting client,
+     *     "planId": id of the client's plan to update,
+     *     "minutes": positive or negative integer of minutes to use as a lower threshold,
+     *     "auth": authentication credentials; either master or token
+     * }
+     */
+    async updateMyBucketThreshold(req, res) {
+        console.log("Attempting to update client from REST: ");
+        console.log(req.body);
+        let validationResult = await validateParams({
+            "present": ["token", "planId"],
+            "positiveIntegerOnly": ["minutes"]
+        }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await getEmailFromToken(req.body.token);
+            console.log(email)
+            let client = await clientService.getClientByEmail(email);
+            res.send(await clientService.updateClientThreshold(client.id, req.body.planId, parseInt(req.body.minutes))
+                .catch(err => logCaughtError(err)));
+        }
+    },
+
+    /**
      * ENDPOINT: /api/deleteBucket
      * Deletes the designated time bucket for the designated client. Looks for
      * data in the body in the form:

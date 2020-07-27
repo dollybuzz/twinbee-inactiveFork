@@ -83,6 +83,10 @@ app.post("/api/updateClientTimeBucket",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     clientRestController.updateClientTimeBucket);
+app.post("/api/updateClientBucketThreshold",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    clientRestController.updateClientBucketThreshold);
 app.post("/api/getMaker",
     authController.authorizeAdmin,
     authController.authorizeMaster,
@@ -343,6 +347,9 @@ app.post("/api/getMyTimeBucket",
 app.post("/api/updateMySubscription",
     authController.authorizeClient,
     chargebeeRestController.updateMySubscription);
+app.post("/api/updateMyBucketThreshold",
+    authController.authorizeClient,
+    clientRestController.updateMyBucketThreshold);
 app.post("/api/getMyMakers",
     authController.authorizeClient,
     clientRestController.getMyMakers);
