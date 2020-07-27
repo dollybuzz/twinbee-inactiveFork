@@ -555,27 +555,27 @@ class ClientService {
      */
     async getMakersForClient(id) {
         console.log(`Getting makers for client ${id}...`);
-        let response = await request({
+        let makersResponse = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllMakers`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let makers = JSON.parse(response.body);
-
-        let result = await request({
+        let relationshipsResponse = await request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let relationships = JSON.parse(result.body);
         let makerMap = {};
         let clientMakers = [];
+
+        await makersResponse;
+        let makers = JSON.parse(makersResponse.body);
+        await relationshipsResponse;
+        let relationships = JSON.parse(relationshipsResponse.body);
 
         for (var i = 0; i < makers.length; ++i) {
             makerMap[makers[i].id] = makers[i];
@@ -589,8 +589,7 @@ class ClientService {
                 clientMakers.push({maker: maker, occupation: occupation});
             }
         }
-        console.log('List retrieved: ');
-        console.log(clientMakers);
+        console.log("Client's makers retrieved.");
         return clientMakers;
     };
 
