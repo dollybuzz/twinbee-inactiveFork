@@ -10,7 +10,6 @@ module.exports ={
             {link: "", text: "Our Mission"},
             {link: "", text: "Become a Maker"},
             {link: "", text: "FAQ"},
-            {link: "", text: "Problems? Contact us."},
         ];
 
         let user = {
