@@ -166,10 +166,6 @@ module.exports = {
             res.send('nope');
         }
     },
-    authorizePublic: (req, res, next) => {
-        console.log("Welcome, anyone!");
-        next()
-    },
     authorizeSelfService: TEST_ENVIRONMENT ? (req, res, next) => {
         console.log("Test env, skipping auth");
         next()
