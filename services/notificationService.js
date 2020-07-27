@@ -178,7 +178,22 @@ exports.sendMakerWelcome = toEmail => new Promise((resolve, reject) => {
 exports.notifyAdmin = content => {
     let tracer = new Error();
 
-    let channel = process.env.TWINBEE_LIVE ? "C0163S58V0D" : "C015TU1QG0P";
+    let channel = process.env.NOTIFICATION_CHANNEL;
+    console.log(`Notifying admin!`);
+    web.chat.postMessage({
+        text: content,
+        channel: channel,
+    }).catch(err => {
+        console.log(err + `     Trace: ${JSON.stringify(tracer.stack)}`);
+        exports.notifyAdmin(err.toString());
+        exports.notifyAdmin(tracer.stack);
+    });
+};
+
+exports.bugReport = content => {
+    let tracer = new Error();
+
+    let channel = process.env.BUG_REPORT_CHANNEL;
     console.log(`Notifying admin!`);
     web.chat.postMessage({
         text: content,
