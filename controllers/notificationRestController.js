@@ -34,7 +34,7 @@ module.exports = {
         } else {
             let email = await getEmailFromToken(req.body.token);
             console.log(`${email} is trying to send a message!`);
-            notificationService.notifyAdmin(`BUG REPORT:\nFrom:${email}\nMessage${req.body.message}`);
+            notificationService.bugReport(`BUG REPORT:\nFrom:${email}\nMessage${req.body.message}`);
             res.send({status: "Request Sent"});
         }
     },
