@@ -38,7 +38,7 @@ class RepoMaster {
     }
 
     async activateConnection(dbMaster, numRetries) {
-        logCaughtError("Activating dbconnection");
+        logCaughtError("Activating dbconnection", false);
         return new Promise(async (resolve, reject) => {
             await dbMaster.conn.connect(function (err) {
                 if (err && err.toString().includes("ECONNREFUSED")) {
