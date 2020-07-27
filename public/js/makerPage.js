@@ -730,6 +730,7 @@ $(document).ready(function () {
 
     //Report a technical problem
     $("#technicalReport").on('click', function () {
+        $("textarea").val("");
         $("#SubmitIssue").on('click', function() {
             $.ajax({
                 url: "/api/technicalHelp",
@@ -741,7 +742,7 @@ $(document).ready(function () {
                 },
                 dataType: "json",
                 success: function (helpres, helpstatus) {
-                    $("#modal-footer").prepend("<p style='color:red !important; width: 310px; margin-bottom: -2px; transition: opacity 0.5s ease-in'>Request sent!</p>");
+                    $(".modal-footer").prepend("<p style='color:red !important; width: 310px; margin-bottom: -2px; transition: opacity 0.5s ease-in'>Request sent!</p>");
                     $("#SubmitIssue").off('click');
                 },
                 error: function (helpres, helpstatus) {
