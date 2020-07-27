@@ -462,6 +462,7 @@ function subscriptionFunctionality(res) {
         '        </thead><tbody>');
 
     //Populate table
+    let i = 1;
     res.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
@@ -484,7 +485,7 @@ function subscriptionFunctionality(res) {
                     dataType: "json",
                     success: function (changeres, changestatus) {
                         $("#subscriptionTable").append('\n' +
-                            '<tr id="ajaxSubscriptionRow">' +
+                            `<tr id="${'ajaxSubscriptionRow'+ (++i)}">` +
                             '   <td>' + subscription.id + '</td>' +
                             '   <td>' + subscription.plan_id + '</td>' +
                             '   <td>' + subscription.plan_quantity + '</td>' +
@@ -494,7 +495,7 @@ function subscriptionFunctionality(res) {
                             `   <td>$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}</td>` +
                             '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
 
-                        $("#ajaxSubscriptionRow").click(function () {
+                        $(`#${'ajaxSubscriptionRow'+ (i)}`).click(function () {
                             selectedRow = $(this);
                             prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
                         });
