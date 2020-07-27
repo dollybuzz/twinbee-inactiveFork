@@ -216,6 +216,10 @@ body a:hover {
     background-color: #dbb459;
 }
 
+#SubmitIssue {
+    border: none;
+}
+
 #DeleteButton:hover,
 #YesDelete:hover,
 #NoBuy:hover,
