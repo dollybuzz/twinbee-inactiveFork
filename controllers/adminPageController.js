@@ -40,6 +40,7 @@ module.exports = {
             }
         ];
         let footerLinks = [
+            {link: "", text: "FAQ"}
         ];
 
         res.render("admin", {
