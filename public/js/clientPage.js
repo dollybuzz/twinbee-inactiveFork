@@ -483,34 +483,51 @@ function subscriptionFunctionality(res) {
                     },
                     dataType: "json",
                     success: function (changeres, changestatus) {
-                        console.log(changeres);
-                        console.log(changeres.plan_quantity);
-                        console.log(changeres.plan_unit_price);
+                        //console.log(changeres);
+                        //console.log(changeres.plan_quantity);
+                        //console.log(changeres.plan_unit_price);
                         //$("#subPrice").html(`$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`);
-                        subPrice = `$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`;
-                        console.log(subPrice);
+                        //subPrice = `$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`;
+                        //console.log(subPrice);
+                        $("#subscriptionTable").append('\n' +
+                            '<tr class="subscriptionRow">' +
+                            '   <td>' + subscription.id + '</td>' +
+                            '   <td>' + subscription.plan_id + '</td>' +
+                            '   <td>' + subscription.plan_quantity + '</td>' +
+                            '   <td>' + changes + '</td>' +
+                            '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                            '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
+                            `   <td>$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}</td>` +
+                            '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
                     },
                     error: function (changeres, changestatus) {
                         $("#userMainContent").html("Could not calculate next charge for changed subscription!");
                     }
                 });
             } else if (subscription.status != "cancelled") {
-                subPrice = `$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}`;
+                $("#subscriptionTable").append('\n' +
+                    '<tr class="subscriptionRow">' +
+                    '   <td>' + subscription.id + '</td>' +
+                    '   <td>' + subscription.plan_id + '</td>' +
+                    '   <td>' + subscription.plan_quantity + '</td>' +
+                    '   <td>' + changes + '</td>' +
+                    '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                    '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
+                    `   <td>$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</td>` +
+                    '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
             else {
-                subPrice = `Terminated`;
+                $("#subscriptionTable").append('\n' +
+                    '<tr class="subscriptionRow">' +
+                    '   <td>' + subscription.id + '</td>' +
+                    '   <td>' + subscription.plan_id + '</td>' +
+                    '   <td>' + subscription.plan_quantity + '</td>' +
+                    '   <td>' + changes + '</td>' +
+                    '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
+                    '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
+                    '   <td>' + "Terminated" + '</td>' +
+                    '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
-
-            $("#subscriptionTable").append('\n' +
-                '<tr class="subscriptionRow">' +
-                '   <td>' + subscription.id + '</td>' +
-                '   <td>' + subscription.plan_id + '</td>' +
-                '   <td>' + subscription.plan_quantity + '</td>' +
-                '   <td>' + changes + '</td>' +
-                '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                `   <td>${subPrice}</td>` +
-                '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
         }
     });
     $("#subscriptionTable").append('\n</tbody>');
