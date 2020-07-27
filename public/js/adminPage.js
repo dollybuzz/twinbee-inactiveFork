@@ -1085,8 +1085,11 @@ function subscriptionFunctionality(res) {
         let scheduled = subscription.has_scheduled_changes;
         let changes = "";
         (scheduled ? changes = "Yes" : changes = "No");
+        let now = moment();
+        let cancelled = moment.unix(item.cancelled_at);
+        let difference = now.diff(cancelled, 'days');
 
-        if (item && !subscription.deleted) {
+        if (item && !subscription.deleted && difference > 10) {
             $("#subscriptionTable").append('\n' +
                 '<tr class="subscriptionRow">' +
                 '   <td scope="row">' + subscription.id + '</td>' +
