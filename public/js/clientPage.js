@@ -466,13 +466,15 @@ function subscriptionFunctionality(res) {
     res.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
-        if (item && !subscription.deleted) {
-            let scheduled = subscription.has_scheduled_changes;
-            let changes = "";
-            (scheduled ? changes = "Yes" : changes = "No");
+        let scheduled = subscription.has_scheduled_changes;
+        let changes = "";
+        (scheduled ? changes = "Yes" : changes = "No");
+        let now = moment();
+        let cancelled = moment.unix(item.cancelled_at);
+        let difference = now.diff(cancelled, 'days');
 
+        if (item && !subscription.deleted && difference < 10) {
             //Get new plan quantity to update subscription Price on table
-            let subPrice = "";
             if (subscription.has_scheduled_changes) {
                 $.ajax({
                     url: "/api/getMySubscriptionChanges",
