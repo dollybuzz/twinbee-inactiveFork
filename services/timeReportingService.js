@@ -11,8 +11,10 @@ class TimeReportingService {
     };
 
     async setup(){
-        this.makerMap = await getMakerMap().catch(err => logCaughtError(err));
-        this.clientMap = await getClientMap().catch(err => logCaughtError(err));
+        this.makerMap = getMakerMap().catch(err => logCaughtError(err));
+        this.clientMap = getClientMap().catch(err => logCaughtError(err));
+        this.makerMap = await this.makerMap;
+        this.clientMap = await this.clientMap;
     }
 
     async validateMaps(clientId, makerId) {
