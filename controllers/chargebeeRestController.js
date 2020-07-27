@@ -374,6 +374,7 @@ module.exports = {
         } else {
             let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
                 .catch(err => logCaughtError(err));
+            subscription.twinbee_calculated_price = subscription.plan_quantity * subscription.plan_unit_price;
             res.send(subscription);
         }
     },
