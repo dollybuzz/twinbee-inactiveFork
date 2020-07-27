@@ -2,6 +2,8 @@
 Authors: Dalia Faria, Greg Brown
 
  */
+const moment = require("moment");
+
 const express = require("express");
 const sslRedirect = require('heroku-ssl-redirect');
 const landingPageController = require('./controllers/landingPageController.js');
@@ -419,7 +421,6 @@ app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
 
 (async function() {
-
 })();
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at ${app.get('ip')} on port ${app.get('port')}`);});

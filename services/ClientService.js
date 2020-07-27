@@ -89,6 +89,31 @@ class ClientService {
      * @param clientId  - client to update
      * @param keyValuePairs - key/value pairs to add
      */
+    async updateClientThreshold(clientId, bucket, thresholdMinutes) {
+        console.log(`Updating client ${clientId} metadata with data: `);
+        console.log(keyValuePairs);
+        let customer = await this.getClientById(clientId).catch(e=>logCaughtError(e));
+        if (!customer.meta_data) {
+            customer.meta_data = {};
+        }
+        if (!customer.meta_data.buckets) {
+            customer.meta_data.buckets = {};
+        }
+        if (!customer.meta_data.threshold) {
+            customer.meta_data.threshold = {};
+        }
+        for (var key in keyValuePairs) {
+            customer.meta_data[key] = keyValuePairs[key];
+        }
+        updateClient(clientId, customer)
+    }
+
+    /**
+     * adds the keyValuePairs to the customer's metadata
+     *
+     * @param clientId  - client to update
+     * @param keyValuePairs - key/value pairs to add
+     */
     async updateClientMetadata(clientId, keyValuePairs) {
         console.log(`Updating client ${clientId} metadata with data: `);
         console.log(keyValuePairs);
@@ -96,8 +121,39 @@ class ClientService {
         if (!customer.meta_data) {
             customer.meta_data = {};
         }
+        if (!customer.meta_data.buckets) {
+            customer.meta_data.buckets = {};
+        }
+        if (!customer.meta_data.threshold) {
+            customer.meta_data.threshold = {};
+        }
         for (var key in keyValuePairs) {
             customer.meta_data[key] = keyValuePairs[key];
+        }
+        updateClient(clientId, customer)
+    }
+
+    /**
+     * adds the keyValuePairs to the customer's buckets
+     *
+     * @param clientId  - client to update
+     * @param keyValuePairs - key/value pairs to add
+     */
+    async updateClientBuckets(clientId, keyValuePairs) {
+        console.log(`Updating client ${clientId} buckets with data: `);
+        console.log(keyValuePairs);
+        let customer = await this.getClientById(clientId).catch(e=>logCaughtError(e));
+        if (!customer.meta_data) {
+            customer.meta_data = {};
+        }
+        if (!customer.meta_data.buckets) {
+            customer.meta_data.buckets = {};
+        }
+        if (!customer.meta_data.threshold) {
+            customer.meta_data.threshold = {};
+        }
+        for (var key in keyValuePairs) {
+            customer.meta_data.buckets[key] = keyValuePairs[key];
         }
         updateClient(clientId, customer)
     }
@@ -108,11 +164,13 @@ class ClientService {
         if (!client.meta_data) {
             console.log("Client had no metadata; creating now...");
             client.meta_data = {};
+            client.meta_data.buckets = {};
+            client.meta_data.threshold = {};
         }
-        if (!client.meta_data[planBucket]) {
+        if (!client.meta_data.buckets[planBucket]) {
             console.log("That bucket never existed!")
         }
-        delete client.meta_data[planBucket];
+        delete client.meta_data.buckets[planBucket];
         updateClient(clientId, client);
         return client;
     }
@@ -129,20 +187,25 @@ class ClientService {
         let client = await this.getClientById(clientId).catch(e=>logCaughtError(e));
         if (!client.meta_data) {
             console.log("Client had no metadata; creating now...");
-            client.meta_data = {};
+            client.meta_data = {buckets:{},threshold:{}};
         }
-        if (!client.meta_data[planBucket]) {
+        if (!client.meta_data.buckets){
+            client.meta_data.buckets = {};
+        }
+        if (!client.meta_data.threshold){
+            client.meta_data.threshold = {};
+        }
+        if (!client.meta_data.buckets[planBucket]) {
             console.log(`Client plan bucket ${planBucket} did not exist, creating now...`);
-            client.meta_data[planBucket] = {};
-            client.meta_data[planBucket] = 0;
+            client.meta_data.buckets[planBucket] = 0;
         }
-        let newMinutes = minuteChange + client.meta_data[planBucket];
+        let newMinutes = minuteChange + client.meta_data.buckets[planBucket];
         let planMinutes = {};
         planMinutes[planBucket] = newMinutes;
         if (newMinutes < 0) {
             notifyClientOutOfCredits(client.email);
         }
-        this.updateClientMetadata(clientId, planMinutes);
+        this.updateClientBuckets(clientId, planMinutes);
         return client;
     }
 
@@ -539,13 +602,13 @@ class ClientService {
         let timeBuckets = [];
         for (var i = 0; i < clients.length; ++i) {
             let client = clients[i].customer;
-            if (client.meta_data) {
+            if (client.meta_data && client.meta_data.buckets) {
                 let obj = {};
                 obj.first_name = client.first_name;
                 obj.last_name = client.last_name;
                 obj.company = client.company;
                 obj.id = client.id;
-                obj.buckets = client.meta_data;
+                obj.buckets = client.meta_data.buckets;
                 timeBuckets.push(obj);
             }
         }
@@ -560,8 +623,8 @@ class ClientService {
         obj.last_name = client.last_name;
         obj.id = client.id;
 
-        if (client.meta_data) {
-            obj.buckets = client.meta_data;
+        if (client.meta_data && client.meta_data.buckets) {
+            obj.buckets = client.meta_data.buckets;
         } else {
             obj.buckets = {};
         }
