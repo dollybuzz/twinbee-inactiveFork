@@ -374,6 +374,8 @@ module.exports = {
         } else {
             let subscription = await chargebeeService.retrieveSubscriptionWithChanges(req.body.subscriptionId)
                 .catch(err => logCaughtError(err));
+
+            //Note: Chargebee's "plan_amount" appears to not actually be the new plan amount
             subscription.twinbee_calculated_price = subscription.plan_quantity * subscription.plan_unit_price;
             res.send(subscription);
         }
