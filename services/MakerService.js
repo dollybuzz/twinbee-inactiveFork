@@ -196,11 +196,13 @@ class MakerService {
      * @returns {Promise<[]>} containing timeSheet objects
      */
     async getSheetsByMaker(id) {
-        if (!id){
-            throw new Error()
-        }
         console.log(`Getting sheets for maker ${id}...`);
-        let result = await request({
+        if (!id){
+            logCaughtError("getSheetsByMaker had no id!");
+            return [];
+        }
+
+        let sheetsResult = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getTimeSheetsByMakerId`,
             form: {
@@ -208,20 +210,19 @@ class MakerService {
                 'id': id
             }
         }).catch(err => logCaughtError(err));
-
-        let sheets = JSON.parse(result.body);
-
-        console.log(`Getting client list for maker ${id}...`);
-        result = await request({
+        let clientResult =  request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
-
-        let clients = JSON.parse(result.body);
         let clientMap = {};
+
+        await sheetsResult;
+        let sheets = JSON.parse(sheetsResult.body);
+        await clientResult;
+        let clients = JSON.parse(clientResult.body);
 
         for (var entry of clients) {
             clientMap[entry.customer.id] = entry.customer;
