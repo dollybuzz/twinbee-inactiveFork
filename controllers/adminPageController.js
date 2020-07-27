@@ -40,7 +40,6 @@ module.exports = {
             }
         ];
         let footerLinks = [
-            {link: "", text: "Report a technical problem", id: "reportProblem"}
         ];
 
         res.render("admin", {

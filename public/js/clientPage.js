@@ -813,6 +813,31 @@ $(document).ready(function () {
         }
     });*/
 
+    //Report a technical problem
+    $("#technicalReport").on('click', function () {
+        $("textarea").val("");
+        $("#successSent").html("");
+        $("#SubmitIssue").on('click', function() {
+            $.ajax({
+                url: "/api/technicalHelp",
+                method: "post",
+                data: {
+                    auth: id_token,
+                    token: id_token,
+                    message: $("textarea").val()
+                },
+                dataType: "json",
+                success: function (helpres, helpstatus) {
+                    $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px; visibility:visible'>Request sent!</p>");
+                    $("#SubmitIssue").off('click');
+                },
+                error: function (helpres, helpstatus) {
+                    $("#userMainContent").html("Could not send help ticket!");
+                }
+            });
+        });
+    });
+
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
     $("#logoutButton").click(signOut);
