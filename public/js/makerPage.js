@@ -22,10 +22,6 @@ let navMapper = {
 
     manageClients: function () {
         showFunction(clientFunctionality, "/api/getMyClients");
-    },
-
-    reportIssue: function () {
-        reportModal();
     }
 };//end navMapper
 
@@ -715,11 +711,6 @@ function clientFunctionality(res) {
     });
 }
 
-//Report a technical problem
-function reportModal () {
-
-}
-
 $(document).ready(function () {
     /*$.ajax({
         url: "/api/getEnvironment",
@@ -736,6 +727,27 @@ $(document).ready(function () {
             onSignIn();
         }
     });*/
+
+    //Report a technical problem
+    $("#SubmitIssue").on('click', function() {
+        $.ajax({
+            url: "/api/technicalHelp",
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+                message: $("textarea").val()
+            },
+            dataType: "json",
+            success: function (helpres, helpstatus) {
+                $("#modal-footer").prepend("<p style='color:red !important; width: 310px; margin-bottom: -2px; transition: opacity 0.5s ease-in'>Request sent!</p>");
+                $("#SubmitIssue").off('click');
+                },
+            error: function (helpres, helpstatus) {
+                $("#userMainContent").html("Could not send help ticket!");
+            }
+        });
+    });
 
     //Adding logout Button
     $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
