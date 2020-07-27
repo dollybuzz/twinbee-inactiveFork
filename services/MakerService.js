@@ -113,16 +113,27 @@ class MakerService {
      */
     async getRelationshipsForMaker(makerId) {
         console.log(`Checking for relationships related to ${makerId}...`);
-        let result = await request({
+
+        let result = request({
             method: 'POST',
             uri: `${process.env.TWINBEE_URL}/api/getAllRelationships`,
             form: {
                 'auth': process.env.TWINBEE_MASTER_AUTH
             }
         }).catch(err => logCaughtError(err));
+        let clients = request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH
+            }
+        }).catch(err => logCaughtError(err));
+        let clientMap = {};
+        let newRelationshipList = [];
+
+        await result;
 
         let relationshipList = JSON.parse(result.body);
-        let newRelationshipList = [];
         for (var ship of relationshipList) {
             if (ship.makerId == makerId) {
                 newRelationshipList.push(ship)
@@ -130,16 +141,9 @@ class MakerService {
         }
         relationshipList = newRelationshipList;
 
-        let clients = await request({
-            method: 'POST',
-            uri: `${process.env.TWINBEE_URL}/api/getAllClients`,
-            form: {
-                'auth': process.env.TWINBEE_MASTER_AUTH
-            }
-        }).catch(err => logCaughtError(err));
+        await clients;
         clients = JSON.parse(clients.body);
 
-        let clientMap = {};
 
         for (var entry of clients) {
             clientMap[entry.customer.id] = entry.customer;
