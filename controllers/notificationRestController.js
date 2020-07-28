@@ -172,7 +172,7 @@ module.exports = {
      * }
      * @returns {Promise<[{},...]>}
      */
-    notifyClientOutOfCredits: async (req, res) =>{
+    notifyClientLowCredits: async (req, res) =>{
         console.log("Notifying client of low bucket via rest!");
         console.log(req.body);
 
