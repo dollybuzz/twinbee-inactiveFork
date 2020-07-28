@@ -650,3 +650,7 @@ th {
     background-color: #dbb459;
     color: white;
 }
+
+.dropdown-menu-right:hover {
+    display: block;
+}
