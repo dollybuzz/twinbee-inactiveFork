@@ -7,6 +7,7 @@ module.exports ={
         let headerTitle = {
             text: ""
         };
+        let headerBackgroundImage = {src:"/img/sfSkinny.jpg"};
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
@@ -22,6 +23,6 @@ module.exports ={
             {link: "", text: "FAQ"}
         ];
 
-        res.render("client", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("client", {siteTitle:thisID, headerBG: headerBackgroundImage, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
 };
