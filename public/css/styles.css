@@ -6,7 +6,7 @@ header {
 }
 
 #landingContainer {
-    background-image: url("flagSkinny.jpg");
+    background-image: url(/img/flagSkinny.jpg);
     display: grid;
     width: inherit;
     grid-template-columns: 1fr 3fr 1fr;
