@@ -114,7 +114,7 @@ function mainFunctionality () {
     }, 1000);
 
     setTimeout(function() {
-        $("#clientText1").html(`<h5>Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
+        $("#clientText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
             "<br>" +
             "We are so excited to introduce you to our new application.</h5><br>" +
             "<h6>This page is currently underway.<br><br>" +
