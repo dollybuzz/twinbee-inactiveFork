@@ -114,7 +114,7 @@ function mainFunctionality () {
     }, 1000);
 
     setTimeout(function() {
-        $("#clientText1").html(`<h5>Hello ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
+        $("#clientText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
             "<br>" +
             "We are so excited to introduce you to our new application.</h5><br>" +
             "<h6>This page is currently underway.<br><br>" +
@@ -462,6 +462,7 @@ function subscriptionFunctionality(res) {
         '        </thead><tbody>');
 
     //Populate table
+    let i = 1;
     res.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
@@ -472,7 +473,6 @@ function subscriptionFunctionality(res) {
         let cancelled = moment.unix(item.cancelled_at);
         let difference = now.diff(cancelled, 'days');
 
-        let i = 1;
         if (item && !subscription.deleted) {
             //Get new plan quantity to update subscription Price on table
             if (subscription.has_scheduled_changes) {
@@ -818,23 +818,30 @@ $(document).ready(function () {
         $("textarea").val("");
         $("#successSent").html("");
         $("#SubmitIssue").on('click', function() {
-            $.ajax({
-                url: "/api/technicalHelp",
-                method: "post",
-                data: {
-                    auth: id_token,
-                    token: id_token,
-                    message: $("textarea").val()
-                },
-                dataType: "json",
-                success: function (helpres, helpstatus) {
-                    $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px; visibility:visible'>Request sent!</p>");
-                    $("#SubmitIssue").off('click');
-                },
-                error: function (helpres, helpstatus) {
-                    $("#userMainContent").html("Could not send help ticket!");
-                }
-            });
+            if(!$("textarea").val())
+            {
+                $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px'>Invalid request!</p>");
+            }
+            else {
+                $("#verifySuccess").html("<span style='color:#32444e' class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>");
+                $.ajax({
+                    url: "/api/technicalHelp",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        token: id_token,
+                        message: $("textarea").val()
+                    },
+                    dataType: "json",
+                    success: function (helpres, helpstatus) {
+                        $("#verifySuccess").html("<p id='successSent' style='color:#32444e !important; width: 310px; margin-bottom: -2px'>Request sent!</p>");
+                        $("#SubmitIssue").off('click');
+                    },
+                    error: function (helpres, helpstatus) {
+                        $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px'>Could not send help ticket!</p>");
+                    }
+                });
+            }
         });
     });
 
