@@ -375,8 +375,9 @@ label {
     padding-top: 10px;
     padding-bottom: 10px;
     color: white;
-    background: linear-gradient(45deg, transparent, rgba(100,100,100,.4));
+    background: linear-gradient(45deg, transparent, transparent, rgba(100,100,100,.2), rgba(100,100,100,.4));
     font-weight: 480;
+    margin-top: 55px;
 }
 #landingTitle {
     width: inherit;
