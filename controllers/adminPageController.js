@@ -4,7 +4,7 @@ module.exports = {
             text: "adminTitle"
         };
         let headerTitle = {
-            text: "Administrator and Billing Portal"
+            text: ""
         };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",

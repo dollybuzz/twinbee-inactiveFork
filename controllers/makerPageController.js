@@ -5,7 +5,7 @@ module.exports ={
             text: "FMTitle"
         };
         let headerTitle = {
-            text: "Freedom Maker Portal"
+            text: ""
         };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
