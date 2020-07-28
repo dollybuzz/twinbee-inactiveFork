@@ -2923,7 +2923,7 @@ $(document).ready(function () {
     });
 
     //Adding logout Button
-    $("#logout").append("<button id='logoutButton' type='button' class='btn btn-default'>Log Out</button>");
+    $("#logout").html("<a href='#' class='dropdown-item' id='logoutButton'>Log Out</a>");
     $("#logoutButton").click(signOut);
 
     //Event Listeners for other nav menu items

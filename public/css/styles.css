@@ -109,7 +109,7 @@ body a:hover {
     color: #dbb459;
 }
 
-#loginButton, #logoutButton, #SubmitButton, #NoDelete, #SubmitIssue {
+#SubmitButton, #NoDelete, #SubmitIssue {
     color: white;
     background-color: #32444e;
 }
@@ -209,8 +209,6 @@ body a:hover {
     background-color: darkred;
 }
 
-#loginButton:hover,
-#logoutButton:hover,
 #SubmitButton:hover,
 #NoDelete:hover,
 #SubmitIssue:hover {
