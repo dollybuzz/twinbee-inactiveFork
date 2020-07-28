@@ -54,7 +54,6 @@ module.exports = {
             } else {
                 res.send('nope');
             }
-            //TODO: res.render(accessNotAllowed)
         }
     },
 
@@ -83,7 +82,6 @@ module.exports = {
             } else {
                 res.send('nope');
             }
-            //TODO: res.render(accessNotAllowed)
         }
     },
     authorizeMaker: TEST_ENVIRONMENT ? (req, res, next) => {
