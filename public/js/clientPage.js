@@ -462,6 +462,7 @@ function subscriptionFunctionality(res) {
         '        </thead><tbody>');
 
     //Populate table
+    let i = 1;
     res.forEach(item => {
         let subscription = item.subscription;
         item = item.subscription;
@@ -472,7 +473,6 @@ function subscriptionFunctionality(res) {
         let cancelled = moment.unix(item.cancelled_at);
         let difference = now.diff(cancelled, 'days');
 
-        let i = 1;
         if (item && !subscription.deleted) {
             //Get new plan quantity to update subscription Price on table
             if (subscription.has_scheduled_changes) {
