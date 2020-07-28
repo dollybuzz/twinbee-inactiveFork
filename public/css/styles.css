@@ -17,7 +17,6 @@ header {
     display: grid;
     width: inherit;
     grid-template-columns: 1fr 3fr 1fr;
-    vertical-align: center;
 }
 
 body {
@@ -44,8 +43,8 @@ body {
 }
 
 #landingLogo {
-    width: inherit;
-    padding: 15px;
+    text-align: left;
+    margin-left: 10px;
 }
 
 .navItem{

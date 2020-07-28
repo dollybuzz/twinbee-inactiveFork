@@ -6,8 +6,9 @@ $(document).ready(function () {
     $("nav").css("background-color", "transparent");
 
     //shifts the landing logo
-    $("#landingLogo").css("width", "100%");
+    $("#landingLogo").css("margin-left", "0");
     $("#landingLogo").css("text-align", "center");
+    $("#landingLogo").css("padding", "15px");
 
     //Shifts the welcome text
     $("#welcome").css("color", "white");
