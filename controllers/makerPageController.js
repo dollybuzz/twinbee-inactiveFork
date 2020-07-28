@@ -11,6 +11,7 @@ module.exports ={
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
         };
+        let headerBackgroundImage = {src:"/img/goldenGateSkinny.jpg"};
         let headerLinks = [
             {link: "/maker", text: "Main", id:"main"},
             {link: "", text: "Time Clock", id:"timeclock"},
@@ -21,6 +22,6 @@ module.exports ={
             {link: "", text: "FAQ"}
         ];
 
-        res.render("maker", {siteTitle:thisID, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
+        res.render("maker", {siteTitle:thisID, headerBG: headerBackgroundImage, pageTitle:headerTitle, headerImg:headerImageActual, navItemsTop: headerLinks, navItemsBottom: footerLinks});
     },
 };
