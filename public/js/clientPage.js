@@ -818,7 +818,7 @@ $(document).ready(function () {
         $("textarea").val("");
         $("#successSent").html("");
         $("#SubmitIssue").on('click', function() {
-            if($("textarea").val(""))
+            if(!$("textarea").val())
             {
                 $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px'>Invalid request!</p>");
             }
