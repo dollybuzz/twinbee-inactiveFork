@@ -10,6 +10,7 @@ module.exports = {
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
         };
+        let headerBackgroundImage = {src:"/img/goldenGateSkinny.jpg"};
         let headerLinks = [
             {
                 link: "/admin", text: "Main", id: "main", dropdowns: []
@@ -47,6 +48,7 @@ module.exports = {
             siteTitle: thisID,
             pageTitle: headerTitle,
             headerImg: headerImageActual,
+            headerBG: headerBackgroundImage,
             navItemsTop: headerLinks,
             navItemsBottom: footerLinks
         });
