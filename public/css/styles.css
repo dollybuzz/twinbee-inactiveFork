@@ -640,9 +640,13 @@ th {
 }
 
 #userAction {
-    color: #32444e;
+    background-color: #32444e;
+    border: none;
+    color: white;
+
 }
 
 #userAction:hover {
-    color: #dbb459;
+    background-color: #dbb459;
+    color: white;
 }
