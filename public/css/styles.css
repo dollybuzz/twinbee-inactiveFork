@@ -634,3 +634,15 @@ th {
 #empty {
     opacity: 0;
 }
+
+.dropdown-item {
+    color: #32444e;
+}
+
+#userAction {
+    color: #32444e;
+}
+
+#userAction:hover {
+    color: #dbb459;
+}
