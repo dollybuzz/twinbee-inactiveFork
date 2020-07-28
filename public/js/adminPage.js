@@ -2891,28 +2891,34 @@ function rollupReportFunctionality() {
 }
 $(document).ready(function () {
 
-    //Report a technical problem
     $("#technicalReport").on('click', function () {
         $("textarea").val("");
         $("#successSent").html("");
         $("#SubmitIssue").on('click', function() {
-            $.ajax({
-                url: "/api/technicalHelp",
-                method: "post",
-                data: {
-                    auth: id_token,
-                    token: id_token,
-                    message: $("textarea").val()
-                },
-                dataType: "json",
-                success: function (helpres, helpstatus) {
-                    $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px; visibility:visible'>Request sent!</p>");
-                    $("#SubmitIssue").off('click');
-                },
-                error: function (helpres, helpstatus) {
-                    $("#userMainContent").html("Could not send help ticket!");
-                }
-            });
+            if(!$("textarea").val())
+            {
+                $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px'>Invalid request!</p>");
+            }
+            else {
+                $("#verifySuccess").html("<span style='color:#32444e' class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>");
+                $.ajax({
+                    url: "/api/technicalHelp",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        token: id_token,
+                        message: $("textarea").val()
+                    },
+                    dataType: "json",
+                    success: function (helpres, helpstatus) {
+                        $("#verifySuccess").html("<p id='successSent' style='color:#32444e !important; width: 310px; margin-bottom: -2px'>Request sent!</p>");
+                        $("#SubmitIssue").off('click');
+                    },
+                    error: function (helpres, helpstatus) {
+                        $("#verifySuccess").html("<p id='successSent' style='color:red !important; width: 310px; margin-bottom: -2px'>Could not send help ticket!</p>");
+                    }
+                });
+            }
         });
     });
 
