@@ -409,6 +409,9 @@ app.post("/api/notifyAdminClientUpdate",
 app.post("/api/notifyClientOutOfCredits",
     authController.authorizeMaster,
     notificationRestController.notifyClientOutOfCredits);
+app.post("/api/notifyClientLowCredits",
+    authController.authorizeMaster,
+    notificationRestController.notifyClientLowCredits);
 app.post("/api/notifyFMAdminPaymentSourceAdded",
     authController.authorizeMaster,
     notificationRestController.notifyFMAdminPaymentSourceAdded);
