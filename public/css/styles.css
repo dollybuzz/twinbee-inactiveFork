@@ -643,14 +643,9 @@ th {
     background-color: #32444e;
     border: none;
     color: white;
-
 }
 
 #userAction:hover {
     background-color: #dbb459;
     color: white;
-}
-
-.dropdown-menu-right:hover {
-    display: block;
 }

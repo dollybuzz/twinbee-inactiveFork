@@ -2954,6 +2954,9 @@ $(document).ready(function () {
         }
     });
 
+    //Hover simulation on drop down
+    $("#userAction").mouseenter(function(){$("#userAction").click()}).mouseleave(function(){$("#userAction").click()});
+
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 });
