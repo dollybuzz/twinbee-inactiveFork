@@ -374,6 +374,9 @@ label {
 #time {
     padding-top: 10px;
     padding-bottom: 10px;
+    color: white;
+    background: linear-gradient(45deg, transparent, rgba(100,100,100,.4));
+    font-weight: 480;
 }
 #landingTitle {
     width: inherit;
@@ -643,7 +646,6 @@ th {
     background-color: #32444e;
     border: none;
     color: white;
-
 }
 
 #userAction:hover {
@@ -651,6 +653,6 @@ th {
     color: white;
 }
 
-.dropdown-menu-right:hover {
-    display: block;
+background-image {
+    opacity: 80%;
 }

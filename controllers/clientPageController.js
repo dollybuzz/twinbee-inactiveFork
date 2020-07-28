@@ -5,7 +5,7 @@ module.exports ={
             text: "clientTitle"
         };
         let headerTitle = {
-            text: "Client Portal"
+            text: ""
         };
         let headerImageActual = {
             src: "/img/freedom-makers-logo.png",
