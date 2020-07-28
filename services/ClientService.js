@@ -22,11 +22,21 @@ let updateClient = (customerId, keyValuePairs) => {
     });
 };
 
-
 let notifyClientOutOfCredits = email => {
     request({
         method: 'POST',
         uri: `${process.env.TWINBEE_URL}/api/notifyClientOutOfCredits`,
+        form: {
+            'auth': process.env.TWINBEE_MASTER_AUTH,
+            'email': email
+        }
+    }).catch(err => logCaughtError(err));
+};
+
+let notifyClientLowCredits = email => {
+    request({
+        method: 'POST',
+        uri: `${process.env.TWINBEE_URL}/api/notifyClientLowCredits`,
         form: {
             'auth': process.env.TWINBEE_MASTER_AUTH,
             'email': email
@@ -40,10 +50,6 @@ let notifyClientOutOfCredits = email => {
  *
  */
 class ClientService {
-    test(a) {
-        notifyClientOutOfCredits(a)
-    }
-
     /**
      * Note: no setup for the service is necessary. The ClientService object
      * is to be used as a singleton.
@@ -199,9 +205,14 @@ class ClientService {
         let newMinutes = minuteChange + client.meta_data.buckets[planBucket];
         let planMinutes = {};
         planMinutes[planBucket] = newMinutes;
+
         if (newMinutes < 0) {
             notifyClientOutOfCredits(client.email);
         }
+        else if (newMinutes < client.meta_data.threshold[planBucket] || 300){
+            notifyClientLowCredits(client.email);
+        }
+
         this.updateClientBuckets(clientId, planMinutes);
         return client;
     }

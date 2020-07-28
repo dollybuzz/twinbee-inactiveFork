@@ -142,7 +142,7 @@ module.exports = {
      * @returns {Promise<[{},...]>}
      */
     notifyClientOutOfCredits: async (req, res) =>{
-        console.log("Notifying app admin of client purchase via rest!");
+        console.log("Notifying client of empty bucket via rest!");
         console.log(req.body);
 
         let validationResult = await validateParams(
@@ -161,6 +161,38 @@ module.exports = {
             res.send({status: "Request Sent"});
         }
     },
+
+
+    /**
+     * ENDPOINT: /api/notifyClientLowCredits
+     * Notifies client that they are low on credits:
+     * {
+     *     "auth": authentication credentials; either master or token,
+     *     "email": email of client to be notified
+     * }
+     * @returns {Promise<[{},...]>}
+     */
+    notifyClientLowCredits: async (req, res) =>{
+        console.log("Notifying client of low bucket via rest!");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["email", "auth"],
+                "positiveIntegerOnly": [],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            notificationService.notifyClientLowCredits(req.body.email);
+            res.send({status: "Request Sent"});
+        }
+    },
+
 
 
     /**

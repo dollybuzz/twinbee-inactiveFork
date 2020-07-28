@@ -21,6 +21,7 @@ const timeReportingRestController = require('./controllers/timeReportingRestCont
 const authController = require('./controllers/authController.js');
 const notificationRestController = require('./controllers/notificationRestController.js');
 const authRestController = require('./controllers/authRestController.js');
+const {notifyClientLowCredits} = require("./services/notificationService");
 
 //Express configurations
 const app = express();
@@ -409,6 +410,9 @@ app.post("/api/notifyAdminClientUpdate",
 app.post("/api/notifyClientOutOfCredits",
     authController.authorizeMaster,
     notificationRestController.notifyClientOutOfCredits);
+app.post("/api/notifyClientLowCredits",
+    authController.authorizeMaster,
+    notificationRestController.notifyClientLowCredits);
 app.post("/api/notifyFMAdminPaymentSourceAdded",
     authController.authorizeMaster,
     notificationRestController.notifyFMAdminPaymentSourceAdded);
