@@ -359,7 +359,6 @@ label {
     text-align: right;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-right: 10px;
 }
 
 #welcome {
@@ -368,12 +367,14 @@ label {
 
 #landingTime {
     position: relative;
-    top: 100px;
+    top: 45px;
+    text-align: right;
 }
 
 #time {
     padding-top: 10px;
     padding-bottom: 10px;
+    padding-right: 20px;
     color: white;
     background: linear-gradient(45deg, transparent, transparent, rgba(100,100,100,.2), rgba(100,100,100,.4));
     font-weight: 480;
