@@ -789,6 +789,14 @@ $(document).ready(function () {
         }
     });
 
+    //Hover simulation on drop down
+    $("#userAction").mouseenter(function(){$("#userAction").click()});
+    $("#userOptions").mouseleave(function(){
+        $("#welcome").removeClass("show");
+        $("#userAction").attr("aria-expanded", "false");
+        $(".dropdown-menu").removeClass("show");
+    });
+
     //shifts the logo
     $("#landingLogo").css("width", "20%");
 });//end document ready

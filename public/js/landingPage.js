@@ -13,8 +13,6 @@ $(document).ready(function () {
     $("#welcome").css("color", "white");
 })
 
-
-
 function onSignIn(googleUser) {
     GOOGLE_USER = googleUser;
     var id_token = GOOGLE_USER.getAuthResponse().id_token;
