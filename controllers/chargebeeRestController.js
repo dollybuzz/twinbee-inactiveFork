@@ -672,7 +672,8 @@ module.exports = {
      * for data in the body in the form:
      * {
      *     "auth": valid auth token,
-     *     "token": requester's token
+     *     "token": requester's token,
+     *     "subscriptionId": id of subscription to pause
      * }
      * @param req
      * @param res
@@ -686,7 +687,7 @@ module.exports = {
             {
                 "present": [],
                 "positiveIntegerOnly": [],
-                "noSpaces": ["token"],
+                "noSpaces": ["token", "subscriptionId"],
                 "positiveDecimalAllowed": [],
                 "decimalAllowed": []
             }, req.body);
@@ -696,7 +697,7 @@ module.exports = {
         } else {
             let email = await getEmailFromToken(req.body.token);
             let client = chargebeeService.getCustomerByEmail(email);
-            res.send(await chargebeeService.pauseSubscription(client.id).catch(err => logCaughtError(err)));
+            res.send(await chargebeeService.pauseMySubscription(req.body.subscriptionId, client.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -707,7 +708,8 @@ module.exports = {
      * for data in the body in the form:
      * {
      *     "auth": valid auth token,
-     *     "token": requester's token
+     *     "token": requester's token,
+     *     "subscriptionId": id of subscription to pause
      * }
      * @param req
      * @param res
@@ -721,7 +723,7 @@ module.exports = {
             {
                 "present": [],
                 "positiveIntegerOnly": [],
-                "noSpaces": ["token"],
+                "noSpaces": ["token", "subscriptionId"],
                 "positiveDecimalAllowed": [],
                 "decimalAllowed": []
             }, req.body);
@@ -731,7 +733,7 @@ module.exports = {
         } else {
             let email = await getEmailFromToken(req.body.token);
             let client = chargebeeService.getCustomerByEmail(email);
-            res.send(await chargebeeService.resumePausedSubscription(client.id).catch(err => logCaughtError(err)));
+            res.send(await chargebeeService.resumeMyPausedSubscription(req.body.subscriptionId, client.id).catch(err => logCaughtError(err)));
         }
     },
 
@@ -742,7 +744,8 @@ module.exports = {
      * for data in the body in the form:
      * {
      *     "auth": valid auth token,
-     *     "token": requester's token
+     *     "token": requester's token,
+     *     "subscriptionId": id of subscription to pause
      * }
      * @param req
      * @param res
@@ -756,7 +759,7 @@ module.exports = {
             {
                 "present": [],
                 "positiveIntegerOnly": [],
-                "noSpaces": ["token"],
+                "noSpaces": ["token", "subscriptionId"],
                 "positiveDecimalAllowed": [],
                 "decimalAllowed": []
             }, req.body);
@@ -766,7 +769,7 @@ module.exports = {
         } else {
             let email = await getEmailFromToken(req.body.token);
             let client = chargebeeService.getCustomerByEmail(email);
-            res.send(await chargebeeService.undoPause(client.id).catch(err => logCaughtError(err)));
+            res.send(await chargebeeService.undoMyPause(req.body.subscriptionId, client.id).catch(err => logCaughtError(err)));
         }
     },
 

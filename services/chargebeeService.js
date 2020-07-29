@@ -591,6 +591,91 @@ class ChargebeeService {
 
 
     /**
+     * Pauses a subscription at the end of the current term.
+     *
+     * @param subscriptionId    - subscription to be paused.
+     * @param clientId          - subscribed customer
+     * @returns {Promise<>}
+     */
+    async pauseMySubscription(subscriptionId, clientId) {
+        let  {subscription} = await this.retrieveSubscription(subscriptionId);
+        if (subscription.customer_id !== clientId){
+            return false;
+        }
+        console.log(`Pausing subscription ${subscriptionId}...`);
+        return new Promise(((resolve, reject) => {
+            chargebee.subscription.pause(subscriptionId, {
+                pause_option: "end_of_term"
+            }).request(function (error, result) {
+                if (error) {
+                    logCaughtError(error);
+                } else {
+                    const subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        }))
+    }
+
+
+    /**
+     * Reverts a scheduled pause for a subscription immediately.
+     *
+     * @param subscriptionId    - subscription to be paused.
+     * @param clientId          - subscribed customer
+     * @returns {Promise<>}
+     */
+    async undoMyPause(subscriptionId, clientId) {
+        let  {subscription} = await this.retrieveSubscription(subscriptionId);
+        if (subscription.customer_id !== clientId){
+            return false;
+        }
+        console.log(`Pausing subscription ${subscriptionId}...`);
+        return new Promise(((resolve, reject) => {
+            chargebee.subscription.remove_scheduled_pause(subscriptionId)
+                .request(function (error, result) {
+                    if (error) {
+                        logCaughtError(error);
+                    } else {
+                        const subscription = result.subscription;
+                        resolve(subscription);
+                    }
+                });
+        }))
+    }
+
+
+    /**
+     * Immediately resumes a paused subscription at the end of the current term.
+     *
+     * @param subscriptionId    - subscription to be paused.
+     * @param clientId          - subscribed customer
+     * @returns {Promise<>}
+     */
+    async resumeMyPausedSubscription(subscriptionId, clientId) {
+
+        let  {subscription} = await this.retrieveSubscription(subscriptionId);
+        if (subscription.customer_id !== clientId){
+            return false;
+        }
+        console.log(`Resuming subscription ${subscriptionId}...`);
+        return new Promise(((resolve, reject) => {
+            chargebee.subscription.resume(subscriptionId, {
+                resume_option: "immediately"
+            }).request(function (error, result) {
+                if (error) {
+                    logCaughtError(error);
+                    reject(error);
+                } else {
+                    const subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        }))
+    }
+
+
+    /**
      * Retrieves all transactions from the environment as chargebee entries.
      * Note that in order to access meaningful data, an intermediate object is
      * accessed. E.g, to access "status", given that "returnedValue" is the
