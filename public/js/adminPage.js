@@ -1057,6 +1057,7 @@ function verifyDeletePlan() {
 
 //Subscription Methods
 function subscriptionFunctionality(res) {
+
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -1110,6 +1111,7 @@ function subscriptionFunctionality(res) {
 
     //Body Block content
     createBody("Cancel");
+    $("")
 
     //Event Listeners
     //Modify
@@ -1162,8 +1164,66 @@ function subscriptionFunctionality(res) {
     });
 }
 
+function pauseSubscription(id){
+    $.ajax({
+        url: "/api/pauseSubscription",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: id
+        },
+        dataType: "json",
+        success: function (res, status) {
+           $("#pauseResumeSubscription").on("click", function () {
+               resumeSubscription(id);
+           }).html("Resume");
+            $(".spinner-border").remove();
+        },
+        error: function (res, status) {
+            $("#pauseResumeSubscription").on("click", function () {
+                pauseSubscription(id);
+            }).html("Pause");
+            $(".spinner-border").remove();
+        }
+    });
+}
+
+function resumeSubscription(id){
+    $.ajax({
+        url: "/api/pauseSubscription",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: id
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#pauseResumeSubscription").on("click", function () {
+                pauseSubscription(id);
+            }).html("Pause");
+            $(".spinner-border").remove();
+        },
+        error: function (res, status) {
+            $("#pauseResumeSubscription").on("click", function () {
+                resumeSubscription(id);
+            }).html("Resume");
+            $(".spinner-border").remove();
+        }
+    });
+}
+
+
 function subscriptionModForm(res, status) {
     //Pre-populate forms
+    console.log(res);
+    if (res.status === "active" || res.status === "paused") {
+        $("#buttonsTop").append(`<button id="pauseResumeSubscription" class="btn btn-default" style="float:right">${res.status === "active" ? "Pause" : "Resume"}</button>`);
+        $("#pauseResumeSubscription").on("click", function () {
+            $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+            let functionToCall = (res.status === "active" ? pauseSubscription : resumeSubscription);
+            functionToCall(res.id);
+        })
+    }
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
         "<label for='empty'></label>" +

@@ -415,6 +415,14 @@ app.post("/api/notifyClientLowCredits",
 app.post("/api/notifyFMAdminPaymentSourceAdded",
     authController.authorizeMaster,
     notificationRestController.notifyFMAdminPaymentSourceAdded);
+app.post("/api/pauseSubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.pauseSubscription);
+app.post("/api/resumePausedSubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.resumePausedSubscription);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

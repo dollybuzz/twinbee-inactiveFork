@@ -109,7 +109,7 @@ body a:hover {
     color: #dbb459;
 }
 
-#SubmitButton, #NoDelete, #SubmitIssue {
+#SubmitButton, #NoDelete, #SubmitIssue, #pauseResumeSubscription {
     color: white;
     background-color: #32444e;
 }
@@ -124,7 +124,7 @@ body a:hover {
     transition: opacity 0.5s ease-in-out;
 }
 
-#ChangeSubButton:hover, #BuyHoursSubButton:hover, #ManageAvailCreditButton:hover
+#ChangeSubButton:hover, #BuyHoursSubButton:hover, #ManageAvailCreditButton:hover, #pauseResumeSubscription:hover
 {
     color: white;
     background-color: #dbb459;
