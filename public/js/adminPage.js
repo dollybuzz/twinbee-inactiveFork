@@ -1107,7 +1107,7 @@ function subscriptionFunctionality(res) {
                     '   <td>' + subscription.plan_quantity + '</td>' +
                     "   <td>" + changes + "</td>" +
                     '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                    '   <td>' + (subscription.next_billing_at == undefined ? (subscription.paused_at ? "Paused":"Terminated")  : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td></tr>'
+                    '   <td>' + (subscription.next_billing_at == undefined ? (subscription.pause_date ? "Paused":"Terminated")  : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td></tr>'
                 );
             }
         }
