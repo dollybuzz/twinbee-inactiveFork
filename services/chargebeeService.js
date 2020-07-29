@@ -545,6 +545,28 @@ class ChargebeeService {
 
 
     /**
+     * Reverts a scheduled pause for a subscription immediately.
+     *
+     * @param subscriptionId to be paused.
+     * @returns {Promise<>}
+     */
+    async undoPause(subscriptionId) {
+        console.log(`Pausing subscription ${subscriptionId}...`);
+        return new Promise(((resolve, reject) => {
+            chargebee.subscription.remove_scheduled_pause(subscriptionId)
+                .request(function (error, result) {
+                if (error) {
+                    logCaughtError(error);
+                } else {
+                    const subscription = result.subscription;
+                    resolve(subscription);
+                }
+            });
+        }))
+    }
+
+
+    /**
      * Immediately resumes a paused subscription at the end of the current term.
      *
      * @param subscriptionId to be paused.

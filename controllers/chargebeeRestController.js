@@ -633,6 +633,39 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/undoPause
+     *
+     * Immediately reverts a scheduled pause on a subscription. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "id": id of subscription to be resumed
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    undoPause: async function (req, res) {
+        console.log(`Attempting to reverse pause for subscription ${req.body.id} from REST`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["id"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            res.send(await chargebeeService.undoPause(req.body.id).catch(err => logCaughtError(err)));
+        }
+    },
+
+    /**
      * ENDPOINT: /api/doesCustomerHaveInvoices
      *
      * Determines whether a customer has outstanding invoices. Looks

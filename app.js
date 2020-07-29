@@ -423,6 +423,10 @@ app.post("/api/resumePausedSubscription",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     chargebeeRestController.resumePausedSubscription);
+app.post("/api/undoPause",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.undoPause);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});

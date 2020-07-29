@@ -1193,6 +1193,30 @@ function pauseSubscription(id){
     });
 }
 
+function undoPause(id){
+    $.ajax({
+        url: "/api/undoPause",
+        method: "post",
+        data: {
+            auth: id_token,
+            id: id
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#pauseResumeSubscription").on("click", function () {
+                pauseSubscription(id);
+            }).html("Pause");
+            $(".spinner-border").remove();
+        },
+        error: function (res, status) {
+            $("#pauseResumeSubscription").on("click", function () {
+                resumeSubscription(id);
+            }).html("Resume");
+            $(".spinner-border").remove();
+        }
+    });
+}
+
 function resumeSubscription(id){
     $.ajax({
         url: "/api/resumePausedSubscription",
@@ -1224,10 +1248,10 @@ function subscriptionModForm(res, status) {
     console.log(res.pause_date ? "YES " : "NO");
 
     if (res.status === "active" && !res.has_scheduled_changes) {
-        $("#extraButtonSpan").html(`<button id="pauseResumeSubscription" class="btn btn-default" style="float:right">${res.pause_date ? "Resume" : "Pause"}</button>`);
+        $("#extraButtonSpan").html(`<button id="pauseResumeSubscription" class="btn btn-default" style="float:right">${res.pause_date || res.status === "paused" ? "Resume" : "Pause"}</button>`);
         $("#pauseResumeSubscription").on("click", function () {
             $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
-            let functionToCall = (res.pause_date ? resumeSubscription : pauseSubscription);
+            let functionToCall = (res.pause_date || res.status === "paused" ? (res.status === "paused" ? resumeSubscription : undoPause) : pauseSubscription);
             functionToCall(res.id);
         })
     }
