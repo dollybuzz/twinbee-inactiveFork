@@ -11,7 +11,7 @@ module.exports ={
             src: "/img/freedom-makers-logo.png",
             alt: "Freedom Makers Logo"
         };
-        let headerBackgroundImage = {src:"/img/centralParkSkinny.jpg"};
+        let headerBackgroundImage = {src:"/img/bridgeSkinny.jpg"};
         let headerLinks = [
             {link: "/maker", text: "Main", id:"main"},
             {link: "", text: "Time Clock", id:"timeclock"},
