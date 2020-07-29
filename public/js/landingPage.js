@@ -7,6 +7,7 @@ $(document).ready(function () {
 
     //shifts the landing logo
     $("#landingLogo").css("margin-left", "0");
+    $("#landingLogo").css("margin-top", "0");
     $("#landingLogo").css("text-align", "center");
     $("#landingLogo").css("padding", "15px");
 
