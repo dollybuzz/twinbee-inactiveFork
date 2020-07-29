@@ -428,16 +428,13 @@ app.post("/api/undoPause",
     authController.authorizeMaster,
     chargebeeRestController.undoPause);
 app.post("/api/pauseMySubscription",
-    authController.authorizeAdmin,
-    authController.authorizeMaster,
+    authController.authorizeClient,
     chargebeeRestController.pauseMySubscription);
 app.post("/api/resumeMyPausedSubscription",
-    authController.authorizeAdmin,
-    authController.authorizeMaster,
+    authController.authorizeClient,
     chargebeeRestController.resumeMyPausedSubscription);
 app.post("/api/undoMyPause",
-    authController.authorizeAdmin,
-    authController.authorizeMaster,
+    authController.authorizeClient,
     chargebeeRestController.undoMyPause);
 
 app.get("/api/getEnvironment",
