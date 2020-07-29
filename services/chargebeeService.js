@@ -597,6 +597,8 @@ class ChargebeeService {
      * @returns {Promise<>}
      */
     async pauseMySubscription(subscriptionId, clientId) {
+        console.log(subscriptionId)
+        console.log(clientId)
         let subscription = await this.retrieveSubscription(subscriptionId);
         if (subscription.customer_id !== clientId) {
             return false;
