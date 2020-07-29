@@ -1180,12 +1180,14 @@ function pauseSubscription(id){
         dataType: "json",
         success: function (res, status) {
            $("#pauseResumeSubscription").on("click", function () {
-               resumeSubscription(id);
+               $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+               undoPause(id);
            }).html("Resume");
             $(".spinner-border").remove();
         },
         error: function (res, status) {
             $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                 pauseSubscription(id);
             }).html("Pause");
             $(".spinner-border").remove();
@@ -1204,13 +1206,15 @@ function undoPause(id){
         dataType: "json",
         success: function (res, status) {
             $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                 pauseSubscription(id);
             }).html("Pause");
             $(".spinner-border").remove();
         },
         error: function (res, status) {
             $("#pauseResumeSubscription").on("click", function () {
-                resumeSubscription(id);
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                undoPause(id);
             }).html("Resume");
             $(".spinner-border").remove();
         }
@@ -1228,12 +1232,14 @@ function resumeSubscription(id){
         dataType: "json",
         success: function (res, status) {
             $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                 pauseSubscription(id);
             }).html("Pause");
             $(".spinner-border").remove();
         },
         error: function (res, status) {
             $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
                 resumeSubscription(id);
             }).html("Resume");
             $(".spinner-border").remove();
