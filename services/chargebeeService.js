@@ -271,16 +271,16 @@ class ChargebeeService {
      * @param email - email of customer to retrieve.
      * @returns {Promise<null|*>}
      */
-    async getCustomerByEmail(email){
+    async getCustomerByEmail(email) {
         console.log(`Retrieving customer by email ${email}`);
         let err;
-        let result = await chargebee.customer.list({"email[is]":email,"sort_by[desc]" : "created_at"}).request()
+        let result = await chargebee.customer.list({"email[is]": email, "sort_by[desc]": "created_at"}).request()
             .catch(error => err = error);
-        if (err){
+        if (err) {
             logCaughtError(err);
             return null;
         }
-        if (!result.list || result.list.length === 0){
+        if (!result.list || result.list.length === 0) {
             return null;
         }
         return result.list[0].customer;
@@ -301,20 +301,19 @@ class ChargebeeService {
             limit: 2,
             "customer_id[is]": customerId,
             "plan_id[is]": planId,
-            "sort_by[desc]" : "created_at"
+            "sort_by[desc]": "created_at"
         }).request().catch(error => {
             logCaughtError();
             err = error;
         });
-        if (err){
+        if (err) {
             return null;
         }
-        if (listObject && listObject.length && listObject.length > 0){
+        if (listObject && listObject.length && listObject.length > 0) {
             let assumedValidEntry = listObject[0];
             let subscription = assumedValidEntry.subscription;
             return subscription.plan_unit_price;
-        }
-        else{
+        } else {
             let plan = await this.retrievePlan(planId).catch(error => logCaughtError(error));
             return plan.price;
         }
@@ -555,13 +554,13 @@ class ChargebeeService {
         return new Promise(((resolve, reject) => {
             chargebee.subscription.remove_scheduled_pause(subscriptionId)
                 .request(function (error, result) {
-                if (error) {
-                    logCaughtError(error);
-                } else {
-                    const subscription = result.subscription;
-                    resolve(subscription);
-                }
-            });
+                    if (error) {
+                        logCaughtError(error);
+                    } else {
+                        const subscription = result.subscription;
+                        resolve(subscription);
+                    }
+                });
         }))
     }
 
@@ -598,8 +597,8 @@ class ChargebeeService {
      * @returns {Promise<>}
      */
     async pauseMySubscription(subscriptionId, clientId) {
-        let  {subscription} = await this.retrieveSubscription(subscriptionId);
-        if (subscription.customer_id !== clientId){
+        let subscription = await this.retrieveSubscription(subscriptionId);
+        if (subscription.customer_id !== clientId) {
             return false;
         }
         console.log(`Pausing subscription ${subscriptionId}...`);
@@ -626,8 +625,8 @@ class ChargebeeService {
      * @returns {Promise<>}
      */
     async undoMyPause(subscriptionId, clientId) {
-        let  {subscription} = await this.retrieveSubscription(subscriptionId);
-        if (subscription.customer_id !== clientId){
+        let subscription = await this.retrieveSubscription(subscriptionId);
+        if (subscription.customer_id !== clientId) {
             return false;
         }
         console.log(`Pausing subscription ${subscriptionId}...`);
@@ -654,8 +653,8 @@ class ChargebeeService {
      */
     async resumeMyPausedSubscription(subscriptionId, clientId) {
 
-        let  {subscription} = await this.retrieveSubscription(subscriptionId);
-        if (subscription.customer_id !== clientId){
+        let subscription = await this.retrieveSubscription(subscriptionId);
+        if (subscription.customer_id !== clientId) {
             return false;
         }
         console.log(`Resuming subscription ${subscriptionId}...`);
@@ -715,7 +714,7 @@ class ChargebeeService {
      */
     async chargeCustomerNow(plan, numHours, customerId, autoCollection) {
 
-        if (!autoCollection){
+        if (!autoCollection) {
             autoCollection = "on";
         }
 
@@ -752,15 +751,15 @@ class ChargebeeService {
 
         chargebee.invoice.create({
             customer_id: customerId,
-            charges:[{
+            charges: [{
                 amount: calculatedPrice.toString(),
                 description: `Buy ${message} for ${plan}`
             }],
             auto_collection: autoCollection
-        }).request( (error, result) => {
+        }).request((error, result) => {
             if (error) {
                 logCaughtError(error);
-                if (error.api_error_code.toString() === "payment_method_not_present"){
+                if (error.api_error_code.toString() === "payment_method_not_present") {
                     let message = "Retrying without auto collection...";
                     logCaughtError(message);
                     return this.chargeCustomerNow(plan, numHours, customerId, "off");
@@ -788,7 +787,7 @@ class ChargebeeService {
      * @param clientId  - id of client in question
      * @returns {Promise<{invoicesPresent: (*|boolean)}>}
      */
-    async doesCustomerHaveInvoices(clientId){
+    async doesCustomerHaveInvoices(clientId) {
         let invoices = await chargebee.invoice.list({
             limit: 100,
             "status[is]": "payment_due",
@@ -819,7 +818,7 @@ class ChargebeeService {
             refinedList.push(list[i].invoice);
         }
 
-        while (invoices.next_offset){
+        while (invoices.next_offset) {
             invoices = await chargebee.invoice.list({
                 limit: 100,
                 "status[is]": "not_paid",

@@ -565,7 +565,8 @@ function pauseSubscription(id){
         method: "post",
         data: {
             auth: id_token,
-            token: id_token
+            token: id_token,
+            subscriptionId: id
         },
         dataType: "json",
         success: function (res, status) {
@@ -593,7 +594,8 @@ function undoPause(id){
         method: "post",
         data: {
             auth: id_token,
-            token: id_token
+            token: id_token,
+            subscriptionId: id
         },
         dataType: "json",
         success: function (res, status) {
@@ -621,7 +623,8 @@ function resumeSubscription(id){
         method: "post",
         data: {
             auth: id_token,
-            token: id_token
+            token: id_token,
+            subscriptionId: id
         },
         dataType: "json",
         success: function (res, status) {

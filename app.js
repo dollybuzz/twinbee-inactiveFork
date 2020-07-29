@@ -21,6 +21,7 @@ const timeReportingRestController = require('./controllers/timeReportingRestCont
 const authController = require('./controllers/authController.js');
 const notificationRestController = require('./controllers/notificationRestController.js');
 const authRestController = require('./controllers/authRestController.js');
+const service = require("./services/chargebeeService");
 
 //Express configurations
 const app = express();
