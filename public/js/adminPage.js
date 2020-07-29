@@ -3030,7 +3030,7 @@ $(document).ready(function () {
     });
 
     //Adding logout Button
-    $("#logout").html("<a href='#' class='dropdown-item' id='logoutButton'>Log Out</a>");
+    $("#logout").html("<a class='dropdown-item' id='logoutButton'>Log Out</a>");
     $("#logoutButton").click(signOut);
 
     //Event Listeners for other nav menu items
