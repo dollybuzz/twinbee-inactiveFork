@@ -15,7 +15,8 @@
 
     let result = await dbControl.query(sql, sqlParams);
  */
-
+const mongo = require('mongodb');
+const MongoClient = require('mongodb').MongoClient;
 const mysql = require("mysql");
 const util = require('util');
 const {logCaughtError} = require('../util.js');
@@ -34,6 +35,10 @@ class RepoMaster {
         this.query = util.promisify(this.conn.query).bind(this.conn);
         this.activateConnection(this, 5).catch(error => {
             if(error) { logCaughtError(error)}
+        });
+        MongoClient.connect(process.env.TWINBEE_MONGO, async (err, db)=> {
+            if (err) logCaughtError(err);
+            this.collections = db.db(process.env.TWINBEE_MONGO_DB);
         });
     }
 
