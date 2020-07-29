@@ -90,7 +90,7 @@ function createBody(button) {
     $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#ExpandButton").hide();
     if (button != null) {
-        $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
+        $("#buttonsTop").append("<span id='extraButtonSpan' style='float:right'></span><button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
     }
     $("#AddButton").css("opacity", "1");
 
@@ -121,6 +121,7 @@ function minimizeTable() {
 function expandTable() {
     $("#optionsClient").hide();
     $("#DeleteButton").hide();
+    $("#extraButtonSpan").html("")
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
     $("#floor").css("width", "100%");
@@ -232,6 +233,7 @@ function showDeletePrompt(option, prompt, endpoint, object, successFunction, ver
         setTimeout(function () {
             $("#AddButton").hide();
             $("#DeleteButton").hide();
+            $("#extraButtonSpan").html("")
         }, 500);
 
         $("#NoDelete").click(function () {
@@ -412,6 +414,7 @@ function clientFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
+            $("#extraButtonSpan").html("")
         }, 500);
     });
 
@@ -676,6 +679,7 @@ function makerFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
+            $("#extraButtonSpan").html("")
         }, 500);
     });
 
@@ -898,6 +902,7 @@ function planFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
+            $("#extraButtonSpan").html("")
         }, 500);
     });
 
@@ -1111,7 +1116,6 @@ function subscriptionFunctionality(res) {
 
     //Body Block content
     createBody("Cancel");
-    $("")
 
     //Event Listeners
     //Modify
@@ -1147,6 +1151,7 @@ function subscriptionFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
+            $("#extraButtonSpan").html("")
         }, 500);
     });
 
@@ -1217,7 +1222,7 @@ function subscriptionModForm(res, status) {
     //Pre-populate forms
     console.log(res);
     if (res.status === "active" || res.status === "paused") {
-        $("#buttonsTop").append(`<button id="pauseResumeSubscription" class="btn btn-default" style="float:right">${res.status === "active" ? "Pause" : "Resume"}</button>`);
+        $("#extraButtonSpan").html(`<button id="pauseResumeSubscription" class="btn btn-default" style="float:right">${res.status === "active" ? "Pause" : "Resume"}</button>`);
         $("#pauseResumeSubscription").on("click", function () {
             $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
             let functionToCall = (res.status === "active" ? pauseSubscription : resumeSubscription);
@@ -1253,6 +1258,7 @@ function subscriptionModForm(res, status) {
         setTimeout(function () {
             $("#SubmitButton").hide();
             $("#DeleteButton").hide();
+            $("#extraButtonSpan").html("")
             $("#pendingChanges").css("opacity", "1");
         }, 500);
     }
@@ -1600,6 +1606,7 @@ function relationshipFunctionality(res) {
                                 $("#DeleteButton").css("opacity", "0");
                                 setTimeout(function () {
                                     $("#DeleteButton").hide();
+                                    $("#extraButtonSpan").html("")
                                 }, 500);
                             });
 
@@ -2326,6 +2333,7 @@ function timeSheetFunctionality(res) {
                         $("#DeleteButton").css("opacity", "0");
                         setTimeout(function () {
                             $("#DeleteButton").hide();
+                            $("#extraButtonSpan").html("")
                         }, 500);
                     });
 
