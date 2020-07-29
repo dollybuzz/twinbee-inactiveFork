@@ -464,7 +464,7 @@ function subscriptionFunctionality(res) {
 
     //Populate table
     let i = 1;
-    res.forEach(item => {
+    for (let item of res) {
         let subscription = item.subscription;
         item = item.subscription;
         let scheduled = subscription.has_scheduled_changes;
@@ -515,7 +515,7 @@ function subscriptionFunctionality(res) {
                     '   <td>' + subscription.plan_quantity + '</td>' +
                     '   <td>' + changes + '</td>' +
                     '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                    '   <td>' + (subscription.next_billing_at == undefined ? "Terminated" : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
+                    '   <td>' + (subscription.next_billing_at == undefined ? (subscription.pause_date ? "Paused":"Terminated") : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
                     `   <td>$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</td>` +
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
@@ -532,7 +532,7 @@ function subscriptionFunctionality(res) {
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
         }
-    });
+    };
     $("#subscriptionTable").append('\n</tbody>');
 
     //Body Block content
