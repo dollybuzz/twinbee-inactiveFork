@@ -89,7 +89,7 @@ class MakerRepository {
     }
 
     async getMakerIdByEmail(email) {
-        let sql = 'SELECT id FROM maker WHERE email = ?';
+        let sql = 'SELECT id FROM maker WHERE email = ? AND deleted = false';
         let sqlParam = [email];
         let result;
         result = await repoMaster.query(sql, sqlParam).catch(e => {
