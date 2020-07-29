@@ -2962,6 +2962,4 @@ $(document).ready(function () {
         $(".dropdown-menu").removeClass("show");
     });
 
-    //shifts the logo
-    $("#landingLogo").css("width", "20%");
 });
