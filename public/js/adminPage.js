@@ -1265,6 +1265,9 @@ function subscriptionModForm(res, status) {
             functionToCall(res.id);
         })
     }
+    else{
+        $("#extraButtonSpan").html("");
+    }
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
         "<label for='empty'></label>" +
