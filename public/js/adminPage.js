@@ -121,7 +121,7 @@ function minimizeTable() {
 function expandTable() {
     $("#optionsClient").hide();
     $("#DeleteButton").hide();
-    $("#extraButtonSpan").html("")
+    $("#extraButtonSpan").html("");
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
     $("#floor").css("width", "100%");
@@ -233,7 +233,7 @@ function showDeletePrompt(option, prompt, endpoint, object, successFunction, ver
         setTimeout(function () {
             $("#AddButton").hide();
             $("#DeleteButton").hide();
-            $("#extraButtonSpan").html("")
+            $("#extraButtonSpan").html("");
         }, 500);
 
         $("#NoDelete").click(function () {
@@ -414,7 +414,7 @@ function clientFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
-            $("#extraButtonSpan").html("")
+            $("#extraButtonSpan").html("");
         }, 500);
     });
 
@@ -679,7 +679,7 @@ function makerFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
-            $("#extraButtonSpan").html("")
+            $("#extraButtonSpan").html("");
         }, 500);
     });
 
@@ -902,7 +902,7 @@ function planFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
-            $("#extraButtonSpan").html("")
+            $("#extraButtonSpan").html("");
         }, 500);
     });
 
@@ -1151,7 +1151,7 @@ function subscriptionFunctionality(res) {
         $("#DeleteButton").css("opacity", "0");
         setTimeout(function () {
             $("#DeleteButton").hide();
-            $("#extraButtonSpan").html("")
+            $("#extraButtonSpan").html("");
         }, 500);
     });
 
@@ -1297,7 +1297,7 @@ function subscriptionModForm(res, status) {
         setTimeout(function () {
             $("#SubmitButton").hide();
             $("#DeleteButton").hide();
-            $("#extraButtonSpan").html("")
+            $("#extraButtonSpan").html("");
             $("#pendingChanges").css("opacity", "1");
         }, 500);
     }
@@ -1645,7 +1645,7 @@ function relationshipFunctionality(res) {
                                 $("#DeleteButton").css("opacity", "0");
                                 setTimeout(function () {
                                     $("#DeleteButton").hide();
-                                    $("#extraButtonSpan").html("")
+                                    $("#extraButtonSpan").html("");
                                 }, 500);
                             });
 
@@ -2372,7 +2372,7 @@ function timeSheetFunctionality(res) {
                         $("#DeleteButton").css("opacity", "0");
                         setTimeout(function () {
                             $("#DeleteButton").hide();
-                            $("#extraButtonSpan").html("")
+                            $("#extraButtonSpan").html("");
                         }, 500);
                     });
 
