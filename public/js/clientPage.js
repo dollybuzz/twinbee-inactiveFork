@@ -444,7 +444,7 @@ function prePopModForm(endpoint, modForm) { //not a versatile method
 function subscriptionFunctionality(res) {
     //Create table
     $("#userMainContent").html(
-        "<div id=\"buttonsTop\"></div>\n" +
+        "<div id=\"buttonsTop\"><span id='extraButtonSpan' style='float:right'></span></div>\n" +
         "<div class='row' id='topRow'>\n" +
         "<div id=\"floor\">\n" +
         "    <table id=\"subscriptionTable\" class=\"table\">\n" +
