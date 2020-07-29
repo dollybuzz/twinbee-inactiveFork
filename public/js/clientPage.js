@@ -36,7 +36,7 @@ function createBody(button) {
     $("#optionsClient").hide();
     $("#optionsClient").css("width", "50%");
     if (button != null) {
-        $("#buttonsTop").append("<button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
+        $("#buttonsTop").append("<span id='extraButtonSpan' style='float:right'></span><button id='DeleteButton' type='button' class='btn btn-default'>" + button + "</button>");
     }
     $("#buttonsTop").append("<button id='ExpandButton' type='button' class='btn btn-default'>></button>");
     $("#ExpandButton").hide();
@@ -66,6 +66,7 @@ function minimizeTable() {
 
 function expandTable() {
     $("#optionsClient").hide();
+    $("#extraButtonSpan").html("");
     $("#optionsClient").css("width", "0%");
     $("#optionsClient").css("opacity", "0");
     $("#floor").css("width", "100%");
@@ -558,7 +559,101 @@ function subscriptionFunctionality(res) {
     });
 }
 
+function pauseSubscription(id){
+    $.ajax({
+        url: "/api/pauseMySubscription",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#pauseResumeSubscription").off("click");
+            $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                undoPause(id);
+            }).html("Resume");
+            $(".spinner-border").remove();
+        },
+        error: function (res, status) {
+            $("#pauseResumeSubscription").off("click");
+            $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                pauseSubscription(id);
+            }).html("Pause");
+            $(".spinner-border").remove();
+        }
+    });
+}
+
+function undoPause(id){
+    $.ajax({
+        url: "/api/undoMyPause",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#pauseResumeSubscription").off("click");
+            $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                pauseSubscription(id);
+            }).html("Pause");
+            $(".spinner-border").remove();
+        },
+        error: function (res, status) {
+            $("#pauseResumeSubscription").off("click");
+            $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                undoPause(id);
+            }).html("Resume");
+            $(".spinner-border").remove();
+        }
+    });
+}
+
+function resumeSubscription(id){
+    $.ajax({
+        url: "/api/resumeMyPausedSubscription",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token
+        },
+        dataType: "json",
+        success: function (res, status) {
+            $("#pauseResumeSubscription").off("click");
+            $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                pauseSubscription(id);
+            }).html("Pause");
+            $(".spinner-border").remove();
+        },
+        error: function (res, status) {
+            $("#pauseResumeSubscription").off("click");
+            $("#pauseResumeSubscription").on("click", function () {
+                $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+                resumeSubscription(id);
+            }).html("Resume");
+            $(".spinner-border").remove();
+        }
+    });
+}
+
 function subscriptionModForm(res, status) {
+    if (res.status === "active" && !res.has_scheduled_changes) {
+        $("#extraButtonSpan").html(`<button id="pauseResumeSubscription" class="btn btn-default" style="float:right">${res.pause_date || res.status === "paused" ? "Resume" : "Pause"}</button>`);
+        $("#pauseResumeSubscription").off("click");
+        $("#pauseResumeSubscription").on("click", function () {
+            $("#pauseResumeSubscription").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>");
+            let functionToCall = (res.pause_date || res.status === "paused" ? (res.status === "paused" ? resumeSubscription : undoPause) : pauseSubscription);
+            functionToCall(res.id);
+        })
+    }
+
     $("#optionsClient").html("<h5>Edit/Modify the following fields</h5><br>" +
         "<form id='modify'>\n" +
         "<label for='empty'></label>" +

@@ -666,6 +666,111 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/pauseMySubscription
+     *
+     * Pauses a currently active subscription at the end of the billing period. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "token": requester's token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    pauseMySubscription: async function (req, res) {
+        console.log(`Attempting to pause subscription ${req.body.id} from REST`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["token"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await getEmailFromToken(req.body.token);
+            let client = chargebeeService.getCustomerByEmail(email);
+            res.send(await chargebeeService.pauseSubscription(client.id).catch(err => logCaughtError(err)));
+        }
+    },
+
+    /**
+     * ENDPOINT: /api/resumeMyPausedSubscription
+     *
+     * Immediately resumes a currently paused subscription. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "token": requester's token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    resumeMyPausedSubscription: async function (req, res) {
+        console.log(`Attempting to resume subscription ${req.body.id} from REST`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["token"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await getEmailFromToken(req.body.token);
+            let client = chargebeeService.getCustomerByEmail(email);
+            res.send(await chargebeeService.resumePausedSubscription(client.id).catch(err => logCaughtError(err)));
+        }
+    },
+
+    /**
+     * ENDPOINT: /api/undoMyPause
+     *
+     * Immediately reverts a scheduled pause on a subscription. Looks
+     * for data in the body in the form:
+     * {
+     *     "auth": valid auth token,
+     *     "token": requester's token
+     * }
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    undoMyPause: async function (req, res) {
+        console.log(`Attempting to reverse pause for subscription ${req.body.id} from REST`);
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": [],
+                "positiveIntegerOnly": [],
+                "noSpaces": ["token"],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await getEmailFromToken(req.body.token);
+            let client = chargebeeService.getCustomerByEmail(email);
+            res.send(await chargebeeService.undoPause(client.id).catch(err => logCaughtError(err)));
+        }
+    },
+
+    /**
      * ENDPOINT: /api/doesCustomerHaveInvoices
      *
      * Determines whether a customer has outstanding invoices. Looks

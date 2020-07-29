@@ -1256,9 +1256,6 @@ function resumeSubscription(id){
 
 function subscriptionModForm(res, status) {
     //Pre-populate forms
-    console.log(res);
-    console.log(res.pause_date ? "YES " : "NO");
-
     if (res.status === "active" && !res.has_scheduled_changes) {
         $("#extraButtonSpan").html(`<button id="pauseResumeSubscription" class="btn btn-default" style="float:right">${res.pause_date || res.status === "paused" ? "Resume" : "Pause"}</button>`);
         $("#pauseResumeSubscription").off("click");

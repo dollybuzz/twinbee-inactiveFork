@@ -427,6 +427,18 @@ app.post("/api/undoPause",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     chargebeeRestController.undoPause);
+app.post("/api/pauseMySubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.pauseMySubscription);
+app.post("/api/resumeMyPausedSubscription",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.resumeMyPausedSubscription);
+app.post("/api/undoMyPause",
+    authController.authorizeAdmin,
+    authController.authorizeMaster,
+    chargebeeRestController.undoMyPause);
 
 app.get("/api/getEnvironment",
     (req, res)=>{res.send(process.env.TWINBEE_ENVIRONMENT_FLAG === 'test')});
