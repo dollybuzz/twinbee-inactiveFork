@@ -275,9 +275,9 @@ module.exports = {
         let validationResult = await validateParams(
             {
                 "present": ["planId", "auth", "clientName"],
-                "positiveIntegerOnly": ["numHours"],
+                "positiveIntegerOnly": [],
                 "noSpaces": [],
-                "positiveDecimalAllowed": [],
+                "positiveDecimalAllowed": ["numHours"],
                 "decimalAllowed": []
             }, req.body);
         if (!validationResult.isValid) {
