@@ -153,14 +153,14 @@ function showAlerts() {
         dataType: "json",
         success: function (bucketres, bucketstatus) {
             for(var plan in bucketres.buckets) {
-                if (Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0) {
-                    $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert' style=\"opacity: 0; transition: opacity 0.5s ease-in;\">You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                if (Number.parseInt(bucketres.buckets[plan]) <= 0) {
+                    $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
                         "<span aria-hidden='true'>&times;</span></button></div>");
-                    $(".alert").css("opacity", "1");
-                } else if (Number.parseInt(bucketres.buckets[plan]) <= 0) {
-                    $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert' style=\"opacity: 0; transition: opacity 0.5s ease-in;\">You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
-                        "<span aria-hidden='true'>&times;</span></button></div>");
-                    $(".alert").css("opacity", "1");
+                } else {
+                    if (Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0) {
+                        $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                            "<span aria-hidden='true'>&times;</span></button></div>");
+                    }
                 }
             }
         },
@@ -180,9 +180,8 @@ function showAlerts() {
         success: function (invoiceres, invoicestatus) {
             if(invoiceres.invoicesPresent)
             {
-                $("#clientAlerts").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert' style="opacity: 0; transition: opacity 0.5s ease-in;">You have ${invoiceres.numInvoices} outstanding invoice(s)!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
+                $("#clientAlerts").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have ${invoiceres.numInvoices} outstanding invoice(s)!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
                     "<span aria-hidden='true'>&times;</span></button></div>");
-                $(".alert").css("opacity", "1");
             }
         },
         error: function (invoiceres, invoicestatus) {
