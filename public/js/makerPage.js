@@ -789,6 +789,7 @@ $(document).ready(function () {
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
+        TIME_SHOULD_RUN = false;
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
         selectedDropdown = null;

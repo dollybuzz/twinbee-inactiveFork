@@ -145,8 +145,7 @@ function showFunction(functionality, endpoint) {
             url: endpoint,
             method: "post",
             data: {
-                auth: id_token,
-                token: id_token,
+                auth: id_token, //no need for token
             },
             dataType: "json",
             success: function (res, status) {
