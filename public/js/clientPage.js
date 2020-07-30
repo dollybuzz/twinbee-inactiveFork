@@ -933,6 +933,19 @@ function updateThreshold() {
     navItemChange();
     $("#userMainContent").html("");
     $("#userMainContent").html("<div id=tempSettings></div>");
+    $("#tempSettings").html("<div id='empty'></div>" +
+    "<div id='centerContent'></div>" +
+    "<div id='empty'></div>");
+
+    $("#centerContent").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>Hey! Look out for changes coming to this page.</div><br>" +
+    "<h5>Email Notifications</h5><br>" +
+    "<h6>Set when you would like to receive email notifications based on a minimum hourly threshold.</h6>" +
+    "<div id='uniform'><label for='threshold'>Plan:</label><select class='form-control' id='planThreshold'>\n</select></div>" +
+    "<label for='threshold'>will send notifications at</label>" +
+    "<div id='uniform'><input class='form-control' type='number' step='1' id='defaultThreshold' name='defaultThreshold' value=''><label for='threshold'>hourly limit.</label></div>" +
+    "<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button><br>");
+    $("#SubmitButton").css("opacity", "1");
+
 }
 
 $(document).ready(function () {
