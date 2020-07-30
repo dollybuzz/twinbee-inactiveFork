@@ -92,6 +92,7 @@ function introMessage () {
         "Please know your client relationship may not be set up yet.<br>" +
         "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
     $("#makerText1").css("opacity", "1");
+    $("#makerText1").css("margin-top", "50px");
 }
 
 //Google
