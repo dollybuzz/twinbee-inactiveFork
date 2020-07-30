@@ -152,12 +152,10 @@ function showAlerts() {
         },
         dataType: "json",
         success: function (invoiceres, invoicestatus) {
-            console.log(invoiceres.invoicesPresent);
             if(invoiceres.invoicesPresent)
             {
                 $("#clientAlerts").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have ${invoiceres.numInvoices} outstanding invoice(s)!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
                     "<span aria-hidden='true'>&times;</span></button></div>");
-                hasInvoices = true;
             }
             else
             {
@@ -181,6 +179,7 @@ function showAlerts() {
                                         "<span aria-hidden='true'>&times;</span></button></div>");
                                 }
                             }
+
                         }
                     },
                     error: function (bucketres, bucketstatus) {
