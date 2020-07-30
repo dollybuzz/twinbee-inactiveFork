@@ -33,6 +33,35 @@ module.exports = {
     },
 
     /**
+     * ENDPOINT: /api/updateMyContact
+     * Updates a client's contact info. looks for data in the body in the form:
+     * {
+     *     "token": token of customer to update,
+     *     "firstName": new first name,
+     *     "lastName": new last name,
+     *     "email": new email,
+     *     "phone": new phone,
+     *     "company": new company name
+     *     "auth": authentication credentials; either master or token
+     * }
+     */
+    updateMyContact: async (req, res) => {
+        console.log("Attempting to update client contact info from REST: ");
+        console.log(req.body);
+        let validationResult = await validateParams({"present": ["token", "firstName", "lastName", "email", "phone"]}, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            let email = await getEmailFromToken(req.body.token);
+            let client = await clientService.getClientByEmail(email);
+            clientService.updateClientContact(client.id, req.body.firstName, req.body.lastName,
+                req.body.email, req.body.phone, req.body.company);
+            res.send({status: "Request processed"});
+        }
+    },
+
+    /**
      * ENDPOINT: /api/getClient
      * Retrieves a chargebee customer object by their chargebee customer id. Looks for
      * values in the body in the form:

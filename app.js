@@ -65,6 +65,9 @@ app.post("/api/updateClientContact",
     authController.authorizeAdmin,
     authController.authorizeMaster,
     clientRestController.updateClientContact);
+app.post("/api/updateMyContact",
+    authController.authorizeClient,
+    clientRestController.updateMyContact);
 app.post("/api/updateClientMetadata",
     authController.authorizeAdmin,
     authController.authorizeMaster,
