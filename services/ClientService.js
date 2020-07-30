@@ -228,6 +228,41 @@ class ClientService {
      * @param company   - new client company name
      * @returns {Promise<void>}
      */
+    async updateMyContact(clientId, newFirstName, newLastName, newPhone, company) {
+        console.log(`Updating client ${clientId} contact info...`);
+        let customer = await this.getClientById(clientId).catch(e=>logCaughtError(e));
+        if (customer) {
+            customer.first_name = newFirstName;
+            customer.last_name = newLastName;
+            customer.phone = newPhone;
+            customer.company = company;
+
+            updateClient(clientId, customer);
+            request({
+                method: 'POST',
+                uri: `${process.env.TWINBEE_URL}/api/notifyClientChange`,
+                form: {
+                    'auth': process.env.TWINBEE_MASTER_AUTH,
+                    'clientEmail': clientId
+                }
+            }).catch(err => logCaughtError(err));
+        } else {
+            let err = `Error updating client: \n${clientId}\n${newFirstName}\n${newLastName}\n${newPhone}\n${company}`;
+            logCaughtError(err);
+        }
+    }
+
+    /**
+     * Updates client contact information
+     *
+     * @param clientId  - id of client to be updated
+     * @param newFirstName  - new first name of client
+     * @param newLastName   - new last name of client
+     * @param newPhone   - new phone number of client
+     * @param newEmail  - new email of client
+     * @param company   - new client company name
+     * @returns {Promise<void>}
+     */
     async updateClientContact(clientId, newFirstName, newLastName, newEmail, newPhone, company) {
         console.log(`Updating client ${clientId} contact info...`);
         let customer = await this.getClientById(clientId).catch(e=>logCaughtError(e));
@@ -237,8 +272,17 @@ class ClientService {
             customer.email = newEmail;
             customer.phone = newPhone;
             customer.company = company;
+
             updateClient(clientId, customer);
             clientRepo.updateClient(clientId, newFirstName, newLastName, newEmail, newPhone, company);
+            request({
+                method: 'POST',
+                uri: `${process.env.TWINBEE_URL}/api/notifyClientChange`,
+                form: {
+                    'auth': process.env.TWINBEE_MASTER_AUTH,
+                    'clientEmail': clientId
+                }
+            }).catch(err => logCaughtError(err));
         } else {
             let err = `Error updating client: \n${clientId}\n${newFirstName}\n${newLastName}\n${newEmail}\n${newPhone}\n${company}`;
             logCaughtError(err);
