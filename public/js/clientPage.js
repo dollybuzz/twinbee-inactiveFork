@@ -143,7 +143,7 @@ function introMessage() {
 
 function showAlerts() {
     $.ajax({
-        url: "/api/doIHaveInvoices",
+        url: "/api/getAllMyTimeBuckets",
         method: "post",
         data: {
             auth: id_token,
