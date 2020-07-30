@@ -126,8 +126,8 @@ function showMain(){
     //Contains any main tab functionality
     navItemChange("main");
     selectedTab = $("#main")[0].id;
-    showFunction(showAlerts, "/api/getAllMyTimeBuckets");
     showFunction(introMessage, null);
+    showAlerts(); //cannot use showFunction since the ajax call takes a token
 };
 
 function introMessage() {
@@ -141,21 +141,30 @@ function introMessage() {
     $("#clientText1").css("opacity", "1");
 }
 
-function showAlerts(res) {
-
-    for(var plan in res.buckets)
-    {
-        if(Number.parseInt(res.buckets[plan]) <= 300 && Number.parseInt(res.buckets[plan]) > 0)
-        {
-            $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
-                "<span aria-hidden='true'>&times;</span></button></div>");
+function showAlerts() {
+    $.ajax({
+        url: "/api/doIHaveInvoices",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+        },
+        dataType: "json",
+        success: function (bucketres, bucketstatus) {
+            for(var plan in bucketres.buckets) {
+                if (Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0) {
+                    $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                        "<span aria-hidden='true'>&times;</span></button></div>");
+                } else if (Number.parseInt(bucketres.buckets[plan]) <= 0) {
+                    $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                        "<span aria-hidden='true'>&times;</span></button></div>");
+                }
+            }
+        },
+        error: function (bucketres, bucketstatus) {
+            $("#userMainContent").html("Alerts are not working!");
         }
-        else if(Number.parseInt(res.buckets[plan]) <= 0)
-        {
-            $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
-                "<span aria-hidden='true'>&times;</span></button></div>");
-        }
-    }
+    });
 
     $.ajax({
         url: "/api/doIHaveInvoices",
