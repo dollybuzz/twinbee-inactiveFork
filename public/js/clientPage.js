@@ -934,7 +934,7 @@ function updateThreshold() {
     "<h6>Set when you would like to receive email notifications based on a minimum hourly threshold.</h6>" +
     "<div id='uniform'><label for='threshold'>Plan:</label><select class='form-control' id='planThreshold'>\n</select></div>" +
     "<label for='threshold'>will send notifications at</label>" +
-    "<div id='uniform'><input class='form-control' type='number' step='1' id='defaultThreshold' name='defaultThreshold' value='5' min='0'><label for='threshold'>hourly limit.</label></div>" +
+    "<div id='uniform'><input class='form-control' type='number' step='1' id='defaultThreshold' name='defaultThreshold' min='0'><label for='threshold'>hourly limit.</label></div>" +
     "<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button><br>" +
     "<div id='notifsuccess'></div>");
     $("#SubmitButton").css("opacity", "1");
