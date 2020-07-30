@@ -9,7 +9,9 @@ let TEST_ENVIRONMENT = false;
 let navMapper = {
     main: function () {
         window.location.replace(`/login?token=${id_token}`);
-        selectedTab = "main";
+        setTimeOut(function() {
+            selectedTab = "main";
+        }, 1500);
     },
 
     manageClients: function () {
@@ -2995,15 +2997,14 @@ function rollupReportFunctionality() {
         $(this).css('background-color', 'white');
     });
 }
+
 $(document).ready(function () {
 
     //if on main tab
     if(selectedTab == "main")
     {
-        setTimeout(function() {
-            navItemChange("main");
-            $(".spinner-border").remove();
-        }, 200);
+        navItemChange("main");
+        $(".spinner-border").remove();
     }
 
     //Report a technical problem
