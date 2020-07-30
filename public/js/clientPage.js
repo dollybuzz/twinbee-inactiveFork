@@ -126,8 +126,8 @@ function showMain(){
     //Contains any main tab functionality
     navItemChange("main");
     selectedTab = $("#main")[0].id;
+    showFunction(showAlerts, null); //not passing the endpoint since teh data requires token
     showFunction(introMessage, null);
-    showAlerts(); //cannot use showFunction since the ajax call takes a token
 };
 
 function introMessage() {
