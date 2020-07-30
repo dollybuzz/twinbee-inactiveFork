@@ -9,10 +9,7 @@ let TEST_ENVIRONMENT = false;
 let navMapper = {
     main: function () {
         window.location.replace(`/login?token=${id_token}`);
-        setTimeout(function() {
-            navItemChange("main");
-            $(".spinner-border").remove();
-            }, 1000);
+        selectedTab = "main";
     },
 
     manageClients: function () {
@@ -2999,6 +2996,15 @@ function rollupReportFunctionality() {
     });
 }
 $(document).ready(function () {
+
+    //if on main tab
+    if(selectedTab == "main")
+    {
+        setTimeout(function() {
+            navItemChange("main");
+            $(".spinner-border").remove();
+        }, 200);
+    }
 
     //Report a technical problem
     $("#technicalReport").on('click', function () {
