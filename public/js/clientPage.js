@@ -98,25 +98,24 @@ function expandTable() {
 }
 
 function showFunction(functionality, endpoint) {
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        dataType: "json",
-        success: function (innerRes, innerStatus) {
-            functionality(innerRes);
-            $(".spinner-border").remove();
-        },
-        error: function (innerRes, innerStatus) {
-            $("#userMainContent").html(`Something went wrong with ${endpoint}`);
-        }
-    });
-
-    if (endpoint == null)
+    if(endpoint != null)
     {
+        $.ajax({
+            url: endpoint,
+            method: "post",
+            data: {
+                auth: id_token
+            },
+            dataType: "json",
+            success: function (res, status) {
+                functionality(res);
+                $(".spinner-border").remove();
+            },
+            error: function (res, status) {
+                $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+            }
+        });
+    } else {
         functionality();
         $(".spinner-border").remove();
     }
