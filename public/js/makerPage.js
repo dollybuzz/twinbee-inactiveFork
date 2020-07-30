@@ -1,9 +1,8 @@
 //id_token is retrieved from Google.js
 
 let selectedTab = null;
+let selectedDropdown = null;
 let TEST_ENVIRONMENT = false;
-let NAV_MAP_TEXT = "";
-let SELECTED_NAV_MAP = null;
 let TIME_SHOULD_RUN = false;
 let taskValue = "";
 
@@ -13,17 +12,32 @@ let navMapper = {
     },
 
     timeclock: function () {
+        navItemChange("timeclock");
         timeClockFunctionality();
     },
 
     previousHours: function () {
+        navItemChange("previousHours");
         showFunction(timeSheetFunctionality, "/api/getMyTimeSheetsMaker");
     },
 
     manageClients: function () {
+        navItemChange("manageClients");
         showFunction(clientFunctionality, "/api/getMyClients");
     }
 };//end navMapper
+
+function navItemChange(id) {
+    let selectedNavMap = $(`#${id}`);
+    let navItemText = selectedNavMap.html();
+    selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+    let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
+
+    $(".navItem").css('color', 'white')
+        .css('font-style', 'normal');
+    selectedNavMap.css("color", '#dbb459')
+        .css("font-style", 'italic');
+}
 
 //Versatile Functions
 function showFunction(functionality, endpoint) {
@@ -766,17 +780,19 @@ $(document).ready(function () {
 
     //Event Listeners for other nav menu items
     $(".navItem").click(function (e) {
-        TIME_SHOULD_RUN = false;
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
-        SELECTED_NAV_MAP = $(this);
-        NAV_MAP_TEXT = SELECTED_NAV_MAP.html();
-        SELECTED_NAV_MAP.html(`${NAV_MAP_TEXT}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
-        $(".navItem").css('color', 'white');
-        $(".navItem").css('font-style', 'normal');
-        $(this).css("color", '#dbb459');
-        $(this).css("font-style", 'italic');
-    })
+        selectedDropdown = null;
+        let parentToChange = $(this).parent().parent().parent().children()[0];
+        if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem") {
+            selectedDropdown = parentToChange.id;
+            $(`#${parentToChange.id}`).append("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
+        }
+        if (selectedDropdown) {
+            $(`#${selectedDropdown}`).css("color", '#dbb459')
+                .css("font-style", 'italic');
+        }
+    });
 
     $(".navItem").hover(function () {
         $(this).css("color", '#dbb459');

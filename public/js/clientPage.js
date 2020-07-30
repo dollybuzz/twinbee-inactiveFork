@@ -3,9 +3,8 @@
 //global variables
 let selectedRow = null;
 let selectedTab = null;
+let selectedDropdown = null;
 let TEST_ENVIRONMENT = false;
-let NAV_MAP_TEXT = "";
-let SELECTED_NAV_MAP = null;
 
 let navMapper = {
     main: function () {
@@ -44,7 +43,6 @@ function navItemChange(id) {
     selectedNavMap.css("color", '#dbb459')
         .css("font-style", 'italic');
 }
-
 
 //Versatile Helper Functions
 function createBody(button) {
@@ -928,8 +926,8 @@ function showSettings() {
 
 //Settings sub-options
 function updateThreshold() {
-    SELECTED_NAV_MAP = null;
     selectedTab = null;
+    navItemChange();
     $("#userMainContent").html("");
     $("#userMainContent").html("<div id=tempSettings></div>");
 }
