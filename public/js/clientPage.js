@@ -143,7 +143,6 @@ function introMessage() {
 }
 
 function showAlerts() {
-    let hasInvoices = false;
     $.ajax({
         url: "/api/doIHaveInvoices",
         method: "post",
@@ -153,48 +152,47 @@ function showAlerts() {
         },
         dataType: "json",
         success: function (invoiceres, invoicestatus) {
+            console.log(invoiceres.invoicesPresent);
             if(invoiceres.invoicesPresent)
             {
                 $("#clientAlerts").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have ${invoiceres.numInvoices} outstanding invoice(s)!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
                     "<span aria-hidden='true'>&times;</span></button></div>");
                 hasInvoices = true;
             }
+            else
+            {
+                $.ajax({
+                    url: "/api/getAllMyTimeBuckets",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        token: id_token,
+                    },
+                    dataType: "json",
+                    success: function (bucketres, bucketstatus) {
+                        for(var plan in bucketres.buckets) {
+                            if (Number.parseInt(bucketres.buckets[plan]) <= 0) {
+                                $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                                    "<span aria-hidden='true'>&times;</span></button></div>");
+                                break;
+                            } else {
+                                if (Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0) {
+                                    $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                                        "<span aria-hidden='true'>&times;</span></button></div>");
+                                }
+                            }
+                        }
+                    },
+                    error: function (bucketres, bucketstatus) {
+                        $("#userMainContent").html("Alerts are not working!");
+                    }
+                });
+            }
         },
         error: function (invoiceres, invoicestatus) {
             $("#userMainContent").html("Alerts are not working!");
         }
     });
-
-    if(!hasInvoices)
-    {
-        $.ajax({
-            url: "/api/getAllMyTimeBuckets",
-            method: "post",
-            data: {
-                auth: id_token,
-                token: id_token,
-            },
-            dataType: "json",
-            success: function (bucketres, bucketstatus) {
-                for(var plan in bucketres.buckets) {
-                    if (Number.parseInt(bucketres.buckets[plan]) <= 0) {
-                        $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
-                            "<span aria-hidden='true'>&times;</span></button></div>");
-                        break;
-                    } else {
-                        if (Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0) {
-                            $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
-                                "<span aria-hidden='true'>&times;</span></button></div>");
-                        }
-                    }
-                }
-            },
-            error: function (bucketres, bucketstatus) {
-                $("#userMainContent").html("Alerts are not working!");
-            }
-        });
-    }
-
 }
 
 //Google
