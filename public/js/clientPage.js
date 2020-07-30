@@ -156,6 +156,7 @@ function showAlerts() {
                 if (Number.parseInt(bucketres.buckets[plan]) <= 0) {
                     $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
                         "<span aria-hidden='true'>&times;</span></button></div>");
+                    break;
                 } else {
                     if (Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0) {
                         $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
