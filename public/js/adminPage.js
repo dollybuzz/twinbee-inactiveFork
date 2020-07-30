@@ -9,9 +9,6 @@ let TEST_ENVIRONMENT = false;
 let navMapper = {
     main: function () {
         window.location.replace(`/login?token=${id_token}`);
-        setTimeOut(function() {
-            selectedTab = "main";
-        }, 1500);
     },
 
     manageClients: function () {
@@ -283,6 +280,9 @@ function showDeletePrompt(option, prompt, endpoint, object, successFunction, ver
 //Main Methods
 function showMain() {
     //Contains any main tab functionality
+    selectedTab = "main";
+    navItemChange("main");
+    $(".spinner-border").remove();
     showOnlineMakers();
 }
 
@@ -2999,13 +2999,6 @@ function rollupReportFunctionality() {
 }
 
 $(document).ready(function () {
-
-    //if on main tab
-    if(selectedTab == "main")
-    {
-        navItemChange("main");
-        $(".spinner-border").remove();
-    }
 
     //Report a technical problem
     $("#technicalReport").on('click', function () {
