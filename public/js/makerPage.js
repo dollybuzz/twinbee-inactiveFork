@@ -497,6 +497,13 @@ function availableCredits() {
                 message += ` ${minutes} minutes `;
             }
             $("#availcredit").html(message);
+
+            if(bucketres.minutes <= bucketres.threshold){
+                $("#availcredit").css("color", "red");
+            }
+            else {
+                $("#availcredit").css("color", "#32444e");
+            }
         },
         error: function (bucketres, bucketstatus) {
             $("#userMainContent").html("Unable to grab client time buckets! Please refresh the page. Contact support if the problem persists.");

@@ -675,3 +675,12 @@ background-image {
     grid-template-columns: 2fr 3fr 2fr;
     vertical-align: center;
 }
+
+#centerContent {
+    text-align: center;
+}
+
+#notifsuccess {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}

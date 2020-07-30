@@ -978,7 +978,11 @@ function updateThreshold() {
             },
             dataType: "json",
             success: function (bucketres, bucketstatus) {
+                $("#notifsuccess").css("opacity", "1");
                 $("#notifsuccess").html(`<br><h5>Successfully updated email notifications for Plan ${$("#planThreshold").val()}!</h5>`);
+                setTimeout(function () {
+                    $("#notifsuccess").css("opacity", "0");
+                }, 1000);
             },
             error: function (bucketres, bucketstatus) {
             $("#userMainContent").html("Could not update email notifications!");
