@@ -897,6 +897,24 @@ function timeSheetFunctionality() {
     });
 }
 
+//User Action Methods
+//Manage my Account
+//---Should have options to update their information and update payment method
+//Temporarily, these functions are in updateThreshold to fill the page
+
+//Settings
+//---Will eventually have a second interface to propose other options
+function showSettings() {
+
+    updateThreshold();
+}
+
+//Settings sub-options
+function updateThreshold() {
+    $("#userMainContent").html("");
+    $("#userMainContent").html("<div id=tempSettings></div>");
+}
+
 $(document).ready(function () {
     /*$.ajax({
         url: "/api/getEnvironment",
@@ -981,6 +999,11 @@ $(document).ready(function () {
         $("#welcome").removeClass("show");
         $("#userAction").attr("aria-expanded", "false");
         $(".dropdown-menu").removeClass("show");
+    });
+
+    //User Actions in drop down
+    $("#settings").on('click', function() {
+        showSettings();
     });
 
 });//end document ready

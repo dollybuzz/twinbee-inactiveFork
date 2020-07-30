@@ -664,3 +664,10 @@ th {
 background-image {
     opacity: 80%;
 }
+
+#tempSettings {
+    display: grid;
+    width: auto;
+    grid-template-columns: 1fr 3fr 3fr 1fr;
+    vertical-align: center;
+}
