@@ -929,15 +929,62 @@ function updateThreshold() {
     "<div id='centerContent'></div>" +
     "<div id='empty'></div>");
 
-    $("#centerContent").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>Hey! Look out for changes coming to this page.</div><br>" +
+    $("#centerContent").html("<div class='alert alert-warning show' role='alert'>Hey! Look out for changes coming to this page.</div><br>" +
     "<h5>Email Notifications</h5><br>" +
     "<h6>Set when you would like to receive email notifications based on a minimum hourly threshold.</h6>" +
     "<div id='uniform'><label for='threshold'>Plan:</label><select class='form-control' id='planThreshold'>\n</select></div>" +
     "<label for='threshold'>will send notifications at</label>" +
-    "<div id='uniform'><input class='form-control' type='number' step='1' id='defaultThreshold' name='defaultThreshold' value=''><label for='threshold'>hourly limit.</label></div>" +
-    "<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button><br>");
+    "<div id='uniform'><input class='form-control' type='number' step='1' id='defaultThreshold' name='defaultThreshold' value='5' min='0'><label for='threshold'>hourly limit.</label></div>" +
+    "<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button><br>" +
+    "<div id='notifsuccess'></div>");
     $("#SubmitButton").css("opacity", "1");
 
+    //Populate drop down with client's plans
+    $.ajax({
+        url: "/api/getAllMyTimeBuckets",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+        },
+        dataType: "json",
+        success: function (bucketres, bucketstatus) {
+            for(var plan in bucketres.buckets)
+            {
+                $("#planThreshold").append(`<option id="${plan}" value="${plan}">${plan}</option>`);
+            }
+        },
+        error: function (bucketres, bucketstatus) {
+            $("#userMainContent").html("Could not populate dropdown with plans!");
+        }
+    });
+
+    $("#defaultThreshold").on("keyup input", function () {
+        if($("#defaultThreshold").val().includes("-"))
+        {
+            $("#defaultThreshold").val("0");
+        }
+    });
+
+    $("#SubmitButton").on('click', function() {
+        $.ajax({
+            url: "/api/updateMyBucketThreshold",
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+                planId: $("#planThreshold").val(),
+                minutes: $("#defaultThreshold").val() * 60,
+            },
+            dataType: "json",
+            success: function (bucketres, bucketstatus) {
+                $("#notifsuccess").html(`<br><h5>Successfully updated email notifications for Plan ${$("#planThreshold").val()}!</h5>`);
+            },
+            error: function (bucketres, bucketstatus) {
+            $("#userMainContent").html("Could not update email notifications!");
+            }
+        });
+    });
 }
 
 $(document).ready(function () {
