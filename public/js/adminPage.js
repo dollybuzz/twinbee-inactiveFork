@@ -154,6 +154,12 @@ function showFunction(functionality, endpoint) {
             $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
         }
     });
+
+    if (endpoint == null)
+    {
+        functionality();
+        $(".spinner-border").remove();
+    }
 }
 
 //Mod
@@ -281,6 +287,7 @@ function showDeletePrompt(option, prompt, endpoint, object, successFunction, ver
 function showMain() {
     //Contains any main tab functionality
     navItemChange("main");
+    selectedTab = $("#main")[0].id;
     showFunction(onlineMakers, "/api/getOnlineMakers");
 }
 

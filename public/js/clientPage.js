@@ -114,24 +114,33 @@ function showFunction(functionality, endpoint) {
             $("#userMainContent").html(`Something went wrong with ${endpoint}`);
         }
     });
+
+    if (endpoint == null)
+    {
+        functionality();
+        $(".spinner-border").remove();
+    }
 }
 
 //Main Methods
 function showMain(){
     //Contains any main tab functionality
     navItemChange("main");
+    selectedTab = $("#main")[0].id;
     showFunction(showAlerts, "/api/getAllMyTimeBuckets");
-    setTimeout(function() {
-        $("#clientText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
-            "<br>" +
-            "We are so excited to introduce you to our new application.</h5><br>" +
-            "<h6>This page is currently underway.<br><br>" +
-            "Please navigate to 'Manage Available Hours' then to 'Update Payment Method' to get started!<br><br>" +
-            "Please know you will see banner alerts if you have any existing invoices.<br>" +
-            "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
-        $("#clientText1").css("opacity", "1");
-    }, 1000);
+    showFunction(introMessage, null);
 };
+
+function introMessage() {
+    $("#clientText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
+        "<br>" +
+        "We are so excited to introduce you to our new application.</h5><br>" +
+        "<h6>This page is currently underway.<br><br>" +
+        "Please navigate to 'Manage Available Hours' then to 'Update Payment Method' to get started!<br><br>" +
+        "Please know you will see banner alerts if you have any existing invoices.<br>" +
+        "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
+    $("#clientText1").css("opacity", "1");
+}
 
 function showAlerts(res) {
 

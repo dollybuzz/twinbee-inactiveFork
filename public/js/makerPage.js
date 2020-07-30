@@ -57,6 +57,13 @@ function showFunction(functionality, endpoint) {
             $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
         }
     });
+
+    if (endpoint == null)
+    {
+        functionality();
+        $(".spinner-border").remove();
+    }
+
 }// end showFunction
 
 function createBody() {
@@ -74,6 +81,11 @@ function createBody() {
 function showMain() {
     //Contains any main tab functionality
     navItemChange("main");
+    selectedTab = $("#main")[0].id;
+    showFunction(introMessage, null);
+};
+
+function introMessage () {
     $("#makerText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
         "<br>" +
         "We are so excited to introduce you to our new application.</h5><br>" +
@@ -82,8 +94,7 @@ function showMain() {
         "Please know your client relationship may not be set up yet.<br>" +
         "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
     $("#makerText1").css("opacity", "1");
-    $(".spinner-border").remove();
-};
+}
 
 //Google
 onSignIn = function (googleUser) {
