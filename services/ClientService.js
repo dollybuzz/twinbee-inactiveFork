@@ -209,7 +209,7 @@ class ClientService {
         if (newMinutes < 0) {
             notifyClientOutOfCredits(client.email);
         }
-        else if (newMinutes < client.meta_data.threshold[planBucket] || 300){
+        else if (newMinutes < (client.meta_data.threshold[planBucket] || 300)){
             notifyClientLowCredits(client.email);
         }
 

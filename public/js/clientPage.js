@@ -506,7 +506,7 @@ function subscriptionFunctionality(res) {
                     `   <td><span id="subPrice${i}">$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</span></td>` +
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
-            else if (difference < 10){
+            else if (difference < 30){
                 $("#subscriptionTable").append('\n' +
                     '<tr class="subscriptionRow">' +
                     '   <td>' + subscription.id + '</td>' +
