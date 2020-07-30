@@ -638,8 +638,12 @@ th {
     justify-content: center;
 }
 
+#clientAlerts {
+    height: 60px;
+}
+
 .alert {
-    height: 50px;
+    width: auto;
 }
 
 #empty {
@@ -663,4 +667,20 @@ th {
 
 background-image {
     opacity: 80%;
+}
+
+#tempSettings {
+    display: grid;
+    width: auto;
+    grid-template-columns: 2fr 3fr 2fr;
+    vertical-align: center;
+}
+
+#centerContent {
+    text-align: center;
+}
+
+#notifsuccess {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }

@@ -55,8 +55,6 @@ let navMapper = {
         navItemChange("rollupReport");
         showFunction(rollupReportFunctionality, "/api/getAllTimeSheets");
     }
-
-
 };//end navMapper
 
 function navItemChange(id) {
@@ -141,21 +139,27 @@ function expandTable() {
 }
 
 function showFunction(functionality, endpoint) {
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (res, status) {
-            functionality(res);
-            $(".spinner-border").remove();
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
+    if(endpoint != null)
+    {
+        $.ajax({
+            url: endpoint,
+            method: "post",
+            data: {
+                auth: id_token, //no need for token
+            },
+            dataType: "json",
+            success: function (res, status) {
+                functionality(res);
+                $(".spinner-border").remove();
+            },
+            error: function (res, status) {
+                $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+            }
+        });
+    } else {
+        functionality();
+        $(".spinner-border").remove();
+    }
 }
 
 //Mod
@@ -282,10 +286,12 @@ function showDeletePrompt(option, prompt, endpoint, object, successFunction, ver
 //Main Methods
 function showMain() {
     //Contains any main tab functionality
-    showOnlineMakers();
+    navItemChange("main");
+    selectedTab = $("#main")[0].id;
+    showFunction(onlineMakers, "/api/getOnlineMakers");
 }
 
-function showOnlineMakers() {
+function onlineMakers(res) {
     //Create table
     $("#userMainContent").html(
         "<div id=\"buttonsTop\"></div>\n" +
@@ -294,42 +300,29 @@ function showOnlineMakers() {
         "    <table id=\"onlineTable\" class=\"table\">\n" +
         "    </table>\n" +
         "</div></div>");
-    $.ajax({
-        url: "/api/getOnlineMakers",
-        method: "post",
-        data: {
-            auth: id_token
-        },
-        dataType: "json",
-        success: function (res, status) {
-            $("#onlineTable").append('\n' +
-                '        <thead class="thead">\n' +
-                '            <th scope="col">Freedom Maker ID</th>\n' +
-                '            <th scope="col">Freedom Maker</th>\n' +
-                '            <th scope="col">Email</th>\n' +
-                '        </thead><tbody>');
-            //Populate table
-            res.forEach(item => {
-                $("#onlineTable").append('\n' +
-                    '<tr class="onlineRow">' +
-                    '   <td>' + item.id + '</td>' +
-                    '   <td>' + item.firstName + ' ' + item.lastName + '</td>' +
-                    '<td>' + item.email + '</td>'
-                );
-            });
-            $("#onlineTable").append('\n</tbody>');
+    $("#onlineTable").append('\n' +
+        '        <thead class="thead">\n' +
+        '            <th scope="col">Freedom Maker ID</th>\n' +
+        '            <th scope="col">Freedom Maker</th>\n' +
+        '            <th scope="col">Email</th>\n' +
+        '        </thead><tbody>');
+    //Populate table
+    res.forEach(item => {
+        $("#onlineTable").append('\n' +
+            '<tr class="onlineRow">' +
+            '   <td>' + item.id + '</td>' +
+            '   <td>' + item.firstName + ' ' + item.lastName + '</td>' +
+            '<td>' + item.email + '</td>'
+        );
+    });
+    $("#onlineTable").append('\n</tbody>');
 
-            //Row effect
-            $(".onlineRow").mouseenter(function () {
-                $(this).css('transition', 'background-color 0.5s ease');
-                $(this).css('background-color', '#e8ecef');
-            }).mouseleave(function () {
-                $(this).css('background-color', 'white');
-            });
-        },
-        error: function (res, status) {
-            $("#userMainContent").html("Could not get online Freedom Makers!");
-        }
+    //Row effect
+    $(".onlineRow").mouseenter(function () {
+        $(this).css('transition', 'background-color 0.5s ease');
+        $(this).css('background-color', '#e8ecef');
+    }).mouseleave(function () {
+        $(this).css('background-color', 'white');
     });
 }
 //Google
@@ -2996,8 +2989,10 @@ function rollupReportFunctionality() {
         $(this).css('background-color', 'white');
     });
 }
+
 $(document).ready(function () {
 
+    //Report a technical problem
     $("#technicalReport").on('click', function () {
         $("textarea").val("");
         $("#successSent").html("");

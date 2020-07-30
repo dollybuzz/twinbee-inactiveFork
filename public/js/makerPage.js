@@ -1,9 +1,8 @@
 //id_token is retrieved from Google.js
 
 let selectedTab = null;
+let selectedDropdown = null;
 let TEST_ENVIRONMENT = false;
-let NAV_MAP_TEXT = "";
-let SELECTED_NAV_MAP = null;
 let TIME_SHOULD_RUN = false;
 let taskValue = "";
 
@@ -13,37 +12,58 @@ let navMapper = {
     },
 
     timeclock: function () {
+        navItemChange("timeclock");
         timeClockFunctionality();
     },
 
     previousHours: function () {
+        navItemChange("previousHours");
         showFunction(timeSheetFunctionality, "/api/getMyTimeSheetsMaker");
     },
 
     manageClients: function () {
+        navItemChange("manageClients");
         showFunction(clientFunctionality, "/api/getMyClients");
     }
 };//end navMapper
 
+function navItemChange(id) {
+    let selectedNavMap = $(`#${id}`);
+    let navItemText = selectedNavMap.html();
+    selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+    let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
+
+    $(".navItem").css('color', 'white')
+        .css('font-style', 'normal');
+    selectedNavMap.css("color", '#dbb459')
+        .css("font-style", 'italic');
+}
+
 //Versatile Functions
 function showFunction(functionality, endpoint) {
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        dataType: "json",
-        success: function (innerRes, innerStatus) {
-            functionality(innerRes);
-            $(".spinner-border").remove();
-        },
-        error: function (innerRes, innerStatus) {
-            $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
-        }
-    });
-}// end showFunction
+    if(endpoint != null)
+    {
+        $.ajax({
+            url: endpoint,
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+            },
+            dataType: "json",
+            success: function (res, status) {
+                functionality(res);
+                $(".spinner-border").remove();
+            },
+            error: function (res, status) {
+                $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+            }
+        });
+    } else {
+        functionality();
+        $(".spinner-border").remove();
+    }
+}
 
 function createBody() {
     //top row
@@ -59,19 +79,22 @@ function createBody() {
 //Main Methods
 function showMain() {
     //Contains any main tab functionality
-    mainFunctionality();
+    navItemChange("main");
+    selectedTab = $("#main")[0].id;
+    showFunction(introMessage, null);
 };
 
-function mainFunctionality() {
+function introMessage () {
     $("#makerText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
-                "<br>" +
-                "We are so excited to introduce you to our new application.</h5><br>" +
-                "<h6>This page is currently underway.<br><br>" +
-                "Please navigate to 'Time Clock' to get started!<br><br>" +
-                "Please know your client relationship may not be set up yet.<br>" +
-                "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
+        "<br>" +
+        "We are so excited to introduce you to our new application.</h5><br>" +
+        "<h6>This page is currently underway.<br><br>" +
+        "Please navigate to 'Time Clock' to get started!<br><br>" +
+        "Please know your client relationship may not be set up yet.<br>" +
+        "Reach out to Freedom Makers if your client is not showing and wait for further instruction.</h6>");
     $("#makerText1").css("opacity", "1");
-};
+    $("#makerText1").css("margin-top", "50px");
+}
 
 //Google
 onSignIn = function (googleUser) {
@@ -474,6 +497,13 @@ function availableCredits() {
                 message += ` ${minutes} minutes `;
             }
             $("#availcredit").html(message);
+
+            if(bucketres.minutes <= bucketres.threshold){
+                $("#availcredit").css("color", "red");
+            }
+            else {
+                $("#availcredit").css("color", "#32444e");
+            }
         },
         error: function (bucketres, bucketstatus) {
             $("#userMainContent").html("Unable to grab client time buckets! Please refresh the page. Contact support if the problem persists.");
@@ -728,6 +758,7 @@ $(document).ready(function () {
         }
     });*/
 
+    //Report a technical problem
     $("#technicalReport").on('click', function () {
         $("textarea").val("");
         $("#successSent").html("");
@@ -768,14 +799,17 @@ $(document).ready(function () {
         TIME_SHOULD_RUN = false;
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
-        SELECTED_NAV_MAP = $(this);
-        NAV_MAP_TEXT = SELECTED_NAV_MAP.html();
-        SELECTED_NAV_MAP.html(`${NAV_MAP_TEXT}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
-        $(".navItem").css('color', 'white');
-        $(".navItem").css('font-style', 'normal');
-        $(this).css("color", '#dbb459');
-        $(this).css("font-style", 'italic');
-    })
+        selectedDropdown = null;
+        let parentToChange = $(this).parent().parent().parent().children()[0];
+        if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem") {
+            selectedDropdown = parentToChange.id;
+            $(`#${parentToChange.id}`).append("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
+        }
+        if (selectedDropdown) {
+            $(`#${selectedDropdown}`).css("color", '#dbb459')
+                .css("font-style", 'italic');
+        }
+    });
 
     $(".navItem").hover(function () {
         $(this).css("color", '#dbb459');

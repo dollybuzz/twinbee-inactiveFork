@@ -3,9 +3,8 @@
 //global variables
 let selectedRow = null;
 let selectedTab = null;
+let selectedDropdown = null;
 let TEST_ENVIRONMENT = false;
-let NAV_MAP_TEXT = "";
-let SELECTED_NAV_MAP = null;
 
 let navMapper = {
     main: function () {
@@ -13,21 +12,37 @@ let navMapper = {
     },
 
     manageCredits: function () {
+        navItemChange("manageCredits");
         showFunction(timeBucketFunctionality, '/api/getAllMyTimeBuckets');
     },
 
     manageSubscriptions: function () {
+        navItemChange("manageSubscriptions");
         showFunction(subscriptionFunctionality, "/api/getMySubscriptions");
     },
 
     manageMakers: function () {
+        navItemChange("manageMakers");
         showFunction(makerFunctionality, "/api/getMyMakers");
     },
 
     reviewTimeSheets: function () {
+        navItemChange("reviewTimeSheets");
         timeSheetFunctionality();
     }
 };//end navMapper
+
+function navItemChange(id) {
+    let selectedNavMap = $(`#${id}`);
+    let navItemText = selectedNavMap.html();
+    selectedNavMap.html(`${navItemText}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+    let parentToChange = selectedNavMap.parent().parent().parent().children()[0];
+
+    $(".navItem").css('color', 'white')
+        .css('font-style', 'normal');
+    selectedNavMap.css("color", '#dbb459')
+        .css("font-style", 'italic');
+}
 
 //Versatile Helper Functions
 function createBody(button) {
@@ -83,78 +98,51 @@ function expandTable() {
 }
 
 function showFunction(functionality, endpoint) {
-    $.ajax({
-        url: endpoint,
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token
-        },
-        dataType: "json",
-        success: function (innerRes, innerStatus) {
-            functionality(innerRes);
-            $(".spinner-border").remove();
-        },
-        error: function (innerRes, innerStatus) {
-            $("#userMainContent").html(`Something went wrong with ${endpoint}`);
-        }
-    });
+    if(endpoint != null)
+    {
+        $.ajax({
+            url: endpoint,
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+            },
+            dataType: "json",
+            success: function (res, status) {
+                functionality(res);
+                $(".spinner-border").remove();
+            },
+            error: function (res, status) {
+                $("#userMainContent").html("Something went wrong! Please refresh the page. Contact support if the problem persists.");
+            }
+        });
+    } else {
+        functionality();
+        $(".spinner-border").remove();
+    }
 }
 
 //Main Methods
 function showMain(){
     //Contains any main tab functionality
-    mainFunctionality();
-
+    navItemChange("main");
+    selectedTab = $("#main")[0].id;
+    showFunction(showAlerts, null); //not passing the endpoint since teh data requires token
+    showFunction(introMessage, null);
 };
 
-function mainFunctionality () {
-    //Shows Client any alerts
-    setTimeout(function () {
-        showAlerts();
-    }, 1000);
-
-    setTimeout(function() {
-        $("#clientText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
-            "<br>" +
-            "We are so excited to introduce you to our new application.</h5><br>" +
-            "<h6>This page is currently underway.<br><br>" +
-            "Please navigate to 'Manage Available Hours' then to 'Update Payment Method' to get started!<br><br>" +
-            "Please know you will see banner alerts if you have any existing invoices.<br>" +
-            "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
-        $("#clientText1").css("opacity", "1");
-    }, 1500);
-};
+function introMessage() {
+    $("#clientText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
+        "<br>" +
+        "We are so excited to introduce you to our new application.</h5><br>" +
+        "<h6>This page is currently underway.<br><br>" +
+        "Please navigate to 'Manage Available Hours' then to 'Update Payment Method' to get started!<br><br>" +
+        "Please know you will see banner alerts if you have any existing invoices.<br>" +
+        "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
+    $("#clientText1").css("opacity", "1");
+}
 
 function showAlerts() {
-    $.ajax({
-        url: "/api/getAllMyTimeBuckets",
-        method: "post",
-        data: {
-            auth: id_token,
-            token: id_token,
-        },
-        dataType: "json",
-        success: function (bucketres, bucketstatus) {
-            for(var plan in bucketres.buckets)
-            {
-                if(Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0)
-                {
-                    $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
-                        "<span aria-hidden='true'>&times;</span></button></div>");
-                }
-                else if(Number.parseInt(bucketres.buckets[plan]) <= 0)
-                {
-                    $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
-                        "<span aria-hidden='true'>&times;</span></button></div>");
-                }
-            }
-        },
-        error: function (invoiceres, invoicestatus) {
-            $("#userMainContent").html("Alerts are not working!");
-        }
-    });
-
     $.ajax({
         url: "/api/doIHaveInvoices",
         method: "post",
@@ -168,6 +156,36 @@ function showAlerts() {
             {
                 $("#clientAlerts").append(`<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have ${invoiceres.numInvoices} outstanding invoice(s)!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>` +
                     "<span aria-hidden='true'>&times;</span></button></div>");
+            }
+            else
+            {
+                $.ajax({
+                    url: "/api/getAllMyTimeBuckets",
+                    method: "post",
+                    data: {
+                        auth: id_token,
+                        token: id_token,
+                    },
+                    dataType: "json",
+                    success: function (bucketres, bucketstatus) {
+                        for(var plan in bucketres.buckets) {
+                            if (Number.parseInt(bucketres.buckets[plan]) <= 0) {
+                                $("#clientAlerts").html("<div class='alert alert-danger alert-dismissable fade show' role='alert'>You have no hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                                    "<span aria-hidden='true'>&times;</span></button></div>");
+                                break;
+                            } else {
+                                if (Number.parseInt(bucketres.buckets[plan]) <= 300 && Number.parseInt(bucketres.buckets[plan]) > 0) {
+                                    $("#clientAlerts").html("<div class='alert alert-warning alert-dismissable fade show' role='alert'>You are running low on available hours!<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                                        "<span aria-hidden='true'>&times;</span></button></div>");
+                                }
+                            }
+
+                        }
+                    },
+                    error: function (bucketres, bucketstatus) {
+                        $("#userMainContent").html("Alerts are not working!");
+                    }
+                });
             }
         },
         error: function (invoiceres, invoicestatus) {
@@ -476,38 +494,7 @@ function subscriptionFunctionality(res) {
 
         if (item && !subscription.deleted) {
             //Get new plan quantity to update subscription Price on table
-            if (subscription.has_scheduled_changes) {
-                $.ajax({
-                    url: "/api/getMySubscriptionChanges",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        token: id_token,
-                        subscriptionId: subscription.id
-                    },
-                    dataType: "json",
-                    success: function (changeres, changestatus) {
-                        $("#subscriptionTable").append('\n' +
-                            `<tr id="${'ajaxSubscriptionRow'+ (++i)}">` +
-                            '   <td>' + subscription.id + '</td>' +
-                            '   <td>' + subscription.plan_id + '</td>' +
-                            '   <td>' + subscription.plan_quantity + '</td>' +
-                            '   <td>' + changes + '</td>' +
-                            '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                            '   <td>' + (subscription.next_billing_at == undefined ? (subscription.pause_date ? "Paused":"Terminated") : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                            `   <td>$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}</td>` +
-                            '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
-
-                        $(`#${'ajaxSubscriptionRow'+ (i)}`).click(function () {
-                            selectedRow = $(this);
-                            prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
-                        });
-                    },
-                    error: function (changeres, changestatus) {
-                        $("#userMainContent").html("Could not calculate next charge for changed subscription!");
-                    }
-                });
-            } else if (subscription.status != "cancelled") {
+            if (subscription.status != "cancelled") {
                 $("#subscriptionTable").append('\n' +
                     '<tr class="subscriptionRow">' +
                     '   <td>' + subscription.id + '</td>' +
@@ -516,10 +503,10 @@ function subscriptionFunctionality(res) {
                     '   <td>' + changes + '</td>' +
                     '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                     '   <td>' + (subscription.next_billing_at == undefined ? (subscription.pause_date ? "Paused":"Terminated") : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                    `   <td>$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</td>` +
+                    `   <td><span id="subPrice${i}">$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</span></td>` +
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
-            else if (difference < 10){
+            else if (difference < 30){
                 $("#subscriptionTable").append('\n' +
                     '<tr class="subscriptionRow">' +
                     '   <td>' + subscription.id + '</td>' +
@@ -531,7 +518,11 @@ function subscriptionFunctionality(res) {
                     '   <td>' + "Terminated" + '</td>' +
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
+            if (subscription.has_scheduled_changes) {
+                updatePrice(subscription, i);
+            }
         }
+        ++i;
     };
     $("#subscriptionTable").append('\n</tbody>');
 
@@ -556,6 +547,25 @@ function subscriptionFunctionality(res) {
         $(this).css('background-color', '#e8ecef');
     }).mouseleave(function () {
         $(this).css('background-color', 'white');
+    });
+}
+
+function updatePrice(subscription, i){
+    $.ajax({
+        url: "/api/getMySubscriptionChanges",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+            subscriptionId: subscription.id
+        },
+        dataType: "json",
+        success: function (changeres, changestatus) {
+            $(`#subPrice${i}`).html(`$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`);
+        },
+        error: function (changeres, changestatus) {
+            $("#userMainContent").html("Could not calculate next charge for changed subscription!");
+        }
     });
 }
 
@@ -897,6 +907,90 @@ function timeSheetFunctionality() {
     });
 }
 
+//User Action Methods
+//Manage my Account
+//---Should have options to update their information and update payment method
+//Temporarily, these functions are in updateThreshold to fill the page
+
+//Settings
+//---Will eventually have a second interface to propose other options
+function showSettings() {
+
+    updateThreshold();
+}
+
+//Settings sub-options
+function updateThreshold() {
+    selectedTab = null;
+    navItemChange();
+    $("#userMainContent").html("");
+    $("#userMainContent").html("<div id=tempSettings></div>");
+    $("#tempSettings").html("<div id='empty'></div>" +
+    "<div id='centerContent'></div>" +
+    "<div id='empty'></div>");
+
+    $("#centerContent").html("<div class='alert alert-warning show' role='alert'>Hey! Look out for changes coming to this page.</div><br>" +
+    "<h5>Email Notifications</h5><br>" +
+    "<h6>Set when you would like to receive email notifications based on a minimum hourly threshold.</h6>" +
+    "<div id='uniform'><label for='threshold'>Plan:</label><select class='form-control' id='planThreshold'>\n</select></div>" +
+    "<label for='threshold'>will send notifications at</label>" +
+    "<div id='uniform'><input class='form-control' type='number' step='1' id='defaultThreshold' name='defaultThreshold' min='0'><label for='threshold'>hourly limit.</label></div>" +
+    "<button id='SubmitButton' type='button' class='btn btn-default'>Submit</button><br>" +
+    "<div id='notifsuccess'></div>");
+    $("#SubmitButton").css("opacity", "1");
+
+    //Populate drop down with client's plans
+    $.ajax({
+        url: "/api/getAllMyTimeBuckets",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+        },
+        dataType: "json",
+        success: function (bucketres, bucketstatus) {
+            for(var plan in bucketres.buckets)
+            {
+                $("#planThreshold").append(`<option id="${plan}" value="${plan}">${plan}</option>`);
+            }
+        },
+        error: function (bucketres, bucketstatus) {
+            $("#userMainContent").html("Could not populate dropdown with plans!");
+        }
+    });
+
+    $("#defaultThreshold").on("keyup input", function () {
+        if($("#defaultThreshold").val().includes("-"))
+        {
+            $("#defaultThreshold").val("0");
+        }
+    });
+
+    $("#SubmitButton").on('click', function() {
+        $.ajax({
+            url: "/api/updateMyBucketThreshold",
+            method: "post",
+            data: {
+                auth: id_token,
+                token: id_token,
+                planId: $("#planThreshold").val(),
+                minutes: $("#defaultThreshold").val() * 60,
+            },
+            dataType: "json",
+            success: function (bucketres, bucketstatus) {
+                $("#notifsuccess").css("opacity", "1");
+                $("#notifsuccess").html(`<br><h5>Successfully updated email notifications for Plan ${$("#planThreshold").val()}!</h5>`);
+                setTimeout(function () {
+                    $("#notifsuccess").css("opacity", "0");
+                }, 1000);
+            },
+            error: function (bucketres, bucketstatus) {
+            $("#userMainContent").html("Could not update email notifications!");
+            }
+        });
+    });
+}
+
 $(document).ready(function () {
     /*$.ajax({
         url: "/api/getEnvironment",
@@ -954,13 +1048,16 @@ $(document).ready(function () {
     $(".navItem").click(function (e) {
         navMapper[e.target.id]();
         selectedTab = $(this)[0].id;
-        SELECTED_NAV_MAP = $(this);
-        NAV_MAP_TEXT = SELECTED_NAV_MAP.html();
-        SELECTED_NAV_MAP.html(`${NAV_MAP_TEXT}  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
-        $(".navItem").css('color', 'white');
-        $(".navItem").css('font-style', 'normal');
-        $(this).css("color", '#dbb459');
-        $(this).css("font-style", 'italic');
+        selectedDropdown = null;
+        let parentToChange = $(this).parent().parent().parent().children()[0];
+        if (parentToChange.classList[0] && parentToChange.classList[0].toString() === "navItem") {
+            selectedDropdown = parentToChange.id;
+            $(`#${parentToChange.id}`).append("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
+        }
+        if (selectedDropdown) {
+            $(`#${selectedDropdown}`).css("color", '#dbb459')
+                .css("font-style", 'italic');
+        }
     });
 
     $(".navItem").hover(function () {
@@ -981,6 +1078,11 @@ $(document).ready(function () {
         $("#welcome").removeClass("show");
         $("#userAction").attr("aria-expanded", "false");
         $(".dropdown-menu").removeClass("show");
+    });
+
+    //User Actions in drop down
+    $("#settings").on('click', function() {
+        showSettings();
     });
 
 });//end document ready
