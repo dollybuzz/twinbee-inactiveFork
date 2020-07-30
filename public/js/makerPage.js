@@ -742,6 +742,7 @@ function clientFunctionality(res) {
 }
 
 $(document).ready(function () {
+    $("#settings").hide();
     /*$.ajax({
         url: "/api/getEnvironment",
         method: "get",

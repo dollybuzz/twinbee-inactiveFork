@@ -2991,7 +2991,7 @@ function rollupReportFunctionality() {
 }
 
 $(document).ready(function () {
-
+    $("#settings").hide();
     //Report a technical problem
     $("#technicalReport").on('click', function () {
         $("textarea").val("");
