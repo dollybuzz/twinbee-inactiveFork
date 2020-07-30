@@ -12,7 +12,7 @@ let navMapper = {
         setTimeout(function() {
             navItemChange("main");
             $(".spinner-border").remove();
-            }, 200);
+            }, 500);
     },
 
     manageClients: function () {
