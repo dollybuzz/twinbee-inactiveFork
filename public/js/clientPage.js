@@ -120,14 +120,7 @@ function showFunction(functionality, endpoint) {
 function showMain(){
     //Contains any main tab functionality
     navItemChange("main");
-    mainFunctionality();
-
-};
-
-function mainFunctionality () {
-    //Shows Client any alerts
     showFunction(showAlerts, "/api/getAllMyTimeBuckets");
-
     setTimeout(function() {
         $("#clientText1").html(`<h5>Hello, ${document.getElementById("googleUser").innerHTML.split(" ")[0]}!` +
             "<br>" +
@@ -137,7 +130,7 @@ function mainFunctionality () {
             "Please know you will see banner alerts if you have any existing invoices.<br>" +
             "Reach out to Freedom Makers if feel you have accrued an invoice in error.</h6>");
         $("#clientText1").css("opacity", "1");
-    }, 1500);
+    }, 1000);
 };
 
 function showAlerts(res) {

@@ -638,8 +638,12 @@ th {
     justify-content: center;
 }
 
-.alert {
+#clientAlerts {
     height: 50px;
+}
+
+.alert {
+    width: auto;
 }
 
 #empty {
