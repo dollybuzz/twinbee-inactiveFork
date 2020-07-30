@@ -1,6 +1,8 @@
 const relationshipRepo = require('../repositories/relationshipRepo.js');
 const Relationship = require('../domain/entity/relationship');
 const {logCaughtError} = require('../util.js');
+const util = require('util');
+const request = util.promisify(require('request'));
 
 async function createRelationshipFromRow(row) {
     return new Relationship(row.id, row.maker_id, row.client_id, row.plan_id, row.occupation, row.hourly_rate);
@@ -22,6 +24,18 @@ class RelationshipService {
     async createRelationship(makerId, clientId, planId, occupation, hourlyRate) {
         console.log("Creating a relationship...");
         let id = await relationshipRepo.createRelationship(makerId, clientId, planId, occupation, hourlyRate).catch(err => logCaughtError(err));
+
+        request({
+            method: 'POST',
+            uri: `${process.env.TWINBEE_URL}/api/updateClientTimeBucket`,
+            form: {
+                'auth': process.env.TWINBEE_MASTER_AUTH,
+                'id': clientId,
+                'planId' : planId,
+                "minutes": 0
+            }
+        }).catch(error => logCaughtError(error));
+
         return new Relationship(id, makerId, clientId, planId, occupation, hourlyRate);
     }
 
