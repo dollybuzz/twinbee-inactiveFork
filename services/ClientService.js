@@ -13,13 +13,20 @@ chargebee.configure({
 let updateClient = (customerId, keyValuePairs) => {
     console.log(`Updating client ${customerId} via chargebee with values:`);
     console.log(keyValuePairs);
-    chargebee.customer.update(customerId, keyValuePairs).request(function (error, result) {
-        if (error) {
-            logCaughtError(error);
-        } else {
-            console.log(`Client ${customerId} updated successfully`)
-        }
-    });
+    return new Promise((resolve, reject) => {
+        chargebee.customer.update(customerId, keyValuePairs).request(async function (error, result) {
+            if (error) {
+                logCaughtError(error);
+                reject(error);
+            } else {
+                console.log(`Client ${customerId} updated successfully`);
+                resolve(await module.exports.getClientById(customerId).catch(err => {
+                    logCaughtError(err);
+                    reject(err);
+                }));
+            }
+        });
+    })
 };
 
 let notifyClientOutOfCredits = email => {
@@ -108,7 +115,7 @@ class ClientService {
             customer.meta_data.threshold = {};
         }
         customer.meta_data.threshold[bucket] = thresholdMinutes;
-        updateClient(clientId, customer)
+        return await updateClient(clientId, customer).catch(e=>logCaughtError(e));
     }
 
     /**
