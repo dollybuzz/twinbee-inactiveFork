@@ -162,6 +162,36 @@ module.exports = {
         }
     },
 
+    /**
+     * ENDPOINT: /api/notifyClientChange
+     * Notifies client that they are out of credits:
+     * {
+     *     "auth": authentication credentials; either master or token,
+     *     "clientId": id of changed client
+     * }
+     * @returns {Promise<[{},...]>}
+     */
+    notifyClientChange: async (req, res) =>{
+        console.log("Notifying client of empty bucket via rest!");
+        console.log(req.body);
+
+        let validationResult = await validateParams(
+            {
+                "present": ["clientId", "auth"],
+                "positiveIntegerOnly": [],
+                "noSpaces": [],
+                "positiveDecimalAllowed": [],
+                "decimalAllowed": []
+            }, req.body);
+        if (!validationResult.isValid) {
+            res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
+            notifyAdmin({error: "Bad Request", code: 400, details: validationResult.message});
+        } else {
+            notificationService.emailFMAdminClientChange(req.body.clientId);
+            res.send({status: "Request Sent"});
+        }
+    },
+
 
     /**
      * ENDPOINT: /api/notifyClientLowCredits

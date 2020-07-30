@@ -335,6 +335,38 @@ exports.emailFMAdminClientUpdate = (planId, numHours, clientName)=>{
 </body>`);
 };
 
+exports.emailFMAdminClientChange = (clientId)=>{
+    exports.emailFMAdmin("Client Contact Change!",
+        `<body style="position: relative;width: 100%;height: 100vh;color: #32444e;background-color: #32444e; overflow: hidden">
+<header style="text-align: center;width: inherit;height: auto;background-color: #e8ecef;">
+
+    <div id="landingContainer"
+         style="display: grid;width: inherit;grid-template-columns: 1fr 3fr 1fr;vertical-align: center;">
+        <div id="intentionallyEmpty"></div>
+        <div id="landingLogo" style="width: inherit;padding: 15px;">
+            <img src="https://www.freedom-makers-hours.com/img/freedom-makers-logo.png" id="actualImage" alt="Freedom Makers Logo">
+        </div>
+    </div>
+    <div id="pageTitle"
+         style="width: inherit;height: auto;font-size: 1.5em;background-color: #32444e;color: white;text-align: center;padding: 6px;">
+        <h2 style="color: #dbb459;">Hours added!</h2>
+    </div>
+</header>
+<div id="landingMain" style="background-color: white;width: 100%;height: 25vh;text-align: center;padding-top: 250px; font-size: larger">
+                                <h4>Contact info for client with ID: ${clientId} has been changed!  </h4>
+                                <h4>Please <a href="https://www.freedom-makers-hours.com">Log in</a> and verify the correctness of the data.</h4>
+<br>
+
+</div>
+<div id="footer" style="width: inherit;height: 100px;position: relative;left: 0;color: white;text-decoration: none;text-align: center;background-color: #32444e;padding-top: 5px;">
+    This email was sent to notify you of your account's successful setup. No unsubscribe necessary.
+    <div class="copyright">
+        <h6>©2020 <img src="https://www.freedom-makers-hours.com/img/TwinBee.png" id="twinbeeLogo" alt="TwinBee Logo" style="display: inline;width: 180px;"></h6>
+    </div>
+</div>
+</body>`);
+};
+
 /**
  * Sends an email to the Freedom Makers admins
  * @param subject - email subject

@@ -39,7 +39,6 @@ module.exports = {
      *     "token": token of customer to update,
      *     "firstName": new first name,
      *     "lastName": new last name,
-     *     "email": new email,
      *     "phone": new phone,
      *     "company": new company name
      *     "auth": authentication credentials; either master or token
@@ -53,10 +52,10 @@ module.exports = {
             res.status(400).send({error: "Bad Request", code: 400, details: validationResult.message});
             logCaughtError({error: "Bad Request", code: 400, details: validationResult.message});
         } else {
-            let email = await getEmailFromToken(req.body.token);
-            let client = await clientService.getClientByEmail(email);
-            clientService.updateClientContact(client.id, req.body.firstName, req.body.lastName,
-                req.body.email, req.body.phone, req.body.company);
+            let email = await getEmailFromToken(req.body.token).catch(err => logCaughtError(err));
+            let client = await clientService.getClientByEmail(email).catch(err => logCaughtError(err));
+            clientService.updateMyContact(client.id, req.body.firstName,
+                req.body.lastName, req.body.phone, req.body.company).catch(err => logCaughtError(err));
             res.send({status: "Request processed"});
         }
     },
