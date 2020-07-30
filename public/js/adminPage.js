@@ -9,6 +9,7 @@ let TEST_ENVIRONMENT = false;
 let navMapper = {
     main: function () {
         window.location.replace(`/login?token=${id_token}`);
+        navItemChange("main");
     },
 
     manageClients: function () {
@@ -55,8 +56,6 @@ let navMapper = {
         navItemChange("rollupReport");
         showFunction(rollupReportFunctionality, "/api/getAllTimeSheets");
     }
-
-
 };//end navMapper
 
 function navItemChange(id) {
