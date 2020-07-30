@@ -879,7 +879,6 @@ class ClientService {
         let {price} = JSON.parse(response.body);
         return {minutes: (bucketObj.buckets[planId] || 0), threshold: (bucketObj.threshold[planId] || 0), price: price};
     }
-
 }
 
 module.exports = new ClientService();

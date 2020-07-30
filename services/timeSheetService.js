@@ -214,10 +214,10 @@ class TimeSheetService {
 
     /**
      * Returns the current moment/date-time in the Twinbee standard format (YYYY-MM-DD HH:mm:ss)
-     * @returns {Promise<moment>} for the current instant
+     * @returns {Promise<string>} for the current instant
      */
     async getCurrentMoment() {
-        return await moment().utc().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss').catch(error => logCaughtError(error));
+        return await moment().utc().utcOffset("-07:00").format('YYYY-MM-DD HH:mm:ss');
     }
 
 
