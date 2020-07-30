@@ -494,38 +494,7 @@ function subscriptionFunctionality(res) {
 
         if (item && !subscription.deleted) {
             //Get new plan quantity to update subscription Price on table
-            if (subscription.has_scheduled_changes) {
-                $.ajax({
-                    url: "/api/getMySubscriptionChanges",
-                    method: "post",
-                    data: {
-                        auth: id_token,
-                        token: id_token,
-                        subscriptionId: subscription.id
-                    },
-                    dataType: "json",
-                    success: function (changeres, changestatus) {
-                        $("#subscriptionTable").append('\n' +
-                            `<tr id="${'ajaxSubscriptionRow'+ (++i)}">` +
-                            '   <td>' + subscription.id + '</td>' +
-                            '   <td>' + subscription.plan_id + '</td>' +
-                            '   <td>' + subscription.plan_quantity + '</td>' +
-                            '   <td>' + changes + '</td>' +
-                            '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
-                            '   <td>' + (subscription.next_billing_at == undefined ? (subscription.pause_date ? "Paused":"Terminated") : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                            `   <td>$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}</td>` +
-                            '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
-
-                        $(`#${'ajaxSubscriptionRow'+ (i)}`).click(function () {
-                            selectedRow = $(this);
-                            prePopModForm("/api/retrieveMySubscription", subscriptionModForm);
-                        });
-                    },
-                    error: function (changeres, changestatus) {
-                        $("#userMainContent").html("Could not calculate next charge for changed subscription!");
-                    }
-                });
-            } else if (subscription.status != "cancelled") {
+            if (subscription.status != "cancelled") {
                 $("#subscriptionTable").append('\n' +
                     '<tr class="subscriptionRow">' +
                     '   <td>' + subscription.id + '</td>' +
@@ -534,7 +503,7 @@ function subscriptionFunctionality(res) {
                     '   <td>' + changes + '</td>' +
                     '   <td>' + (subscription.cancelled_at == undefined ? "No" : moment.unix(subscription.cancelled_at).format('YYYY/MM/DD')) + '</td>' +
                     '   <td>' + (subscription.next_billing_at == undefined ? (subscription.pause_date ? "Paused":"Terminated") : moment.unix(subscription.next_billing_at).format('YYYY/MM/DD')) + '</td>' +
-                    `   <td>$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</td>` +
+                    `   <td><span id="subPrice${i}">$${(subscription.plan_quantity * (subscription.plan_unit_price / 100)).toFixed(2)}</span></td>` +
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
             else if (difference < 10){
@@ -549,7 +518,11 @@ function subscriptionFunctionality(res) {
                     '   <td>' + "Terminated" + '</td>' +
                     '   <td><button type="button" class="btn btn-select btn-circle btn-xl" id="ChangeSubButton">Change</button></td></tr>');
             }
+            if (subscription.has_scheduled_changes) {
+                updatePrice(subscription, i);
+            }
         }
+        ++i;
     };
     $("#subscriptionTable").append('\n</tbody>');
 
@@ -574,6 +547,25 @@ function subscriptionFunctionality(res) {
         $(this).css('background-color', '#e8ecef');
     }).mouseleave(function () {
         $(this).css('background-color', 'white');
+    });
+}
+
+function updatePrice(subscription, i){
+    $.ajax({
+        url: "/api/getMySubscriptionChanges",
+        method: "post",
+        data: {
+            auth: id_token,
+            token: id_token,
+            subscriptionId: subscription.id
+        },
+        dataType: "json",
+        success: function (changeres, changestatus) {
+            $(`#subPrice${i}`).html(`$${(changeres.plan_quantity * (changeres.plan_unit_price / 100)).toFixed(2)}`);
+        },
+        error: function (changeres, changestatus) {
+            $("#userMainContent").html("Could not calculate next charge for changed subscription!");
+        }
     });
 }
 
