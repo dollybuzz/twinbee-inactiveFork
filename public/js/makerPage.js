@@ -728,6 +728,7 @@ $(document).ready(function () {
         }
     });*/
 
+    //Report a technical problem
     $("#technicalReport").on('click', function () {
         $("textarea").val("");
         $("#successSent").html("");
